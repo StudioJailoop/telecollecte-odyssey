@@ -630,6 +630,78 @@
   <div class="avatar">JD</div>
 </header>
 
+<!-- Bouton Retours PO — local only -->
+<div id="briefs-nav-btn" onclick="openBriefs()" title="Retours PO"
+  style="display:none;position:fixed;bottom:24px;left:24px;width:48px;height:48px;border-radius:100px;background:var(--yellow);cursor:pointer;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(0,0,0,0.4);z-index:300;">
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1E2643" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+  </svg>
+</div>
+
+<!-- ══ PANNEAU RETOURS PO ══ -->
+<div id="briefs-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:2000;" onclick="closeBriefs()"></div>
+<div id="briefs-panel" style="display:none;position:fixed;top:0;right:0;width:600px;height:100vh;background:var(--white);z-index:2001;flex-direction:column;box-shadow:-8px 0 32px rgba(0,0,0,0.2);">
+
+  <!-- Header -->
+  <div style="background:var(--navy);padding:20px 24px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;">
+    <div>
+      <div style="color:var(--yellow);font-size:18px;font-weight:700;">Retours PO</div>
+      <div style="color:rgba(255,255,255,0.5);font-size:12px;margin-top:2px;">Notez les retours — copiez pour Claude</div>
+    </div>
+    <button onclick="closeBriefs()" style="background:none;border:none;color:rgba(255,255,255,0.6);font-size:22px;cursor:pointer;line-height:1;">×</button>
+  </div>
+
+  <!-- Formulaire ajout retour -->
+  <div style="padding:20px 24px;border-bottom:1px solid var(--grey-bd);flex-shrink:0;">
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;align-items:center;">
+      <label style="display:flex;align-items:center;gap:5px;cursor:pointer;font-size:13px;font-weight:600;padding:6px 12px;border-radius:20px;border:1.5px solid var(--grey-bd);color:var(--grey-txt);transition:all .15s;" id="radio-retour">
+        <input type="radio" name="brief-type" value="retour" checked style="display:none;" onchange="updateRadios()"> 💬 Retour
+      </label>
+      <label style="display:flex;align-items:center;gap:5px;cursor:pointer;font-size:13px;font-weight:600;padding:6px 12px;border-radius:20px;border:1.5px solid var(--grey-bd);color:var(--grey-txt);transition:all .15s;" id="radio-idee">
+        <input type="radio" name="brief-type" value="idee" style="display:none;" onchange="updateRadios()"> 💡 Idée
+      </label>
+      <label style="display:flex;align-items:center;gap:5px;cursor:pointer;font-size:13px;font-weight:600;padding:6px 12px;border-radius:20px;border:1.5px solid var(--grey-bd);color:var(--grey-txt);transition:all .15s;" id="radio-rg">
+        <input type="radio" name="brief-type" value="rg" style="display:none;" onchange="updateRadios()"> 📋 Règle de gestion
+      </label>
+
+      <!-- Séparateur -->
+      <div style="width:1px;height:28px;background:var(--grey-bd);margin:0 4px;"></div>
+
+      <!-- Bulle commentaires équipe -->
+      <button onclick="toggleTeamComments()" id="team-comments-btn"
+        style="position:relative;background:none;border:1.5px solid var(--grey-bd);border-radius:20px;padding:6px 12px;font-size:13px;font-weight:600;color:var(--grey-txt);cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:6px;transition:all .15s;">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        Commentaires équipe
+        <span id="team-comments-count" style="display:none;background:#D93025;color:white;border-radius:100px;font-size:10px;font-weight:700;padding:1px 6px;min-width:18px;text-align:center;">0</span>
+      </button>
+    </div>
+
+    <!-- Section commentaires équipe (masquée par défaut) -->
+    <div id="team-comments-section" style="display:none;border:1.5px solid #D93025;border-radius:10px;padding:14px;margin-bottom:12px;background:#fff8f8;">
+      <div style="font-size:12px;font-weight:700;color:#D93025;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;">
+        <span>💬 Commentaires de l'équipe</span>
+        <span style="font-size:10px;color:var(--grey-txt);font-weight:400;">Partagés via le wireframe</span>
+      </div>
+      <div id="team-comments-list" style="display:flex;flex-direction:column;gap:8px;max-height:180px;overflow-y:auto;">
+        <div style="text-align:center;color:var(--grey-txt);font-size:12px;padding:12px 0;font-style:italic;">Aucun commentaire de l'équipe pour l'instant</div>
+      </div>
+    </div>
+    <textarea id="brief-text" placeholder="Décris le retour..." style="width:100%;height:80px;border:1px solid var(--grey-bd);border-radius:8px;padding:10px;font-size:14px;font-family:inherit;resize:none;outline:none;color:var(--navy);"></textarea>
+    <div style="display:flex;justify-content:flex-end;margin-top:8px;">
+      <button onclick="addBrief()" style="background:var(--navy);color:var(--white);border:none;border-radius:8px;padding:8px 20px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;">Ajouter</button>
+    </div>
+  </div>
+
+  <!-- Liste des retours -->
+  <div id="briefs-list" style="flex:1;overflow-y:auto;padding:16px 24px;display:flex;flex-direction:column;gap:10px;"></div>
+
+  <!-- Footer -->
+  <div style="padding:16px 24px;border-top:1px solid var(--grey-bd);flex-shrink:0;display:flex;gap:8px;">
+    <button onclick="clearBriefs()" style="flex:1;height:40px;border:1px solid var(--grey-bd);border-radius:8px;font-size:13px;font-weight:600;color:var(--grey-txt);background:var(--white);cursor:pointer;font-family:inherit;">Tout effacer</button>
+    <button onclick="sendToClaude()" id="copy-btn" style="flex:2;height:40px;background:var(--yellow);color:#000;border:none;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;">⚡ Envoyer à Claude</button>
+  </div>
+</div>
+
 <!-- Bouton toggle sidebar -->
 <button class="toggle-btn closed" id="toggle-btn" onclick="toggleSidebar()" title="Ouvrir / Fermer">
   <svg viewBox="0 0 14 14"><path d="M5 2l5 5-5 5"/></svg>
@@ -1095,8 +1167,14 @@
   </div>
 
   <!-- Filtre auteur -->
-  <select class="author-filter" id="author-filter" onchange="renderComments()">
+  <select class="author-filter" id="author-filter" onchange="refreshPins()">
     <option value="">Tous les auteurs</option>
+    <option value="Julie">Julie</option>
+    <option value="Nelly">Nelly</option>
+    <option value="Jérôme">Jérôme</option>
+    <option value="Kirsty">Kirsty</option>
+    <option value="Laurent">Laurent</option>
+    <option value="Sébastien">Sébastien</option>
   </select>
 
   </div><!-- /panel-body -->
@@ -1104,14 +1182,9 @@
 
 <!-- Popover nouveau commentaire -->
 <div class="comment-popover" id="comment-popover">
-  <div class="cp-header">
+  <div class="cp-header" style="justify-content:space-between;">
     <span>Nouveau commentaire</span>
-    <select class="cp-author-select" id="cp-author">
-      <option>Sébastien</option>
-      <option>Julie</option>
-      <option>Nelly</option>
-      <option>Éric</option>
-    </select>
+    <span id="cp-username" style="font-size:11px;color:var(--grey-txt);font-weight:400;"></span>
   </div>
   <textarea id="cp-text" placeholder="Écrire un commentaire..."></textarea>
   <div class="cp-actions">
@@ -1130,12 +1203,7 @@
   <div id="thread-messages" style="display:flex;flex-direction:column;gap:8px;max-height:200px;overflow-y:auto;margin-bottom:10px;"></div>
   <!-- Zone réponse -->
   <div style="border-top:1px solid var(--grey-bd);padding-top:10px;">
-    <select class="cp-author-select" id="reply-author" style="width:100%;margin-bottom:6px;">
-      <option>Sébastien</option>
-      <option>Julie</option>
-      <option>Nelly</option>
-      <option>Éric</option>
-    </select>
+    <div style="font-size:12px;font-weight:700;color:var(--navy);margin-bottom:6px;" id="reply-username"></div>
     <textarea id="reply-text" placeholder="Répondre..." style="width:100%;height:60px;border:1px solid var(--grey-bd);border-radius:8px;padding:8px;font-size:13px;font-family:inherit;resize:none;outline:none;"></textarea>
     <div class="cp-actions">
       <button class="cp-cancel" onclick="deleteThreadComment()" style="color:var(--red);border-color:var(--red);">Supprimer</button>
@@ -1146,6 +1214,235 @@
 </div>
 
 <script>
+  // Afficher le bouton Retours PO uniquement en local
+  if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
+    document.getElementById('briefs-nav-btn').style.display = 'flex';
+  }
+
+  // ══ Retours PO ══════════════════════════════════════════════
+  const BRIEFS_KEY = 'wf_briefs_telecollecte';
+  let briefs = JSON.parse(localStorage.getItem(BRIEFS_KEY) || '[]');
+
+  const TYPE_LABELS = { retour:'💬 Retour', idee:'💡 Idée', rg:'📋 Règle de gestion' };
+  const TYPE_COLORS = { retour:'#1E2643', idee:'#D97706', rg:'#7C3AED' };
+
+  function openBriefs() {
+    document.getElementById('briefs-overlay').style.display = 'block';
+    document.getElementById('briefs-panel').style.display = 'flex';
+    renderBriefs();
+  }
+  function closeBriefs() {
+    document.getElementById('briefs-overlay').style.display = 'none';
+    document.getElementById('briefs-panel').style.display = 'none';
+  }
+
+  const TYPE_ACTIVE_COLORS = { retour:'#1E2643', idee:'#D97706', rg:'#7C3AED' };
+
+  function updateRadios() {
+    document.querySelectorAll('[id^="radio-"]').forEach(lbl => {
+      const val = lbl.id.replace('radio-','');
+      const radio = lbl.querySelector('input');
+      if (radio.checked) {
+        lbl.style.background = TYPE_ACTIVE_COLORS[val] + '18';
+        lbl.style.borderColor = TYPE_ACTIVE_COLORS[val];
+        lbl.style.color = TYPE_ACTIVE_COLORS[val];
+      } else {
+        lbl.style.background = '';
+        lbl.style.borderColor = 'var(--grey-bd)';
+        lbl.style.color = 'var(--grey-txt)';
+      }
+    });
+  }
+  // Init au chargement
+  document.addEventListener('DOMContentLoaded', updateRadios);
+
+  function addBrief() {
+    const text = document.getElementById('brief-text').value.trim();
+    if (!text) return;
+    const typeSelected = document.querySelector('input[name="brief-type"]:checked')?.value || 'retour';
+    const brief = {
+      id: Date.now(),
+      author: CURRENT_USER,
+      type: typeSelected,
+      text,
+      date: new Date().toLocaleDateString('fr-FR'),
+      time: new Date().toLocaleTimeString('fr-FR', {hour:'2-digit',minute:'2-digit'}),
+      done: false
+    };
+    briefs.unshift(brief);
+    localStorage.setItem(BRIEFS_KEY, JSON.stringify(briefs));
+    document.getElementById('brief-text').value = '';
+    renderBriefs();
+  }
+
+  function deleteBrief(id) {
+    briefs = briefs.filter(b => b.id !== id);
+    localStorage.setItem(BRIEFS_KEY, JSON.stringify(briefs));
+    renderBriefs();
+  }
+
+  // ── Commentaires équipe ──
+  function toggleTeamComments() {
+    const section = document.getElementById('team-comments-section');
+    const btn = document.getElementById('team-comments-btn');
+    const isOpen = section.style.display !== 'none';
+    section.style.display = isOpen ? 'none' : 'block';
+    btn.style.borderColor = isOpen ? 'var(--grey-bd)' : '#D93025';
+    btn.style.color = isOpen ? 'var(--grey-txt)' : '#D93025';
+    if (!isOpen) loadTeamComments();
+  }
+
+  function loadTeamComments() {
+    // Charge les commentaires depuis les pins (localStorage partagé)
+    // Plus tard : remplacé par Firebase
+    const pins = JSON.parse(localStorage.getItem('wf_comments_telecollecte') || '[]');
+    const list = document.getElementById('team-comments-list');
+    const count = document.getElementById('team-comments-count');
+
+    // Filtrer uniquement les commentaires de l'équipe (pas Sébastien)
+    const teamComments = [];
+    pins.forEach(p => {
+      // Commentaire principal
+      if (p.author !== 'Sébastien') teamComments.push({author:p.author, text:p.text, date:p.date, tab:p.tab||'tpe'});
+      // Réponses
+      (p.replies||[]).forEach(r => {
+        if (r.author !== 'Sébastien') teamComments.push({author:r.author, text:r.text, date:r.date, tab:p.tab||'tpe'});
+      });
+    });
+
+    // Mettre à jour le badge
+    if (teamComments.length > 0) {
+      count.style.display = 'inline-block';
+      count.textContent = teamComments.length;
+    } else {
+      count.style.display = 'none';
+    }
+
+    if (!teamComments.length) {
+      list.innerHTML = '<div style="text-align:center;color:var(--grey-txt);font-size:12px;padding:12px 0;font-style:italic;">Aucun commentaire de l\'équipe pour l\'instant</div>';
+      return;
+    }
+
+    const tabLabels = { tpe:'Télécollecte', ant:'Date antérieure', reg:'Régularisation' };
+    list.innerHTML = teamComments.map(c => `
+      <div style="background:white;border:1px solid #fcc;border-left:3px solid #D93025;border-radius:8px;padding:10px 12px;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+          <span style="font-size:11px;font-weight:700;color:#D93025;">${c.author}</span>
+          <span style="font-size:10px;color:var(--grey-txt);">${c.date}</span>
+          <span style="font-size:10px;background:#f0f0f0;padding:1px 6px;border-radius:10px;color:var(--grey-txt);">${tabLabels[c.tab]||c.tab}</span>
+        </div>
+        <div style="font-size:13px;color:var(--navy);line-height:1.5;">${c.text}</div>
+      </div>
+    `).join('');
+  }
+
+  // Initialiser le badge au chargement
+  setTimeout(() => {
+    const pins = JSON.parse(localStorage.getItem('wf_comments_telecollecte') || '[]');
+    const count = pins.reduce((n, p) => {
+      const main = p.author !== 'Sébastien' ? 1 : 0;
+      const replies = (p.replies||[]).filter(r => r.author !== 'Sébastien').length;
+      return n + main + replies;
+    }, 0);
+    const badge = document.getElementById('team-comments-count');
+    if (badge && count > 0) { badge.style.display = 'inline-block'; badge.textContent = count; }
+  }, 500);
+
+  function toggleDone(id) {
+    const b = briefs.find(b => b.id === id);
+    if (b) { b.done = !b.done; localStorage.setItem(BRIEFS_KEY, JSON.stringify(briefs)); renderBriefs(); }
+  }
+
+  function clearBriefs() {
+    if (!confirm('Effacer tous les retours ?')) return;
+    briefs = [];
+    localStorage.setItem(BRIEFS_KEY, JSON.stringify(briefs));
+    renderBriefs();
+  }
+
+  function buildPrompt() {
+    const open = briefs.filter(b => !b.done);
+    if (!open.length) return null;
+
+    const byType = {};
+    open.forEach(b => {
+      if (!byType[b.type]) byType[b.type] = [];
+      byType[b.type].push(b);
+    });
+
+    let prompt = `Voici les retours de l'équipe sur le wireframe Télécollecte. Merci de les traiter dans l'ordre de priorité suivant :\n\n`;
+
+    const order = ['rg','retour','idee'];
+    order.forEach(type => {
+      if (!byType[type]) return;
+      prompt += `── ${TYPE_LABELS[type]} ──\n`;
+      byType[type].forEach((b,i) => {
+        prompt += `${i+1}. [${b.author} · ${b.date}] ${b.text}\n`;
+      });
+      prompt += '\n';
+    });
+
+    prompt += `Pour chaque retour : applique la modification directement dans le fichier wireframe-telecollecte-cas1-V3.html. Confirme quand c'est fait.`;
+    return prompt;
+  }
+
+  async function sendToClaude() {
+    const prompt = buildPrompt();
+    if (!prompt) { alert('Aucun retour à envoyer.'); return; }
+    const btn = document.getElementById('copy-btn');
+
+    try {
+      // Envoyer au serveur local qui colle dans Claude
+      const res = await fetch('http://localhost:8765/send-to-claude', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({prompt})
+      });
+      if (res.ok) {
+        btn.textContent = '✓ Envoyé !';
+        // Marquer tous comme traités
+        briefs.forEach(b => { if (!b.done) b.done = true; });
+        localStorage.setItem(BRIEFS_KEY, JSON.stringify(briefs));
+        renderBriefs();
+        setTimeout(() => { btn.textContent = '⚡ Envoyer à Claude'; }, 2000);
+      }
+    } catch {
+      // Fallback : copie dans le presse-papier
+      await navigator.clipboard.writeText(prompt);
+      btn.textContent = '📋 Copié — colle ici !';
+      setTimeout(() => { btn.textContent = '⚡ Envoyer à Claude'; }, 3000);
+    }
+  }
+
+  function renderBriefs() {
+    const list = document.getElementById('briefs-list');
+    if (!briefs.length) {
+      list.innerHTML = '<div style="text-align:center;color:var(--grey-txt);font-size:13px;padding:32px 0;">Aucun retour pour l\'instant</div>';
+      return;
+    }
+    list.innerHTML = briefs.map(b => `
+      <div style="background:${b.done ? '#F9F9F9' : 'var(--white)'};border:1px solid ${b.done ? 'var(--grey-bd)' : TYPE_COLORS[b.type]+'33'};border-left:3px solid ${b.done ? 'var(--grey-bd)' : TYPE_COLORS[b.type]};border-radius:10px;padding:12px 14px;opacity:${b.done ? 0.6 : 1};">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span style="font-size:11px;font-weight:700;color:${TYPE_COLORS[b.type]};background:${TYPE_COLORS[b.type]}18;padding:2px 8px;border-radius:20px;">${TYPE_LABELS[b.type]}</span>
+            <span style="font-size:11px;font-weight:700;color:var(--navy);">${b.author}</span>
+            <span style="font-size:10px;color:var(--grey-txt);">${b.date} ${b.time}</span>
+          </div>
+          <div style="display:flex;gap:6px;">
+            <button onclick="toggleDone(${b.id})" title="${b.done ? 'Réouvrir' : 'Marquer traité'}" style="background:none;border:1px solid var(--grey-bd);border-radius:6px;padding:2px 8px;font-size:12px;cursor:pointer;">${b.done ? '↩' : '✓'}</button>
+            <button onclick="deleteBrief(${b.id})" style="background:none;border:none;color:var(--grey-txt);font-size:16px;cursor:pointer;line-height:1;padding:0 2px;">×</button>
+          </div>
+        </div>
+        <div style="font-size:13px;color:var(--navy);line-height:1.5;${b.done ? 'text-decoration:line-through' : ''}">${b.text}</div>
+      </div>
+    `).join('');
+  }
+
+  // Soumettre avec Cmd+Enter
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && (e.metaKey || e.ctrlKey) && document.getElementById('briefs-panel').style.display !== 'none') addBrief();
+  });
+
   function toggleSidebar() {
     const sb  = document.getElementById('sidebar');
     const btn = document.getElementById('toggle-btn');
@@ -1241,7 +1538,39 @@
 
   // ══ Système de commentaires ══════════════════════════════════
   const STORAGE_KEY = 'wf_comments_telecollecte';
+  const FB_URL = 'https://studio-jailoop-default-rtdb.firebaseio.com/comments';
   let comments = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+
+  // Nom de l'utilisateur connecté (passé via URL ?user=)
+  const CURRENT_USER = decodeURIComponent(new URLSearchParams(window.location.search).get('user') || 'Sébastien');
+
+  // ── Firebase sync ──
+  async function fbSave() {
+    try {
+      await fetch(FB_URL + '.json', {
+        method: 'PUT',
+        body: JSON.stringify(comments)
+      });
+    } catch(e) { /* offline fallback */ }
+  }
+
+  async function fbLoad() {
+    try {
+      const res = await fetch(FB_URL + '.json');
+      const data = await res.json();
+      if (data && Array.isArray(data)) {
+        comments = data;
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(comments)); fbSave();
+        refreshPins();
+        updateAuthorFilter();
+      }
+    } catch(e) { /* offline fallback */ }
+  }
+
+  // Poll toutes les 5s pour voir les nouveaux commentaires
+  setInterval(fbLoad, 5000);
+  // Chargement initial depuis Firebase
+  fbLoad();
   let commentMode = false;
   let pendingPin = null;
   let currentTab = 'tpe'; // tab active au moment du commentaire
@@ -1264,10 +1593,11 @@
   }
 
   function refreshPins() {
-    // Supprimer tous les pins du DOM et recréer uniquement ceux du tab actif
+    const filterAuthor = document.getElementById('author-filter')?.value || '';
     document.querySelectorAll('.comment-pin').forEach(p => p.remove());
     comments
       .filter(c => (c.tab || 'tpe') === currentTab)
+      .filter(c => !filterAuthor || c.author === filterAuthor)
       .forEach(c => renderPin(c));
   }
 
@@ -1298,18 +1628,18 @@
   function saveComment() {
     const text = document.getElementById('cp-text').value.trim();
     if (!text || !pendingPin) return;
-    const author = document.getElementById('cp-author').value;
+    const author = CURRENT_USER;
     const comment = {
       id: Date.now(),
       x: pendingPin.x,
       y: pendingPin.y,
-      author,
+      author: CURRENT_USER,
       text,
       date: new Date().toLocaleDateString('fr-FR'),
       tab: currentTab
     };
     comments.push(comment);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(comments));
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(comments)); fbSave();
     closePopover();
     renderPin(comment);
     renderComments();
@@ -1351,7 +1681,7 @@
       if (idx !== -1) {
         comments[idx].x = parseFloat(pin.style.left).toFixed(0);
         comments[idx].y = parseFloat(pin.style.top).toFixed(0);
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(comments));
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(comments)); fbSave();
       }
     });
 
@@ -1415,12 +1745,12 @@
   function saveReply() {
     const text = document.getElementById('reply-text').value.trim();
     if (!text) return;
-    const author = document.getElementById('reply-author').value;
+    const author = CURRENT_USER;
     const c = comments.find(cc => cc.id === currentThreadId);
     if (!c) return;
     if (!c.replies) c.replies = [];
     c.replies.push({ author, text, date: new Date().toLocaleDateString('fr-FR') });
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(comments));
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(comments)); fbSave();
     renderThreadMessages(c);
     document.getElementById('reply-text').value = '';
     // Mettre une pastille sur le pin pour indiquer les réponses
@@ -1438,7 +1768,7 @@
     closeThread();
     // Réutiliser deleteComment
     comments = comments.filter(c => c.id !== currentThreadId);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(comments));
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(comments)); fbSave();
     const pin = document.getElementById('pin-' + currentThreadId);
     if (pin) pin.remove();
     currentThreadId = null;
@@ -1450,7 +1780,7 @@
   function deleteComment(e, id) {
     e.stopPropagation();
     comments = comments.filter(c => c.id !== id);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(comments));
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(comments)); fbSave();
     const pin = document.getElementById('pin-' + id);
     if (pin) pin.remove();
     renderComments();
@@ -1466,6 +1796,18 @@
     const authors = [...new Set(comments.map(c => c.author))];
     sel.innerHTML = '<option value="">Tous les auteurs</option>' +
       authors.map(a => `<option value="${a}" ${a === current ? 'selected' : ''}>${a} (${comments.filter(c=>c.author===a).length})</option>`).join('');
+  }
+
+  // Afficher le nom de l'utilisateur dans les popovers
+  const cpUser = document.getElementById('cp-username');
+  const replyUser = document.getElementById('reply-username');
+  if (cpUser) cpUser.textContent = CURRENT_USER;
+  if (replyUser) replyUser.textContent = `Répondre en tant que ${CURRENT_USER}`;
+
+  // Masquer le bouton Retours PO si pas Sébastien
+  if (CURRENT_USER !== 'Sébastien') {
+    const btn = document.getElementById('briefs-nav-btn');
+    if (btn) btn.style.display = 'none';
   }
 
   // Charger les commentaires du tab actif au démarrage
