@@ -240,7 +240,7 @@
     <div class="portal-title">Wireframes — Télécollecte</div>
     <div class="portal-sub">Saisie des télécollectes TPE · Club Med Odyssey</div>
     <div class="cards-grid">
-      <a class="wf-card" href="wireframe-telecollecte-cas1-V3.html" target="_blank">
+      <a class="wf-card" id="wf-link" href="#" target="_blank" onclick="openWireframe(event)">
         <div class="card-tag">V3 — En cours</div>
         <div class="card-title">Saisie des télécollectes</div>
         <div class="card-desc">Version de travail courante — Jour J, Date antérieure, Régularisation</div>
@@ -253,10 +253,12 @@
 <script>
   // ── Comptes autorisés ──
   const USERS = [
-    { id: 'seb',   password: 'ody26', name: 'Sébastien' },
-    { id: 'julie', password: 'odyssey2026', name: 'Julie' },
-    { id: 'nelly', password: 'odyssey2026', name: 'Nelly' },
-    { id: 'eric',  password: 'odyssey2026', name: 'Éric' },
+    { id: 'seb',     password: 'ody26',     name: 'Sébastien' },
+    { id: 'julie',   password: 'Ody26',     name: 'Julie' },
+    { id: 'nelly',   password: 'Ody26',     name: 'Nelly' },
+    { id: 'jerome',  password: 'Ody26',     name: 'Jérôme' },
+    { id: 'kirsty',  password: 'Ody26',     name: 'Kirsty' },
+    { id: 'laurent', password: 'Ody26',     name: 'Laurent' },
   ];
 
   // Vérifier session existante
@@ -287,6 +289,13 @@
     portal.style.display = 'flex';
     document.getElementById('user-name').textContent = user.name;
     document.body.style.alignItems = 'flex-start';
+  }
+
+  function openWireframe(e) {
+    e.preventDefault();
+    const user = JSON.parse(sessionStorage.getItem('wf_user') || '{}');
+    const name = encodeURIComponent(user.name || '');
+    window.open(`wireframe-telecollecte-cas1-V3.html?user=${name}`, '_blank');
   }
 
   function doLogout() {
