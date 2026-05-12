@@ -651,41 +651,41 @@
     <button onclick="closeBriefs()" style="background:none;border:none;color:rgba(255,255,255,0.6);font-size:22px;cursor:pointer;line-height:1;">×</button>
   </div>
 
-  <!-- Formulaire ajout retour -->
-  <div style="padding:20px 24px;border-bottom:1px solid var(--grey-bd);flex-shrink:0;">
-    <div style="display:flex;gap:8px;flex-wrap:nowrap;margin-bottom:12px;align-items:center;white-space:nowrap;overflow-x:auto;">
-      <label style="display:flex;align-items:center;gap:5px;cursor:pointer;font-size:13px;font-weight:600;padding:6px 12px;border-radius:20px;border:1.5px solid var(--grey-bd);color:var(--grey-txt);transition:all .15s;" id="radio-retour">
-        <input type="radio" name="brief-type" value="retour" checked style="display:none;" onchange="updateRadios()"> 💬 Retour
-      </label>
-      <label style="display:flex;align-items:center;gap:5px;cursor:pointer;font-size:13px;font-weight:600;padding:6px 12px;border-radius:20px;border:1.5px solid var(--grey-bd);color:var(--grey-txt);transition:all .15s;" id="radio-idee">
-        <input type="radio" name="brief-type" value="idee" style="display:none;" onchange="updateRadios()"> 💡 Idée
-      </label>
-      <label style="display:flex;align-items:center;gap:5px;cursor:pointer;font-size:13px;font-weight:600;padding:6px 12px;border-radius:20px;border:1.5px solid var(--grey-bd);color:var(--grey-txt);transition:all .15s;" id="radio-rg">
-        <input type="radio" name="brief-type" value="rg" style="display:none;" onchange="updateRadios()"> 📋 Règle de gestion
-      </label>
+  <!-- Ligne 1 : pills Claude + Commentaires équipe -->
+  <div style="display:flex;gap:10px;padding:14px 24px 12px;flex-shrink:0;border-bottom:1px solid var(--grey-bg);">
+    <button onclick="setBriefTab('claude')" id="btab-claude"
+      style="display:flex;align-items:center;gap:6px;background:none;border:1.5px solid var(--grey-bd);border-radius:20px;padding:6px 16px;font-size:13px;font-weight:600;color:var(--grey-txt);cursor:pointer;font-family:inherit;white-space:nowrap;transition:all .15s;">
+      ⚡ Claude
+      <span id="cnt-claude" style="display:none;background:#D97706;color:white;border-radius:100px;font-size:10px;font-weight:700;padding:1px 6px;"></span>
+    </button>
+    <button onclick="setBriefTab('team')" id="btab-team"
+      style="display:flex;align-items:center;gap:6px;background:none;border:1.5px solid var(--grey-bd);border-radius:20px;padding:6px 16px;font-size:13px;font-weight:600;color:var(--grey-txt);cursor:pointer;font-family:inherit;white-space:nowrap;transition:all .15s;">
+      💬 Commentaires équipe
+      <span id="team-comments-count" style="display:none;background:#D93025;color:white;border-radius:100px;font-size:10px;font-weight:700;padding:1px 6px;"></span>
+    </button>
+  </div>
 
-      <!-- Séparateur -->
-      <div style="width:1px;height:28px;background:var(--grey-bd);margin:0 4px;"></div>
+  <!-- Ligne 2 : tabs Retour / Idée / Règle de gestion -->
+  <div style="display:flex;gap:0;padding:0 24px;flex-shrink:0;border-bottom:1px solid var(--grey-bd);">
+    <button onclick="setBriefTab('retour')" id="btab-retour"
+      style="background:none;border:none;border-bottom:2.5px solid var(--navy);padding:11px 16px;font-size:13px;font-weight:700;color:var(--navy);cursor:pointer;font-family:inherit;white-space:nowrap;transition:all .15s;">
+      💬 Retour
+      <span id="cnt-retour" style="display:none;background:var(--navy);color:white;border-radius:100px;font-size:10px;font-weight:700;padding:1px 6px;margin-left:4px;"></span>
+    </button>
+    <button onclick="setBriefTab('idee')" id="btab-idee"
+      style="background:none;border:none;border-bottom:2.5px solid transparent;padding:11px 16px;font-size:13px;font-weight:500;color:var(--grey-txt);cursor:pointer;font-family:inherit;white-space:nowrap;transition:all .15s;">
+      💡 Idée
+      <span id="cnt-idee" style="display:none;background:#D97706;color:white;border-radius:100px;font-size:10px;font-weight:700;padding:1px 6px;margin-left:4px;"></span>
+    </button>
+    <button onclick="setBriefTab('rg')" id="btab-rg"
+      style="background:none;border:none;border-bottom:2.5px solid transparent;padding:11px 16px;font-size:13px;font-weight:500;color:var(--grey-txt);cursor:pointer;font-family:inherit;white-space:nowrap;transition:all .15s;">
+      📋 Règle de gestion
+      <span id="cnt-rg" style="display:none;background:#7C3AED;color:white;border-radius:100px;font-size:10px;font-weight:700;padding:1px 6px;margin-left:4px;"></span>
+    </button>
+  </div>
 
-      <!-- Bulle commentaires équipe -->
-      <button onclick="toggleTeamComments()" id="team-comments-btn"
-        style="position:relative;background:none;border:1.5px solid var(--grey-bd);border-radius:20px;padding:6px 12px;font-size:13px;font-weight:600;color:var(--grey-txt);cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:6px;transition:all .15s;">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-        Commentaires équipe
-        <span id="team-comments-count" style="display:none;background:#D93025;color:white;border-radius:100px;font-size:10px;font-weight:700;padding:1px 6px;min-width:18px;text-align:center;">0</span>
-      </button>
-    </div>
-
-    <!-- Section commentaires équipe (masquée par défaut) -->
-    <div id="team-comments-section" style="display:none;border:1.5px solid #D93025;border-radius:10px;padding:14px;margin-bottom:12px;background:#fff8f8;">
-      <div style="font-size:12px;font-weight:700;color:#D93025;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;">
-        <span>💬 Commentaires de l'équipe</span>
-        <span style="font-size:10px;color:var(--grey-txt);font-weight:400;">Partagés via le wireframe</span>
-      </div>
-      <div id="team-comments-list" style="display:flex;flex-direction:column;gap:8px;max-height:180px;overflow-y:auto;">
-        <div style="text-align:center;color:var(--grey-txt);font-size:12px;padding:12px 0;font-style:italic;">Aucun commentaire de l'équipe pour l'instant</div>
-      </div>
-    </div>
+  <!-- Zone saisie (masquée sur onglet équipe) -->
+  <div id="brief-input-zone" style="padding:16px 24px;border-bottom:1px solid var(--grey-bd);flex-shrink:0;">
     <textarea id="brief-text" placeholder="Décris le retour..." style="width:100%;height:80px;border:1px solid var(--grey-bd);border-radius:8px;padding:10px;font-size:14px;font-family:inherit;resize:none;outline:none;color:var(--navy);"></textarea>
     <div style="display:flex;justify-content:flex-end;margin-top:8px;">
       <button onclick="addBrief()" style="background:var(--navy);color:var(--white);border:none;border-radius:8px;padding:8px 20px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;">Ajouter</button>
@@ -695,9 +695,29 @@
   <!-- Liste des retours -->
   <div id="briefs-list" style="flex:1;overflow-y:auto;padding:16px 24px;display:flex;flex-direction:column;gap:10px;"></div>
 
+  <!-- Liste commentaires équipe (cachée par défaut) -->
+  <div id="team-comments-list-panel" style="display:none;flex:1;overflow-y:auto;padding:16px 24px;flex-direction:column;gap:8px;"></div>
+
+  <!-- Panneau Claude -->
+  <div id="claude-panel" style="display:none;flex:1;flex-direction:column;overflow:hidden;">
+    <!-- Sélection messages -->
+    <div id="claude-selection" style="flex:0 0 auto;overflow-y:auto;max-height:220px;padding:16px 24px 0;display:flex;flex-direction:column;gap:8px;">
+      <div style="font-size:11px;font-weight:700;color:var(--grey-txt);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;">Messages sélectionnés pour le prompt</div>
+      <div id="claude-items" style="display:flex;flex-direction:column;gap:6px;"></div>
+    </div>
+    <!-- Prompt généré -->
+    <div style="flex:1;padding:16px 24px;display:flex;flex-direction:column;gap:10px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;">
+        <div style="font-size:11px;font-weight:700;color:var(--grey-txt);text-transform:uppercase;letter-spacing:.5px;">Prompt généré</div>
+        <button onclick="generatePrompt()" style="background:var(--navy);color:white;border:none;border-radius:8px;padding:6px 16px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;">↻ Générer le prompt</button>
+      </div>
+      <textarea id="claude-prompt-text" placeholder="Cliquez sur 'Générer le prompt' pour construire automatiquement le prompt..." style="flex:1;width:100%;min-height:180px;border:1px solid var(--grey-bd);border-radius:8px;padding:12px;font-size:13px;font-family:inherit;resize:none;outline:none;color:var(--navy);line-height:1.6;"></textarea>
+    </div>
+  </div>
+
   <!-- Footer -->
   <div style="padding:16px 24px;border-top:1px solid var(--grey-bd);flex-shrink:0;display:flex;gap:8px;">
-    <button onclick="clearBriefs()" style="flex:1;height:40px;border:1px solid var(--grey-bd);border-radius:8px;font-size:13px;font-weight:600;color:var(--grey-txt);background:var(--white);cursor:pointer;font-family:inherit;">Tout effacer</button>
+    <button onclick="clearBriefs()" id="footer-clear-btn" style="flex:1;height:40px;border:1px solid var(--grey-bd);border-radius:8px;font-size:13px;font-weight:600;color:var(--grey-txt);background:var(--white);cursor:pointer;font-family:inherit;">Tout effacer</button>
     <button onclick="sendToClaude()" id="copy-btn" style="flex:2;height:40px;background:var(--yellow);color:#000;border:none;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;">⚡ Envoyer à Claude</button>
   </div>
 </div>
@@ -1186,6 +1206,21 @@
     <span>Nouveau commentaire</span>
     <span id="cp-username" style="font-size:11px;color:var(--grey-txt);font-weight:400;"></span>
   </div>
+  <!-- Type de commentaire — visible pour les POs -->
+  <div id="cp-type-zone" style="display:none;margin-bottom:10px;">
+    <div style="font-size:11px;color:var(--grey-txt);margin-bottom:6px;font-weight:600;text-transform:uppercase;letter-spacing:.4px;">Type</div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;">
+      <label id="cpt-retour" style="display:flex;align-items:center;gap:4px;cursor:pointer;font-size:12px;font-weight:600;padding:4px 10px;border-radius:20px;border:1.5px solid #1E2643;color:#1E2643;background:#1E264310;transition:all .15s;">
+        <input type="radio" name="cp-type" value="retour" checked style="display:none;" onchange="updateCpType()"> 💬 Retour
+      </label>
+      <label id="cpt-idee" style="display:flex;align-items:center;gap:4px;cursor:pointer;font-size:12px;font-weight:600;padding:4px 10px;border-radius:20px;border:1.5px solid var(--grey-bd);color:var(--grey-txt);transition:all .15s;">
+        <input type="radio" name="cp-type" value="idee" style="display:none;" onchange="updateCpType()"> 💡 Idée
+      </label>
+      <label id="cpt-rg" style="display:flex;align-items:center;gap:4px;cursor:pointer;font-size:12px;font-weight:600;padding:4px 10px;border-radius:20px;border:1.5px solid var(--grey-bd);color:var(--grey-txt);transition:all .15s;">
+        <input type="radio" name="cp-type" value="rg" style="display:none;" onchange="updateCpType()"> 📋 Règle de gestion
+      </label>
+    </div>
+  </div>
   <textarea id="cp-text" placeholder="Écrire un commentaire..."></textarea>
   <div class="cp-actions">
     <button class="cp-cancel" onclick="closePopover()">Annuler</button>
@@ -1223,43 +1258,250 @@
   const BRIEFS_KEY = 'wf_briefs_telecollecte';
   let briefs = JSON.parse(localStorage.getItem(BRIEFS_KEY) || '[]');
 
-  const TYPE_LABELS = { retour:'💬 Retour', idee:'💡 Idée', rg:'📋 Règle de gestion' };
-  const TYPE_COLORS = { retour:'#1E2643', idee:'#D97706', rg:'#7C3AED' };
+  const TYPE_LABELS = { retour:'💬 Retour', idee:'💡 Idée', rg:'📋 Règle de gestion', team:'💬 Équipe' };
+  const TYPE_COLORS = { retour:'#1E2643', idee:'#D97706', rg:'#7C3AED', team:'#D93025' };
+  let currentBriefTab = 'retour';
+  // claudeSelection : Set des IDs (briefs + teamComment keys)
+  let claudeSelection = new Set();
+
+  // SVG éclair Claude : éteint / allumé
+  const LIGHTNING_OFF = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>`;
+  const LIGHTNING_ON  = `<svg width="14" height="14" viewBox="0 0 24 24" fill="#D97706" stroke="#D97706" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>`;
 
   function openBriefs() {
     document.getElementById('briefs-overlay').style.display = 'block';
     document.getElementById('briefs-panel').style.display = 'flex';
-    renderBriefs();
+    setBriefTab(currentBriefTab);
   }
   function closeBriefs() {
     document.getElementById('briefs-overlay').style.display = 'none';
     document.getElementById('briefs-panel').style.display = 'none';
   }
 
-  const TYPE_ACTIVE_COLORS = { retour:'#1E2643', idee:'#D97706', rg:'#7C3AED' };
-
-  function updateRadios() {
-    document.querySelectorAll('[id^="radio-"]').forEach(lbl => {
-      const val = lbl.id.replace('radio-','');
-      const radio = lbl.querySelector('input');
-      if (radio.checked) {
-        lbl.style.background = TYPE_ACTIVE_COLORS[val] + '18';
-        lbl.style.borderColor = TYPE_ACTIVE_COLORS[val];
-        lbl.style.color = TYPE_ACTIVE_COLORS[val];
-      } else {
-        lbl.style.background = '';
-        lbl.style.borderColor = 'var(--grey-bd)';
-        lbl.style.color = 'var(--grey-txt)';
-      }
-    });
+  function toggleReclassify(domId) {
+    const el = document.getElementById('reclassify-' + domId);
+    if (!el) return;
+    el.style.display = el.style.display === 'none' ? 'block' : 'none';
   }
-  // Init au chargement
-  document.addEventListener('DOMContentLoaded', updateRadios);
+
+  function reclassifyBrief(id, newType) {
+    const b = briefs.find(b => b.id === id);
+    if (!b) return;
+    b.type = newType;
+    localStorage.setItem(BRIEFS_KEY, JSON.stringify(briefs));
+    // Fermer la zone reclassification
+    const el = document.getElementById('reclassify-brief-' + id);
+    if (el) el.style.display = 'none';
+    renderBriefs();
+    updateAllCounts();
+  }
+
+  function toggleClaude(key) {
+    if (claudeSelection.has(key)) claudeSelection.delete(key);
+    else claudeSelection.add(key);
+    updateClaudeCount();
+    if (currentBriefTab === 'retour' || currentBriefTab === 'idee' || currentBriefTab === 'rg') renderBriefs();
+    if (currentBriefTab === 'team') loadTeamComments();
+    if (currentBriefTab === 'claude') { renderClaudePanel(); generatePrompt(); }
+  }
+
+  function updateClaudeCount() {
+    const cnt = document.getElementById('cnt-claude');
+    if (!cnt) return;
+    cnt.style.display = claudeSelection.size > 0 ? 'inline-block' : 'none';
+    cnt.textContent = claudeSelection.size;
+  }
+
+  // Requalifier un commentaire équipe → le déplacer vers un type
+  function requalifyComment(key, newType) {
+    // key = "pin-ID" ou "pin-ID-reply-RI"
+    const parts = key.split('-');
+    const pinId = parseInt(parts[1]);
+    const pin = comments.find(c => c.id === pinId);
+    if (!pin) return;
+
+    // Créer un brief à partir du commentaire équipe
+    const isReply = parts.length > 2;
+    const source = isReply ? pin.replies[parseInt(parts[3])] : pin;
+    const existing = briefs.find(b => b.sourceKey === key);
+    if (existing) {
+      existing.type = newType;
+    } else {
+      briefs.unshift({
+        id: Date.now() + Math.random(),
+        sourceKey: key,
+        author: source.author,
+        type: newType,
+        text: source.text,
+        date: source.date || new Date().toLocaleDateString('fr-FR'),
+        time: source.time || '',
+        done: false,
+        source: 'team'
+      });
+    }
+    // Marquer comme requalifié dans le commentaire original → disparaît de "Commentaires équipe"
+    if (isReply) {
+      pin.replies[parseInt(parts[3])].qualifiedType = newType;
+      pin.replies[parseInt(parts[3])].requalified = true;
+    } else {
+      pin.qualifiedType = newType;
+      pin.requalified = true;
+    }
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(comments)); fbSave();
+    localStorage.setItem(BRIEFS_KEY, JSON.stringify(briefs));
+    loadTeamComments();
+    renderBriefs();
+    updateAllCounts();
+  }
+
+  function updateAllCounts() {
+    ['retour','idee','rg'].forEach(t => {
+      const cnt = document.getElementById('cnt-' + t);
+      const n = briefs.filter(b => b.type === t && !b.done).length;
+      if (cnt) { cnt.style.display = n > 0 ? 'inline-block' : 'none'; cnt.textContent = n; }
+    });
+    updateClaudeCount();
+  }
+
+  function renderClaudePanel() {
+    const items = document.getElementById('claude-items');
+    // Collecter tous les éléments sélectionnés (briefs + teamComments)
+    const selectedBriefs = briefs.filter(b => claudeSelection.has(String(b.id)));
+    const pins = JSON.parse(localStorage.getItem('wf_comments_telecollecte') || '[]');
+    const selectedTeam = [];
+    pins.forEach(p => {
+      if (p.author !== 'Sébastien' && claudeSelection.has('pin-'+p.id))
+        selectedTeam.push({key:'pin-'+p.id, author:p.author, text:p.text, date:p.date, type: p.qualifiedType || 'team'});
+      (p.replies||[]).forEach((r,ri) => {
+        if (r.author !== 'Sébastien' && claudeSelection.has('pin-'+p.id+'-reply-'+ri))
+          selectedTeam.push({key:'pin-'+p.id+'-reply-'+ri, author:r.author, text:r.text, date:r.date, type: r.qualifiedType || 'team'});
+      });
+    });
+    const all = [...selectedBriefs.map(b => ({...b, key:String(b.id)})), ...selectedTeam];
+
+    if (!all.length) {
+      items.innerHTML = `<div style="font-size:12px;color:var(--grey-txt);font-style:italic;padding:8px 0;">Aucun message — cliquez sur ⚡ pour ajouter des éléments.</div>`;
+      return;
+    }
+    items.innerHTML = all.map(b => `
+      <div style="display:flex;align-items:flex-start;gap:10px;background:#FFFBEA;border:1px solid #F5C518;border-radius:8px;padding:8px 12px;">
+        <span style="font-size:10px;font-weight:700;color:${TYPE_COLORS[b.type]||'#555'};background:${TYPE_COLORS[b.type]||'#555'}18;padding:2px 7px;border-radius:20px;white-space:nowrap;margin-top:1px;">${TYPE_LABELS[b.type]||b.type}</span>
+        <div style="flex:1;">
+          <span style="font-size:10px;font-weight:700;color:var(--navy);">${b.author}</span>
+          <span style="font-size:10px;color:var(--grey-txt);margin-left:6px;">${b.date||''}</span>
+          <div style="font-size:13px;color:var(--navy);line-height:1.4;margin-top:2px;">${b.text}</div>
+        </div>
+        <button onclick="toggleClaude('${b.key}')" style="background:none;border:none;color:var(--grey-txt);font-size:14px;cursor:pointer;line-height:1;flex-shrink:0;padding:0 2px;" title="Retirer">×</button>
+      </div>
+    `).join('');
+  }
+
+  function generatePrompt() {
+    const selectedBriefs = briefs.filter(b => claudeSelection.has(String(b.id)));
+    const pins = JSON.parse(localStorage.getItem('wf_comments_telecollecte') || '[]');
+    const selectedTeam = [];
+    pins.forEach(p => {
+      if (p.author !== 'Sébastien' && claudeSelection.has('pin-'+p.id))
+        selectedTeam.push({author:p.author, text:p.text, type: p.qualifiedType||'team'});
+      (p.replies||[]).forEach((r,ri) => {
+        if (r.author !== 'Sébastien' && claudeSelection.has('pin-'+p.id+'-reply-'+ri))
+          selectedTeam.push({author:r.author, text:r.text, type: r.qualifiedType||'team'});
+      });
+    });
+    const all = [...selectedBriefs, ...selectedTeam];
+
+    if (!all.length) {
+      document.getElementById('claude-prompt-text').value = 'Aucun message sélectionné.';
+      return;
+    }
+
+    const byType = {};
+    all.forEach(b => { if (!byType[b.type]) byType[b.type] = []; byType[b.type].push(b); });
+
+    let p = `Tu es un expert Product Design, UX/UI et Product Management.\n\n`;
+    p += `Contexte :\nJe travaille sur une interface permettant de centraliser les retours PO, les idées, les règles de gestion et les commentaires équipe autour d'un produit digital (wireframe Télécollecte Odyssey — Club Med).\n\n`;
+    p += `Objectif :\nAnalyse les éléments ci-dessous et transforme-les en recommandations claires, priorisées et actionnables.\n\n`;
+    p += `Contraintes :\n- Ne pas modifier inutilement le design existant\n- Respecter la logique produit actuelle\n- Identifier les impacts UX, UI, fonctionnels et règles de gestion\n- Signaler les ambiguïtés ou points à arbitrer\n- Proposer une solution professionnelle, claire et réaliste\n\n`;
+    p += `Éléments à analyser :\n\n`;
+
+    const sections = [
+      { key:'retour', label:'## Retours' },
+      { key:'idee',   label:'## Idées' },
+      { key:'rg',     label:'## Règles de gestion' },
+      { key:'team',   label:'## Commentaires équipe' },
+    ];
+    sections.forEach(s => {
+      if (!byType[s.key]?.length) return;
+      p += `${s.label}\n`;
+      byType[s.key].forEach((b,i) => { p += `${i+1}. [${b.author}${b.date?' · '+b.date:''}] ${b.text}\n`; });
+      p += '\n';
+    });
+
+    p += `Livrable attendu :\n1. Synthèse des points importants\n2. Problèmes identifiés\n3. Recommandations UX/UI\n4. Règles de gestion à clarifier ou appliquer\n5. Proposition de comportement cible\n6. Points d'arbitrage éventuels\n\n`;
+    p += `─────────────────────────────────────\n`;
+    p += `INSTRUCTIONS D'APPLICATION\n\n`;
+    p += `Fichier cible : /Users/sebastienkeller/Desktop/Claude Yaki/wireframe-telecollecte-cas1-V3.html\n\n`;
+    p += `Pour chaque élément ci-dessus :\n`;
+    p += `- Applique la modification directement dans le fichier HTML\n`;
+    p += `- Respecte le Design System Trident Ψ 2.0 et Odyssey 2.0\n`;
+    p += `- Si une règle de gestion impacte le comportement d'un composant, intègre-la dans la logique JS\n`;
+    p += `- Si une idée ou un retour impacte le layout, modifie le CSS/HTML en cohérence avec la DA existante\n`;
+    p += `- Confirme chaque modification appliquée\n`;
+    p += `- Si un point est ambigu ou nécessite un arbitrage, pose la question avant d'appliquer`;
+    document.getElementById('claude-prompt-text').value = p;
+  }
+
+  function setBriefTab(tab) {
+    currentBriefTab = tab;
+    // Styles pills ligne 1 (Claude + équipe)
+    ['claude','team'].forEach(t => {
+      const btn = document.getElementById('btab-' + t);
+      if (!btn) return;
+      const isActive = t === tab;
+      const color = t === 'claude' ? '#D97706' : '#D93025';
+      btn.style.background = isActive ? color + '18' : 'none';
+      btn.style.borderColor = isActive ? color : 'var(--grey-bd)';
+      btn.style.color = isActive ? color : 'var(--grey-txt)';
+      btn.style.fontWeight = isActive ? '700' : '600';
+    });
+    // Styles tabs ligne 2 (Retour / Idée / RG)
+    ['retour','idee','rg'].forEach(t => {
+      const btn = document.getElementById('btab-' + t);
+      if (!btn) return;
+      const isActive = t === tab;
+      const color = t === 'retour' ? 'var(--navy)' : t === 'idee' ? '#D97706' : '#7C3AED';
+      btn.style.borderBottom = isActive ? `2.5px solid ${color}` : '2.5px solid transparent';
+      btn.style.color = isActive ? color : 'var(--grey-txt)';
+      btn.style.fontWeight = isActive ? '700' : '500';
+    });
+    // Afficher/masquer zone saisie
+    document.getElementById('brief-input-zone').style.display = tab === 'team' ? 'none' : 'block';
+    // Placeholder selon onglet
+    const placeholders = { retour:'Décris le retour...', idee:'Décris l\'idée...', rg:'Décris la règle de gestion...' };
+    const ta = document.getElementById('brief-text');
+    if (ta) ta.placeholder = placeholders[tab] || '';
+    // Afficher la bonne liste
+    document.getElementById('briefs-list').style.display = (tab === 'team' || tab === 'claude') ? 'none' : 'flex';
+    document.getElementById('team-comments-list-panel').style.display = tab === 'team' ? 'flex' : 'none';
+    document.getElementById('claude-panel').style.display = tab === 'claude' ? 'flex' : 'none';
+    document.getElementById('brief-input-zone').style.display = (tab === 'team' || tab === 'claude') ? 'none' : 'block';
+    // Footer : sur onglet Claude le bouton "Tout effacer" devient "Vider la sélection"
+    const clearBtn = document.getElementById('footer-clear-btn');
+    if (clearBtn) clearBtn.textContent = tab === 'claude' ? 'Vider la sélection' : 'Tout effacer';
+    if (tab === 'team') loadTeamComments();
+    else if (tab === 'claude') {
+      renderClaudePanel();
+      // Ne pas générer le prompt automatiquement — attendre le clic sur "Générer"
+      const ta = document.getElementById('claude-prompt-text');
+      if (ta && !ta.value) ta.placeholder = 'Cliquez sur "↻ Générer le prompt" pour construire automatiquement votre prompt...';
+    }
+    else renderBriefs();
+  }
 
   function addBrief() {
     const text = document.getElementById('brief-text').value.trim();
     if (!text) return;
-    const typeSelected = document.querySelector('input[name="brief-type"]:checked')?.value || 'retour';
+    const typeSelected = currentBriefTab !== 'team' ? currentBriefTab : 'retour';
     const brief = {
       id: Date.now(),
       author: CURRENT_USER,
@@ -1299,31 +1541,23 @@
     refreshPins();
   }
 
-  function toggleTeamComments() {
-    const section = document.getElementById('team-comments-section');
-    const btn = document.getElementById('team-comments-btn');
-    const isOpen = section.style.display !== 'none';
-    section.style.display = isOpen ? 'none' : 'block';
-    btn.style.borderColor = isOpen ? 'var(--grey-bd)' : '#D93025';
-    btn.style.color = isOpen ? 'var(--grey-txt)' : '#D93025';
-    if (!isOpen) loadTeamComments();
-  }
+  function toggleTeamComments() { setBriefTab('team'); }
 
   function loadTeamComments() {
     // Charge les commentaires depuis les pins (localStorage partagé)
     // Plus tard : remplacé par Firebase
     const pins = JSON.parse(localStorage.getItem('wf_comments_telecollecte') || '[]');
-    const list = document.getElementById('team-comments-list');
+    const list = document.getElementById('team-comments-list-panel');
     const count = document.getElementById('team-comments-count');
 
     // Filtrer uniquement les commentaires de l'équipe (pas Sébastien)
     const teamComments = [];
     pins.forEach(p => {
       // Commentaire principal
-      if (p.author !== 'Sébastien') teamComments.push({pinId:p.id, isReply:false, author:p.author, text:p.text, date:p.date, tab:p.tab||'tpe'});
+      if (p.author !== 'Sébastien' && !p.requalified) teamComments.push({key:'pin-'+p.id, pinId:p.id, isReply:false, replyIdx:null, author:p.author, text:p.text, date:p.date, tab:p.tab||'tpe', qualifiedType:p.qualifiedType||'', commentType:p.commentType||null, pinLabel:p.pinLabel||null});
       // Réponses
       (p.replies||[]).forEach(r => {
-        if (r.author !== 'Sébastien') teamComments.push({author:r.author, text:r.text, date:r.date, tab:p.tab||'tpe'});
+        if (r.author !== 'Sébastien' && !r.requalified) teamComments.push({key:'pin-'+p.id+'-reply-'+ri, pinId:p.id, isReply:true, replyIdx:ri, author:r.author, text:r.text, date:r.date, tab:p.tab||'tpe', qualifiedType:r.qualifiedType||''});
       });
     });
 
@@ -1341,19 +1575,40 @@
     }
 
     const tabLabels = { tpe:'Télécollecte', ant:'Date antérieure', reg:'Régularisation' };
-    list.innerHTML = teamComments.map((c,i) => `
-      <div style="background:white;border:1px solid #fcc;border-left:3px solid #D93025;border-radius:8px;padding:10px 12px;">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
-          <div style="display:flex;align-items:center;gap:8px;">
+    list.innerHTML = teamComments.map((c,i) => {
+      const inClaude = claudeSelection.has(c.key);
+      const qualType = c.qualifiedType || '';
+      return `
+      <div style="background:white;border:1px solid #fcc;border-left:3px solid ${qualType ? TYPE_COLORS[qualType]||'#D93025' : '#D93025'};border-radius:8px;padding:10px 12px;margin-bottom:6px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+          <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+            ${c.pinLabel ? `<span style="font-size:10px;font-weight:700;background:#D93025;color:white;padding:1px 7px;border-radius:20px;">${c.pinLabel}</span>` : ''}
             <span style="font-size:11px;font-weight:700;color:#D93025;">${c.author}</span>
-            <span style="font-size:10px;color:var(--grey-txt);">${c.date}</span>
+            <span style="font-size:10px;color:var(--grey-txt);">${c.date||''}</span>
             <span style="font-size:10px;background:#f0f0f0;padding:1px 6px;border-radius:10px;color:var(--grey-txt);">${tabLabels[c.tab]||c.tab}</span>
+            ${c.commentType ? `<span style="font-size:10px;font-weight:600;padding:1px 7px;border-radius:20px;background:${({retour:'#1E264318',idee:'#D9770618',rg:'#7C3AED18'})[c.commentType]||'#eee'};color:${({retour:'#1E2643',idee:'#D97706',rg:'#7C3AED'})[c.commentType]||'#555'};">${({retour:'💬 Retour',idee:'💡 Idée',rg:'📋 RG'})[c.commentType]||''}</span>` : ''}
           </div>
-          <button onclick="deleteTeamComment(${c.pinId}, ${c.isReply ? `'${c.replyIdx}'` : 'null'})" style="background:none;border:none;color:var(--grey-txt);font-size:16px;cursor:pointer;line-height:1;padding:0 4px;" title="Supprimer">×</button>
+          <div style="display:flex;gap:4px;align-items:center;">
+            <button onclick="toggleClaude('${c.key}')" title="${inClaude?'Retirer de Claude':'Ajouter à Claude'}"
+              style="background:none;border:none;cursor:pointer;padding:2px;display:flex;align-items:center;justify-content:center;opacity:${inClaude?1:0.35};transition:opacity .15s;">
+              ${inClaude ? LIGHTNING_ON : LIGHTNING_OFF}
+            </button>
+            <button onclick="deleteTeamComment(${c.pinId}, ${c.isReply ? c.replyIdx : 'null'})" style="background:none;border:none;color:var(--grey-txt);font-size:16px;cursor:pointer;line-height:1;padding:0 4px;">×</button>
+          </div>
         </div>
-        <div style="font-size:13px;color:var(--navy);line-height:1.5;">${c.text}</div>
-      </div>
-    `).join('');
+        <div style="font-size:13px;color:var(--navy);line-height:1.5;margin-bottom:8px;">${c.text}</div>
+        <!-- Requalification -->
+        <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+          <span style="font-size:11px;color:var(--grey-txt);">Qualifier :</span>
+          ${['retour','idee','rg'].map(t => `
+            <button onclick="requalifyComment('${c.key}','${t}')"
+              style="font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;cursor:pointer;font-family:inherit;border:1.5px solid ${qualType===t ? TYPE_COLORS[t] : 'var(--grey-bd)'};background:${qualType===t ? TYPE_COLORS[t]+'18' : 'none'};color:${qualType===t ? TYPE_COLORS[t] : 'var(--grey-txt)'};">
+              ${TYPE_LABELS[t]}
+            </button>
+          `).join('')}
+        </div>
+      </div>`;
+    }).join('');
   }
 
   // Initialiser le badge au chargement
@@ -1374,9 +1629,16 @@
   }
 
   function clearBriefs() {
+    if (currentBriefTab === 'claude') {
+      claudeSelection.clear();
+      updateClaudeCount();
+      renderClaudePanel();
+      document.getElementById('claude-prompt-text').value = '';
+      return;
+    }
     if (!confirm('Effacer tous les retours ?')) return;
     briefs = [];
-    localStorage.setItem(BRIEFS_KEY, JSON.stringify(briefs));
+    localStorage.setItem(BRIEFS_KEY, JSON.stringify(briefs)); fbSave();
     renderBriefs();
   }
 
@@ -1407,8 +1669,15 @@
   }
 
   async function sendToClaude() {
-    const prompt = buildPrompt();
-    if (!prompt) { alert('Aucun retour à envoyer.'); return; }
+    // Si on est sur l'onglet Claude, utiliser le prompt généré
+    let prompt;
+    if (currentBriefTab === 'claude') {
+      prompt = document.getElementById('claude-prompt-text').value.trim();
+      if (!prompt || prompt === 'Aucun message sélectionné.') { alert('Générez d\'abord le prompt.'); return; }
+    } else {
+      prompt = buildPrompt();
+    }
+    if (!prompt) { alert('Aucun élément à envoyer.'); return; }
     const btn = document.getElementById('copy-btn');
 
     try {
@@ -1429,44 +1698,71 @@
     } catch {
       // Fallback : copie dans le presse-papier
       await navigator.clipboard.writeText(prompt);
-      btn.textContent = '📋 Copié — colle ici !';
+      btn.textContent = '📋 Prompt copié !';
+      // Afficher un message clair
+      const panel = document.getElementById('claude-prompt-text');
+      if (panel) {
+        const old = panel.style.borderColor;
+        panel.style.borderColor = '#059669';
+        setTimeout(() => { panel.style.borderColor = old; }, 2000);
+      }
       setTimeout(() => { btn.textContent = '⚡ Envoyer à Claude'; }, 3000);
     }
   }
 
   function renderBriefs() {
     const list = document.getElementById('briefs-list');
-    if (!briefs.length) {
-      list.innerHTML = '<div style="text-align:center;color:var(--grey-txt);font-size:13px;padding:32px 0;">Aucun retour pour l\'instant</div>';
+    // Filtrer uniquement le type de l'onglet actif
+    const filtered = briefs.filter(b => b.type === currentBriefTab);
+    const color = TYPE_COLORS[currentBriefTab] || '#1E2643';
+
+    // Mettre à jour les compteurs sur les onglets
+    ['retour','idee','rg'].forEach(t => {
+      const cnt = document.getElementById('cnt-' + t);
+      const n = briefs.filter(b => b.type === t && !b.done).length;
+      if (cnt) { cnt.style.display = n > 0 ? 'inline-block' : 'none'; cnt.textContent = n; }
+    });
+
+    if (!filtered.length) {
+      list.innerHTML = `<div style="text-align:center;color:var(--grey-txt);font-size:13px;padding:32px 0;">Aucun élément dans cet onglet</div>`;
       return;
     }
-
-    // Grouper par type dans l'ordre
-    const order = ['rg', 'retour', 'idee'];
-    let html = '';
-    order.forEach(type => {
-      const group = briefs.filter(b => b.type === type);
-      if (!group.length) return;
-      html += `<div style="margin-bottom:4px;">
-        <div style="font-size:11px;font-weight:700;color:${TYPE_COLORS[type]};text-transform:uppercase;letter-spacing:.5px;padding:8px 0 6px 2px;">${TYPE_LABELS[type]}</div>
-        ${group.map(b => `
-          <div style="background:${b.done ? '#F9F9F9' : 'var(--white)'};border:1px solid ${b.done ? 'var(--grey-bd)' : TYPE_COLORS[type]+'33'};border-left:3px solid ${b.done ? 'var(--grey-bd)' : TYPE_COLORS[type]};border-radius:10px;padding:12px 14px;margin-bottom:6px;opacity:${b.done ? 0.6 : 1};">
-            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
-              <div style="display:flex;align-items:center;gap:8px;">
-                <span style="font-size:11px;font-weight:700;color:var(--navy);">${b.author}</span>
-                <span style="font-size:10px;color:var(--grey-txt);">${b.date} ${b.time}</span>
-              </div>
-              <div style="display:flex;gap:6px;">
-                <button onclick="toggleDone(${b.id})" title="${b.done ? 'Réouvrir' : 'Marquer traité'}" style="background:none;border:1px solid var(--grey-bd);border-radius:6px;padding:2px 8px;font-size:12px;cursor:pointer;">${b.done ? '↩' : '✓'}</button>
-                <button onclick="deleteBrief(${b.id})" style="background:none;border:none;color:var(--grey-txt);font-size:16px;cursor:pointer;line-height:1;padding:0 2px;">×</button>
-              </div>
-            </div>
-            <div style="font-size:13px;color:var(--navy);line-height:1.5;${b.done ? 'text-decoration:line-through' : ''}">${b.text}</div>
+    list.innerHTML = filtered.map(b => {
+      const key = String(b.id);
+      const inClaude = claudeSelection.has(key);
+      return `
+      <div style="background:${b.done?'#F9F9F9':'var(--white)'};border:1px solid ${b.done?'var(--grey-bd)':color+'33'};border-left:3px solid ${b.done?'var(--grey-bd)':color};border-radius:10px;padding:12px 14px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span style="font-size:11px;font-weight:700;color:var(--navy);">${b.author}</span>
+            <span style="font-size:10px;color:var(--grey-txt);">${b.date} ${b.time}</span>
           </div>
-        `).join('')}
+          <div style="display:flex;gap:4px;align-items:center;">
+            <button onclick="toggleClaude('${key}')" title="${inClaude?'Retirer de Claude':'Ajouter à Claude'}"
+              style="background:none;border:none;cursor:pointer;padding:2px;display:flex;align-items:center;justify-content:center;opacity:${inClaude?1:0.35};transition:opacity .15s;">
+              ${inClaude ? LIGHTNING_ON : LIGHTNING_OFF}
+            </button>
+            <button onclick="toggleReclassify('brief-${b.id}')" title="Modifier la catégorie"
+              style="background:none;border:none;cursor:pointer;padding:2px;display:flex;align-items:center;justify-content:center;color:var(--grey-txt);opacity:0.6;transition:opacity .15s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.6">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            </button>
+            <button onclick="toggleDone(${b.id})" style="background:none;border:1px solid var(--grey-bd);border-radius:6px;padding:2px 8px;font-size:12px;cursor:pointer;">${b.done?'↩':'✓'}</button>
+            <button onclick="deleteBrief(${b.id})" style="background:none;border:none;color:var(--grey-txt);font-size:16px;cursor:pointer;line-height:1;padding:0 2px;">×</button>
+          </div>
+        </div>
+        <div style="font-size:13px;color:var(--navy);line-height:1.5;${b.done?'text-decoration:line-through':''}">${b.text}</div>
+        <!-- Zone reclassification (cachée par défaut) -->
+        <div id="reclassify-brief-${b.id}" style="display:none;margin-top:8px;padding-top:8px;border-top:1px dashed var(--grey-bd);">
+          <span style="font-size:11px;color:var(--grey-txt);margin-right:6px;">Déplacer vers :</span>
+          ${['retour','idee','rg'].filter(t => t !== b.type).map(t => `
+            <button onclick="reclassifyBrief(${b.id},'${t}')"
+              style="font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;cursor:pointer;font-family:inherit;border:1.5px solid ${TYPE_COLORS[t]};background:${TYPE_COLORS[t]}12;color:${TYPE_COLORS[t]};margin-right:4px;">
+              ${TYPE_LABELS[t]}
+            </button>
+          `).join('')}
+        </div>
       </div>`;
-    });
-    list.innerHTML = html;
+    }).join('');
   }
 
   // Soumettre avec Cmd+Enter
@@ -1660,6 +1956,14 @@
     const text = document.getElementById('cp-text').value.trim();
     if (!text || !pendingPin) return;
     const author = CURRENT_USER;
+    // Numérotation : compteur global + initiale auteur
+    const initial = CURRENT_USER.charAt(0).toUpperCase();
+    const globalCount = (JSON.parse(localStorage.getItem('wf_pin_counter') || '0')) + 1;
+    localStorage.setItem('wf_pin_counter', JSON.stringify(globalCount));
+
+    // Type choisi par le PO (si disponible)
+    const chosenType = document.querySelector('input[name="cp-type"]:checked')?.value || null;
+
     const comment = {
       id: Date.now(),
       x: pendingPin.x,
@@ -1667,7 +1971,9 @@
       author: CURRENT_USER,
       text,
       date: new Date().toLocaleDateString('fr-FR'),
-      tab: currentTab
+      tab: currentTab,
+      pinLabel: `${globalCount}${initial}`,
+      commentType: chosenType
     };
     comments.push(comment);
     localStorage.setItem(STORAGE_KEY, JSON.stringify(comments)); fbSave();
@@ -1684,9 +1990,12 @@
     pin.id = 'pin-' + c.id;
     pin.style.left = c.x + 'px';
     pin.style.top  = c.y + 'px';
-    pin.style.background = '#D93025';
+    // Couleur selon le type du commentaire
+    const pinColors = { retour:'#1E2643', idee:'#D97706', rg:'#7C3AED' };
+    pin.style.background = c.commentType ? (pinColors[c.commentType] || '#D93025') : '#D93025';
     pin.style.display = commentMode ? 'flex' : 'none';
-    pin.innerHTML = `<span style="color:white">${comments.findIndex(cc=>cc.id===c.id) + 1}</span>`;
+    const label = c.pinLabel || (comments.findIndex(cc=>cc.id===c.id) + 1);
+    pin.innerHTML = `<span style="color:white;font-size:10px;font-weight:700;">${label}</span>`;
     pin.title = `${c.author} : ${c.text}`;
 
     // ── Drag relatif au .content ──
@@ -1835,10 +2144,144 @@
   if (cpUser) cpUser.textContent = CURRENT_USER;
   if (replyUser) replyUser.textContent = `Répondre en tant que ${CURRENT_USER}`;
 
+  // Pour les POs : afficher le sélecteur de type dans le popover
+  if (CURRENT_USER !== 'Sébastien') {
+    const cpTypeZone = document.getElementById('cp-type-zone');
+    if (cpTypeZone) cpTypeZone.style.display = 'block';
+  }
+
+  function updateCpType() {
+    const types = { retour: { color:'#1E2643', label:'💬 Retour' }, idee: { color:'#D97706', label:'💡 Idée' }, rg: { color:'#7C3AED', label:'📋 Règle de gestion' } };
+    ['retour','idee','rg'].forEach(t => {
+      const lbl = document.getElementById('cpt-' + t);
+      const radio = lbl?.querySelector('input');
+      if (!lbl || !radio) return;
+      if (radio.checked) {
+        lbl.style.borderColor = types[t].color;
+        lbl.style.color = types[t].color;
+        lbl.style.background = types[t].color + '10';
+      } else {
+        lbl.style.borderColor = 'var(--grey-bd)';
+        lbl.style.color = 'var(--grey-txt)';
+        lbl.style.background = 'none';
+      }
+    });
+  }
+
   // Masquer le bouton Retours PO si pas Sébastien
   if (CURRENT_USER !== 'Sébastien') {
     const btn = document.getElementById('briefs-nav-btn');
     if (btn) btn.style.display = 'none';
+    // Afficher le bouton "Mes commentaires" pour les POs
+    createPoPanel();
+  }
+
+  function createPoPanel() {
+    const initial = CURRENT_USER.charAt(0).toUpperCase();
+    // Bouton flottant bas droite — nom + bulle jaune
+    const poBtn = document.createElement('div');
+    poBtn.id = 'po-btn';
+    poBtn.style.cssText = 'position:fixed;bottom:24px;right:24px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:6px;z-index:300;';
+    poBtn.innerHTML = `
+      <div style="background:rgba(30,38,67,0.7);color:white;font-size:11px;font-weight:600;padding:3px 8px;border-radius:20px;white-space:nowrap;">${CURRENT_USER}</div>
+      <div style="width:48px;height:48px;border-radius:100px;background:#FDBE00;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(0,0,0,0.2);">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1E2643" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      </div>
+    `;
+    poBtn.title = `Mes commentaires — ${CURRENT_USER}`;
+    poBtn.onclick = openPoPanel;
+    document.body.appendChild(poBtn);
+
+    // Panel PO
+    const panel = document.createElement('div');
+    panel.id = 'po-panel';
+    panel.style.cssText = 'display:none;position:fixed;top:0;right:0;width:420px;height:100vh;background:white;z-index:2001;flex-direction:column;box-shadow:-8px 0 32px rgba(0,0,0,0.15);';
+    panel.innerHTML = `
+      <!-- Header -->
+      <div style="background:#1E2643;padding:20px 24px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;">
+        <div>
+          <div style="color:#FDBE00;font-size:18px;font-weight:700;">Mes commentaires</div>
+          <div style="color:rgba(255,255,255,0.5);font-size:12px;margin-top:2px;">Connecté en tant que ${CURRENT_USER}</div>
+        </div>
+        <button onclick="document.getElementById('po-panel').style.display='none';document.getElementById('po-overlay').style.display='none';"
+          style="background:none;border:none;color:rgba(255,255,255,0.6);font-size:22px;cursor:pointer;line-height:1;">×</button>
+      </div>
+      <!-- Liste -->
+      <div id="po-comments-list" style="flex:1;overflow-y:auto;padding:16px 24px;display:flex;flex-direction:column;gap:10px;"></div>
+    `;
+    document.body.appendChild(panel);
+
+    // Overlay
+    const overlay = document.createElement('div');
+    overlay.id = 'po-overlay';
+    overlay.style.cssText = 'display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:2000;';
+    overlay.onclick = () => { panel.style.display='none'; overlay.style.display='none'; };
+    document.body.appendChild(overlay);
+  }
+
+  function openPoPanel() {
+    const panel = document.getElementById('po-panel');
+    const overlay = document.getElementById('po-overlay');
+    panel.style.display = 'flex';
+    overlay.style.display = 'block';
+    renderPoComments();
+  }
+
+  function renderPoComments() {
+    const list = document.getElementById('po-comments-list');
+    const all = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+    // Commentaires de cet utilisateur uniquement
+    const mine = [];
+    all.forEach(p => {
+      if (p.author === CURRENT_USER) mine.push({id:p.id, isReply:false, replyIdx:null, text:p.text, date:p.date, tab:p.tab||'tpe'});
+      (p.replies||[]).forEach((r,ri) => {
+        if (r.author === CURRENT_USER) mine.push({id:p.id, isReply:true, replyIdx:ri, text:r.text, date:r.date, tab:p.tab||'tpe'});
+      });
+    });
+
+    if (!mine.length) {
+      list.innerHTML = '<div style="text-align:center;color:#6B7280;font-size:13px;padding:32px 0;font-style:italic;">Aucun commentaire pour l\'instant.<br>Activez le mode commentaire pour en ajouter.</div>';
+      return;
+    }
+
+    const tabLabels = { tpe:'Télécollecte', ant:'Date antérieure', reg:'Régularisation' };
+    list.innerHTML = mine.map(c => `
+      <div style="background:white;border:1px solid #E0E0E0;border-left:3px solid #D93025;border-radius:10px;padding:12px 14px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span style="font-size:10px;background:#f0f0f0;padding:1px 8px;border-radius:10px;color:#6B7280;">${tabLabels[c.tab]||c.tab}</span>
+            <span style="font-size:10px;color:#6B7280;">${c.date||''}</span>
+          </div>
+          <button onclick="deleteMyComment(${c.id},${c.isReply ? c.replyIdx : 'null'})"
+            style="background:none;border:1px solid #E0E0E0;border-radius:6px;padding:2px 8px;font-size:11px;color:#6B7280;cursor:pointer;font-family:inherit;"
+            title="Supprimer">Supprimer</button>
+        </div>
+        <div style="font-size:13px;color:#1E2643;line-height:1.5;">${c.text}</div>
+      </div>
+    `).join('');
+  }
+
+  function deleteMyComment(pinId, replyIdx) {
+    const all = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+    const idx = all.findIndex(p => p.id === pinId);
+    if (idx === -1) return;
+    if (replyIdx === null || replyIdx === 'null') {
+      // Supprimer le commentaire principal
+      all.splice(idx, 1);
+      // Retirer le pin du DOM
+      const pin = document.getElementById('pin-' + pinId);
+      if (pin) pin.remove();
+      comments.splice(comments.findIndex(c => c.id === pinId), 1);
+    } else {
+      // Supprimer la réponse
+      all[idx].replies.splice(replyIdx, 1);
+      comments[idx].replies.splice(replyIdx, 1);
+    }
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(all));
+    // Sync Firebase
+    fetch(FB_URL + '.json', { method: 'PUT', body: JSON.stringify(all) }).catch(()=>{});
+    renderPoComments();
+    refreshPins();
   }
 
   // Charger les commentaires du tab actif au démarrage
