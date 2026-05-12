@@ -640,7 +640,7 @@
 
 <!-- ══ PANNEAU RETOURS PO ══ -->
 <div id="briefs-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:2000;" onclick="closeBriefs()"></div>
-<div id="briefs-panel" style="display:none;position:fixed;top:0;right:0;width:600px;height:100vh;background:var(--white);z-index:2001;flex-direction:column;box-shadow:-8px 0 32px rgba(0,0,0,0.2);">
+<div id="briefs-panel" style="display:none;position:fixed;top:0;right:0;width:680px;height:100vh;background:var(--white);z-index:2001;flex-direction:column;box-shadow:-8px 0 32px rgba(0,0,0,0.2);">
 
   <!-- Header -->
   <div style="background:var(--navy);padding:20px 24px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;">
@@ -653,7 +653,7 @@
 
   <!-- Formulaire ajout retour -->
   <div style="padding:20px 24px;border-bottom:1px solid var(--grey-bd);flex-shrink:0;">
-    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;align-items:center;">
+    <div style="display:flex;gap:8px;flex-wrap:nowrap;margin-bottom:12px;align-items:center;white-space:nowrap;overflow-x:auto;">
       <label style="display:flex;align-items:center;gap:5px;cursor:pointer;font-size:13px;font-weight:600;padding:6px 12px;border-radius:20px;border:1.5px solid var(--grey-bd);color:var(--grey-txt);transition:all .15s;" id="radio-retour">
         <input type="radio" name="brief-type" value="retour" checked style="display:none;" onchange="updateRadios()"> 💬 Retour
       </label>
@@ -1282,6 +1282,23 @@
   }
 
   // ── Commentaires équipe ──
+  function deleteTeamComment(pinId, replyIdx) {
+    const idx = comments.findIndex(c => c.id === pinId);
+    if (idx === -1) return;
+    if (replyIdx === null) {
+      // Supprimer le commentaire principal (et son pin)
+      comments.splice(idx, 1);
+      const pin = document.getElementById('pin-' + pinId);
+      if (pin) pin.remove();
+    } else {
+      // Supprimer uniquement la réponse
+      comments[idx].replies.splice(replyIdx, 1);
+    }
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(comments)); fbSave();
+    loadTeamComments();
+    refreshPins();
+  }
+
   function toggleTeamComments() {
     const section = document.getElementById('team-comments-section');
     const btn = document.getElementById('team-comments-btn');
@@ -1303,7 +1320,7 @@
     const teamComments = [];
     pins.forEach(p => {
       // Commentaire principal
-      if (p.author !== 'Sébastien') teamComments.push({author:p.author, text:p.text, date:p.date, tab:p.tab||'tpe'});
+      if (p.author !== 'Sébastien') teamComments.push({pinId:p.id, isReply:false, author:p.author, text:p.text, date:p.date, tab:p.tab||'tpe'});
       // Réponses
       (p.replies||[]).forEach(r => {
         if (r.author !== 'Sébastien') teamComments.push({author:r.author, text:r.text, date:r.date, tab:p.tab||'tpe'});
@@ -1324,12 +1341,15 @@
     }
 
     const tabLabels = { tpe:'Télécollecte', ant:'Date antérieure', reg:'Régularisation' };
-    list.innerHTML = teamComments.map(c => `
+    list.innerHTML = teamComments.map((c,i) => `
       <div style="background:white;border:1px solid #fcc;border-left:3px solid #D93025;border-radius:8px;padding:10px 12px;">
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
-          <span style="font-size:11px;font-weight:700;color:#D93025;">${c.author}</span>
-          <span style="font-size:10px;color:var(--grey-txt);">${c.date}</span>
-          <span style="font-size:10px;background:#f0f0f0;padding:1px 6px;border-radius:10px;color:var(--grey-txt);">${tabLabels[c.tab]||c.tab}</span>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span style="font-size:11px;font-weight:700;color:#D93025;">${c.author}</span>
+            <span style="font-size:10px;color:var(--grey-txt);">${c.date}</span>
+            <span style="font-size:10px;background:#f0f0f0;padding:1px 6px;border-radius:10px;color:var(--grey-txt);">${tabLabels[c.tab]||c.tab}</span>
+          </div>
+          <button onclick="deleteTeamComment(${c.pinId}, ${c.isReply ? `'${c.replyIdx}'` : 'null'})" style="background:none;border:none;color:var(--grey-txt);font-size:16px;cursor:pointer;line-height:1;padding:0 4px;" title="Supprimer">×</button>
         </div>
         <div style="font-size:13px;color:var(--navy);line-height:1.5;">${c.text}</div>
       </div>
@@ -1420,22 +1440,33 @@
       list.innerHTML = '<div style="text-align:center;color:var(--grey-txt);font-size:13px;padding:32px 0;">Aucun retour pour l\'instant</div>';
       return;
     }
-    list.innerHTML = briefs.map(b => `
-      <div style="background:${b.done ? '#F9F9F9' : 'var(--white)'};border:1px solid ${b.done ? 'var(--grey-bd)' : TYPE_COLORS[b.type]+'33'};border-left:3px solid ${b.done ? 'var(--grey-bd)' : TYPE_COLORS[b.type]};border-radius:10px;padding:12px 14px;opacity:${b.done ? 0.6 : 1};">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
-          <div style="display:flex;align-items:center;gap:8px;">
-            <span style="font-size:11px;font-weight:700;color:${TYPE_COLORS[b.type]};background:${TYPE_COLORS[b.type]}18;padding:2px 8px;border-radius:20px;">${TYPE_LABELS[b.type]}</span>
-            <span style="font-size:11px;font-weight:700;color:var(--navy);">${b.author}</span>
-            <span style="font-size:10px;color:var(--grey-txt);">${b.date} ${b.time}</span>
+
+    // Grouper par type dans l'ordre
+    const order = ['rg', 'retour', 'idee'];
+    let html = '';
+    order.forEach(type => {
+      const group = briefs.filter(b => b.type === type);
+      if (!group.length) return;
+      html += `<div style="margin-bottom:4px;">
+        <div style="font-size:11px;font-weight:700;color:${TYPE_COLORS[type]};text-transform:uppercase;letter-spacing:.5px;padding:8px 0 6px 2px;">${TYPE_LABELS[type]}</div>
+        ${group.map(b => `
+          <div style="background:${b.done ? '#F9F9F9' : 'var(--white)'};border:1px solid ${b.done ? 'var(--grey-bd)' : TYPE_COLORS[type]+'33'};border-left:3px solid ${b.done ? 'var(--grey-bd)' : TYPE_COLORS[type]};border-radius:10px;padding:12px 14px;margin-bottom:6px;opacity:${b.done ? 0.6 : 1};">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+              <div style="display:flex;align-items:center;gap:8px;">
+                <span style="font-size:11px;font-weight:700;color:var(--navy);">${b.author}</span>
+                <span style="font-size:10px;color:var(--grey-txt);">${b.date} ${b.time}</span>
+              </div>
+              <div style="display:flex;gap:6px;">
+                <button onclick="toggleDone(${b.id})" title="${b.done ? 'Réouvrir' : 'Marquer traité'}" style="background:none;border:1px solid var(--grey-bd);border-radius:6px;padding:2px 8px;font-size:12px;cursor:pointer;">${b.done ? '↩' : '✓'}</button>
+                <button onclick="deleteBrief(${b.id})" style="background:none;border:none;color:var(--grey-txt);font-size:16px;cursor:pointer;line-height:1;padding:0 2px;">×</button>
+              </div>
+            </div>
+            <div style="font-size:13px;color:var(--navy);line-height:1.5;${b.done ? 'text-decoration:line-through' : ''}">${b.text}</div>
           </div>
-          <div style="display:flex;gap:6px;">
-            <button onclick="toggleDone(${b.id})" title="${b.done ? 'Réouvrir' : 'Marquer traité'}" style="background:none;border:1px solid var(--grey-bd);border-radius:6px;padding:2px 8px;font-size:12px;cursor:pointer;">${b.done ? '↩' : '✓'}</button>
-            <button onclick="deleteBrief(${b.id})" style="background:none;border:none;color:var(--grey-txt);font-size:16px;cursor:pointer;line-height:1;padding:0 2px;">×</button>
-          </div>
-        </div>
-        <div style="font-size:13px;color:var(--navy);line-height:1.5;${b.done ? 'text-decoration:line-through' : ''}">${b.text}</div>
-      </div>
-    `).join('');
+        `).join('')}
+      </div>`;
+    });
+    list.innerHTML = html;
   }
 
   // Soumettre avec Cmd+Enter
