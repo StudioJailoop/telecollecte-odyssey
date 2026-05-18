@@ -836,8 +836,6 @@
       </div>
 
       <div id="mc">
-        <div class="s-title">Saisie de la télécollecte</div>
-
         <div class="bloc-date">
           <span class="date-label">Please enter an accounting date to proceed with the telecollection</span>
           <!-- Textfield DS Main Trident 2.0 — State=Default, Icon=True -->
@@ -936,8 +934,6 @@
 
       <!-- Vue Date antérieure -->
       <div id="view-ant" style="display:none;">
-
-        <div class="s-title">Saisie date antérieure</div>
 
         <!-- Bloc date — même composant DS -->
         <div class="bloc-date">
@@ -1056,8 +1052,6 @@
       <!-- Vue Régularisation -->
       <div id="view-reg" style="display:none;">
 
-        <div class="s-title">Régularisation de la télécollecte</div>
-
         <!-- Bloc date — même composant DS -->
         <div class="bloc-date">
           <span class="date-label">Please enter an accounting date to proceed with the telecollection</span>
@@ -1143,18 +1137,15 @@
 
         </div><!-- /reg-form -->
 
-        <!-- Bouton Valider régularisation -->
-        <div class="reg-footer">
-          <button class="btn-validate-inline" id="btnv-reg" disabled>Valider la régularisation</button>
-        </div>
-
       </div>
 
     </div><!-- /content -->
 
-    <footer class="footer">
+    <footer class="footer" id="main-footer">
       <button class="btn-c">Annuler</button>
       <button class="btn-v" id="btnv">Valider la saisie</button>
+      <!-- Bouton Régularisation — même niveau hiérarchique, visible uniquement sur l'onglet Régularisation -->
+      <button class="btn-v" id="btnv-reg" disabled style="display:none;">Valider la régularisation</button>
     </footer>
   </main>
 </div>
@@ -2055,7 +2046,11 @@
     document.getElementById('mc').style.display       = id === 'tpe' ? 'block' : 'none';
     document.getElementById('view-ant').style.display = id === 'ant' ? 'block' : 'none';
     document.getElementById('view-reg').style.display = id === 'reg' ? 'block' : 'none';
-    document.querySelector('.footer').style.display = id === 'tpe' ? 'flex' : 'none';
+    // Footer : afficher selon l'onglet — même pattern pour tous les onglets
+    const footer = document.querySelector('.footer');
+    footer.style.display = (id === 'tpe' || id === 'reg') ? 'flex' : 'none';
+    document.getElementById('btnv').style.display = id === 'tpe' ? 'flex' : 'none';
+    document.getElementById('btnv-reg').style.display = id === 'reg' ? 'flex' : 'none';
     const antBar = document.getElementById('tpe-tabs-bar-ant');
     if (antBar) antBar.style.display = id === 'ant' ? 'flex' : 'none';
     closeThread();
