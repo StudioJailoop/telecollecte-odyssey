@@ -713,16 +713,16 @@
     </div>
   </div>
 
-  <!-- Mini-tabs En cours / Traités -->
-  <div id="brief-status-tabs" style="display:flex;gap:0;padding:0 24px;border-bottom:1px solid var(--grey-bd);flex-shrink:0;">
-    <button onclick="setBriefStatus('open')" id="bstatus-open"
-      style="background:none;border:none;border-bottom:2px solid var(--navy);padding:8px 16px;font-size:12px;font-weight:700;color:var(--navy);cursor:pointer;font-family:inherit;white-space:nowrap;">
-      En cours <span id="cnt-status-open" style="font-size:10px;background:var(--navy);color:white;border-radius:100px;padding:1px 5px;margin-left:3px;"></span>
-    </button>
-    <button onclick="setBriefStatus('done')" id="bstatus-done"
-      style="background:none;border:none;border-bottom:2px solid transparent;padding:8px 16px;font-size:12px;font-weight:500;color:var(--grey-txt);cursor:pointer;font-family:inherit;white-space:nowrap;">
-      Traités <span id="cnt-status-done" style="font-size:10px;background:#059669;color:white;border-radius:100px;padding:1px 5px;margin-left:3px;display:none;"></span>
-    </button>
+  <!-- Switch Traités -->
+  <div id="brief-status-tabs" style="display:flex;align-items:center;justify-content:space-between;padding:10px 24px;border-bottom:1px solid var(--grey-bd);flex-shrink:0;">
+    <span style="font-size:12px;font-weight:600;color:var(--grey-txt);">
+      Traités
+      <span id="cnt-status-done" style="display:none;font-size:10px;background:#059669;color:white;border-radius:100px;padding:1px 5px;margin-left:4px;"></span>
+    </span>
+    <label class="switch" style="margin:0;">
+      <input type="checkbox" id="sw-brief-status" onchange="setBriefStatus(this.checked ? 'done' : 'open')">
+      <span class="track" style="background:var(--grey-bd);"></span>
+    </label>
   </div>
 
   <!-- Liste des retours -->
@@ -1297,15 +1297,13 @@
 
   function setBriefStatus(status) {
     currentBriefStatus = status;
-    ['open','done'].forEach(s => {
-      const btn = document.getElementById('bstatus-' + s);
-      if (!btn) return;
-      const isActive = s === status;
-      btn.style.borderBottom = isActive ? '2px solid ' + (s === 'open' ? 'var(--navy)' : '#059669') : '2px solid transparent';
-      btn.style.color = isActive ? (s === 'open' ? 'var(--navy)' : '#059669') : 'var(--grey-txt)';
-      btn.style.fontWeight = isActive ? '700' : '500';
-    });
-    // Masquer la zone de saisie sur l'onglet Traités
+    // Sync le switch
+    const sw = document.getElementById('sw-brief-status');
+    if (sw) sw.checked = status === 'done';
+    // Couleur du track selon état
+    const track = sw?.nextElementSibling;
+    if (track) track.style.background = status === 'done' ? '#059669' : 'var(--grey-bd)';
+    // Masquer la zone de saisie si Traités
     const inputZone = document.getElementById('brief-input-zone');
     if (inputZone) inputZone.style.display = status === 'done' ? 'none' : 'block';
     renderBriefs();
