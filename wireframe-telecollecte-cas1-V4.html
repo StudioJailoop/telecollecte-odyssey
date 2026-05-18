@@ -1572,19 +1572,26 @@
 
 
 
+  function getLine2El() {
+    // La ligne 2 = le div contenant btab-retour
+    return document.getElementById('btab-retour')?.closest('div');
+  }
+
   function toggleLastModifs() {
     const btn = document.getElementById('btab-lastmodifs');
     const isActive = currentBriefTab === 'lastmodifs';
+    const line2 = getLine2El();
     if (isActive) {
-      // Désactiver — revenir sur retour
       btn.style.background = 'none';
       btn.style.color = '#D93025';
+      if (line2) line2.style.display = 'flex';
       setBriefTab('retour');
     } else {
-      // Activer
       btn.style.background = '#D93025';
       btn.style.color = 'white';
+      if (line2) line2.style.display = 'none';
       setBriefTab('lastmodifs');
+      renderLastModifs();
     }
   }
 
@@ -1593,7 +1600,7 @@
     const done = briefs.filter(b => b.done).sort((a,b) => b.id - a.id);
 
     if (!done.length) {
-      panel.innerHTML = '<div style="text-align:center;color:var(--grey-txt);font-size:13px;padding:32px 0;font-style:italic;">Aucune modification effectuée pour l\'instant.</div>';
+      panel.innerHTML = '<div style="padding:32px 0;color:var(--grey-txt);font-size:13px;font-style:italic;">Aucune modification effectuée pour l\'instant.</div>';
       return;
     }
 
@@ -1601,36 +1608,31 @@
     const byDate = {};
     done.forEach(b => { const d = b.date || 'Sans date'; if (!byDate[d]) byDate[d] = []; byDate[d].push(b); });
 
-    let html = '';
+    let out = '';
     Object.entries(byDate).forEach(([date, items]) => {
-      html += `<div style="margin-bottom:20px;">
-        <!-- En-tête journal -->
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
-          <div style="height:1px;flex:1;background:var(--grey-bd);"></div>
-          <span style="font-size:11px;font-weight:700;color:var(--grey-txt);white-space:nowrap;">📅 ${date}</span>
-          <div style="height:1px;flex:1;background:var(--grey-bd);"></div>
-        </div>
-        ${items.map((b, i) => {
-          const color = TYPE_COLORS[b.type] || '#6B7280';
-          return `<div style="background:var(--white);border:1px solid var(--grey-bd);border-left:3px solid ${color};border-radius:10px;padding:12px 14px;margin-bottom:8px;">
-            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
-              <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
-                <span style="font-size:10px;color:var(--grey-txt);">${b.time||''}</span>
-                <span style="font-size:10px;font-weight:700;color:${color};background:${color}18;padding:1px 8px;border-radius:20px;">${TYPE_LABELS[b.type]||b.type}</span>
-                ${b.pinLabel ? `<span style="font-size:10px;font-weight:700;background:var(--navy);color:white;padding:1px 7px;border-radius:20px;">${b.pinLabel}</span>` : ''}
-                <span style="font-size:11px;font-weight:600;color:var(--navy);">${b.author}</span>
+      out += `<div style="margin-bottom:28px;">
+        <div style="font-size:14px;font-weight:600;color:var(--grey-txt);margin-bottom:14px;">Modification du ${date}</div>
+        <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:10px;">
+          ${items.map(b => {
+            const color = TYPE_COLORS[b.type] || '#6B7280';
+            return `<li style="display:flex;align-items:flex-start;gap:10px;">
+              <span style="color:var(--grey-bd);font-size:16px;line-height:1.6;">•</span>
+              <div style="flex:1;">
+                <div style="font-size:13px;color:var(--navy);line-height:1.6;">${b.text}
+                  <span style="font-size:10px;font-weight:600;color:${color};background:${color}18;padding:1px 7px;border-radius:20px;margin-left:6px;">${TYPE_LABELS[b.type]||b.type}</span>
+                  ${b.pinLabel ? `<span style="font-size:10px;font-weight:700;background:var(--navy);color:white;padding:1px 6px;border-radius:20px;margin-left:4px;">${b.pinLabel}</span>` : ''}
+                </div>
+                <button onclick="notOkBrief(${b.id})"
+                  style="margin-top:6px;display:inline-flex;align-items:center;gap:4px;background:none;border:1px solid #D93025;border-radius:6px;padding:3px 10px;font-size:11px;font-weight:600;color:#D93025;cursor:pointer;font-family:inherit;">
+                  ↩ Restaurer
+                </button>
               </div>
-              <button onclick="notOkBrief(${b.id})" title="Pas ok — rouvrir pour correction"
-                style="display:flex;align-items:center;gap:4px;background:#D9302512;border:1.5px solid #D93025;border-radius:6px;padding:3px 10px;font-size:11px;font-weight:700;color:#D93025;cursor:pointer;font-family:inherit;white-space:nowrap;">
-                ↩ Restaurer
-              </button>
-            </div>
-            <div style="font-size:13px;color:var(--navy);line-height:1.5;">${b.text}</div>
-          </div>`;
-        }).join('')}
+            </li>`;
+          }).join('')}
+        </ul>
       </div>`;
     });
-    panel.innerHTML = html;
+    panel.innerHTML = `<div style="padding:4px 0;">${out}</div>`;
   }
 
   function notOkBrief(id) {
