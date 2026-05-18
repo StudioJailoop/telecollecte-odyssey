@@ -1862,9 +1862,10 @@
     const ta = document.getElementById('brief-text');
     if (ta) ta.placeholder = placeholders[tab] || '';
     // Afficher la bonne liste
-    document.getElementById('briefs-list').style.display = (tab === 'team' || tab === 'claude') ? 'none' : 'flex';
+    document.getElementById('briefs-list').style.display = (['team','claude','lastmodifs'].includes(tab)) ? 'none' : 'flex';
     document.getElementById('team-comments-list-panel').style.display = tab === 'team' ? 'flex' : 'none';
     document.getElementById('claude-panel').style.display = tab === 'claude' ? 'flex' : 'none';
+    document.getElementById('lastmodifs-panel').style.display = tab === 'lastmodifs' ? 'flex' : 'none';
     document.getElementById('brief-input-zone').style.display = (['team','claude','lastmodifs'].includes(tab) || archivesMode) ? 'none' : 'block';
     // Footer : sur onglet Claude le bouton "Tout effacer" devient "Vider la sélection"
     const clearBtn = document.getElementById('footer-clear-btn');
