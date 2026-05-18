@@ -1929,6 +1929,56 @@
       .forEach(c => renderPin(c));
   }
 
+  // ── Navigation via badge pinLabel ──
+  function highlightPin(briefId, on) {
+    const b = briefs.find(b => String(b.id) === String(briefId));
+    if (!b) return;
+    const pin = document.getElementById('pin-' + b.id);
+    if (!pin) return;
+    pin.style.transition = 'transform .15s, box-shadow .15s';
+    if (on) {
+      pin.style.transform = 'rotate(-45deg) scale(1.6)';
+      pin.style.boxShadow = '0 0 0 4px white, 0 0 0 8px var(--navy)';
+      pin.style.zIndex = '999';
+    } else {
+      pin.style.transform = 'rotate(-45deg) scale(1)';
+      pin.style.boxShadow = '0 2px 6px rgba(0,0,0,0.25)';
+      pin.style.zIndex = '500';
+    }
+  }
+
+  let _lastPinViewed = null;
+  function togglePinView(briefId, tab) {
+    // 2ème clic sur le même badge → fermer la modale
+    // Utiliser String() pour comparer correctement les IDs numériques
+    if (_lastPinViewed !== null && String(_lastPinViewed) === String(briefId)) {
+      closeBriefs();
+      _lastPinViewed = null;
+      return;
+    }
+    _lastPinViewed = String(briefId);
+    const b = briefs.find(b => String(b.id) === String(briefId));
+    if (!b) return;
+    const tabToGo = b.tab || tab || 'tpe';
+    if (tabToGo !== currentTab) goTo(tabToGo);
+    if (!commentMode) { setCmtMode(true); document.getElementById('sw-comments').checked = true; }
+    setTimeout(() => {
+      const pin = document.getElementById('pin-' + b.id);
+      if (!pin) return;
+      const content = document.querySelector('.content');
+      content.scrollTo({ top: Math.max(0, parseFloat(pin.style.top) - 150), behavior: 'smooth' });
+      pin.style.transition = 'transform .2s, box-shadow .2s';
+      pin.style.transform = 'rotate(-45deg) scale(1.8)';
+      pin.style.boxShadow = '0 0 0 5px white, 0 0 0 12px var(--navy)';
+      pin.style.zIndex = '999';
+      setTimeout(() => {
+        pin.style.transform = 'rotate(-45deg) scale(1)';
+        pin.style.boxShadow = '0 2px 6px rgba(0,0,0,0.25)';
+        pin.style.zIndex = '500';
+      }, 2500);
+    }, 300);
+  }
+
   // Clic sur le layout principal pour poser un pin
   document.querySelector('.layout').addEventListener('click', function(e) {
     if (!commentMode) return;
