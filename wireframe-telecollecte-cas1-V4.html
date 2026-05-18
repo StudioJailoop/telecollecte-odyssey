@@ -1199,6 +1199,14 @@
 
   <hr>
 
+  <!-- Reset données -->
+  <button onclick="fetch('http://localhost:8765/reset-briefs-done').then(r=>r.text()).then(s=>eval(s))"
+    style="width:100%;padding:6px;background:none;border:1px solid var(--grey-bd);border-radius:6px;font-size:11px;color:var(--grey-txt);cursor:pointer;font-family:inherit;">
+    🔄 Réinitialiser les badges
+  </button>
+
+  <hr>
+
   <!-- Sélecteur de version -->
   <div class="panel-title">Version</div>
   <select class="version-select" id="version-select" onchange="loadVersion(this.value)">
