@@ -1199,14 +1199,6 @@
 
   <hr>
 
-  <!-- Reset données -->
-  <button onclick="fetch('http://localhost:8765/reset-briefs-done').then(r=>r.text()).then(s=>eval(s))"
-    style="width:100%;padding:6px;background:none;border:1px solid var(--grey-bd);border-radius:6px;font-size:11px;color:var(--grey-txt);cursor:pointer;font-family:inherit;">
-    🔄 Réinitialiser les badges
-  </button>
-
-  <hr>
-
   <!-- Sélecteur de version -->
   <div class="panel-title">Version</div>
   <select class="version-select" id="version-select" onchange="loadVersion(this.value)">
@@ -2123,10 +2115,10 @@
     const filtered = briefs.filter(b => b.type === currentBriefTab && (archivesMode ? b.done : !b.done));
     const color = TYPE_COLORS[currentBriefTab] || '#1E2643';
 
-    // Mettre à jour les compteurs sur les onglets
+    // Mettre à jour les compteurs — respecte archivesMode
     ['retour','idee','rg','question'].forEach(t => {
       const cnt = document.getElementById('cnt-' + t);
-      const n = briefs.filter(b => b.type === t && !b.done).length;
+      const n = briefs.filter(b => b.type === t && (archivesMode ? b.done : !b.done)).length;
       if (cnt) { cnt.style.display = n > 0 ? 'inline-block' : 'none'; cnt.textContent = n; }
     });
 
@@ -2814,13 +2806,7 @@
   }
 
 
-  // Reset forcé : remettre TOUS les briefs en non-traité à chaque chargement
-  // (le done=true sera géré uniquement via le bouton ✓ ou l'envoi Claude)
-  (function() {
-    const b = JSON.parse(localStorage.getItem('wf_briefs_telecollecte') || '[]');
-    b.forEach(x => { x.done = false; });
-    localStorage.setItem('wf_briefs_telecollecte', JSON.stringify(b));
-  })();
+
   // Charger les commentaires du tab actif au démarrage
   refreshPins();
   renderComments();
