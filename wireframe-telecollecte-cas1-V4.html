@@ -679,11 +679,18 @@
       💬 Commentaires équipe
       <span id="team-comments-count" style="display:none;background:#D93025;color:white;border-radius:100px;font-size:10px;font-weight:700;padding:1px 6px;"></span>
     </button>
-    <button onclick="setBriefTab('archives')" id="btab-archives"
-      style="display:flex;align-items:center;gap:6px;background:none;border:1.5px solid var(--grey-bd);border-radius:20px;padding:6px 16px;font-size:13px;font-weight:600;color:var(--grey-txt);cursor:pointer;font-family:inherit;white-space:nowrap;transition:all .15s;">
+  </div>
+
+  <!-- Switch Archives -->
+  <div id="archives-switch-row" style="display:flex;align-items:center;justify-content:space-between;padding:8px 24px;border-bottom:1px solid var(--grey-bg);flex-shrink:0;">
+    <span style="font-size:12px;font-weight:600;color:var(--grey-txt);">
       🗂 Archives
-      <span id="cnt-archives" style="display:none;background:#6B7280;color:white;border-radius:100px;font-size:10px;font-weight:700;padding:1px 6px;"></span>
-    </button>
+      <span id="cnt-archives" style="display:none;font-size:10px;background:#6B7280;color:white;border-radius:100px;padding:1px 5px;margin-left:4px;"></span>
+    </span>
+    <label class="switch" style="margin:0;">
+      <input type="checkbox" id="sw-archives" onchange="toggleArchivesMode(this.checked)">
+      <span class="track"></span>
+    </label>
   </div>
 
   <!-- Ligne 2 : tabs Retour / Idée / Règle de gestion -->
@@ -1293,6 +1300,26 @@
 
   const TYPE_LABELS = { retour:'💬 Retour', idee:'💡 Idée', rg:'📋 Règle de gestion', question:'❓ Question', team:'💬 Équipe' };
   const TYPE_COLORS = { retour:'#1E2643', idee:'#D97706', rg:'#7C3AED', question:'#0891B2', team:'#D93025' };
+
+  let archivesMode = false;
+
+  function toggleArchivesMode(on) {
+    archivesMode = on;
+    // Masquer Claude + Commentaires équipe quand archives actif
+    const btabClaude = document.getElementById('btab-claude');
+    const btabTeam = document.getElementById('btab-team');
+    if (btabClaude) btabClaude.style.display = on ? 'none' : 'flex';
+    if (btabTeam) btabTeam.style.display = on ? 'none' : 'flex';
+    // Si on était sur claude ou team, revenir sur retour
+    if (on && ['claude','team'].includes(currentBriefTab)) setBriefTab('retour');
+    // Mettre à jour le style du track
+    const track = document.getElementById('sw-archives')?.nextElementSibling;
+    if (track) track.style.background = on ? '#6B7280' : 'var(--grey-bd)';
+    // Re-render
+    renderBriefs();
+    updateArchivesCount();
+  }
+
   let currentBriefTab = 'retour';
   // claudeSelection : Set des IDs (briefs + teamComment keys)
   let claudeSelection = new Set();
@@ -1752,11 +1779,11 @@
   function setBriefTab(tab) {
     currentBriefTab = tab;
     // Styles pills ligne 1 (Claude + équipe)
-    ['claude','team','archives'].forEach(t => {
+    ['claude','team'].forEach(t => {
       const btn = document.getElementById('btab-' + t);
       if (!btn) return;
       const isActive = t === tab;
-      const color = t === 'claude' ? '#D97706' : t === 'archives' ? '#6B7280' : '#D93025';
+      const color = t === 'claude' ? '#D97706' : '#D93025';
       btn.style.background = isActive ? color + '18' : 'none';
       btn.style.borderColor = isActive ? color : 'var(--grey-bd)';
       btn.style.color = isActive ? color : 'var(--grey-txt)';
@@ -1782,13 +1809,15 @@
     document.getElementById('briefs-list').style.display = (['team','claude','archives'].includes(tab)) ? 'none' : 'flex';
     document.getElementById('team-comments-list-panel').style.display = tab === 'team' ? 'flex' : 'none';
     document.getElementById('claude-panel').style.display = tab === 'claude' ? 'flex' : 'none';
-    document.getElementById('archives-panel').style.display = tab === 'archives' ? 'flex' : 'none';
-    document.getElementById('brief-input-zone').style.display = (['team','claude','archives'].includes(tab)) ? 'none' : 'block';
+    document.getElementById('brief-input-zone').style.display = (['team','claude','archives'].includes(tab) || archivesMode) ? 'none' : 'block';
     // Footer : sur onglet Claude le bouton "Tout effacer" devient "Vider la sélection"
     const clearBtn = document.getElementById('footer-clear-btn');
     if (clearBtn) clearBtn.textContent = tab === 'claude' ? 'Vider la sélection' : 'Tout effacer';
+    updateArchivesCount();
+    // Masquer le switch archives sur Claude/Équipe
+    const archivesRow = document.getElementById('archives-switch-row');
+    if (archivesRow) archivesRow.style.display = ['claude','team'].includes(tab) ? 'none' : 'flex';
     if (tab === 'team') loadTeamComments();
-    else if (tab === 'archives') { renderArchives(); }
     else if (tab === 'claude') {
       renderClaudePanel();
       // Ne pas générer le prompt automatiquement — attendre le clic sur "Générer"
@@ -2021,8 +2050,8 @@
 
   function renderBriefs() {
     const list = document.getElementById('briefs-list');
-    // Filtrer uniquement les éléments actifs (non traités) du type actif
-    const filtered = briefs.filter(b => b.type === currentBriefTab && !b.done);
+    // Filtrer selon le mode archives
+    const filtered = briefs.filter(b => b.type === currentBriefTab && (archivesMode ? b.done : !b.done));
     const color = TYPE_COLORS[currentBriefTab] || '#1E2643';
 
     // Mettre à jour les compteurs sur les onglets
