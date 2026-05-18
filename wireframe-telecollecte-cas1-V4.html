@@ -713,6 +713,11 @@
       ❓ Question
       <span id="cnt-question" style="display:none;background:#0891B2;color:white;border-radius:100px;font-size:10px;font-weight:700;padding:1px 6px;margin-left:4px;"></span>
     </button>
+    <!-- Tab Dernières modifs — visible uniquement en mode archives -->
+    <button onclick="setBriefTab('lastmodifs')" id="btab-lastmodifs"
+      style="display:none;background:none;border:none;border-bottom:2.5px solid transparent;padding:11px 16px;font-size:13px;font-weight:500;color:#D93025;cursor:pointer;font-family:inherit;white-space:nowrap;transition:all .15s;">
+      🔴 Dernières modifs
+    </button>
   </div>
 
   <!-- Zone saisie (masquée sur onglet équipe) -->
@@ -730,6 +735,9 @@
 
   <!-- Liste commentaires équipe (cachée par défaut) -->
   <div id="team-comments-list-panel" style="display:none;flex:1;overflow-y:auto;padding:16px 24px;flex-direction:column;gap:8px;"></div>
+
+  <!-- Panneau Dernières modifs -->
+  <div id="lastmodifs-panel" style="display:none;flex:1;overflow-y:auto;padding:16px 24px;flex-direction:column;gap:10px;"></div>
 
   <!-- Panneau Claude -->
   <div id="claude-panel" style="display:none;flex:1;flex-direction:column;overflow:hidden;">
@@ -1309,6 +1317,9 @@
     // Masquer bouton Envoyer à Claude en mode archives
     const copyBtn = document.getElementById('copy-btn');
     if (copyBtn) copyBtn.style.display = on ? 'none' : 'flex';
+    // Afficher tab Dernières modifs uniquement en mode archives
+    const tabLastmodifs = document.getElementById('btab-lastmodifs');
+    if (tabLastmodifs) tabLastmodifs.style.display = on ? 'block' : 'none';
     // Si on était sur claude/team, revenir sur retour
     if (on && ['claude','team'].includes(currentBriefTab)) setBriefTab('retour');
     // Masquer zone saisie en mode archives
@@ -1561,6 +1572,58 @@
     updateAllCounts();
   }
 
+
+  function renderLastModifs() {
+    const panel = document.getElementById('lastmodifs-panel');
+    // Récupérer les éléments traités triés du plus récent au plus ancien
+    const done = briefs.filter(b => b.done).sort((a,b) => b.id - a.id);
+
+    if (!done.length) {
+      panel.innerHTML = '<div style="text-align:center;color:var(--grey-txt);font-size:13px;padding:32px 0;font-style:italic;">Aucune modification effectuée pour l\'instant.</div>';
+      return;
+    }
+
+    panel.innerHTML = done.map(b => {
+      const color = TYPE_COLORS[b.type] || '#6B7280';
+      return `
+      <div style="background:var(--white);border:1.5px solid #D9302522;border-left:3px solid #D93025;border-radius:10px;padding:12px 14px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+          <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+            <span style="font-size:10px;font-weight:700;color:${color};background:${color}18;padding:1px 8px;border-radius:20px;">${TYPE_LABELS[b.type]||b.type}</span>
+            <span style="font-size:11px;font-weight:700;color:var(--navy);">${b.author}</span>
+            ${b.pinLabel ? `<span style="font-size:10px;font-weight:700;background:var(--navy);color:white;padding:1px 7px;border-radius:20px;">${b.pinLabel}</span>` : ''}
+            <span style="font-size:10px;color:var(--grey-txt);">${b.date}</span>
+          </div>
+          <!-- Bouton Pas ok -->
+          <button onclick="notOkBrief(${b.id})"
+            style="display:flex;align-items:center;gap:4px;background:#D9302512;border:1.5px solid #D93025;border-radius:6px;padding:4px 12px;font-size:12px;font-weight:700;color:#D93025;cursor:pointer;font-family:inherit;white-space:nowrap;">
+            👎 Pas ok
+          </button>
+        </div>
+        <div style="font-size:13px;color:var(--navy);line-height:1.5;">${b.text}</div>
+      </div>`;
+    }).join('');
+  }
+
+  function notOkBrief(id) {
+    const b = briefs.find(b => b.id === id);
+    if (!b) return;
+    // Remettre en actif
+    b.done = false;
+    localStorage.setItem(BRIEFS_KEY, JSON.stringify(briefs));
+    // Désactiver le mode archives
+    const sw = document.getElementById('sw-archives');
+    if (sw && sw.checked) {
+      sw.checked = false;
+      toggleArchivesMode(false);
+    }
+    // Naviguer vers sa catégorie
+    setBriefTab(b.type || 'retour');
+    // Ouvrir l\'édition immédiatement
+    setTimeout(() => { toggleEditBrief(b.id); }, 200);
+    updateAllCounts();
+  }
+
   function toggleClaude(key) {
     if (claudeSelection.has(key)) claudeSelection.delete(key);
     else claudeSelection.add(key);
@@ -1620,7 +1683,7 @@
   }
 
   function updateAllCounts() {
-    ['retour','idee','rg','question'].forEach(t => {
+    ['retour','idee','rg','question','lastmodifs'].forEach(t => {
       const cnt = document.getElementById('cnt-' + t);
       // En mode archives : compter les traités, sinon compter les actifs
       const n = briefs.filter(b => b.type === t && (archivesMode ? b.done : !b.done)).length;
@@ -1757,7 +1820,7 @@
       const btn = document.getElementById('btab-' + t);
       if (!btn) return;
       const isActive = t === tab;
-      const color = t === 'retour' ? 'var(--navy)' : t === 'idee' ? '#D97706' : t === 'rg' ? '#7C3AED' : '#0891B2';
+      const color = t === 'retour' ? 'var(--navy)' : t === 'idee' ? '#D97706' : t === 'rg' ? '#7C3AED' : t === 'question' ? '#0891B2' : '#D93025';
       btn.style.borderBottom = isActive ? `2.5px solid ${color}` : '2.5px solid transparent';
       btn.style.color = isActive ? color : 'var(--grey-txt)';
       btn.style.fontWeight = isActive ? '700' : '500';
@@ -1772,11 +1835,12 @@
     document.getElementById('briefs-list').style.display = (tab === 'team' || tab === 'claude') ? 'none' : 'flex';
     document.getElementById('team-comments-list-panel').style.display = tab === 'team' ? 'flex' : 'none';
     document.getElementById('claude-panel').style.display = tab === 'claude' ? 'flex' : 'none';
-    document.getElementById('brief-input-zone').style.display = (['team','claude'].includes(tab) || archivesMode) ? 'none' : 'block';
+    document.getElementById('brief-input-zone').style.display = (['team','claude','lastmodifs'].includes(tab) || archivesMode) ? 'none' : 'block';
     // Footer : sur onglet Claude le bouton "Tout effacer" devient "Vider la sélection"
     const clearBtn = document.getElementById('footer-clear-btn');
     if (clearBtn) clearBtn.textContent = tab === 'claude' ? 'Vider la sélection' : 'Tout effacer';
     if (tab === 'team') loadTeamComments();
+    else if (tab === 'lastmodifs') renderLastModifs();
     else if (tab === 'claude') {
       renderClaudePanel();
       // Ne pas générer le prompt automatiquement — attendre le clic sur "Générer"
