@@ -713,6 +713,18 @@
     </div>
   </div>
 
+  <!-- Mini-tabs En cours / Traités -->
+  <div id="brief-status-tabs" style="display:flex;gap:0;padding:0 24px;border-bottom:1px solid var(--grey-bd);flex-shrink:0;">
+    <button onclick="setBriefStatus('open')" id="bstatus-open"
+      style="background:none;border:none;border-bottom:2px solid var(--navy);padding:8px 16px;font-size:12px;font-weight:700;color:var(--navy);cursor:pointer;font-family:inherit;white-space:nowrap;">
+      En cours <span id="cnt-status-open" style="font-size:10px;background:var(--navy);color:white;border-radius:100px;padding:1px 5px;margin-left:3px;"></span>
+    </button>
+    <button onclick="setBriefStatus('done')" id="bstatus-done"
+      style="background:none;border:none;border-bottom:2px solid transparent;padding:8px 16px;font-size:12px;font-weight:500;color:var(--grey-txt);cursor:pointer;font-family:inherit;white-space:nowrap;">
+      Traités <span id="cnt-status-done" style="font-size:10px;background:#059669;color:white;border-radius:100px;padding:1px 5px;margin-left:3px;display:none;"></span>
+    </button>
+  </div>
+
   <!-- Liste des retours -->
   <div id="briefs-list" style="flex:1;overflow-y:auto;padding:16px 24px;display:flex;flex-direction:column;gap:10px;"></div>
 
@@ -1281,6 +1293,23 @@
   const TYPE_LABELS = { retour:'💬 Retour', idee:'💡 Idée', rg:'📋 Règle de gestion', question:'❓ Question', team:'💬 Équipe' };
   const TYPE_COLORS = { retour:'#1E2643', idee:'#D97706', rg:'#7C3AED', question:'#0891B2', team:'#D93025' };
   let currentBriefTab = 'retour';
+  let currentBriefStatus = 'open'; // 'open' ou 'done'
+
+  function setBriefStatus(status) {
+    currentBriefStatus = status;
+    ['open','done'].forEach(s => {
+      const btn = document.getElementById('bstatus-' + s);
+      if (!btn) return;
+      const isActive = s === status;
+      btn.style.borderBottom = isActive ? '2px solid ' + (s === 'open' ? 'var(--navy)' : '#059669') : '2px solid transparent';
+      btn.style.color = isActive ? (s === 'open' ? 'var(--navy)' : '#059669') : 'var(--grey-txt)';
+      btn.style.fontWeight = isActive ? '700' : '500';
+    });
+    // Masquer la zone de saisie sur l'onglet Traités
+    const inputZone = document.getElementById('brief-input-zone');
+    if (inputZone) inputZone.style.display = status === 'done' ? 'none' : 'block';
+    renderBriefs();
+  }
   // claudeSelection : Set des IDs (briefs + teamComment keys)
   let claudeSelection = new Set();
 
@@ -1953,8 +1982,16 @@
 
   function renderBriefs() {
     const list = document.getElementById('briefs-list');
-    // Filtrer uniquement le type de l'onglet actif
-    const filtered = briefs.filter(b => b.type === currentBriefTab);
+    // Filtrer par type ET par statut (en cours / traités)
+    const filtered = briefs.filter(b => b.type === currentBriefTab && (currentBriefStatus === 'done' ? b.done : !b.done));
+
+    // Mettre à jour les compteurs de statut
+    const openCount = briefs.filter(b => b.type === currentBriefTab && !b.done).length;
+    const doneCount = briefs.filter(b => b.type === currentBriefTab && b.done).length;
+    const cntOpen = document.getElementById('cnt-status-open');
+    const cntDone = document.getElementById('cnt-status-done');
+    if (cntOpen) cntOpen.textContent = openCount;
+    if (cntDone) { cntDone.textContent = doneCount; cntDone.style.display = doneCount > 0 ? 'inline-block' : 'none'; }
     const color = TYPE_COLORS[currentBriefTab] || '#1E2643';
 
     // Mettre à jour les compteurs sur les onglets
@@ -1972,12 +2009,13 @@
       const key = String(b.id);
       const inClaude = claudeSelection.has(key);
       return `
-      <div style="background:${b.done?'#F9F9F9':'var(--white)'};border:1px solid ${b.done?'var(--grey-bd)':color+'33'};border-left:3px solid ${b.done?'var(--grey-bd)':color};border-radius:10px;padding:12px 14px;">
+      <div style="background:var(--white);border:1px solid ${color+'33'};border-left:3px solid ${color};border-radius:10px;padding:12px 14px;">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
           <div style="display:flex;align-items:center;gap:8px;">
             <span style="font-size:11px;font-weight:700;color:var(--navy);">${b.author}</span>
             ${b.pinLabel ? `<span onmouseenter="highlightPin('${b.sourcePin||b.id}', true)" onmouseleave="highlightPin('${b.sourcePin||b.id}', false)" onclick="togglePinView('${b.sourcePin||b.id}', '${b.tab||'tpe'}')" style="font-size:10px;font-weight:700;background:var(--navy);color:white;padding:1px 7px;border-radius:20px;cursor:pointer;user-select:none;" title="Voir">${b.pinLabel}</span>` : ''}
             <span style="font-size:10px;color:var(--grey-txt);">${b.date} ${b.time}</span>
+            ${b.done ? `<span style="font-size:10px;font-weight:700;background:#D1FAE5;color:#059669;border:1px solid #059669;border-radius:20px;padding:1px 8px;">Traité</span>` : ''}
           </div>
           <div style="display:flex;gap:4px;align-items:center;">
             <button onclick="toggleClaude('${key}')" title="${inClaude?'Retirer de Claude':'Ajouter à Claude'}"
@@ -2002,7 +2040,7 @@
           </div>
         </div>
         <!-- Texte -->
-        <div id="brief-text-${b.id}" style="font-size:13px;color:var(--navy);line-height:1.5;${b.done?'text-decoration:line-through':''}">${b.text}</div>
+        <div id="brief-text-${b.id}" style="font-size:13px;color:var(--navy);line-height:1.5;">${b.text}</div>
         <!-- Zone édition (cachée par défaut) -->
         <div id="brief-edit-${b.id}" style="display:none;margin-top:6px;">
           <textarea id="brief-edit-ta-${b.id}" style="width:100%;border:1px solid var(--navy);border-radius:8px;padding:8px;font-size:13px;font-family:inherit;resize:vertical;outline:none;color:var(--navy);min-height:60px;">${b.text}</textarea>
