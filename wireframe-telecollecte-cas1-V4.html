@@ -2229,6 +2229,9 @@
   document.querySelector('.layout').addEventListener('click', function(e) {
     if (!commentMode) return;
     if (e.target.closest('.wf-panel, .comment-popover, .comment-pin, button, input, textarea, select')) return;
+    // Ne pas poser de pin si le thread popover est ouvert
+    const threadPop = document.getElementById('thread-popover');
+    if (threadPop && threadPop.classList.contains('visible')) return;
     // Coordonnées relatives au container .content (inclut le scroll)
     const content = document.querySelector('.content');
     const contentRect = content.getBoundingClientRect();
@@ -2369,6 +2372,11 @@
   // ── Thread (lecture + réponse) ──
   let currentThreadId = null;
 
+  function updateCursor() {
+    const threadOpen = document.getElementById('thread-popover')?.classList.contains('visible');
+    document.body.style.cursor = (commentMode && !threadOpen) ? 'crosshair' : '';
+  }
+
   function openThread(id, pin) {
     currentThreadId = id;
     const c = comments.find(cc => cc.id === id);
@@ -2387,6 +2395,7 @@
     renderThreadMessages(c);
     pop.classList.add('visible');
     document.getElementById('reply-text').value = '';
+    updateCursor(); // curseur normal quand thread ouvert
   }
 
   function renderThreadMessages(c) {
@@ -2420,6 +2429,7 @@
 
   function closeThread() {
     document.getElementById('thread-popover').classList.remove('visible');
+    updateCursor(); // curseur crosshair restauré si mode commentaire actif
     currentThreadId = null;
   }
 
