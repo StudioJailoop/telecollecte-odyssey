@@ -681,9 +681,11 @@
     </button>
     <!-- Switch Archivés — aligné à droite -->
     <div style="margin-left:auto;display:flex;align-items:center;gap:10px;">
-      <span style="font-size:13px;font-weight:600;color:var(--grey-txt);">
-        Archivés
-      </span>
+      <button onclick="setBriefTab('lastmodifs')" id="btab-lastmodifs"
+        style="display:none;align-items:center;gap:6px;background:none;border:1.5px solid #D93025;border-radius:20px;padding:6px 16px;font-size:13px;font-weight:600;color:#D93025;cursor:pointer;font-family:inherit;white-space:nowrap;">
+        🔴 Dernières modifs
+      </button>
+      <span style="font-size:13px;font-weight:600;color:var(--grey-txt);">Archivés</span>
       <label class="switch" style="margin:0;">
         <input type="checkbox" id="sw-archives" onchange="toggleArchivesMode(this.checked)">
         <span class="track"></span>
