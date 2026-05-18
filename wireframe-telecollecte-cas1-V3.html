@@ -638,6 +638,22 @@
   </svg>
 </div>
 
+<!-- Panel Corbeille -->
+<div id="trash-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:2100;" onclick="closeTrash()"></div>
+<div id="trash-panel" style="display:none;position:fixed;top:0;right:0;width:480px;height:100vh;background:var(--white);z-index:2101;flex-direction:column;box-shadow:-8px 0 32px rgba(0,0,0,0.2);">
+  <div style="background:#D93025;padding:20px 24px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;">
+    <div>
+      <div style="color:white;font-size:18px;font-weight:700;">🗑 Corbeille</div>
+      <div style="color:rgba(255,255,255,0.7);font-size:12px;margin-top:2px;">Messages supprimés — conservés 30 jours</div>
+    </div>
+    <button onclick="closeTrash()" style="background:none;border:none;color:rgba(255,255,255,0.7);font-size:22px;cursor:pointer;line-height:1;">×</button>
+  </div>
+  <div id="trash-list" style="flex:1;overflow-y:auto;padding:16px 24px;display:flex;flex-direction:column;gap:10px;"></div>
+  <div style="padding:16px 24px;border-top:1px solid var(--grey-bd);flex-shrink:0;">
+    <button onclick="emptyTrash()" style="width:100%;height:40px;border:1px solid #D93025;border-radius:8px;font-size:13px;font-weight:600;color:#D93025;background:white;cursor:pointer;font-family:inherit;">Vider la corbeille définitivement</button>
+  </div>
+</div>
+
 <!-- ══ PANNEAU RETOURS PO ══ -->
 <div id="briefs-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:2000;" onclick="closeBriefs()"></div>
 <div id="briefs-panel" style="display:none;position:fixed;top:0;right:0;width:680px;height:100vh;background:var(--white);z-index:2001;flex-direction:column;box-shadow:-8px 0 32px rgba(0,0,0,0.2);">
@@ -723,6 +739,10 @@
   <!-- Footer -->
   <div style="padding:16px 24px;border-top:1px solid var(--grey-bd);flex-shrink:0;display:flex;gap:8px;">
     <button onclick="clearBriefs()" id="footer-clear-btn" style="flex:1;height:40px;border:1px solid var(--grey-bd);border-radius:8px;font-size:13px;font-weight:600;color:var(--grey-txt);background:var(--white);cursor:pointer;font-family:inherit;">Tout effacer</button>
+    <button onclick="openTrash()" title="Corbeille" id="trash-btn" style="width:40px;height:40px;border:1px solid var(--grey-bd);border-radius:8px;background:var(--white);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--grey-txt);position:relative;" onmouseover="this.style.color='#D93025'" onmouseout="this.style.color='var(--grey-txt)'">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+      <span id="trash-count" style="display:none;position:absolute;top:-4px;right:-4px;background:#D93025;color:white;border-radius:100px;font-size:9px;font-weight:700;padding:1px 4px;min-width:14px;text-align:center;"></span>
+    </button>
     <button onclick="sendToClaude()" id="copy-btn" style="flex:2;height:40px;background:var(--yellow);color:#000;border:none;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;">⚡ Envoyer à Claude</button>
   </div>
 </div>
@@ -1286,6 +1306,196 @@
     document.getElementById('briefs-panel').style.display = 'none';
   }
 
+
+  function toggleEditBrief(id) {
+    const textEl = document.getElementById('brief-text-' + id);
+    const editEl = document.getElementById('brief-edit-' + id);
+    if (!textEl || !editEl) return;
+    textEl.style.display = 'none';
+    editEl.style.display = 'block';
+    document.getElementById('brief-edit-ta-' + id).focus();
+  }
+
+  function cancelEditBrief(id) {
+    document.getElementById('brief-text-' + id).style.display = 'block';
+    document.getElementById('brief-edit-' + id).style.display = 'none';
+  }
+
+  function saveEditBrief(id) {
+    const newText = document.getElementById('brief-edit-ta-' + id).value.trim();
+    if (!newText) return;
+    const b = briefs.find(b => b.id === id);
+    if (!b) return;
+    b.text = newText;
+    localStorage.setItem(BRIEFS_KEY, JSON.stringify(briefs));
+    // Mise à jour directe sans tout re-render (évite le flicker)
+    document.getElementById('brief-text-' + id).textContent = newText;
+    document.getElementById('brief-text-' + id).style.display = 'block';
+    document.getElementById('brief-edit-' + id).style.display = 'none';
+  }
+
+  async function rewriteBrief(id) {
+    const b = briefs.find(b => b.id === id);
+    if (!b) return;
+
+    // Ouvrir l'édition + loader
+    toggleEditBrief(id);
+    const ta = document.getElementById('brief-edit-ta-' + id);
+    if (!ta) return;
+    ta.style.borderColor = '#D97706';
+    ta.value = '⏳ Réécriture en cours...';
+    ta.disabled = true;
+
+    ta.value = '⏳ En attente de réécriture par Claude...';
+    ta.style.borderColor = '#D97706';
+    ta.disabled = true;
+
+    try {
+      // Envoyer au serveur local → qui colle dans ce terminal
+      await fetch('http://localhost:8765/rewrite-request', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ text: b.text, id: String(b.id) })
+      });
+
+      // Polling toutes les 2s pour récupérer la réponse
+      const poll = setInterval(async () => {
+        try {
+          const res = await fetch('http://localhost:8765/rewrite-result');
+          if (res.status === 200) {
+            const data = await res.json();
+            if (data.result && data.id === String(b.id)) {
+              clearInterval(poll);
+              ta.value = data.result;
+              ta.style.borderColor = '#059669';
+              ta.disabled = false;
+              ta.focus();
+            }
+          }
+        } catch(e) { clearInterval(poll); ta.value = b.text; ta.disabled = false; }
+      }, 2000);
+
+      // Timeout 2 minutes
+      setTimeout(() => { clearInterval(poll); if (ta.disabled) { ta.value = b.text; ta.disabled = false; ta.style.borderColor = 'var(--grey-bd)'; } }, 120000);
+
+    } catch(e) {
+      ta.value = b.text;
+      ta.style.borderColor = '#BF2F17';
+      ta.disabled = false;
+    }
+  }
+
+  function renderThreadCatButtons(pinId) {
+    // Trouver le type déjà assigné à ce pin (si existant)
+    const existing = briefs.find(b => b.sourcePin === pinId);
+    const currentType = existing?.type || null;
+    const defs = [
+      { type:'retour',   label:'💬 Retour',           color:'#1E2643' },
+      { type:'idee',     label:'💡 Idée',              color:'#D97706' },
+      { type:'rg',       label:'📋 Règle de gestion',  color:'#7C3AED' },
+      { type:'question', label:'❓ Question',          color:'#0891B2' },
+    ];
+    const container = document.querySelector('#thread-categorize .cat-btns');
+    if (!container) return;
+    container.innerHTML = defs.map(d => {
+      const isActive = d.type === currentType;
+      return `<button onclick="categorizeThreadComment('${d.type}')"
+        style="font-size:11px;font-weight:${isActive?700:500};padding:4px 10px;border-radius:20px;cursor:pointer;font-family:inherit;
+               border:1.5px solid ${isActive ? d.color : 'var(--grey-bd)'};
+               background:${isActive ? d.color+'18' : 'none'};
+               color:${isActive ? d.color : 'var(--grey-txt)'};">
+        ${d.label}
+      </button>`;
+    }).join('');
+  }
+
+  function categorizeThreadComment(type) {
+    const c = comments.find(cc => cc.id === currentThreadId);
+    if (!c) return;
+    // Créer un brief dans la bonne catégorie
+    const existing = briefs.find(b => b.sourcePin === currentThreadId);
+    if (existing) {
+      existing.type = type;
+    } else {
+      briefs.unshift({
+        id: Date.now(),
+        author: c.author,
+        type,
+        text: c.text,
+        date: c.date || new Date().toLocaleDateString('fr-FR'),
+        time: '',
+        done: false,
+        pinLabel: c.pinLabel,
+        sourcePin: currentThreadId
+      });
+    }
+    localStorage.setItem(BRIEFS_KEY, JSON.stringify(briefs));
+    updateAllCounts();
+    renderThreadCatButtons(currentThreadId);
+    // Feedback visuel
+    const fb = document.getElementById('thread-cat-feedback');
+    const labels = { retour:'💬 Retour', idee:'💡 Idée', rg:'📋 Règle de gestion' };
+    fb.textContent = `✓ Ajouté dans "${labels[type]}"`;
+    fb.style.display = 'block';
+    setTimeout(() => { fb.style.display = 'none'; }, 2500);
+  }
+
+
+  // ── Corbeille ──
+  const TRASH_KEY = 'wf_briefs_trash';
+
+  function updateTrashCount() {
+    const trash = JSON.parse(localStorage.getItem(TRASH_KEY) || '[]');
+    const badge = document.getElementById('trash-count');
+    if (badge) { badge.style.display = trash.length > 0 ? 'inline-block' : 'none'; badge.textContent = trash.length; }
+  }
+
+  function openTrash() {
+    document.getElementById('trash-overlay').style.display = 'block';
+    document.getElementById('trash-panel').style.display = 'flex';
+    renderTrash();
+  }
+
+  function closeTrash() {
+    document.getElementById('trash-overlay').style.display = 'none';
+    document.getElementById('trash-panel').style.display = 'none';
+  }
+
+  function renderTrash() {
+    const trash = JSON.parse(localStorage.getItem(TRASH_KEY) || '[]');
+    const list = document.getElementById('trash-list');
+    if (!trash.length) { list.innerHTML = '<div style="text-align:center;color:var(--grey-txt);font-size:13px;padding:32px 0;font-style:italic;">La corbeille est vide</div>'; return; }
+    list.innerHTML = trash.map((b, i) => `
+      <div style="background:var(--white);border:1px solid var(--grey-bd);border-left:3px solid ${TYPE_COLORS[b.type]||'#ccc'};border-radius:10px;padding:12px 14px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span style="font-size:10px;font-weight:700;color:${TYPE_COLORS[b.type]||'#555'};background:${TYPE_COLORS[b.type]||'#555'}18;padding:2px 7px;border-radius:20px;">${TYPE_LABELS[b.type]||b.type}</span>
+            <span style="font-size:10px;color:var(--grey-txt);">Supprimé le ${b.deletedAt||''}</span>
+          </div>
+          <button onclick="restoreBrief(${i})" style="background:none;border:1px solid #059669;border-radius:6px;padding:2px 10px;font-size:11px;font-weight:600;color:#059669;cursor:pointer;font-family:inherit;">↩ Restaurer</button>
+        </div>
+        <div style="font-size:13px;color:var(--navy);line-height:1.5;">${b.text}</div>
+      </div>
+    `).join('');
+  }
+
+  function restoreBrief(trashIndex) {
+    const trash = JSON.parse(localStorage.getItem(TRASH_KEY) || '[]');
+    const b = trash.splice(trashIndex, 1)[0];
+    if (!b) return;
+    delete b.deletedAt; b.done = false;
+    briefs.unshift(b);
+    localStorage.setItem(BRIEFS_KEY, JSON.stringify(briefs));
+    localStorage.setItem(TRASH_KEY, JSON.stringify(trash));
+    renderTrash(); renderBriefs(); updateAllCounts(); updateTrashCount();
+  }
+
+  function emptyTrash() {
+    if (!confirm('Vider définitivement la corbeille ?')) return;
+    localStorage.removeItem(TRASH_KEY);
+    renderTrash(); updateTrashCount();
+  }
+
   function toggleReclassify(domId) {
     const el = document.getElementById('reclassify-' + domId);
     if (!el) return;
@@ -1526,9 +1736,18 @@
   }
 
   function deleteBrief(id) {
+    if (!confirm('Supprimer ce message ? Il sera placé dans la corbeille.')) return;
+    const b = briefs.find(b => b.id === id);
+    if (b) {
+      const trash = JSON.parse(localStorage.getItem(TRASH_KEY) || '[]');
+      trash.unshift({...b, deletedAt: new Date().toLocaleDateString('fr-FR')});
+      localStorage.setItem(TRASH_KEY, JSON.stringify(trash));
+      updateTrashCount();
+    }
     briefs = briefs.filter(b => b.id !== id);
     localStorage.setItem(BRIEFS_KEY, JSON.stringify(briefs));
     renderBriefs();
+    updateAllCounts();
   }
 
   // ── Commentaires équipe ──
@@ -1644,7 +1863,7 @@
       document.getElementById('claude-prompt-text').value = '';
       return;
     }
-    if (!confirm('Effacer tous les retours ?')) return;
+    if (!confirm('Supprimer tous les messages de cet onglet ? Ils seront placés dans la corbeille.')) return;
     briefs = [];
     localStorage.setItem(BRIEFS_KEY, JSON.stringify(briefs)); fbSave();
     renderBriefs();
