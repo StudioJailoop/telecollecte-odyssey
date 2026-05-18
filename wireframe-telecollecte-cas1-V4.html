@@ -713,17 +713,7 @@
     </div>
   </div>
 
-  <!-- Switch Traités -->
-  <div id="brief-status-tabs" style="display:flex;align-items:center;justify-content:space-between;padding:10px 24px;border-bottom:1px solid var(--grey-bd);flex-shrink:0;">
-    <span style="font-size:12px;font-weight:600;color:var(--grey-txt);">
-      Traités
-      <span id="cnt-status-done" style="display:none;font-size:10px;background:#059669;color:white;border-radius:100px;padding:1px 5px;margin-left:4px;"></span>
-    </span>
-    <label class="switch" style="margin:0;">
-      <input type="checkbox" id="sw-brief-status" onchange="setBriefStatus(this.checked ? 'done' : 'open')">
-      <span class="track" style="background:var(--grey-bd);"></span>
-    </label>
-  </div>
+
 
   <!-- Liste des retours -->
   <div id="briefs-list" style="flex:1;overflow-y:auto;padding:16px 24px;display:flex;flex-direction:column;gap:10px;"></div>
@@ -1293,21 +1283,6 @@
   const TYPE_LABELS = { retour:'💬 Retour', idee:'💡 Idée', rg:'📋 Règle de gestion', question:'❓ Question', team:'💬 Équipe' };
   const TYPE_COLORS = { retour:'#1E2643', idee:'#D97706', rg:'#7C3AED', question:'#0891B2', team:'#D93025' };
   let currentBriefTab = 'retour';
-  let currentBriefStatus = 'open'; // 'open' ou 'done'
-
-  function setBriefStatus(status) {
-    currentBriefStatus = status;
-    // Sync le switch
-    const sw = document.getElementById('sw-brief-status');
-    if (sw) sw.checked = status === 'done';
-    // Couleur du track selon état
-    const track = sw?.nextElementSibling;
-    if (track) track.style.background = status === 'done' ? '#059669' : 'var(--grey-bd)';
-    // Masquer la zone de saisie si Traités
-    const inputZone = document.getElementById('brief-input-zone');
-    if (inputZone) inputZone.style.display = status === 'done' ? 'none' : 'block';
-    renderBriefs();
-  }
   // claudeSelection : Set des IDs (briefs + teamComment keys)
   let claudeSelection = new Set();
 
@@ -1980,16 +1955,8 @@
 
   function renderBriefs() {
     const list = document.getElementById('briefs-list');
-    // Filtrer par type ET par statut (en cours / traités)
-    const filtered = briefs.filter(b => b.type === currentBriefTab && (currentBriefStatus === 'done' ? b.done : !b.done));
-
-    // Mettre à jour les compteurs de statut
-    const openCount = briefs.filter(b => b.type === currentBriefTab && !b.done).length;
-    const doneCount = briefs.filter(b => b.type === currentBriefTab && b.done).length;
-    const cntOpen = document.getElementById('cnt-status-open');
-    const cntDone = document.getElementById('cnt-status-done');
-    if (cntOpen) cntOpen.textContent = openCount;
-    if (cntDone) { cntDone.textContent = doneCount; cntDone.style.display = doneCount > 0 ? 'inline-block' : 'none'; }
+    // Filtrer uniquement le type de l'onglet actif
+    const filtered = briefs.filter(b => b.type === currentBriefTab);
     const color = TYPE_COLORS[currentBriefTab] || '#1E2643';
 
     // Mettre à jour les compteurs sur les onglets
@@ -2682,6 +2649,17 @@
     refreshPins();
   }
 
+
+  // Reset one-time v2 : remettre tous les briefs en non-traité
+  (function() {
+    const RESET_KEY2 = 'wf_briefs_reset_done_v2';
+    if (!localStorage.getItem(RESET_KEY2)) {
+      const briefs = JSON.parse(localStorage.getItem('wf_briefs_telecollecte') || '[]');
+      briefs.forEach(b => { b.done = false; });
+      localStorage.setItem('wf_briefs_telecollecte', JSON.stringify(briefs));
+      localStorage.setItem(RESET_KEY2, '1');
+    }
+  })();
   // Charger les commentaires du tab actif au démarrage
   refreshPins();
   renderComments();
