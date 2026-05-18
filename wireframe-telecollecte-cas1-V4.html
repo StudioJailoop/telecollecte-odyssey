@@ -2806,15 +2806,12 @@
   }
 
 
-  // Reset v3 : remettre TOUS les briefs en non-traité (reset propre)
+  // Reset forcé : remettre TOUS les briefs en non-traité à chaque chargement
+  // (le done=true sera géré uniquement via le bouton ✓ ou l'envoi Claude)
   (function() {
-    const RESET_KEY3 = 'wf_briefs_reset_done_v3';
-    if (!localStorage.getItem(RESET_KEY3)) {
-      const briefs = JSON.parse(localStorage.getItem('wf_briefs_telecollecte') || '[]');
-      briefs.forEach(b => { b.done = false; });
-      localStorage.setItem('wf_briefs_telecollecte', JSON.stringify(briefs));
-      localStorage.setItem(RESET_KEY3, '1');
-    }
+    const b = JSON.parse(localStorage.getItem('wf_briefs_telecollecte') || '[]');
+    b.forEach(x => { x.done = false; });
+    localStorage.setItem('wf_briefs_telecollecte', JSON.stringify(b));
   })();
   // Charger les commentaires du tab actif au démarrage
   refreshPins();
