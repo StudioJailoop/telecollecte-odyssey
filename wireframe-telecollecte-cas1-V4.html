@@ -1637,36 +1637,58 @@
     const byType = {};
     all.forEach(b => { if (!byType[b.type]) byType[b.type] = []; byType[b.type].push(b); });
 
-    let p = `Tu es un expert Product Design, UX/UI et Product Management.\n\n`;
-    p += `Contexte :\nJe travaille sur une interface permettant de centraliser les retours PO, les idées, les règles de gestion et les commentaires équipe autour d'un produit digital (wireframe Télécollecte Odyssey — Club Med).\n\n`;
-    p += `Objectif :\nAnalyse les éléments ci-dessous et transforme-les en recommandations claires, priorisées et actionnables.\n\n`;
-    p += `Contraintes :\n- Ne pas modifier inutilement le design existant\n- Respecter la logique produit actuelle\n- Identifier les impacts UX, UI, fonctionnels et règles de gestion\n- Signaler les ambiguïtés ou points à arbitrer\n- Proposer une solution professionnelle, claire et réaliste\n\n`;
-    p += `Éléments à analyser :\n\n`;
+    // Nom du fichier wireframe courant
+    const wfFile = 'wireframe-telecollecte-cas1-V4.html';
+    const wfPath = `/Users/sebastienkeller/Desktop/Claude Yaki/${wfFile}`;
 
+    // Compter les éléments par type pour le contexte
+    const totalItems = all.length;
+    const typesSummary = Object.entries(byType).map(([k,v]) => `${v.length} ${TYPE_LABELS[k]||k}`).join(', ');
+
+    let p = `Tu es un expert mondial en Product Design, UX/UI et Product Management avec une connaissance approfondie des design systems, des patterns d'interaction et des bonnes pratiques d'accessibilité.\n\n`;
+
+    p += `─── CONTEXTE ───────────────────────────────────────────\n\n`;
+    p += `Je travaille sur le wireframe "${wfFile}" — interface de saisie des télécollectes TPE pour le projet Odyssey / Club Med.\n`;
+    p += `Ce wireframe est construit sur le Design System Trident Ψ 2.0 et Odyssey 2.0. Toute modification doit impérativement respecter ces deux DS.\n\n`;
+    p += `J'ai collecté ${totalItems} retours (${typesSummary}) auprès de mon équipe et de mes POs.\n`;
+    p += `Avant d'appliquer quoi que ce soit, je te demande de synthétiser ces retours en les challengeant avec ton expertise UX/UI — pas de simple exécution mécanique.\n\n`;
+
+    p += `─── RETOURS COLLECTÉS ──────────────────────────────────\n\n`;
     const sections = [
-      { key:'retour', label:'## Retours' },
-      { key:'idee',   label:'## Idées' },
-      { key:'rg',     label:'## Règles de gestion' },
-      { key:'team',   label:'## Commentaires équipe' },
+      { key:'rg',       label:'📋 RÈGLES DE GESTION' },
+      { key:'retour',   label:'💬 RETOURS' },
+      { key:'idee',     label:'💡 IDÉES' },
+      { key:'question', label:'❓ QUESTIONS' },
+      { key:'team',     label:'💬 COMMENTAIRES ÉQUIPE' },
     ];
     sections.forEach(s => {
       if (!byType[s.key]?.length) return;
       p += `${s.label}\n`;
-      byType[s.key].forEach((b,i) => { p += `${i+1}. [${b.author}${b.date?' · '+b.date:''}] ${b.text}\n`; });
+      byType[s.key].forEach((b,i) => {
+        const loc = b.context ? ` [📍 ${b.context.onglet}${b.context.zone && b.context.zone !== 'Zone générale' ? ' > ' + b.context.zone : ''}]` : '';
+        p += `${i+1}.${loc} ${b.text}${b.author ? ` — ${b.author}` : ''}\n`;
+      });
       p += '\n';
     });
 
-    p += `Livrable attendu :\n1. Synthèse des points importants\n2. Problèmes identifiés\n3. Recommandations UX/UI\n4. Règles de gestion à clarifier ou appliquer\n5. Proposition de comportement cible\n6. Points d'arbitrage éventuels\n\n`;
-    p += `─────────────────────────────────────\n`;
-    p += `INSTRUCTIONS D'APPLICATION\n\n`;
-    p += `Fichier cible : /Users/sebastienkeller/Desktop/Claude Yaki/wireframe-telecollecte-cas1-V3.html\n\n`;
-    p += `Pour chaque élément ci-dessus :\n`;
-    p += `- Applique la modification directement dans le fichier HTML\n`;
-    p += `- Respecte le Design System Trident Ψ 2.0 et Odyssey 2.0\n`;
-    p += `- Si une règle de gestion impacte le comportement d'un composant, intègre-la dans la logique JS\n`;
-    p += `- Si une idée ou un retour impacte le layout, modifie le CSS/HTML en cohérence avec la DA existante\n`;
-    p += `- Confirme chaque modification appliquée\n`;
-    p += `- Si un point est ambigu ou nécessite un arbitrage, pose la question avant d'appliquer`;
+    p += `─── TA MISSION ─────────────────────────────────────────\n\n`;
+    p += `En tant qu'expert design de niveau mondial :\n\n`;
+    p += `1. Synthétise et challenge ces retours — certains peuvent se contredire, d'autres nécessitent une solution UX plus élégante que ce qui est suggéré\n`;
+    p += `2. Pour chaque retour retenu, propose la meilleure solution UX/UI possible en cohérence avec le DS et les usages du projet\n`;
+    p += `3. Identifie les règles de gestion à intégrer dans la logique fonctionnelle\n`;
+    p += `4. Si un retour est ambigu ou risque de créer une incohérence — pose la question avant d'appliquer\n`;
+    p += `5. Applique directement les modifications validées dans le fichier cible\n\n`;
+
+    p += `─── INSTRUCTIONS D'APPLICATION ─────────────────────────\n\n`;
+    p += `Fichier cible : ${wfPath}\n\n`;
+    p += `Règles strictes :\n`;
+    p += `• Respecter le Design System Trident Ψ 2.0 et Odyssey 2.0 — toujours chercher le composant dans le DS avant de créer quoi que ce soit\n`;
+    p += `• Si une RG impacte un comportement → intégrer dans la logique JS\n`;
+    p += `• Si un retour impacte le layout → modifier CSS/HTML en cohérence avec la DA existante\n`;
+    p += `• Pas de régression — vérifier que les fonctionnalités existantes restent intactes\n`;
+    p += `• Confirmer chaque modification appliquée avec une description précise\n`;
+    p += `• Si arbitrage nécessaire → poser la question, ne pas interpréter seul`;
+
     document.getElementById('claude-prompt-text').value = p;
   }
 
