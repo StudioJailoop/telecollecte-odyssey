@@ -28,6 +28,22 @@ class Handler(http.server.SimpleHTTPRequestHandler):
                 self.send_response(204)  # Pas encore prêt
                 self.send_header('Access-Control-Allow-Origin', '*')
                 self.end_headers()
+        elif self.path.startswith('/get-journal-text/'):
+            brief_id = self.path.split('/')[-1]
+            import json as _json, os
+            fpath = f'/tmp/journal_{brief_id}.json'
+            if os.path.exists(fpath):
+                with open(fpath) as jf:
+                    data = jf.read()
+                self.send_response(200)
+                self.send_header('Access-Control-Allow-Origin', '*')
+                self.send_header('Content-Type', 'application/json')
+                self.end_headers()
+                self.wfile.write(data.encode())
+            else:
+                self.send_response(204)
+                self.send_header('Access-Control-Allow-Origin', '*')
+                self.end_headers()
         else:
             super().do_GET()
 
@@ -104,6 +120,20 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             self.send_header('Content-Type', 'application/json')
             self.end_headers()
             self.wfile.write(b'{"ok": true, "waiting": true}')
+
+
+        elif self.path == '/save-journal-text':
+            brief_id = data.get('id', '')
+            text = data.get('text', '')
+            # Écrire dans un fichier que le navigateur peut poller
+            import json as _json
+            with open(f'/tmp/journal_{brief_id}.json', 'w') as jf:
+                _json.dump({'id': brief_id, 'text': text}, jf)
+            self.send_response(200)
+            self.send_header('Access-Control-Allow-Origin', '*')
+            self.send_header('Content-Type', 'application/json')
+            self.end_headers()
+            self.wfile.write(b'{"ok": true}')
 
         elif self.path == '/reset-briefs-done':
             # Retourner le script JS à exécuter

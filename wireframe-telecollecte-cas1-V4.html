@@ -1581,42 +1581,42 @@
 
   // Génère une description narrative pour le journal via le pont IA
   async function generateJournalText(brief) {
-    if (brief.journalText) return brief.journalText; // déjà généré
+    if (brief.journalText) return brief.journalText;
 
-    const prompt = `Tu es un expert UX/UI. Une modification a été apportée à un wireframe suite à ce retour : "${brief.text}". Écris UNE seule phrase courte au passé composé décrivant ce qui a été fait sur l'interface (ex: "Les titres de section ont été supprimés pour laisser place aux onglets de navigation."). Réponds UNIQUEMENT avec cette phrase, sans guillemets.`;
+    // Envoyer le prompt de reformulation narrative via le pont
+    const prompt = `Tu es un expert UX/UI. Une modification a été apportée à un wireframe suite à ce retour : "${brief.text}". Écris UNE seule phrase courte au passé composé décrivant concrètement ce qui a été fait sur l'interface. Réponds UNIQUEMENT avec cette phrase, sans guillemets ni explication.\n\nQuand tu as écrit la phrase, sauvegarde-la avec cette commande exacte :\npython3 -c "import json,urllib.request; urllib.request.urlopen(urllib.request.Request('http://localhost:8765/save-journal-text', data=json.dumps({'id':'${brief.id}','text':'TA_PHRASE_ICI'}).encode(), headers={'Content-Type':'application/json'}))"`;
 
-    // Envoyer via pont serveur local
     try {
-      const res = await fetch('http://localhost:8765/rewrite-request', {
+      // Coller le prompt dans Claude Code
+      await fetch('http://localhost:8765/send-to-claude', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({ text: brief.text, id: 'journal-' + brief.id, prompt })
+        body: JSON.stringify({ prompt })
       });
 
-      if (res.ok) {
-        // Polling pour récupérer la réponse
-        return new Promise((resolve) => {
-          let attempts = 0;
-          const poll = setInterval(async () => {
-            attempts++;
-            if (attempts > 30) { clearInterval(poll); resolve(brief.text); return; }
-            try {
-              const r = await fetch('http://localhost:8765/rewrite-result');
-              if (r.status === 200) {
-                const d = await r.json();
-                if (d.id === 'journal-' + brief.id) {
-                  clearInterval(poll);
-                  brief.journalText = d.result;
-                  localStorage.setItem(BRIEFS_KEY, JSON.stringify(briefs));
-                  resolve(d.result);
-                }
-              }
-            } catch(e) {}
-          }, 2000);
-        });
-      }
+      // Polling /get-journal-text/:id
+      return new Promise((resolve) => {
+        let attempts = 0;
+        const poll = setInterval(async () => {
+          attempts++;
+          if (attempts > 60) { clearInterval(poll); resolve(brief.text); return; }
+          try {
+            const r = await fetch('http://localhost:8765/get-journal-text/' + brief.id);
+            if (r.status === 200) {
+              const d = await r.json();
+              clearInterval(poll);
+              brief.journalText = d.text;
+              localStorage.setItem(BRIEFS_KEY, JSON.stringify(briefs));
+              // Mettre à jour l'affichage
+              const el = document.getElementById('journal-text-' + brief.id);
+              if (el) el.textContent = d.text;
+              resolve(d.text);
+            }
+          } catch(e) {}
+        }, 2000);
+      });
     } catch(e) {}
-    return brief.text; // fallback
+    return brief.text;
   }
 
   function toggleLastModifs() {
