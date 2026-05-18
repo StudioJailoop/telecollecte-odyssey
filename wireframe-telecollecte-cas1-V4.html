@@ -1314,8 +1314,8 @@
     // Masquer zone saisie en mode archives
     const inputZone = document.getElementById('brief-input-zone');
     if (inputZone) inputZone.style.display = on ? 'none' : (currentBriefTab === 'claude' ? 'none' : 'block');
-    updateArchivesCount();
     renderBriefs();
+    updateAllCounts();
   }
 
   function updateArchivesCount() {
@@ -1622,7 +1622,8 @@
   function updateAllCounts() {
     ['retour','idee','rg','question'].forEach(t => {
       const cnt = document.getElementById('cnt-' + t);
-      const n = briefs.filter(b => b.type === t && !b.done).length;
+      // En mode archives : compter les traités, sinon compter les actifs
+      const n = briefs.filter(b => b.type === t && (archivesMode ? b.done : !b.done)).length;
       if (cnt) { cnt.style.display = n > 0 ? 'inline-block' : 'none'; cnt.textContent = n; }
     });
     updateClaudeCount();
