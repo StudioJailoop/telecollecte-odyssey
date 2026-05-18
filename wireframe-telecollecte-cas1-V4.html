@@ -1279,10 +1279,13 @@
 </div>
 
 <script>
-  // Afficher le bouton Retours PO uniquement en local
-  if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
-    document.getElementById('briefs-nav-btn').style.display = 'flex';
-  }
+  // Afficher le bouton Retours PO uniquement en local — après chargement DOM
+  document.addEventListener('DOMContentLoaded', function() {
+    if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
+      const btn = document.getElementById('briefs-nav-btn');
+      if (btn) btn.style.display = 'flex';
+    }
+  });
 
   // ══ Retours PO ══════════════════════════════════════════════
   const BRIEFS_KEY = 'wf_briefs_telecollecte';
