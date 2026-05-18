@@ -1734,8 +1734,8 @@
       <div style="background:${b.done?'#F9F9F9':'var(--white)'};border:1px solid ${b.done?'var(--grey-bd)':color+'33'};border-left:3px solid ${b.done?'var(--grey-bd)':color};border-radius:10px;padding:12px 14px;">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
           <div style="display:flex;align-items:center;gap:8px;">
-            <span style="font-size:11px;font-weight:700;color:${getColor(b.author)};">${b.author}</span>
-            ${b.pinLabel ? `<span onmouseenter="highlightPin(String(b.id), true)" onmouseleave="highlightPin(String(b.id), false)" onclick="togglePinView(String(b.id), b.tab||'tpe')" style="font-size:10px;font-weight:700;background:${getColor(b.author)};color:white;padding:1px 7px;border-radius:20px;cursor:pointer;user-select:none;" title="Voir">${b.pinLabel}</span>` : ''}
+            <span style="font-size:11px;font-weight:700;color:var(--navy);">${b.author}</span>
+            ${b.pinLabel ? `<span onmouseenter="highlightPin(String(b.id), true)" onmouseleave="highlightPin(String(b.id), false)" onclick="togglePinView(String(b.id), b.tab||'tpe')" style="font-size:10px;font-weight:700;background:var(--navy);color:white;padding:1px 7px;border-radius:20px;cursor:pointer;user-select:none;" title="Voir">${b.pinLabel}</span>` : ''}
             <span style="font-size:10px;color:var(--grey-txt);">${b.date} ${b.time}</span>
           </div>
           <div style="display:flex;gap:4px;align-items:center;">
