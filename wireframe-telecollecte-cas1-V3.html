@@ -1970,15 +1970,33 @@
               style="background:none;border:none;cursor:pointer;padding:2px;display:flex;align-items:center;justify-content:center;opacity:${inClaude?1:0.35};transition:opacity .15s;">
               ${inClaude ? LIGHTNING_ON : LIGHTNING_OFF}
             </button>
-            <button onclick="toggleReclassify('brief-${b.id}')" title="Modifier la catégorie"
+            <!-- ↻ Réécrire avec IA -->
+            <button onclick="rewriteBrief(${b.id})" title="Réécrire avec l'IA"
               style="background:none;border:none;cursor:pointer;padding:2px;display:flex;align-items:center;justify-content:center;color:var(--grey-txt);opacity:0.6;transition:opacity .15s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.6">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.5"/></svg>
             </button>
+            <!-- ✏️ Éditer le texte -->
+            <button onclick="toggleEditBrief(${b.id})" title="Modifier le texte"
+              style="background:none;border:none;cursor:pointer;padding:2px;display:flex;align-items:center;justify-content:center;color:var(--grey-txt);opacity:0.6;transition:opacity .15s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.6">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+            </button>
+            <!-- ⇄ Changer de catégorie -->
+            <button onclick="toggleReclassify('brief-${b.id}')" title="Changer de catégorie"
+              style="background:none;border:none;cursor:pointer;padding:2px 4px;font-size:14px;display:flex;align-items:center;justify-content:center;color:var(--grey-txt);opacity:0.6;transition:opacity .15s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.6">⇄</button>
             <button onclick="toggleDone(${b.id})" style="background:none;border:1px solid var(--grey-bd);border-radius:6px;padding:2px 8px;font-size:12px;cursor:pointer;">${b.done?'↩':'✓'}</button>
             <button onclick="deleteBrief(${b.id})" style="background:none;border:none;color:var(--grey-txt);font-size:16px;cursor:pointer;line-height:1;padding:0 2px;">×</button>
           </div>
         </div>
-        <div style="font-size:13px;color:var(--navy);line-height:1.5;${b.done?'text-decoration:line-through':''}">${b.text}</div>
+        <!-- Texte -->
+        <div id="brief-text-${b.id}" style="font-size:13px;color:var(--navy);line-height:1.5;${b.done?'text-decoration:line-through':''}">${b.text}</div>
+        <!-- Zone édition (cachée par défaut) -->
+        <div id="brief-edit-${b.id}" style="display:none;margin-top:6px;">
+          <textarea id="brief-edit-ta-${b.id}" style="width:100%;border:1px solid var(--navy);border-radius:8px;padding:8px;font-size:13px;font-family:inherit;resize:vertical;outline:none;color:var(--navy);min-height:60px;">${b.text}</textarea>
+          <div style="display:flex;justify-content:flex-end;gap:6px;margin-top:6px;">
+            <button onclick="cancelEditBrief(${b.id})" style="background:none;border:1px solid var(--grey-bd);border-radius:6px;padding:4px 12px;font-size:12px;cursor:pointer;font-family:inherit;color:var(--grey-txt);">Annuler</button>
+            <button onclick="saveEditBrief(${b.id})" style="background:var(--navy);color:white;border:none;border-radius:6px;padding:4px 12px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;">Enregistrer</button>
+          </div>
+        </div>
         <!-- Zone reclassification (cachée par défaut) -->
         <div id="reclassify-brief-${b.id}" style="display:none;margin-top:8px;padding-top:8px;border-top:1px dashed var(--grey-bd);">
           <span style="font-size:11px;color:var(--grey-txt);margin-right:6px;">Déplacer vers :</span>
