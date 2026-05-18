@@ -2049,36 +2049,17 @@
     pin.innerHTML = `<span style="color:white;font-size:10px;font-weight:700;">${label}</span>`;
     pin.title = `${c.author} : ${c.text}`;
 
-    // ── Drag relatif au .content ──
-    let dragging = false, startX, startY, origLeft, origTop;
-    pin.addEventListener('mousedown', e => {
-      e.stopPropagation();
-      dragging = true;
-      startX = e.clientX; startY = e.clientY;
-      origLeft = parseFloat(pin.style.left);
-      origTop  = parseFloat(pin.style.top);
-      document.body.style.cursor = 'grabbing';
-    });
-    document.addEventListener('mousemove', e => {
-      if (!dragging) return;
-      pin.style.left = (origLeft + e.clientX - startX) + 'px';
-      pin.style.top  = (origTop  + e.clientY - startY) + 'px';
-    });
-    document.addEventListener('mouseup', () => {
-      if (!dragging) return;
-      dragging = false;
-      document.body.style.cursor = commentMode ? 'crosshair' : '';
-      const idx = comments.findIndex(cc => cc.id === c.id);
-      if (idx !== -1) {
-        comments[idx].x = parseFloat(pin.style.left).toFixed(0);
-        comments[idx].y = parseFloat(pin.style.top).toFixed(0);
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(comments)); fbSave();
-      }
-    });
-
+    // Pin fixe — pas de drag
+    pin.style.cursor = 'pointer';
     pin.addEventListener('click', e => {
       e.stopPropagation();
-      if (!dragging) openThread(c.id, pin);
+      const pop = document.getElementById('thread-popover');
+      // Toggle : si déjà ouvert pour ce pin → fermer
+      if (pop && pop.classList.contains('visible') && currentThreadId === c.id) {
+        closeThread();
+      } else {
+        openThread(c.id, pin);
+      }
     });
 
     content.appendChild(pin);
