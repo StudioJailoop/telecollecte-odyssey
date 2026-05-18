@@ -2300,11 +2300,13 @@
 
     // Drag volontaire (clic maintenu + glisser) vs clic simple (ouvre/ferme)
     pin.style.cursor = 'pointer';
+    pin.style.userSelect = 'none';
     let dragMoved = false;
     let dragStartX, dragStartY, origLeft, origTop;
 
     pin.addEventListener('mousedown', e => {
       e.stopPropagation();
+      e.preventDefault(); // empêche la sélection de texte
       dragMoved = false;
       dragStartX = e.clientX;
       dragStartY = e.clientY;
@@ -2318,6 +2320,7 @@
         if (!dragMoved && Math.sqrt(dx*dx + dy*dy) < 8) return;
         dragMoved = true;
         pin.style.cursor = 'grabbing';
+        document.body.style.userSelect = 'none'; // désactive sélection texte
         pin.style.left = (origLeft + dx) + 'px';
         pin.style.top  = (origTop  + dy) + 'px';
       };
@@ -2326,6 +2329,7 @@
         document.removeEventListener('mousemove', onMove);
         document.removeEventListener('mouseup', onUp);
         pin.style.cursor = 'pointer';
+        document.body.style.userSelect = ''; // réactive sélection texte
         if (dragMoved) {
           // Persister la nouvelle position
           const idx = comments.findIndex(cc => cc.id === c.id);
