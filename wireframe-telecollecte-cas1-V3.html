@@ -682,6 +682,11 @@
       📋 Règle de gestion
       <span id="cnt-rg" style="display:none;background:#7C3AED;color:white;border-radius:100px;font-size:10px;font-weight:700;padding:1px 6px;margin-left:4px;"></span>
     </button>
+    <button onclick="setBriefTab('question')" id="btab-question"
+      style="background:none;border:none;border-bottom:2.5px solid transparent;padding:11px 16px;font-size:13px;font-weight:500;color:var(--grey-txt);cursor:pointer;font-family:inherit;white-space:nowrap;transition:all .15s;">
+      ❓ Question
+      <span id="cnt-question" style="display:none;background:#0891B2;color:white;border-radius:100px;font-size:10px;font-weight:700;padding:1px 6px;margin-left:4px;"></span>
+    </button>
   </div>
 
   <!-- Zone saisie (masquée sur onglet équipe) -->
@@ -1219,6 +1224,9 @@
       <label id="cpt-rg" style="display:flex;align-items:center;gap:4px;cursor:pointer;font-size:12px;font-weight:600;padding:4px 10px;border-radius:20px;border:1.5px solid var(--grey-bd);color:var(--grey-txt);transition:all .15s;">
         <input type="radio" name="cp-type" value="rg" style="display:none;" onchange="updateCpType()"> 📋 Règle de gestion
       </label>
+      <label id="cpt-question" style="display:flex;align-items:center;gap:4px;cursor:pointer;font-size:12px;font-weight:600;padding:4px 10px;border-radius:20px;border:1.5px solid var(--grey-bd);color:var(--grey-txt);transition:all .15s;">
+        <input type="radio" name="cp-type" value="question" style="display:none;" onchange="updateCpType()"> ❓ Question
+      </label>
     </div>
   </div>
   <textarea id="cp-text" placeholder="Écrire un commentaire..."></textarea>
@@ -1258,8 +1266,8 @@
   const BRIEFS_KEY = 'wf_briefs_telecollecte';
   let briefs = JSON.parse(localStorage.getItem(BRIEFS_KEY) || '[]');
 
-  const TYPE_LABELS = { retour:'💬 Retour', idee:'💡 Idée', rg:'📋 Règle de gestion', team:'💬 Équipe' };
-  const TYPE_COLORS = { retour:'#1E2643', idee:'#D97706', rg:'#7C3AED', team:'#D93025' };
+  const TYPE_LABELS = { retour:'💬 Retour', idee:'💡 Idée', rg:'📋 Règle de gestion', question:'❓ Question', team:'💬 Équipe' };
+  const TYPE_COLORS = { retour:'#1E2643', idee:'#D97706', rg:'#7C3AED', question:'#0891B2', team:'#D93025' };
   let currentBriefTab = 'retour';
   // claudeSelection : Set des IDs (briefs + teamComment keys)
   let claudeSelection = new Set();
@@ -1355,7 +1363,7 @@
   }
 
   function updateAllCounts() {
-    ['retour','idee','rg'].forEach(t => {
+    ['retour','idee','rg','question'].forEach(t => {
       const cnt = document.getElementById('cnt-' + t);
       const n = briefs.filter(b => b.type === t && !b.done).length;
       if (cnt) { cnt.style.display = n > 0 ? 'inline-block' : 'none'; cnt.textContent = n; }
@@ -1465,11 +1473,11 @@
       btn.style.fontWeight = isActive ? '700' : '600';
     });
     // Styles tabs ligne 2 (Retour / Idée / RG)
-    ['retour','idee','rg'].forEach(t => {
+    ['retour','idee','rg','question'].forEach(t => {
       const btn = document.getElementById('btab-' + t);
       if (!btn) return;
       const isActive = t === tab;
-      const color = t === 'retour' ? 'var(--navy)' : t === 'idee' ? '#D97706' : '#7C3AED';
+      const color = t === 'retour' ? 'var(--navy)' : t === 'idee' ? '#D97706' : t === 'rg' ? '#7C3AED' : '#0891B2';
       btn.style.borderBottom = isActive ? `2.5px solid ${color}` : '2.5px solid transparent';
       btn.style.color = isActive ? color : 'var(--grey-txt)';
       btn.style.fontWeight = isActive ? '700' : '500';
@@ -1717,7 +1725,7 @@
     const color = TYPE_COLORS[currentBriefTab] || '#1E2643';
 
     // Mettre à jour les compteurs sur les onglets
-    ['retour','idee','rg'].forEach(t => {
+    ['retour','idee','rg','question'].forEach(t => {
       const cnt = document.getElementById('cnt-' + t);
       const n = briefs.filter(b => b.type === t && !b.done).length;
       if (cnt) { cnt.style.display = n > 0 ? 'inline-block' : 'none'; cnt.textContent = n; }
@@ -2183,8 +2191,8 @@
   }
 
   function updateCpType() {
-    const types = { retour: { color:'#1E2643', label:'💬 Retour' }, idee: { color:'#D97706', label:'💡 Idée' }, rg: { color:'#7C3AED', label:'📋 Règle de gestion' } };
-    ['retour','idee','rg'].forEach(t => {
+    const types = { retour: { color:'#1E2643', label:'💬 Retour' }, idee: { color:'#D97706', label:'💡 Idée' }, rg: { color:'#7C3AED', label:'📋 Règle de gestion' }, question: { color:'#0891B2', label:'❓ Question' } };
+    ['retour','idee','rg','question'].forEach(t => {
       const lbl = document.getElementById('cpt-' + t);
       const radio = lbl?.querySelector('input');
       if (!lbl || !radio) return;
