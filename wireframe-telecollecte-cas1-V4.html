@@ -2295,12 +2295,54 @@
     pin.innerHTML = `<span style="color:white;font-size:10px;font-weight:700;">${label}</span>`;
     pin.title = `${c.author} : ${c.text}`;
 
-    // Pin fixe — pas de drag
+    // Drag volontaire (clic maintenu + glisser) vs clic simple (ouvre/ferme)
     pin.style.cursor = 'pointer';
+    let dragMoved = false;
+    let dragStartX, dragStartY, origLeft, origTop;
+
+    pin.addEventListener('mousedown', e => {
+      e.stopPropagation();
+      dragMoved = false;
+      dragStartX = e.clientX;
+      dragStartY = e.clientY;
+      origLeft = parseFloat(pin.style.left);
+      origTop  = parseFloat(pin.style.top);
+
+      const onMove = e => {
+        const dx = e.clientX - dragStartX;
+        const dy = e.clientY - dragStartY;
+        // Ne commence le drag qu'après 8px de déplacement — évite les micro-mouvements
+        if (!dragMoved && Math.sqrt(dx*dx + dy*dy) < 8) return;
+        dragMoved = true;
+        pin.style.cursor = 'grabbing';
+        pin.style.left = (origLeft + dx) + 'px';
+        pin.style.top  = (origTop  + dy) + 'px';
+      };
+
+      const onUp = () => {
+        document.removeEventListener('mousemove', onMove);
+        document.removeEventListener('mouseup', onUp);
+        pin.style.cursor = 'pointer';
+        if (dragMoved) {
+          // Persister la nouvelle position
+          const idx = comments.findIndex(cc => cc.id === c.id);
+          if (idx !== -1) {
+            comments[idx].x = parseFloat(pin.style.left).toFixed(0);
+            comments[idx].y = parseFloat(pin.style.top).toFixed(0);
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(comments));
+            fbSave();
+          }
+        }
+      };
+
+      document.addEventListener('mousemove', onMove);
+      document.addEventListener('mouseup', onUp);
+    });
+
     pin.addEventListener('click', e => {
       e.stopPropagation();
+      if (dragMoved) return; // Ignorer le click si c'était un drag
       const pop = document.getElementById('thread-popover');
-      // Toggle : si déjà ouvert pour ce pin → fermer
       if (pop && pop.classList.contains('visible') && currentThreadId === c.id) {
         closeThread();
       } else {
