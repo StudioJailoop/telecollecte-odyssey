@@ -2806,14 +2806,14 @@
   }
 
 
-  // Reset one-time v2 : remettre tous les briefs en non-traité
+  // Reset v3 : remettre TOUS les briefs en non-traité (reset propre)
   (function() {
-    const RESET_KEY2 = 'wf_briefs_reset_done_v2';
-    if (!localStorage.getItem(RESET_KEY2)) {
+    const RESET_KEY3 = 'wf_briefs_reset_done_v3';
+    if (!localStorage.getItem(RESET_KEY3)) {
       const briefs = JSON.parse(localStorage.getItem('wf_briefs_telecollecte') || '[]');
       briefs.forEach(b => { b.done = false; });
       localStorage.setItem('wf_briefs_telecollecte', JSON.stringify(briefs));
-      localStorage.setItem(RESET_KEY2, '1');
+      localStorage.setItem(RESET_KEY3, '1');
     }
   })();
   // Charger les commentaires du tab actif au démarrage
