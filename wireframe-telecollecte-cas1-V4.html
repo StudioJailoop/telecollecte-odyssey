@@ -2015,28 +2015,42 @@
             <span style="font-size:11px;font-weight:700;color:var(--navy);">${b.author}</span>
             ${b.pinLabel ? `<span onmouseenter="highlightPin('${b.sourcePin||b.id}', true)" onmouseleave="highlightPin('${b.sourcePin||b.id}', false)" onclick="togglePinView('${b.sourcePin||b.id}', '${b.tab||'tpe'}')" style="font-size:10px;font-weight:700;background:var(--navy);color:white;padding:1px 7px;border-radius:20px;cursor:pointer;user-select:none;" title="Voir">${b.pinLabel}</span>` : ''}
             <span style="font-size:10px;color:var(--grey-txt);">${b.date} ${b.time}</span>
-            ${b.done ? `<span style="font-size:10px;font-weight:700;background:#D1FAE5;color:#059669;border:1px solid #059669;border-radius:20px;padding:1px 8px;">Traité</span>` : ''}
+
           </div>
           <div style="display:flex;gap:4px;align-items:center;">
+            ${!b.done ? `
+            <!-- ⚡ Claude -->
             <button onclick="toggleClaude('${key}')" title="${inClaude?'Retirer de Claude':'Ajouter à Claude'}"
               style="background:none;border:none;cursor:pointer;padding:2px;display:flex;align-items:center;justify-content:center;opacity:${inClaude?1:0.35};transition:opacity .15s;">
               ${inClaude ? LIGHTNING_ON : LIGHTNING_OFF}
             </button>
-            <!-- ↻ Réécrire avec IA -->
+            <!-- ↻ Réécrire -->
             <button onclick="rewriteBrief(${b.id})" title="Réécrire avec l'IA"
               style="background:none;border:none;cursor:pointer;padding:2px;display:flex;align-items:center;justify-content:center;color:var(--grey-txt);opacity:0.6;transition:opacity .15s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.6">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.5"/></svg>
             </button>
-            <!-- ✏️ Éditer le texte -->
+            <!-- ✏️ Éditer -->
             <button onclick="toggleEditBrief(${b.id})" title="Modifier le texte"
               style="background:none;border:none;cursor:pointer;padding:2px;display:flex;align-items:center;justify-content:center;color:var(--grey-txt);opacity:0.6;transition:opacity .15s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.6">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
             </button>
-            <!-- ⇄ Changer de catégorie -->
+            <!-- ⇄ Catégorie -->
             <button onclick="toggleReclassify('brief-${b.id}')" title="Changer de catégorie"
               style="background:none;border:none;cursor:pointer;padding:2px 4px;font-size:14px;display:flex;align-items:center;justify-content:center;color:var(--grey-txt);opacity:0.6;transition:opacity .15s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.6">⇄</button>
-            <button onclick="toggleDone(${b.id})" style="background:none;border:1px solid var(--grey-bd);border-radius:6px;padding:2px 8px;font-size:12px;cursor:pointer;">${b.done?'↩':'✓'}</button>
-            <button onclick="deleteBrief(${b.id})" style="background:none;border:none;color:var(--grey-txt);font-size:16px;cursor:pointer;line-height:1;padding:0 2px;">×</button>
+            ` : ''}
+            <!-- ✓ check vert (traité) / bulle check verte si done -->
+            <button onclick="toggleDone(${b.id})" title="${b.done?'Remettre en cours':'Marquer comme traité'}"
+              style="background:none;border:none;cursor:pointer;padding:2px;display:flex;align-items:center;justify-content:center;transition:opacity .15s;" onmouseover="this.style.opacity=0.7" onmouseout="this.style.opacity=1">
+              ${b.done
+                ? `<svg width="20" height="20" viewBox="0 0 24 24" fill="#059669" stroke="none"><circle cx="12" cy="12" r="10"/><polyline points="7 12 10 15 17 9" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>`
+                : `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6B7280" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="7 12 10 15 17 9"/></svg>`
+              }
+            </button>
+            <!-- 🗑 Poubelle -->
+            <button onclick="deleteBrief(${b.id})" title="Supprimer"
+              style="background:none;border:none;cursor:pointer;padding:2px;display:flex;align-items:center;justify-content:center;color:var(--grey-txt);opacity:0.5;transition:opacity .15s;" onmouseover="this.style.color='#D93025';this.style.opacity=1" onmouseout="this.style.color='var(--grey-txt)';this.style.opacity=0.5">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+            </button>
           </div>
         </div>
         <!-- Texte -->
