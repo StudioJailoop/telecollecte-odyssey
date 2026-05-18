@@ -681,9 +681,10 @@
     </button>
     <!-- Switch Archivés — aligné à droite -->
     <div style="margin-left:auto;display:flex;align-items:center;gap:10px;">
-      <button onclick="setBriefTab('lastmodifs')" id="btab-lastmodifs"
-        style="display:none;align-items:center;gap:6px;background:none;border:1.5px solid #D93025;border-radius:20px;padding:6px 16px;font-size:13px;font-weight:600;color:#D93025;cursor:pointer;font-family:inherit;white-space:nowrap;">
-        🔴 Dernières modifs
+      <button onclick="toggleLastModifs()" id="btab-lastmodifs"
+        style="display:none;align-items:center;gap:6px;background:none;border:1.5px solid #D93025;border-radius:20px;padding:6px 16px;font-size:13px;font-weight:600;color:#D93025;cursor:pointer;font-family:inherit;white-space:nowrap;transition:all .15s;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13"/><path d="M22 2L15 22l-4-9-9-4 20-7z"/></svg>
+        Dernières modifs
       </button>
       <span style="font-size:13px;font-weight:600;color:var(--grey-txt);">Archivés</span>
       <label class="switch" style="margin:0;">
@@ -1570,9 +1571,25 @@
   }
 
 
+
+  function toggleLastModifs() {
+    const btn = document.getElementById('btab-lastmodifs');
+    const isActive = currentBriefTab === 'lastmodifs';
+    if (isActive) {
+      // Désactiver — revenir sur retour
+      btn.style.background = 'none';
+      btn.style.color = '#D93025';
+      setBriefTab('retour');
+    } else {
+      // Activer
+      btn.style.background = '#D93025';
+      btn.style.color = 'white';
+      setBriefTab('lastmodifs');
+    }
+  }
+
   function renderLastModifs() {
     const panel = document.getElementById('lastmodifs-panel');
-    // Récupérer les éléments traités triés du plus récent au plus ancien
     const done = briefs.filter(b => b.done).sort((a,b) => b.id - a.id);
 
     if (!done.length) {
@@ -1580,26 +1597,40 @@
       return;
     }
 
-    panel.innerHTML = done.map(b => {
-      const color = TYPE_COLORS[b.type] || '#6B7280';
-      return `
-      <div style="background:var(--white);border:1.5px solid #D9302522;border-left:3px solid #D93025;border-radius:10px;padding:12px 14px;">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
-          <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
-            <span style="font-size:10px;font-weight:700;color:${color};background:${color}18;padding:1px 8px;border-radius:20px;">${TYPE_LABELS[b.type]||b.type}</span>
-            <span style="font-size:11px;font-weight:700;color:var(--navy);">${b.author}</span>
-            ${b.pinLabel ? `<span style="font-size:10px;font-weight:700;background:var(--navy);color:white;padding:1px 7px;border-radius:20px;">${b.pinLabel}</span>` : ''}
-            <span style="font-size:10px;color:var(--grey-txt);">${b.date}</span>
-          </div>
-          <!-- Bouton Pas ok -->
-          <button onclick="notOkBrief(${b.id})"
-            style="display:flex;align-items:center;gap:4px;background:#D9302512;border:1.5px solid #D93025;border-radius:6px;padding:4px 12px;font-size:12px;font-weight:700;color:#D93025;cursor:pointer;font-family:inherit;white-space:nowrap;">
-            👎 Pas ok
-          </button>
+    // Grouper par date
+    const byDate = {};
+    done.forEach(b => { const d = b.date || 'Sans date'; if (!byDate[d]) byDate[d] = []; byDate[d].push(b); });
+
+    let html = '';
+    Object.entries(byDate).forEach(([date, items]) => {
+      html += `<div style="margin-bottom:20px;">
+        <!-- En-tête journal -->
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+          <div style="height:1px;flex:1;background:var(--grey-bd);"></div>
+          <span style="font-size:11px;font-weight:700;color:var(--grey-txt);white-space:nowrap;">📅 ${date}</span>
+          <div style="height:1px;flex:1;background:var(--grey-bd);"></div>
         </div>
-        <div style="font-size:13px;color:var(--navy);line-height:1.5;">${b.text}</div>
+        ${items.map((b, i) => {
+          const color = TYPE_COLORS[b.type] || '#6B7280';
+          return `<div style="background:var(--white);border:1px solid var(--grey-bd);border-left:3px solid ${color};border-radius:10px;padding:12px 14px;margin-bottom:8px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+              <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+                <span style="font-size:10px;color:var(--grey-txt);">${b.time||''}</span>
+                <span style="font-size:10px;font-weight:700;color:${color};background:${color}18;padding:1px 8px;border-radius:20px;">${TYPE_LABELS[b.type]||b.type}</span>
+                ${b.pinLabel ? `<span style="font-size:10px;font-weight:700;background:var(--navy);color:white;padding:1px 7px;border-radius:20px;">${b.pinLabel}</span>` : ''}
+                <span style="font-size:11px;font-weight:600;color:var(--navy);">${b.author}</span>
+              </div>
+              <button onclick="notOkBrief(${b.id})" title="Pas ok — rouvrir pour correction"
+                style="display:flex;align-items:center;gap:4px;background:#D9302512;border:1.5px solid #D93025;border-radius:6px;padding:3px 10px;font-size:11px;font-weight:700;color:#D93025;cursor:pointer;font-family:inherit;white-space:nowrap;">
+                ↩ Restaurer
+              </button>
+            </div>
+            <div style="font-size:13px;color:var(--navy);line-height:1.5;">${b.text}</div>
+          </div>`;
+        }).join('')}
       </div>`;
-    }).join('');
+    });
+    panel.innerHTML = html;
   }
 
   function notOkBrief(id) {
