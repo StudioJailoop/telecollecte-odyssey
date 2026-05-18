@@ -1871,6 +1871,7 @@
     // Footer : sur onglet Claude le bouton "Tout effacer" devient "Vider la sélection"
     const clearBtn = document.getElementById('footer-clear-btn');
     if (clearBtn) clearBtn.textContent = tab === 'claude' ? 'Vider la sélection' : 'Tout effacer';
+    updateAllCounts(); // recalculer les badges à chaque changement d'onglet
     if (tab === 'team') loadTeamComments();
     else if (tab === 'lastmodifs') renderLastModifs();
     else if (tab === 'claude') {
