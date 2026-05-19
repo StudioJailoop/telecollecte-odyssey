@@ -1165,7 +1165,7 @@
       <button class="btn-v" id="btnv">Valider la saisie</button>
       <!-- Bouton Régularisation — même niveau hiérarchique, visible uniquement sur l'onglet Régularisation -->
       <button class="btn-v" id="btnv-ant-footer" style="display:none;">Valider la saisie</button>
-      <button class="btn-v" id="btnv-reg" disabled style="display:none;opacity:0.5;">Faire une régularisation</button>
+      <button class="btn-v off" id="btnv-reg" style="display:none;">Faire une régularisation</button>
     </footer>
   </main>
 </div>
@@ -2988,16 +2988,14 @@
       ecartInp.classList.remove('ecart-error', 'ecart-ok');
       hint.textContent = '';
       hint.className = 'reg-hint';
-      btn.classList.remove('active-btn');
-      btn.setAttribute('disabled', '');
+      btn.className = 'btn-v off';
     } else if (diff < 0.01) {
       // Total correct
       ecartInp.classList.remove('ecart-error');
       ecartInp.classList.add('ecart-ok');
       hint.textContent = '✓ Le total correspond à l\'écart';
       hint.className = 'reg-hint ok';
-      btn.classList.add('active-btn');
-      btn.removeAttribute('disabled');
+      btn.className = 'btn-v';
     } else {
       // Écart non soldé
       ecartInp.classList.remove('ecart-ok');
@@ -3005,8 +3003,7 @@
       const restant = (ecart - sum).toFixed(2).replace('.', ',');
       hint.textContent = `Écart restant : ${restant} €`;
       hint.className = 'reg-hint err';
-      btn.classList.remove('active-btn');
-      btn.setAttribute('disabled', '');
+      btn.className = 'btn-v off';
     }
   }
 </script>
