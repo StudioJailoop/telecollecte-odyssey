@@ -2419,7 +2419,7 @@
   setInterval(fbLoad, 5000);
   // Chargement initial depuis Firebase
   fbLoad();
-  let commentMode = false;
+  let commentMode = localStorage.getItem('wf_pins_visible') === '1';
   let pendingPin = null;
   let currentTab = 'tpe'; // tab active au moment du commentaire
   const AUTHOR_COLORS = {
@@ -2435,6 +2435,7 @@
 
   function setCmtMode(on) {
     commentMode = on;
+    localStorage.setItem('wf_pins_visible', on ? '1' : '0');
     document.getElementById('sw-comments').checked = on;
     document.body.style.cursor = on ? 'crosshair' : '';
     refreshPins();
@@ -2901,7 +2902,8 @@
       localStorage.setItem('wf_reset_v4', '1');
     }
   })();
-  // Charger les commentaires du tab actif au démarrage
+  // Restaurer l'état du toggle pins et afficher les pins au démarrage
+  document.getElementById('sw-comments').checked = commentMode;
   refreshPins();
   renderComments();
   if (typeof updateArchivesCount === "function") updateArchivesCount();
