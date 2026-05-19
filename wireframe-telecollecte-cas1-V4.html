@@ -2162,9 +2162,14 @@
       });
       if (res.ok) {
         btn.textContent = '✓ Envoyé !';
-        // Marquer tous comme traités
-        briefs.forEach(b => { if (!b.done) b.done = true; });
+        // Marquer UNIQUEMENT les briefs sélectionnés pour Claude comme traités
+        claudeSelection.forEach(key => {
+          const b = briefs.find(b => String(b.id) === String(key));
+          if (b) b.done = true;
+        });
         localStorage.setItem(BRIEFS_KEY, JSON.stringify(briefs));
+        claudeSelection.clear();
+        updateAllCounts();
         renderBriefs();
         setTimeout(() => { btn.textContent = '⚡ Envoyer à Claude'; }, 2000);
       }
@@ -2883,6 +2888,16 @@
 
 
 
+
+  // Reset v4 : corriger le bug qui avait tout mis en done=true
+  (function() {
+    if (!localStorage.getItem('wf_reset_v4')) {
+      const b = JSON.parse(localStorage.getItem('wf_briefs_telecollecte') || '[]');
+      b.forEach(x => { x.done = false; });
+      localStorage.setItem('wf_briefs_telecollecte', JSON.stringify(b));
+      localStorage.setItem('wf_reset_v4', '1');
+    }
+  })();
   // Charger les commentaires du tab actif au démarrage
   refreshPins();
   renderComments();
