@@ -1,5 +1,30 @@
 # KNOWN_BUGS.md
 
+## ⚡ Retour arrière d'urgence
+
+Si une régression est détectée, restaurer immédiatement :
+```bash
+# Option 1 — dernier commit stable connu (session 2026-05-19)
+cd "/Users/sebastienkeller/Desktop/Claude Yaki"
+git log --oneline -10   # repérer le bon commit
+git checkout <hash> -- wireframe-telecollecte-cas1-V4.html
+git commit -m "Revert: retour version stable"
+git push origin main
+
+# Option 2 — copie REF immuable (état V4 originel)
+cp wireframe-telecollecte-cas1-V4-REF.html wireframe-telecollecte-cas1-V4.html
+```
+
+## État stable — session 2026-05-19
+
+Dernières features stables (commit `9cb6aba`) :
+- ✅ Boutons CTA dans le `bloc-date` (alignés à droite du champ date)
+- ✅ Bouton sticky dans barre TPE au scroll (apparaît quand bloc-date hors viewport)
+- ✅ Footer supprimé
+- ✅ `openBriefs()` recharge `briefs` depuis localStorage → plus de désync
+- ✅ Couleurs auteurs `getColor()` corrigées
+- ✅ Modale Retours PO : 4 onglets (Retour / Idée / RG / Question)
+
 ## Bugs résolus — NE PAS RÉINTRODUIRE
 
 ### BUG-001 : Badges incorrects en mode Archives ★★★

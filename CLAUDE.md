@@ -38,6 +38,30 @@ Ouvrir le wireframe : `http://localhost:8765/wireframe-telecollecte-cas1-V4.html
 6. **Max 2 tentatives de fix** puis poser des questions précises
 7. **ARCHIVAGE** : seuls `claudeSelection` items → `done=true`. JAMAIS `briefs.forEach(b => b.done=true)`
 
+## Commit de référence stable — 2026-05-19
+
+```
+9cb6aba  — état stable avec toutes les features de la session 2026-05-19
+```
+
+Features incluses dans cet état stable :
+- Boutons CTA dans le bloc-date (text → date → bouton)
+- Bouton sticky dans barre TPE au scroll
+- Footer supprimé
+- openBriefs() recharge briefs depuis localStorage
+- Couleurs auteurs corrigées
+
+**En cas de régression → voir KNOWN_BUGS.md section "Retour arrière d'urgence"**
+
+## Anti-régression — vérifications OBLIGATOIRES avant tout push
+
+Après CHAQUE modification, vérifier avec Playwright :
+1. Modale Retours PO s'ouvre → briefs s'affichent (pas "Aucun élément" si des briefs existent)
+2. Onglet Télécollecte → bouton "Valider la saisie" dans le bloc-date
+3. Scroll → bouton réapparaît dans barre TPE sticky
+4. Onglet Régularisation → "Faire une régularisation" visible
+5. Aucune erreur JS dans la console (hors Firebase offline)
+
 ## Méthodologie tests — OBLIGATOIRE après chaque grosse feature
 
 Après chaque modification significative, exécuter cette checklist Playwright **avant** de pusher :
