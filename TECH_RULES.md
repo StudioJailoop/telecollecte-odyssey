@@ -122,4 +122,4 @@ btn.style.display = 'block'   // ⚠️ casse le flex:2 du bouton
 | `wf_briefs_trash` | Corbeille 30j |
 | `wf_comments_telecollecte` | Pins commentaires |
 | `wf_pin_counter` | Compteur global pins |
-| `wf_briefs_reset_done_v4` | Flag reset one-time |
+| `wf_reset_v4` | Flag reset one-time |

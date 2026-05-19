@@ -2427,10 +2427,13 @@
     'Julie':     '#7C3AED',
     'Nelly':     '#059669',
     'Éric':      '#DC2626',
+    'Jérôme':    '#DC2626',
+    'Kirsty':    '#0891B2',
+    'Laurent':   '#D97706',
   };
 
   function getColor(author) {
-    return '#D93025'; // toujours rouge
+    return AUTHOR_COLORS[author] || '#6B7280';
   }
 
   function setCmtMode(on) {

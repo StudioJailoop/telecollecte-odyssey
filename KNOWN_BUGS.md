@@ -28,10 +28,12 @@
 - **Cause** : Style inline `display:none` a priorité sur JS
 - **Fix** : `style.setProperty('display', 'flex', 'important')`
 
-### BUG-006 : Nouveaux pins de mauvaise couleur ★
-- **Symptôme** : Tous les pins en rouge même si type choisi
-- **Cause** : `getColor()` retournait toujours `#D93025`
-- **Fix** : `getColor()` utilise `AUTHOR_COLORS` par auteur
+### BUG-006 : Noms d'auteurs en rouge dans les threads ★
+- **Symptôme** : Tous les noms d'auteurs affichés en rouge dans les bulles de thread, quelle que soit la personne
+- **Cause** : `getColor()` retournait toujours `#D93025` — `AUTHOR_COLORS` était déclarée mais jamais utilisée
+- **Note** : Bug encore présent dans V4 (détecté lors de l'audit runtime 2026-05-19)
+- **Fix appliqué en V4** : `getColor()` lit maintenant `AUTHOR_COLORS[author]`, fallback `#6B7280`
+- **Fix complémentaire** : `AUTHOR_COLORS` complétée avec Jérôme (#DC2626), Kirsty (#0891B2), Laurent (#D97706)
 
 ---
 
