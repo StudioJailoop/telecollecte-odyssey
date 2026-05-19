@@ -1315,10 +1315,7 @@
     });
     // Masquer bouton Envoyer à Claude en mode archives — et onglet Claude uniquement
     const copyBtn = document.getElementById('copy-btn');
-    if (copyBtn) {
-      copyBtn.style.display = (on || currentBriefTab === 'claude') ? 'none' : 'flex';
-      copyBtn.style.flex = '2';
-    }
+    if (copyBtn) copyBtn.style.display = (on || currentBriefTab === 'claude') ? 'none' : 'block';
     // Afficher pill Dernières modifs uniquement en mode archives
     const tabLastmodifs = document.getElementById('btab-lastmodifs');
     if (tabLastmodifs) tabLastmodifs.style.display = on ? 'flex' : 'none';
@@ -1946,7 +1943,7 @@
     if (clearBtn) clearBtn.textContent = tab === 'claude' ? 'Vider la sélection' : 'Tout effacer';
     // Bouton Envoyer à Claude : visible sauf en mode archives ou onglet Claude
     const copyBtnTab = document.getElementById('copy-btn');
-    if (copyBtnTab) { copyBtnTab.style.display = (archivesMode || tab === 'claude') ? 'none' : 'flex'; copyBtnTab.style.flex = '2'; }
+    if (copyBtnTab) copyBtnTab.style.display = (archivesMode || tab === 'claude') ? 'none' : 'block';
     updateAllCounts(); // recalculer les badges à chaque changement d'onglet
     if (tab === 'team') loadTeamComments();
     else if (tab === 'lastmodifs') renderLastModifs();
