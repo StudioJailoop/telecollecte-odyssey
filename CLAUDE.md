@@ -38,6 +38,45 @@ Ouvrir le wireframe : `http://localhost:8765/wireframe-telecollecte-cas1-V4.html
 6. **Max 2 tentatives de fix** puis poser des questions précises
 7. **ARCHIVAGE** : seuls `claudeSelection` items → `done=true`. JAMAIS `briefs.forEach(b => b.done=true)`
 
+## Méthodologie tests — OBLIGATOIRE après chaque grosse feature
+
+Après chaque modification significative, exécuter cette checklist Playwright **avant** de pusher :
+
+### Checklist de régression — à vérifier à chaque session
+```
+1. Modale Retours PO
+   - Ouvrir la modale → les briefs existants s'affichent (pas "Aucun élément")
+   - Onglet Retour / Idée / RG / Question → chacun affiche le bon contenu
+   - Ajouter un brief → apparaît immédiatement
+   - Mode Archives (switch) → affiche les done=true uniquement
+
+2. Navigation onglets
+   - Télécollecte → bouton "Valider la saisie" visible dans bloc-date
+   - Scroll → bouton réapparaît dans barre TPE sticky
+   - Date antérieure → même comportement
+   - Régularisation → "Faire une régularisation" visible, activé quand total OK
+
+3. Badges
+   - Badges des types respectent archivesMode (BUG-001)
+   - sendToClaude → seuls les sélectionnés passent done=true (BUG-002)
+
+4. Pins
+   - Les pins s'affichent sur le wireframe
+   - Clic sur pin → popover thread s'ouvre
+```
+
+### Après chaque grosse feature — commande Playwright
+```javascript
+// Vérifier l'absence d'erreurs JS critiques
+mcp__playwright__browser_console_messages({ level: 'error' })
+
+// Vérifier que les briefs sont rendus
+mcp__playwright__browser_evaluate(() =>
+  document.getElementById('briefs-list').children.length > 0 ||
+  document.getElementById('briefs-list').textContent.includes('Aucun')
+)
+```
+
 ## Serveur local (routes)
 
 | Route | Méthode | Usage |
