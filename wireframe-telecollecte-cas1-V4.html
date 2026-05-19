@@ -870,6 +870,7 @@
           <button class="tpe-tab"        onclick="scrollToTpe(3,this)">TPE 3</button>
           <button class="tpe-tab"        onclick="scrollToTpe(4,this)">TPE 4</button>
           <button class="tpe-tab"        onclick="scrollToTpe(5,this)">TPE 5</button>
+          <button class="btn-date-cta" id="btnv-sticky" style="display:none;">Valider la saisie</button>
         </div>
 
         <!-- TPE 1 -->
@@ -969,6 +970,7 @@
           <button class="tpe-tab"        onclick="scrollToAntTpe(3,this)">TPE 3</button>
           <button class="tpe-tab"        onclick="scrollToAntTpe(4,this)">TPE 4</button>
           <button class="tpe-tab"        onclick="scrollToAntTpe(5,this)">TPE 5</button>
+          <button class="btn-date-cta" id="btnv-ant-sticky" style="display:none;">Valider la saisie</button>
         </div>
 
         <!-- Macro helper pour chaque TPE -->
@@ -2292,16 +2294,28 @@
     closeThread();
     refreshPins();
   }
-  // Détection sticky : fond blanc uniquement quand la barre est collée
+  // Détection sticky barre TPE — fond blanc + bouton sticky selon scroll
   const tpeBar = document.getElementById('tpe-tabs-bar');
-  // Sentinelle invisible juste au-dessus de la barre
   const sentinel = document.createElement('div');
   sentinel.style.cssText = 'height:1px;margin-bottom:-1px;';
   tpeBar.parentNode.insertBefore(sentinel, tpeBar);
 
+  const scrollRoot = document.querySelector('.content');
+
+  // Observer du bloc-date Télécollecte — affiche le bouton sticky quand le bloc sort du viewport
+  const blocDateTpe = document.querySelector('#mc .bloc-date');
+  const btnvSticky = document.getElementById('btnv-sticky');
+  const btnvMain = document.getElementById('btnv');
+  new IntersectionObserver(([entry]) => {
+    const hidden = !entry.isIntersecting;
+    btnvSticky.style.display = hidden ? 'flex' : 'none';
+    // Synchronise l'état actif/inactif
+    btnvSticky.className = btnvMain.className;
+  }, { root: scrollRoot, threshold: 0 }).observe(blocDateTpe);
+
   const observer = new IntersectionObserver(([entry]) => {
     tpeBar.classList.toggle('is-stuck', !entry.isIntersecting);
-  }, { root: document.querySelector('.content'), threshold: 0 });
+  }, { root: scrollRoot, threshold: 0 });
   observer.observe(sentinel);
 
   // Observer sticky pour la barre ant
@@ -2309,9 +2323,20 @@
   const sentinelAnt = document.createElement('div');
   sentinelAnt.style.cssText = 'height:1px;margin-bottom:-1px;';
   tpeBarAnt.parentNode.insertBefore(sentinelAnt, tpeBarAnt);
+
+  // Observer du bloc-date Date antérieure
+  const blocDateAnt = document.querySelector('#view-ant .bloc-date');
+  const btnvAntSticky = document.getElementById('btnv-ant-sticky');
+  const btnvAnt = document.getElementById('btnv-ant');
+  new IntersectionObserver(([entry]) => {
+    const hidden = !entry.isIntersecting;
+    btnvAntSticky.style.display = hidden ? 'flex' : 'none';
+    btnvAntSticky.className = btnvAnt.className;
+  }, { root: scrollRoot, threshold: 0 }).observe(blocDateAnt);
+
   new IntersectionObserver(([entry]) => {
     tpeBarAnt.classList.toggle('is-stuck', !entry.isIntersecting);
-  }, { root: document.querySelector('.content'), threshold: 0 }).observe(sentinelAnt);
+  }, { root: scrollRoot, threshold: 0 }).observe(sentinelAnt);
 
   function scrollToAntTpe(n, el) {
     document.querySelectorAll('#tpe-tabs-bar-ant .tpe-tab').forEach(t => t.classList.remove('active'));
@@ -2916,7 +2941,10 @@
     });
     const btnTpe = document.getElementById('btnv');
     if (btnTpe) {
-      btnTpe.className = tpeOk ? 'btn-date-cta' : 'btn-date-cta off';
+      const cls = tpeOk ? 'btn-date-cta' : 'btn-date-cta off';
+      btnTpe.className = cls;
+      const s = document.getElementById('btnv-sticky');
+      if (s && s.style.display !== 'none') s.className = cls;
     }
 
     // ── Date antérieure ──
@@ -2933,7 +2961,10 @@
     });
     const btnAnt = document.getElementById('btnv-ant');
     if (btnAnt) {
-      btnAnt.className = antOk ? 'btn-date-cta' : 'btn-date-cta off';
+      const cls = antOk ? 'btn-date-cta' : 'btn-date-cta off';
+      btnAnt.className = cls;
+      const s = document.getElementById('btnv-ant-sticky');
+      if (s && s.style.display !== 'none') s.className = cls;
     }
   }
 
