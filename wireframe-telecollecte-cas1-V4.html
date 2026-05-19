@@ -271,6 +271,29 @@
     }
     .bloc-date .date-label {
       font-size: 16px; color: var(--navy);
+      flex: 1;
+    }
+    /* Bouton CTA dans le bloc-date — DS Saffran yellow */
+    .btn-date-cta {
+      margin-left: auto;
+      background: #FDBE00;
+      color: #000;
+      border: none;
+      border-radius: 100px;
+      padding: 0 32px;
+      height: 48px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      white-space: nowrap;
+      flex-shrink: 0;
+      transition: background 0.15s, color 0.15s;
+    }
+    .btn-date-cta.off {
+      background: #FFE699;
+      color: #999;
+      cursor: not-allowed;
     }
 
     /* Textfield DS Main Trident 2.0 — State=Default, Icon=True */
@@ -324,29 +347,6 @@
       height: auto;
       padding-top: 12px;
       padding-bottom: 12px;
-    }
-    /* Bouton Valider — DS Main Trident 2.0 — Saffran yellow */
-    .tpe-tabs-bar .btn-validate-inline {
-      margin-left: auto;
-      background: #FFE699;
-      color: #999;
-      border: none;
-      border-radius: 100px;
-      padding: 0 32px;
-      height: 48px;
-      font-size: 16px;
-      font-weight: 600;
-      cursor: not-allowed;
-      font-family: inherit;
-      white-space: nowrap;
-      flex-shrink: 0;
-      transition: background 0.15s, color 0.15s;
-    }
-    /* État actif — Saffran yellow Default */
-    .tpe-tabs-bar .btn-validate-inline.active-btn {
-      background: #FDBE00;
-      color: #000;
-      cursor: pointer;
     }
     .tpe-tab {
       font-size: 14px;
@@ -495,10 +495,6 @@
     .regul-row:last-child { border-bottom: none; }
 
     /* Footer */
-    .footer { background:var(--white); border-top:1px solid var(--grey-bd); height:72px; display:flex; align-items:center; justify-content:flex-end; padding:0 32px; gap:12px; flex-shrink:0; }
-    .btn-c { background:transparent; border:1px solid var(--grey-bd); border-radius:8px; padding:0 24px; height:40px; font-size:14px; font-weight:600; color:var(--grey-txt); cursor:pointer; font-family:inherit; }
-    .btn-v { background:var(--navy); color:var(--white); border:none; border-radius:8px; padding:0 32px; height:40px; font-size:14px; font-weight:700; cursor:pointer; font-family:inherit; }
-    .btn-v.off { background:var(--grey-bd); color:var(--grey-txt); cursor:not-allowed; }
 
     /* Panel wireframe */
     .wf-panel.collapsed .panel-body { display: none; }
@@ -865,6 +861,7 @@
             </svg>
             <input type="text" value="2026 / 05 / 05" placeholder="YYYY / MM / DD" size="14" />
           </div>
+          <button class="btn-date-cta" id="btnv">Valider la saisie</button>
         </div>
 
         <!-- Tabs Tertiary TPE — sticky au scroll, fond plein -->
@@ -874,7 +871,6 @@
           <button class="tpe-tab"        onclick="scrollToTpe(3,this)">TPE 3</button>
           <button class="tpe-tab"        onclick="scrollToTpe(4,this)">TPE 4</button>
           <button class="tpe-tab"        onclick="scrollToTpe(5,this)">TPE 5</button>
-          <button class="btn-validate-inline active-btn" id="btnv-inline">Valider la saisie</button>
         </div>
 
         <!-- TPE 1 -->
@@ -964,6 +960,7 @@
             </svg>
             <input type="text" value="2026 / 05 / 04" placeholder="YYYY / MM / DD" size="14" />
           </div>
+          <button class="btn-date-cta" id="btnv-ant">Valider la saisie</button>
         </div>
 
         <!-- Tabs TPE tertiary sticky -->
@@ -973,7 +970,6 @@
           <button class="tpe-tab"        onclick="scrollToAntTpe(3,this)">TPE 3</button>
           <button class="tpe-tab"        onclick="scrollToAntTpe(4,this)">TPE 4</button>
           <button class="tpe-tab"        onclick="scrollToAntTpe(5,this)">TPE 5</button>
-          <button class="btn-validate-inline active-btn" id="btnv-ant">Valider la saisie</button>
         </div>
 
         <!-- Macro helper pour chaque TPE -->
@@ -1081,6 +1077,7 @@
             </svg>
             <input type="text" value="2026 / 05 / 04" placeholder="YYYY / MM / DD" size="14" />
           </div>
+          <button class="btn-date-cta off" id="btnv-reg">Faire une régularisation</button>
         </div>
 
         <!-- Formulaire régularisation -->
@@ -1160,13 +1157,6 @@
 
     </div><!-- /content -->
 
-    <footer class="footer" id="main-footer">
-      <button class="btn-c">Annuler</button>
-      <button class="btn-v" id="btnv">Valider la saisie</button>
-      <!-- Bouton Régularisation — même niveau hiérarchique, visible uniquement sur l'onglet Régularisation -->
-      <button class="btn-v" id="btnv-ant-footer" style="display:none;">Valider la saisie</button>
-      <button class="btn-v off" id="btnv-reg" style="display:none;">Faire une régularisation</button>
-    </footer>
   </main>
 </div>
 
@@ -2298,16 +2288,6 @@
     document.getElementById('mc').style.display       = id === 'tpe' ? 'block' : 'none';
     document.getElementById('view-ant').style.display = id === 'ant' ? 'block' : 'none';
     document.getElementById('view-reg').style.display = id === 'reg' ? 'block' : 'none';
-    // Footer : afficher selon l'onglet — même pattern pour tous les onglets
-    const footer = document.querySelector('.footer');
-    footer.style.display = (id === 'tpe' || id === 'reg' || id === 'ant') ? 'flex' : 'none';
-    document.getElementById('btnv').style.display = id === 'tpe' ? 'flex' : 'none';
-    const btnAntFooter = document.getElementById('btnv-ant-footer');
-    if (btnAntFooter) btnAntFooter.style.display = id === 'ant' ? 'flex' : 'none';
-    const btnvReg = document.getElementById('btnv-reg');
-    if (btnvReg) {
-      btnvReg.style.setProperty('display', id === 'reg' ? 'flex' : 'none', 'important');
-    }
     const antBar = document.getElementById('tpe-tabs-bar-ant');
     if (antBar) antBar.style.display = id === 'ant' ? 'flex' : 'none';
     closeThread();
@@ -2369,8 +2349,7 @@
     const ko = checked;
     document.getElementById('alert').classList.toggle('on', ko);
     document.getElementById('mc').style.cssText = ko ? 'opacity:.3;pointer-events:none' : '';
-    document.getElementById('btnv').className = ko ? 'btn-v off' : 'btn-v';
-    document.getElementById('btnv-inline').className = ko ? 'btn-validate-inline off' : 'btn-validate-inline';
+    document.getElementById('btnv').className = ko ? 'btn-date-cta off' : 'btn-date-cta';
   }
   function loadVersion(file) {
     window.location.href = file;
@@ -2936,9 +2915,10 @@
         inputs[1].classList.remove('field-error');
       }
     });
-    const btnTpe = document.getElementById('btnv-inline');
-    if (tpeOk) { btnTpe.classList.add('active-btn');    btnTpe.removeAttribute('disabled'); }
-    else        { btnTpe.classList.remove('active-btn'); btnTpe.setAttribute('disabled',''); }
+    const btnTpe = document.getElementById('btnv');
+    if (btnTpe) {
+      btnTpe.className = tpeOk ? 'btn-date-cta' : 'btn-date-cta off';
+    }
 
     // ── Date antérieure ──
     let antOk = true;
@@ -2954,8 +2934,7 @@
     });
     const btnAnt = document.getElementById('btnv-ant');
     if (btnAnt) {
-      if (antOk) { btnAnt.classList.add('active-btn');    btnAnt.removeAttribute('disabled'); }
-      else       { btnAnt.classList.remove('active-btn'); btnAnt.setAttribute('disabled',''); }
+      btnAnt.className = antOk ? 'btn-date-cta' : 'btn-date-cta off';
     }
   }
 
@@ -2989,26 +2968,23 @@
     const allEmpty = [...mdpInputs].every(i => i.value.trim() === '');
 
     if (allEmpty) {
-      // Rien saisi — état neutre
       ecartInp.classList.remove('ecart-error', 'ecart-ok');
       hint.textContent = '';
       hint.className = 'reg-hint';
-      btn.className = 'btn-v off';
+      btn.className = 'btn-date-cta off';
     } else if (diff < 0.01) {
-      // Total correct
       ecartInp.classList.remove('ecart-error');
       ecartInp.classList.add('ecart-ok');
       hint.textContent = '✓ Le total correspond à l\'écart';
       hint.className = 'reg-hint ok';
-      btn.className = 'btn-v';
+      btn.className = 'btn-date-cta';
     } else {
-      // Écart non soldé
       ecartInp.classList.remove('ecart-ok');
       ecartInp.classList.add('ecart-error');
       const restant = (ecart - sum).toFixed(2).replace('.', ',');
       hint.textContent = `Écart restant : ${restant} €`;
       hint.className = 'reg-hint err';
-      btn.className = 'btn-v off';
+      btn.className = 'btn-date-cta off';
     }
   }
 </script>
