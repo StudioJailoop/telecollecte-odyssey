@@ -973,7 +973,7 @@
           <button class="tpe-tab"        onclick="scrollToAntTpe(3,this)">TPE 3</button>
           <button class="tpe-tab"        onclick="scrollToAntTpe(4,this)">TPE 4</button>
           <button class="tpe-tab"        onclick="scrollToAntTpe(5,this)">TPE 5</button>
-          <button class="btn-validate-inline active-btn" id="btnv-ant">Valider la régularisation</button>
+          <button class="btn-validate-inline active-btn" id="btnv-ant">Valider la saisie</button>
         </div>
 
         <!-- Macro helper pour chaque TPE -->
@@ -1164,7 +1164,8 @@
       <button class="btn-c">Annuler</button>
       <button class="btn-v" id="btnv">Valider la saisie</button>
       <!-- Bouton Régularisation — même niveau hiérarchique, visible uniquement sur l'onglet Régularisation -->
-      <button class="btn-v" id="btnv-reg" disabled style="display:none;">Valider la régularisation</button>
+      <button class="btn-v" id="btnv-ant-footer" style="display:none;">Valider la saisie</button>
+      <button class="btn-v" id="btnv-reg" disabled style="display:none;">Faire une régularisation</button>
     </footer>
   </main>
 </div>
@@ -2294,8 +2295,10 @@
     document.getElementById('view-reg').style.display = id === 'reg' ? 'block' : 'none';
     // Footer : afficher selon l'onglet — même pattern pour tous les onglets
     const footer = document.querySelector('.footer');
-    footer.style.display = (id === 'tpe' || id === 'reg') ? 'flex' : 'none';
+    footer.style.display = (id === 'tpe' || id === 'reg' || id === 'ant') ? 'flex' : 'none';
     document.getElementById('btnv').style.display = id === 'tpe' ? 'flex' : 'none';
+    const btnAntFooter = document.getElementById('btnv-ant-footer');
+    if (btnAntFooter) btnAntFooter.style.display = id === 'ant' ? 'flex' : 'none';
     document.getElementById('btnv-reg').style.display = id === 'reg' ? 'flex' : 'none';
     const antBar = document.getElementById('tpe-tabs-bar-ant');
     if (antBar) antBar.style.display = id === 'ant' ? 'flex' : 'none';
