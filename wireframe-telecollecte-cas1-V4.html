@@ -1165,7 +1165,7 @@
       <button class="btn-v" id="btnv">Valider la saisie</button>
       <!-- Bouton Régularisation — même niveau hiérarchique, visible uniquement sur l'onglet Régularisation -->
       <button class="btn-v" id="btnv-ant-footer" style="display:none;">Valider la saisie</button>
-      <button class="btn-v" id="btnv-reg" disabled style="display:none;">Faire une régularisation</button>
+      <button class="btn-v" id="btnv-reg" disabled style="display:none;opacity:0.5;">Faire une régularisation</button>
     </footer>
   </main>
 </div>
@@ -2304,7 +2304,10 @@
     document.getElementById('btnv').style.display = id === 'tpe' ? 'flex' : 'none';
     const btnAntFooter = document.getElementById('btnv-ant-footer');
     if (btnAntFooter) btnAntFooter.style.display = id === 'ant' ? 'flex' : 'none';
-    document.getElementById('btnv-reg').style.display = id === 'reg' ? 'flex' : 'none';
+    const btnvReg = document.getElementById('btnv-reg');
+    if (btnvReg) {
+      btnvReg.style.setProperty('display', id === 'reg' ? 'flex' : 'none', 'important');
+    }
     const antBar = document.getElementById('tpe-tabs-bar-ant');
     if (antBar) antBar.style.display = id === 'ant' ? 'flex' : 'none';
     closeThread();
