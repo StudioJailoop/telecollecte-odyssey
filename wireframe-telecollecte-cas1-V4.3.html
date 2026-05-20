@@ -2550,6 +2550,7 @@
     comments
       .filter(c => (c.tab || 'tpe') === currentTab)
       .filter(c => !filterAuthor || c.author === filterAuthor)
+      .filter(c => (c.qualifiedType || c.commentType) !== 'rg')
       .filter(c => archivesMode ? isPinArchived(c.id) : !isPinArchived(c.id))
       .forEach(c => renderPin(c));
   }
