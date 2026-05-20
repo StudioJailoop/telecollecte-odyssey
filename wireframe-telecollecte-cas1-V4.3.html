@@ -1997,6 +1997,9 @@
       btn.style.color = isActive ? color : 'var(--grey-txt)';
       btn.style.fontWeight = isActive ? '700' : '500';
     });
+    // Masquer la ligne des tabs catégories sur Claude et Commentaires équipe
+    const line2 = getLine2El();
+    if (line2) line2.style.display = (['claude','team'].includes(tab)) ? 'none' : 'flex';
     // Afficher/masquer zone saisie
     document.getElementById('brief-input-zone').style.display = tab === 'team' ? 'none' : 'block';
     // Placeholder selon onglet
