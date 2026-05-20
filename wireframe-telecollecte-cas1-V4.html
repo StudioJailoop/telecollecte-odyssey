@@ -1614,9 +1614,11 @@
     const b = briefs.find(b => b.id === id);
     if (!b) return;
     b.done = false;
+    setCommentArchived(b.sourcePin, false);
     saveBriefs();
     updateArchivesCount();
     renderBriefs();
+    refreshPins();
     updateAllCounts();
   }
 
@@ -2146,8 +2148,10 @@
     const b = briefs.find(b => b.id === id);
     if (!b) return;
     b.done = !b.done;
+    setCommentArchived(b.sourcePin, b.done);
     saveBriefs();
     renderBriefs();
+    refreshPins();
     updateArchivesCount();
     updateAllCounts();
   }
@@ -2227,12 +2231,13 @@
         // Marquer UNIQUEMENT les briefs sélectionnés pour Claude comme traités
         claudeSelection.forEach(key => {
           const b = briefs.find(b => String(b.id) === String(key));
-          if (b) b.done = true;
+          if (b) { b.done = true; setCommentArchived(b.sourcePin, true); }
         });
         saveBriefs();
         claudeSelection.clear();
         updateAllCounts();
         renderBriefs();
+        refreshPins();
         setTimeout(() => { btn.textContent = '⚡ Envoyer à Claude'; }, 2000);
       }
     } catch {
@@ -2519,7 +2524,23 @@
   }
 
   function isPinArchived(commentId) {
+    // Priorité : flag archived sur le commentaire Firebase (partagé avec tous)
+    const comment = comments.find(c => String(c.id) === String(commentId));
+    if (comment && comment.archived) return true;
+    // Fallback : briefs locaux (pour la session courante avant sync Firebase)
     return briefs.some(b => String(b.sourcePin) === String(commentId) && b.done);
+  }
+
+  function setCommentArchived(sourcePinId, archived) {
+    const idx = comments.findIndex(c => String(c.id) === String(sourcePinId));
+    if (idx === -1) return;
+    if (archived) {
+      comments[idx].archived = true;
+    } else {
+      delete comments[idx].archived;
+    }
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(comments));
+    fbSave();
   }
 
   function refreshPins() {
