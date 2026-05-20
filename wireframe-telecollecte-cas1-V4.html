@@ -678,12 +678,12 @@
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13"/><path d="M22 2L15 22l-4-9-9-4 20-7z"/></svg>
       Dernières modifs
     </button>
-    <button onclick="setBriefTab('claude')" id="btab-claude"
+    <button onclick="currentBriefTab === 'claude' ? setBriefTab('retour') : setBriefTab('claude')" id="btab-claude"
       style="display:flex;align-items:center;gap:6px;background:none;border:1.5px solid var(--grey-bd);border-radius:20px;padding:6px 16px;font-size:13px;font-weight:600;color:var(--grey-txt);cursor:pointer;font-family:inherit;white-space:nowrap;transition:all .15s;">
       ⚡ Claude
       <span id="cnt-claude" style="display:none;background:#D97706;color:white;border-radius:100px;font-size:10px;font-weight:700;padding:1px 6px;"></span>
     </button>
-    <button onclick="setBriefTab('team')" id="btab-team"
+    <button onclick="currentBriefTab === 'team' ? setBriefTab('retour') : setBriefTab('team')" id="btab-team"
       style="display:flex;align-items:center;gap:6px;background:none;border:1.5px solid var(--grey-bd);border-radius:20px;padding:6px 16px;font-size:13px;font-weight:600;color:var(--grey-txt);cursor:pointer;font-family:inherit;white-space:nowrap;transition:all .15s;">
       💬 Commentaires équipe
       <span id="team-comments-count" style="display:none;background:#D93025;color:white;border-radius:100px;font-size:10px;font-weight:700;padding:1px 6px;"></span>
@@ -1411,7 +1411,13 @@
   function closeBriefs() {
     document.getElementById('briefs-overlay').style.display = 'none';
     document.getElementById('briefs-panel').style.display = 'none';
+    // Reset complet — vision par défaut à la prochaine ouverture
     currentBriefTab = 'retour';
+    if (archivesMode) {
+      const sw = document.getElementById('sw-archives');
+      if (sw) sw.checked = false;
+      toggleArchivesMode(false);
+    }
   }
 
 
