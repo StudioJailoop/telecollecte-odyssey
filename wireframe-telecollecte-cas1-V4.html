@@ -1401,24 +1401,24 @@
   const LIGHTNING_ON  = `<svg width="14" height="14" viewBox="0 0 24 24" fill="#D97706" stroke="#D97706" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>`;
 
   function openBriefs() {
-    // Toujours recharger depuis localStorage au cas où une autre session aurait modifié les données
     briefs = JSON.parse(localStorage.getItem(BRIEFS_KEY) || '[]');
     document.getElementById('briefs-overlay').style.display = 'block';
     document.getElementById('briefs-panel').style.display = 'flex';
     setBriefTab(currentBriefTab);
     renderBriefs();
     updateAllCounts();
+    document.body.style.cursor = '';
   }
   function closeBriefs() {
     document.getElementById('briefs-overlay').style.display = 'none';
     document.getElementById('briefs-panel').style.display = 'none';
-    // Reset complet — vision par défaut à la prochaine ouverture
     currentBriefTab = 'retour';
     if (archivesMode) {
       const sw = document.getElementById('sw-archives');
       if (sw) sw.checked = false;
       toggleArchivesMode(false);
     }
+    updateCursor();
   }
 
 
@@ -1995,6 +1995,9 @@
       btn.style.color = isActive ? color : 'var(--grey-txt)';
       btn.style.fontWeight = isActive ? '700' : '500';
     });
+    // Masquer la ligne des tabs catégories sur Claude et Commentaires équipe
+    const line2 = getLine2El();
+    if (line2) line2.style.display = (['claude','team'].includes(tab)) ? 'none' : 'flex';
     // Afficher/masquer zone saisie
     document.getElementById('brief-input-zone').style.display = tab === 'team' ? 'none' : 'block';
     // Placeholder selon onglet
@@ -2535,12 +2538,24 @@
     refreshPins();
   }
 
+  function isPinArchived(commentId) {
+    return briefs.some(b => String(b.sourcePin) === String(commentId) && b.done);
+  }
+
   function refreshPins() {
     const filterAuthor = document.getElementById('author-filter')?.value || '';
     document.querySelectorAll('.comment-pin').forEach(p => p.remove());
+    if (!commentMode) return;
     comments
       .filter(c => (c.tab || 'tpe') === currentTab)
       .filter(c => !filterAuthor || c.author === filterAuthor)
+      .filter(c => {
+        if ((c.qualifiedType || c.commentType) === 'rg') return false;
+        const linkedBrief = briefs.find(b => String(b.sourcePin) === String(c.id));
+        if (linkedBrief && linkedBrief.type === 'rg') return false;
+        return true;
+      })
+      .filter(c => archivesMode ? isPinArchived(c.id) : !isPinArchived(c.id))
       .forEach(c => renderPin(c));
   }
 
@@ -2644,9 +2659,9 @@
     comments.push(comment);
     localStorage.setItem(STORAGE_KEY, JSON.stringify(comments)); fbSave();
     closePopover();
-    renderPin(comment);
     renderComments();
     updateAuthorFilter();
+    refreshPins();
   }
 
   function renderPin(c) {
@@ -2805,28 +2820,21 @@
 
   function deleteThreadComment() {
     if (!currentThreadId) return;
-    const idToDelete = currentThreadId; // sauvegarder avant closeThread()
+    const idToDelete = currentThreadId;
     closeThread();
     comments = comments.filter(c => c.id !== idToDelete);
     localStorage.setItem(STORAGE_KEY, JSON.stringify(comments)); fbSave();
-    const pin = document.getElementById('pin-' + idToDelete);
-    if (pin) pin.remove();
     updateAuthorFilter();
-    document.querySelectorAll('.comment-pin').forEach(p => p.remove());
-    comments.forEach(c => renderPin(c));
+    refreshPins();
   }
 
   function deleteComment(e, id) {
     e.stopPropagation();
     comments = comments.filter(c => c.id !== id);
     localStorage.setItem(STORAGE_KEY, JSON.stringify(comments)); fbSave();
-    const pin = document.getElementById('pin-' + id);
-    if (pin) pin.remove();
     renderComments();
     updateAuthorFilter();
-    // Renuméroter les pins
-    document.querySelectorAll('.comment-pin').forEach(p => p.remove());
-    comments.forEach(c => renderPin(c));
+    refreshPins();
   }
 
   function updateAuthorFilter() {
