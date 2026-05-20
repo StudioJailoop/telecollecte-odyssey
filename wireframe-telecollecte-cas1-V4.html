@@ -1358,10 +1358,20 @@
         changed = true;
       }
     });
+    // Migration RG : briefs requalifiés en RG → écrire qualifiedType sur Firebase
+    const rgBriefs = briefs.filter(b => b.type === 'rg' && b.sourcePin);
+    rgBriefs.forEach(b => {
+      const idx = comments.findIndex(c => String(c.id) === String(b.sourcePin));
+      if (idx !== -1 && comments[idx].qualifiedType !== 'rg') {
+        comments[idx].qualifiedType = 'rg';
+        changed = true;
+      }
+    });
+
     if (changed) {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(comments));
       await fbSave();
-      console.log('[WF] Migration archivés : ' + doneBriefs.length + ' pins mis à jour sur Firebase');
+      console.log('[WF] Migration Firebase : archivés + RG synchronisés');
     }
   }
 
@@ -1631,11 +1641,20 @@
     const b = briefs.find(b => b.id === id);
     if (!b) return;
     b.type = newType;
+    // Propager le type sur le commentaire Firebase pour que les POs voient le bon état
+    if (b.sourcePin) {
+      const idx = comments.findIndex(c => String(c.id) === String(b.sourcePin));
+      if (idx !== -1) {
+        comments[idx].qualifiedType = newType;
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(comments));
+        fbSave();
+      }
+    }
     saveBriefs();
-    // Fermer la zone reclassification
     const el = document.getElementById('reclassify-brief-' + id);
     if (el) el.style.display = 'none';
     renderBriefs();
+    refreshPins();
     updateAllCounts();
   }
 
