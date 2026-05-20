@@ -2873,8 +2873,8 @@
     });
   }
 
-  // Masquer le bouton Retours PO si pas Sébastien
-  if (CURRENT_USER !== 'Sébastien') {
+  // Masquer le bouton Retours PO uniquement sur GitHub Pages (pas en local)
+  if (location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
     const btn = document.getElementById('briefs-nav-btn');
     if (btn) btn.style.display = 'none';
     // Afficher le bouton "Mes commentaires" pour les POs
