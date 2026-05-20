@@ -416,8 +416,12 @@
       border-bottom: 1px solid var(--grey-bd);
     }
     .reg-row:last-child { border-bottom: none; }
-    .reg-total-row { background: #F8F9FF; }
-    .reg-sum-row   { background: #F8F9FF; }
+    .reg-total-row  { background: #F8F9FF; }
+    .reg-sum-row    { background: #F8F9FF; }
+    .reg-restant-row { background: #F8F9FF; }
+    .reg-restant-inp { font-weight: 700; font-size: 16px; }
+    .reg-restant-inp.restant-ok  { color: #088A20; }
+    .reg-restant-inp.restant-err { color: #BF2F17; }
     .reg-label-cell { flex: 1; }
     .reg-label-main { font-size: 16px; font-weight: 600; color: var(--navy); display: block; }
     .reg-label-sub  { font-size: 12px; color: var(--grey-txt); }
@@ -1099,7 +1103,6 @@
                 <span class="eur">€</span>
                 <input class="inp reg-ecart-inp" id="reg-ecart" type="text" value="1 000,00" readonly />
               </div>
-              <span class="reg-hint" id="reg-hint"></span>
             </div>
           </div>
 
@@ -1142,7 +1145,7 @@
             </div>
           </div>
 
-          <!-- Total saisi (calculé en temps réel) -->
+          <!-- Total saisi + Écart restant (calculés en temps réel) -->
           <div class="reg-divider"></div>
           <div class="reg-row reg-sum-row">
             <div class="reg-label-cell">
@@ -1152,6 +1155,18 @@
               <div class="iw">
                 <span class="eur">€</span>
                 <input class="inp" id="reg-sum-display" type="text" value="0,00" readonly />
+              </div>
+            </div>
+          </div>
+
+          <div class="reg-row reg-restant-row">
+            <div class="reg-label-cell">
+              <span class="reg-label-main">Écart restant</span>
+            </div>
+            <div class="reg-field-cell">
+              <div class="iw">
+                <span class="eur" id="reg-restant-eur">€</span>
+                <input class="inp reg-restant-inp" id="reg-restant-display" type="text" value="1 000,00" readonly />
               </div>
             </div>
           </div>
@@ -3047,36 +3062,27 @@
     let sum = 0;
     mdpInputs.forEach(i => { sum += parseNum(i.value); });
 
-    // Afficher total saisi
+    // Total saisi
     const sumDisplay = document.getElementById('reg-sum-display');
     if (sumDisplay) sumDisplay.value = sum.toFixed(2).replace('.', ',');
 
-    const ecartInp = document.getElementById('reg-ecart');
-    const hint = document.getElementById('reg-hint');
+    // Écart restant = Total écart − Total saisi
+    const restant = ecart - sum;
+    const restantDisplay = document.getElementById('reg-restant-display');
+    if (restantDisplay) {
+      restantDisplay.value = restant.toFixed(2).replace('.', ',');
+      restantDisplay.classList.remove('restant-ok', 'restant-err');
+      restantDisplay.classList.add(Math.abs(restant) < 0.01 ? 'restant-ok' : 'restant-err');
+    }
+
     const btn = document.getElementById('btnv-reg');
     if (!btn) return;
-
-    const diff = Math.abs(sum - ecart);
     const allEmpty = [...mdpInputs].every(i => i.value.trim() === '');
 
-    if (allEmpty) {
-      ecartInp.classList.remove('ecart-error', 'ecart-ok');
-      hint.textContent = '';
-      hint.className = 'reg-hint';
+    if (allEmpty || Math.abs(restant) >= 0.01) {
       btn.className = 'btn-date-cta off';
-    } else if (diff < 0.01) {
-      ecartInp.classList.remove('ecart-error');
-      ecartInp.classList.add('ecart-ok');
-      hint.textContent = '✓ Le total correspond à l\'écart';
-      hint.className = 'reg-hint ok';
-      btn.className = 'btn-date-cta';
     } else {
-      ecartInp.classList.remove('ecart-ok');
-      ecartInp.classList.add('ecart-error');
-      const restant = (ecart - sum).toFixed(2).replace('.', ',');
-      hint.textContent = `Écart restant : ${restant} €`;
-      hint.className = 'reg-hint err';
-      btn.className = 'btn-date-cta off';
+      btn.className = 'btn-date-cta';
     }
   }
 </script>
