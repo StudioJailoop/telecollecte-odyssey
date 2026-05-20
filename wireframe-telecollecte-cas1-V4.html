@@ -2098,7 +2098,7 @@
             <span style="font-size:11px;font-weight:700;color:#D93025;">${c.author}</span>
             <span style="font-size:10px;color:var(--grey-txt);">${c.date||''}</span>
             <span style="font-size:10px;background:#f0f0f0;padding:1px 6px;border-radius:10px;color:var(--grey-txt);">${tabLabels[c.tab]||c.tab}</span>
-            ${c.commentType ? `<span style="font-size:10px;font-weight:600;padding:1px 7px;border-radius:20px;background:${({retour:'#1E264318',idee:'#D9770618',rg:'#7C3AED18'})[c.commentType]||'#eee'};color:${({retour:'#1E2643',idee:'#D97706',rg:'#7C3AED'})[c.commentType]||'#555'};">${({retour:'💬 Retour',idee:'💡 Idée',rg:'📋 RG'})[c.commentType]||''}</span>` : ''}
+            ${c.commentType ? `<span style="font-size:10px;font-weight:600;padding:1px 7px;border-radius:20px;background:${({retour:'#1E264318',idee:'#D9770618',rg:'#7C3AED18',question:'#0891B218'})[c.commentType]||'#eee'};color:${({retour:'#1E2643',idee:'#D97706',rg:'#7C3AED',question:'#0891B2'})[c.commentType]||'#555'};">${({retour:'💬 Retour',idee:'💡 Idée',rg:'📋 RG',question:'❓ Question'})[c.commentType]||''}</span>` : ''}
           </div>
           <div style="display:flex;gap:4px;align-items:center;">
             <button onclick="toggleClaude('${c.key}')" title="${inClaude?'Retirer de Claude':'Ajouter à Claude'}"
@@ -2781,13 +2781,12 @@
 
   function deleteThreadComment() {
     if (!currentThreadId) return;
+    const idToDelete = currentThreadId; // sauvegarder avant closeThread()
     closeThread();
-    // Réutiliser deleteComment
-    comments = comments.filter(c => c.id !== currentThreadId);
+    comments = comments.filter(c => c.id !== idToDelete);
     localStorage.setItem(STORAGE_KEY, JSON.stringify(comments)); fbSave();
-    const pin = document.getElementById('pin-' + currentThreadId);
+    const pin = document.getElementById('pin-' + idToDelete);
     if (pin) pin.remove();
-    currentThreadId = null;
     updateAuthorFilter();
     document.querySelectorAll('.comment-pin').forEach(p => p.remove());
     comments.forEach(c => renderPin(c));
