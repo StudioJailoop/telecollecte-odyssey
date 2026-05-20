@@ -1403,24 +1403,24 @@
   const LIGHTNING_ON  = `<svg width="14" height="14" viewBox="0 0 24 24" fill="#D97706" stroke="#D97706" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>`;
 
   function openBriefs() {
-    // Toujours recharger depuis localStorage au cas où une autre session aurait modifié les données
     briefs = JSON.parse(localStorage.getItem(BRIEFS_KEY) || '[]');
     document.getElementById('briefs-overlay').style.display = 'block';
     document.getElementById('briefs-panel').style.display = 'flex';
     setBriefTab(currentBriefTab);
     renderBriefs();
     updateAllCounts();
+    document.body.style.cursor = ''; // curseur normal pendant la modale
   }
   function closeBriefs() {
     document.getElementById('briefs-overlay').style.display = 'none';
     document.getElementById('briefs-panel').style.display = 'none';
-    // Reset complet — vision par défaut à la prochaine ouverture
     currentBriefTab = 'retour';
     if (archivesMode) {
       const sw = document.getElementById('sw-archives');
       if (sw) sw.checked = false;
       toggleArchivesMode(false);
     }
+    updateCursor(); // restaure crosshair si commentMode actif
   }
 
 
