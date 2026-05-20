@@ -2112,7 +2112,7 @@
         <!-- Requalification -->
         <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
           <span style="font-size:11px;color:var(--grey-txt);">Qualifier :</span>
-          ${['retour','idee','rg'].map(t => `
+          ${['retour','idee','rg','question'].map(t => `
             <button onclick="requalifyComment('${c.key}','${t}')"
               style="font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;cursor:pointer;font-family:inherit;border:1.5px solid ${qualType===t ? TYPE_COLORS[t] : 'var(--grey-bd)'};background:${qualType===t ? TYPE_COLORS[t]+'18' : 'none'};color:${qualType===t ? TYPE_COLORS[t] : 'var(--grey-txt)'};">
               ${TYPE_LABELS[t]}
@@ -2321,7 +2321,7 @@
         <!-- Zone reclassification (cachée par défaut) -->
         <div id="reclassify-brief-${b.id}" style="display:none;margin-top:8px;padding-top:8px;border-top:1px dashed var(--grey-bd);">
           <span style="font-size:11px;color:var(--grey-txt);margin-right:6px;">Déplacer vers :</span>
-          ${['retour','idee','rg'].filter(t => t !== b.type).map(t => `
+          ${['retour','idee','rg','question'].filter(t => t !== b.type).map(t => `
             <button onclick="reclassifyBrief(${b.id},'${t}')"
               style="font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;cursor:pointer;font-family:inherit;border:1.5px solid ${TYPE_COLORS[t]};background:${TYPE_COLORS[t]}12;color:${TYPE_COLORS[t]};margin-right:4px;">
               ${TYPE_LABELS[t]}
