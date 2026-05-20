@@ -2550,7 +2550,13 @@
     comments
       .filter(c => (c.tab || 'tpe') === currentTab)
       .filter(c => !filterAuthor || c.author === filterAuthor)
-      .filter(c => (c.qualifiedType || c.commentType) !== 'rg')
+      .filter(c => {
+        // Vérifier le type du commentaire ET celui du brief lié (requalification depuis la modale)
+        if ((c.qualifiedType || c.commentType) === 'rg') return false;
+        const linkedBrief = briefs.find(b => String(b.sourcePin) === String(c.id));
+        if (linkedBrief && linkedBrief.type === 'rg') return false;
+        return true;
+      })
       .filter(c => archivesMode ? isPinArchived(c.id) : !isPinArchived(c.id))
       .forEach(c => renderPin(c));
   }
