@@ -38,6 +38,33 @@ Ouvrir le wireframe : `http://localhost:8765/wireframe-telecollecte-cas1-V4.html
 6. **Max 2 tentatives de fix** puis poser des questions précises
 7. **ARCHIVAGE** : seuls `claudeSelection` items → `done=true`. JAMAIS `briefs.forEach(b => b.done=true)`
 
+## Conservation absolue de l'existant — RÈGLE CRITIQUE
+
+**Toute modification est additive. Jamais une réécriture.**
+
+### Fonctions interdites à réécrire sans validation explicite
+- `goTo()` — navigation principale
+- `renderBriefs()` — affichage briefs + badges
+- `sendToClaude()` — seul chemin vers done=true
+- `toggleArchivesMode()` — cascade de changements UI
+- `checkAll()` / `checkReg()` — validation métier
+
+### Process obligatoire avant toute modification
+1. Lire les fonctions concernées et leurs dépendances
+2. Identifier les effets de bord possibles
+3. Modifier le minimum — conditions supplémentaires, ajustements locaux
+4. Tester les flows critiques avec Playwright
+
+### Tests obligatoires après chaque modification
+```
+✓ Ouverture/fermeture modale → onglet Retours par défaut
+✓ Navigation Claude ↔ Équipe ↔ Archives ↔ Dernières modifs
+✓ Archivage → seulement claudeSelection → done=true
+✓ Badges → respectent archivesMode
+✓ Sélection Claude + génération prompt
+✓ Aucune erreur console (hors Firebase offline)
+```
+
 ## Commit de référence stable — 2026-05-19
 
 ```
