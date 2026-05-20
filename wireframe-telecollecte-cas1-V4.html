@@ -759,13 +759,13 @@
   </div>
 
   <!-- Footer -->
-  <div style="padding:16px 24px;border-top:1px solid var(--grey-bd);flex-shrink:0;display:flex;gap:8px;">
-    <button onclick="clearBriefs()" id="footer-clear-btn" style="flex:1;height:40px;border:1px solid var(--grey-bd);border-radius:8px;font-size:13px;font-weight:600;color:var(--grey-txt);background:var(--white);cursor:pointer;font-family:inherit;">Tout effacer</button>
+  <div style="padding:16px 24px;border-top:1px solid var(--grey-bd);flex-shrink:0;display:flex;gap:8px;justify-content:center;align-items:center;">
+    <button onclick="clearBriefs()" id="footer-clear-btn" style="height:40px;padding:0 24px;border:1px solid var(--grey-bd);border-radius:8px;font-size:13px;font-weight:600;color:var(--grey-txt);background:var(--white);cursor:pointer;font-family:inherit;">Tout effacer</button>
     <button onclick="openTrash()" title="Corbeille" id="trash-btn" style="width:40px;height:40px;border:1px solid var(--grey-bd);border-radius:8px;background:var(--white);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--grey-txt);position:relative;" onmouseover="this.style.color='#D93025'" onmouseout="this.style.color='var(--grey-txt)'">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
       <span id="trash-count" style="display:none;position:absolute;top:-4px;right:-4px;background:#D93025;color:white;border-radius:100px;font-size:9px;font-weight:700;padding:1px 4px;min-width:14px;text-align:center;"></span>
     </button>
-    <button onclick="sendToClaude()" id="copy-btn" style="flex:2;height:40px;background:var(--yellow);color:#000;border:none;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;">⚡ Envoyer à Claude</button>
+    <button onclick="sendToClaude()" id="copy-btn" style="display:none;height:40px;padding:0 24px;background:var(--yellow);color:#000;border:none;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;">⚡ Envoyer à Claude</button>
   </div>
 </div>
 
@@ -1993,9 +1993,9 @@
     // Footer : sur onglet Claude le bouton "Tout effacer" devient "Vider la sélection"
     const clearBtn = document.getElementById('footer-clear-btn');
     if (clearBtn) clearBtn.textContent = tab === 'claude' ? 'Vider la sélection' : 'Tout effacer';
-    // Bouton Envoyer à Claude : visible sauf en mode archives ou onglet Claude
+    // Bouton Envoyer à Claude : visible uniquement sur l'onglet Claude
     const copyBtnTab = document.getElementById('copy-btn');
-    if (copyBtnTab) copyBtnTab.style.display = archivesMode ? 'none' : 'block';
+    if (copyBtnTab) copyBtnTab.style.display = (tab === 'claude' && !archivesMode) ? 'block' : 'none';
     updateAllCounts(); // recalculer les badges à chaque changement d'onglet
     if (tab === 'team') loadTeamComments();
     else if (tab === 'lastmodifs') renderLastModifs();
