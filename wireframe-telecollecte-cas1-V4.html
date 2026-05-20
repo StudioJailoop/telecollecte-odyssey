@@ -1291,7 +1291,28 @@
 
   // ══ Retours PO ══════════════════════════════════════════════
   const BRIEFS_KEY = 'wf_briefs_telecollecte';
+  const BRIEFS_BACKUP_KEY = 'wf_briefs_telecollecte_backup';
   let briefs = JSON.parse(localStorage.getItem(BRIEFS_KEY) || '[]');
+
+  // Restaurer depuis le backup si le tableau principal est vide mais le backup ne l'est pas
+  (function() {
+    if (briefs.length === 0) {
+      const backup = JSON.parse(localStorage.getItem(BRIEFS_BACKUP_KEY) || '[]');
+      if (backup.length > 0) {
+        briefs = backup;
+        saveBriefs();
+        console.warn('[WF] Briefs restaurés depuis le backup (' + briefs.length + ' éléments)');
+      }
+    }
+  })();
+
+  // Fonction centrale de sauvegarde — toujours passer par ici
+  function saveBriefs() {
+    const json = JSON.stringify(briefs);
+    localStorage.setItem(BRIEFS_KEY, json);
+    // Backup uniquement si non vide
+    if (briefs.length > 0) localStorage.setItem(BRIEFS_BACKUP_KEY, json);
+  }
 
   const TYPE_LABELS = { retour:'💬 Retour', idee:'💡 Idée', rg:'📋 Règle de gestion', question:'❓ Question', team:'💬 Équipe' };
   const TYPE_COLORS = { retour:'#1E2643', idee:'#D97706', rg:'#7C3AED', question:'#0891B2', team:'#D93025' };
@@ -1373,7 +1394,7 @@
     const b = briefs.find(b => b.id === id);
     if (!b) return;
     b.text = newText;
-    localStorage.setItem(BRIEFS_KEY, JSON.stringify(briefs));
+    saveBriefs();
     // Mise à jour directe sans tout re-render (évite le flicker)
     document.getElementById('brief-text-' + id).textContent = newText;
     document.getElementById('brief-text-' + id).style.display = 'block';
@@ -1475,7 +1496,7 @@
         sourcePin: currentThreadId
       });
     }
-    localStorage.setItem(BRIEFS_KEY, JSON.stringify(briefs));
+    saveBriefs();
     updateAllCounts();
     renderThreadCatButtons(currentThreadId);
     // Feedback visuel
@@ -1531,7 +1552,7 @@
     if (!b) return;
     delete b.deletedAt; b.done = false;
     briefs.unshift(b);
-    localStorage.setItem(BRIEFS_KEY, JSON.stringify(briefs));
+    saveBriefs();
     localStorage.setItem(TRASH_KEY, JSON.stringify(trash));
     renderTrash(); renderBriefs(); updateAllCounts(); updateTrashCount();
   }
@@ -1552,7 +1573,7 @@
     const b = briefs.find(b => b.id === id);
     if (!b) return;
     b.type = newType;
-    localStorage.setItem(BRIEFS_KEY, JSON.stringify(briefs));
+    saveBriefs();
     // Fermer la zone reclassification
     const el = document.getElementById('reclassify-brief-' + id);
     if (el) el.style.display = 'none';
@@ -1565,7 +1586,7 @@
     const b = briefs.find(b => b.id === id);
     if (!b) return;
     b.done = false;
-    localStorage.setItem(BRIEFS_KEY, JSON.stringify(briefs));
+    saveBriefs();
     updateArchivesCount();
     renderBriefs();
     updateAllCounts();
@@ -1606,7 +1627,7 @@
               const d = await r.json();
               clearInterval(poll);
               brief.journalText = d.text;
-              localStorage.setItem(BRIEFS_KEY, JSON.stringify(briefs));
+              saveBriefs();
               // Mettre à jour l'affichage
               const el = document.getElementById('journal-text-' + brief.id);
               if (el) el.textContent = d.text;
@@ -1711,7 +1732,7 @@
     if (!b) return;
     // Remettre en actif
     b.done = false;
-    localStorage.setItem(BRIEFS_KEY, JSON.stringify(briefs));
+    saveBriefs();
     // Désactiver le mode archives
     const sw = document.getElementById('sw-archives');
     if (sw && sw.checked) {
@@ -1777,7 +1798,7 @@
       pin.requalified = true;
     }
     localStorage.setItem(STORAGE_KEY, JSON.stringify(comments)); fbSave();
-    localStorage.setItem(BRIEFS_KEY, JSON.stringify(briefs));
+    saveBriefs();
     loadTeamComments();
     renderBriefs();
     updateAllCounts();
@@ -1970,7 +1991,7 @@
       done: false
     };
     briefs.unshift(brief);
-    localStorage.setItem(BRIEFS_KEY, JSON.stringify(briefs));
+    saveBriefs();
     document.getElementById('brief-text').value = '';
     renderBriefs();
   }
@@ -1985,7 +2006,7 @@
       updateTrashCount();
     }
     briefs = briefs.filter(b => b.id !== id);
-    localStorage.setItem(BRIEFS_KEY, JSON.stringify(briefs));
+    saveBriefs();
     renderBriefs();
     updateAllCounts();
   }
@@ -2094,7 +2115,7 @@
     const b = briefs.find(b => b.id === id);
     if (!b) return;
     b.done = !b.done;
-    localStorage.setItem(BRIEFS_KEY, JSON.stringify(briefs));
+    saveBriefs();
     renderBriefs();
     updateArchivesCount();
     updateAllCounts();
@@ -2120,7 +2141,7 @@
     localStorage.setItem(TRASH_KEY, JSON.stringify(trash));
     // Supprimer uniquement ceux de l'onglet actif
     briefs = briefs.filter(b => !(b.type === currentBriefTab && (archivesMode ? b.done : !b.done)));
-    localStorage.setItem(BRIEFS_KEY, JSON.stringify(briefs));
+    saveBriefs();
     renderBriefs();
     updateAllCounts();
   }
@@ -2177,7 +2198,7 @@
           const b = briefs.find(b => String(b.id) === String(key));
           if (b) b.done = true;
         });
-        localStorage.setItem(BRIEFS_KEY, JSON.stringify(briefs));
+        saveBriefs();
         claudeSelection.clear();
         updateAllCounts();
         renderBriefs();
