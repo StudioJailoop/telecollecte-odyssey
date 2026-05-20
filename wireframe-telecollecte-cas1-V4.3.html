@@ -2661,9 +2661,9 @@
     comments.push(comment);
     localStorage.setItem(STORAGE_KEY, JSON.stringify(comments)); fbSave();
     closePopover();
-    renderPin(comment);
     renderComments();
     updateAuthorFilter();
+    refreshPins();
   }
 
   function renderPin(c) {
@@ -2822,28 +2822,21 @@
 
   function deleteThreadComment() {
     if (!currentThreadId) return;
-    const idToDelete = currentThreadId; // sauvegarder avant closeThread()
+    const idToDelete = currentThreadId;
     closeThread();
     comments = comments.filter(c => c.id !== idToDelete);
     localStorage.setItem(STORAGE_KEY, JSON.stringify(comments)); fbSave();
-    const pin = document.getElementById('pin-' + idToDelete);
-    if (pin) pin.remove();
     updateAuthorFilter();
-    document.querySelectorAll('.comment-pin').forEach(p => p.remove());
-    comments.forEach(c => renderPin(c));
+    refreshPins();
   }
 
   function deleteComment(e, id) {
     e.stopPropagation();
     comments = comments.filter(c => c.id !== id);
     localStorage.setItem(STORAGE_KEY, JSON.stringify(comments)); fbSave();
-    const pin = document.getElementById('pin-' + id);
-    if (pin) pin.remove();
     renderComments();
     updateAuthorFilter();
-    // Renuméroter les pins
-    document.querySelectorAll('.comment-pin').forEach(p => p.remove());
-    comments.forEach(c => renderPin(c));
+    refreshPins();
   }
 
   function updateAuthorFilter() {
