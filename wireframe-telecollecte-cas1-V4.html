@@ -1294,14 +1294,38 @@
   const BRIEFS_BACKUP_KEY = 'wf_briefs_telecollecte_backup';
   let briefs = JSON.parse(localStorage.getItem(BRIEFS_KEY) || '[]');
 
-  // Restaurer depuis le backup si le tableau principal est vide mais le backup ne l'est pas
+  // Restauration automatique au démarrage
   (function() {
+    // 1. Essayer le backup
     if (briefs.length === 0) {
       const backup = JSON.parse(localStorage.getItem(BRIEFS_BACKUP_KEY) || '[]');
       if (backup.length > 0) {
         briefs = backup;
         saveBriefs();
         console.warn('[WF] Briefs restaurés depuis le backup (' + briefs.length + ' éléments)');
+        return;
+      }
+    }
+    // 2. Reconstruire depuis les pins si briefs toujours vides
+    if (briefs.length === 0) {
+      const pins = JSON.parse(localStorage.getItem('wf_comments_telecollecte') || '[]');
+      const TYPE_MAP = { retour:'retour', idee:'idee', rg:'rg', question:'question' };
+      pins.forEach(p => {
+        // Pin principal
+        const t = TYPE_MAP[p.qualifiedType] || TYPE_MAP[p.commentType] || 'retour';
+        if (p.text && p.text.trim()) {
+          briefs.push({ id: p.id, author: p.author || 'Sébastien', text: p.text, type: t, date: p.date || '', time: '', done: false, pinLabel: p.pinLabel || null, sourcePin: p.id, tab: p.tab || 'tpe' });
+        }
+        // Réponses
+        (p.replies || []).forEach((r, ri) => {
+          if (!r.text || !r.text.trim()) return;
+          const rt = TYPE_MAP[r.qualifiedType] || t;
+          briefs.push({ id: p.id * 1000 + ri + 1, author: r.author || 'Sébastien', text: r.text, type: rt, date: r.date || p.date || '', time: '', done: false, pinLabel: p.pinLabel || null, sourcePin: p.id, tab: p.tab || 'tpe' });
+        });
+      });
+      if (briefs.length > 0) {
+        saveBriefs();
+        console.warn('[WF] Briefs reconstruits depuis les pins (' + briefs.length + ' éléments)');
       }
     }
   })();
