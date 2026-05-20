@@ -720,11 +720,6 @@
       ❓ Question
       <span id="cnt-question" style="display:none;background:#0891B2;color:white;border-radius:100px;font-size:10px;font-weight:700;padding:1px 6px;margin-left:4px;"></span>
     </button>
-    <button onclick="setBriefTab('arthur')" id="btab-arthur"
-      style="background:none;border:none;border-bottom:2.5px solid transparent;padding:11px 16px;font-size:13px;font-weight:500;color:var(--grey-txt);cursor:pointer;font-family:inherit;white-space:nowrap;transition:all .15s;">
-      🎯 Arthur
-      <span id="cnt-arthur" style="display:none;background:#059669;color:white;border-radius:100px;font-size:10px;font-weight:700;padding:1px 6px;margin-left:4px;"></span>
-    </button>
   </div>
 
   <!-- Zone saisie (masquée sur onglet équipe) -->
@@ -1311,7 +1306,7 @@
     // 2. Reconstruire depuis les pins si briefs toujours vides
     if (briefs.length === 0) {
       const pins = JSON.parse(localStorage.getItem('wf_comments_telecollecte') || '[]');
-      const TYPE_MAP = { retour:'retour', idee:'idee', rg:'rg', question:'question', arthur:'arthur' };
+      const TYPE_MAP = { retour:'retour', idee:'idee', rg:'rg', question:'question' };
       pins.forEach(p => {
         // Pin principal
         const t = TYPE_MAP[p.qualifiedType] || TYPE_MAP[p.commentType] || 'retour';
@@ -1340,8 +1335,8 @@
     if (briefs.length > 0) localStorage.setItem(BRIEFS_BACKUP_KEY, json);
   }
 
-  const TYPE_LABELS = { retour:'💬 Retour', idee:'💡 Idée', rg:'📋 Règle de gestion', question:'❓ Question', arthur:'🎯 Arthur', team:'💬 Équipe' };
-  const TYPE_COLORS = { retour:'#1E2643', idee:'#D97706', rg:'#7C3AED', question:'#0891B2', arthur:'#059669', team:'#D93025' };
+  const TYPE_LABELS = { retour:'💬 Retour', idee:'💡 Idée', rg:'📋 Règle de gestion', question:'❓ Question', team:'💬 Équipe' };
+  const TYPE_COLORS = { retour:'#1E2643', idee:'#D97706', rg:'#7C3AED', question:'#0891B2', team:'#D93025' };
 
   let archivesMode = false;
 
@@ -1840,7 +1835,7 @@
   }
 
   function updateAllCounts() {
-    ['retour','idee','rg','question','arthur','lastmodifs'].forEach(t => {
+    ['retour','idee','rg','question','lastmodifs'].forEach(t => {
       const cnt = document.getElementById('cnt-' + t);
       // En mode archives : compter les traités, sinon compter les actifs
       const n = briefs.filter(b => b.type === t && (archivesMode ? b.done : !b.done)).length;
@@ -1973,7 +1968,7 @@
       btn.style.fontWeight = isActive ? '700' : '600';
     });
     // Styles tabs ligne 2 (Retour / Idée / RG)
-    ['retour','idee','rg','question','arthur'].forEach(t => {
+    ['retour','idee','rg','question'].forEach(t => {
       const btn = document.getElementById('btab-' + t);
       if (!btn) return;
       const isActive = t === tab;
@@ -1988,7 +1983,7 @@
     // Afficher/masquer zone saisie
     document.getElementById('brief-input-zone').style.display = tab === 'team' ? 'none' : 'block';
     // Placeholder selon onglet
-    const placeholders = { retour:'Décris le retour...', idee:'Décris l\'idée...', rg:'Décris la règle de gestion...', arthur:'Note pour Arthur...' };
+    const placeholders = { retour:'Décris le retour...', idee:'Décris l\'idée...', rg:'Décris la règle de gestion...' };
     const ta = document.getElementById('brief-text');
     if (ta) ta.placeholder = placeholders[tab] || '';
     // Afficher la bonne liste
@@ -2126,7 +2121,7 @@
         <!-- Requalification -->
         <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
           <span style="font-size:11px;color:var(--grey-txt);">Qualifier :</span>
-          ${['retour','idee','rg','question','arthur'].map(t => `
+          ${['retour','idee','rg','question'].map(t => `
             <button onclick="requalifyComment('${c.key}','${t}')"
               style="font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;cursor:pointer;font-family:inherit;border:1.5px solid ${qualType===t ? TYPE_COLORS[t] : 'var(--grey-bd)'};background:${qualType===t ? TYPE_COLORS[t]+'18' : 'none'};color:${qualType===t ? TYPE_COLORS[t] : 'var(--grey-txt)'};">
               ${TYPE_LABELS[t]}
@@ -2169,7 +2164,7 @@
       document.getElementById('claude-prompt-text').value = '';
       return;
     }
-    const TYPE_LABEL_FR = { retour:'Retours', idee:'Idées', rg:'Règles de gestion', question:'Questions', arthur:'Arthur' };
+    const TYPE_LABEL_FR = { retour:'Retours', idee:'Idées', rg:'Règles de gestion', question:'Questions' };
     const label = TYPE_LABEL_FR[currentBriefTab] || currentBriefTab;
     const toDelete = briefs.filter(b => b.type === currentBriefTab && (archivesMode ? b.done : !b.done));
     if (!toDelete.length) return;
@@ -2267,7 +2262,7 @@
     const color = TYPE_COLORS[currentBriefTab] || '#1E2643';
 
     // Mettre à jour les compteurs — respecte archivesMode
-    ['retour','idee','rg','question','arthur'].forEach(t => {
+    ['retour','idee','rg','question'].forEach(t => {
       const cnt = document.getElementById('cnt-' + t);
       const n = briefs.filter(b => b.type === t && (archivesMode ? b.done : !b.done)).length;
       if (cnt) { cnt.style.display = n > 0 ? 'inline-block' : 'none'; cnt.textContent = n; }
@@ -2338,7 +2333,7 @@
         <!-- Zone reclassification (cachée par défaut) -->
         <div id="reclassify-brief-${b.id}" style="display:none;margin-top:8px;padding-top:8px;border-top:1px dashed var(--grey-bd);">
           <span style="font-size:11px;color:var(--grey-txt);margin-right:6px;">Déplacer vers :</span>
-          ${['retour','idee','rg','question','arthur'].filter(t => t !== b.type).map(t => `
+          ${['retour','idee','rg','question'].filter(t => t !== b.type).map(t => `
             <button onclick="reclassifyBrief(${b.id},'${t}')"
               style="font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;cursor:pointer;font-family:inherit;border:1.5px solid ${TYPE_COLORS[t]};background:${TYPE_COLORS[t]}12;color:${TYPE_COLORS[t]};margin-right:4px;">
               ${TYPE_LABELS[t]}
@@ -2863,7 +2858,7 @@
 
   function updateCpType() {
     const types = { retour: { color:'#1E2643', label:'💬 Retour' }, idee: { color:'#D97706', label:'💡 Idée' }, rg: { color:'#7C3AED', label:'📋 Règle de gestion' }, question: { color:'#0891B2', label:'❓ Question' } };
-    ['retour','idee','rg','question','arthur'].forEach(t => {
+    ['retour','idee','rg','question'].forEach(t => {
       const lbl = document.getElementById('cpt-' + t);
       const radio = lbl?.querySelector('input');
       if (!lbl || !radio) return;
