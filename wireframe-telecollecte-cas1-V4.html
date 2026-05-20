@@ -1092,7 +1092,7 @@
               <span class="reg-label-sub">Montant total à régulariser</span>
             </div>
             <div class="reg-field-cell">
-              <span style="font-size:16px;font-weight:700;color:var(--navy);">€ <span id="reg-ecart">1 000,00</span></span>
+              <span style="font-size:20px;font-weight:700;color:var(--navy);">€ <span id="reg-ecart">1 000,00</span></span>
             </div>
           </div>
 
@@ -1143,8 +1143,8 @@
             </div>
             <div class="reg-field-cell">
               <div style="display:flex;flex-direction:column;align-items:flex-end;gap:2px;">
-                <span style="font-size:20px;font-weight:700;color:var(--navy);">€ <span id="reg-sum-display">0,00</span></span>
-                <span style="font-size:12px;font-weight:500;color:var(--grey-txt);">Écart restant : € <span id="reg-restant-display" class="reg-restant-inp restant-err">1 000,00</span></span>
+                <span style="font-size:20px;font-weight:700;">€ <span id="reg-sum-display" style="color:#BF2F17;">0,00</span></span>
+                <span style="font-size:12px;font-weight:500;color:var(--grey-txt);">Écart restant : € <span id="reg-restant-display" style="color:var(--navy);font-weight:700;">1 000,00</span></span>
               </div>
             </div>
           </div>
@@ -3058,17 +3058,18 @@
     let sum = 0;
     mdpInputs.forEach(i => { sum += parseNum(i.value); });
 
-    // Total saisi
-    const sumDisplay = document.getElementById('reg-sum-display');
-    if (sumDisplay) sumDisplay.textContent = sum.toFixed(2).replace('.', ',');
-
-    // Écart restant = Total écart − Total saisi
+    // Total saisi — rouge si incomplet, vert si égal au total écart
     const restant = ecart - sum;
+    const sumDisplay = document.getElementById('reg-sum-display');
+    if (sumDisplay) {
+      sumDisplay.textContent = sum.toFixed(2).replace('.', ',');
+      sumDisplay.style.color = Math.abs(restant) < 0.01 ? '#088A20' : '#BF2F17';
+    }
+
+    // Écart restant — toujours noir
     const restantDisplay = document.getElementById('reg-restant-display');
     if (restantDisplay) {
       restantDisplay.textContent = restant.toFixed(2).replace('.', ',');
-      restantDisplay.classList.remove('restant-ok', 'restant-err');
-      restantDisplay.classList.add(Math.abs(restant) < 0.01 ? 'restant-ok' : 'restant-err');
     }
 
     const btn = document.getElementById('btnv-reg');
