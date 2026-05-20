@@ -1143,7 +1143,7 @@
             </div>
             <div class="reg-field-cell">
               <div style="display:flex;flex-direction:column;align-items:flex-end;gap:2px;">
-                <span style="font-size:20px;font-weight:700;">€ <span id="reg-sum-display" style="color:#BF2F17;">0,00</span></span>
+                <span id="reg-sum-display" style="font-size:20px;font-weight:700;color:#BF2F17;">€ 0,00</span>
                 <span style="font-size:12px;font-weight:500;color:var(--grey-txt);">Écart restant : € <span id="reg-restant-display" style="color:var(--navy);font-weight:700;">1 000,00</span></span>
               </div>
             </div>
@@ -3058,18 +3058,20 @@
     let sum = 0;
     mdpInputs.forEach(i => { sum += parseNum(i.value); });
 
+    const fmtNum = n => n.toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
     // Total saisi — rouge si incomplet, vert si égal au total écart
     const restant = ecart - sum;
     const sumDisplay = document.getElementById('reg-sum-display');
     if (sumDisplay) {
-      sumDisplay.textContent = sum.toFixed(2).replace('.', ',');
+      sumDisplay.textContent = '€ ' + fmtNum(sum);
       sumDisplay.style.color = Math.abs(restant) < 0.01 ? '#088A20' : '#BF2F17';
     }
 
     // Écart restant — toujours noir
     const restantDisplay = document.getElementById('reg-restant-display');
     if (restantDisplay) {
-      restantDisplay.textContent = restant.toFixed(2).replace('.', ',');
+      restantDisplay.textContent = fmtNum(restant);
     }
 
     const btn = document.getElementById('btnv-reg');
