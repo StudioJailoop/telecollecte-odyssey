@@ -1076,16 +1076,9 @@
       <!-- Vue Régularisation -->
       <div id="view-reg" style="display:none;">
 
-        <!-- Bloc date — lecture seule, date de référence de l'écart -->
+        <!-- Bloc date — lecture seule, date intégrée dans le label -->
         <div class="bloc-date">
-          <span class="date-label">Outstanding discrepancy to regularize as of</span>
-          <div class="tf-field" style="cursor:default;pointer-events:none;opacity:0.75;">
-            <svg viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="3" y="4" width="18" height="18" rx="2"/>
-              <path d="M16 2v4M8 2v4M3 10h18"/>
-            </svg>
-            <input type="text" value="2026 / 05 / 04" size="14" readonly style="cursor:default;pointer-events:none;" />
-          </div>
+          <span class="date-label">Outstanding discrepancy to regularize as of <strong>2026 / 05 / 04</strong></span>
           <button class="btn-date-cta off" id="btnv-reg">Faire une régularisation</button>
         </div>
 
@@ -1099,10 +1092,7 @@
               <span class="reg-label-sub">Montant total à régulariser</span>
             </div>
             <div class="reg-field-cell">
-              <div class="iw">
-                <span class="eur">€</span>
-                <input class="inp reg-ecart-inp" id="reg-ecart" type="text" value="1 000,00" readonly />
-              </div>
+              <span style="font-size:16px;font-weight:700;color:var(--navy);">€ <span id="reg-ecart">1 000,00</span></span>
             </div>
           </div>
 
@@ -1147,26 +1137,14 @@
 
           <!-- Total saisi + Écart restant (calculés en temps réel) -->
           <div class="reg-divider"></div>
-          <div class="reg-row reg-sum-row">
+          <div class="reg-row reg-sum-row" style="align-items:center;">
             <div class="reg-label-cell">
               <span class="reg-label-main">Total saisi</span>
             </div>
             <div class="reg-field-cell">
-              <div class="iw">
-                <span class="eur">€</span>
-                <input class="inp" id="reg-sum-display" type="text" value="0,00" readonly />
-              </div>
-            </div>
-          </div>
-
-          <div class="reg-row reg-restant-row">
-            <div class="reg-label-cell">
-              <span class="reg-label-main">Écart restant</span>
-            </div>
-            <div class="reg-field-cell">
-              <div class="iw">
-                <span class="eur" id="reg-restant-eur">€</span>
-                <input class="inp reg-restant-inp" id="reg-restant-display" type="text" value="1 000,00" readonly />
+              <div style="display:flex;flex-direction:column;align-items:flex-end;gap:2px;">
+                <span style="font-size:20px;font-weight:700;color:var(--navy);">€ <span id="reg-sum-display">0,00</span></span>
+                <span style="font-size:12px;font-weight:500;color:var(--grey-txt);">Écart restant : € <span id="reg-restant-display" class="reg-restant-inp restant-err">1 000,00</span></span>
               </div>
             </div>
           </div>
@@ -3075,20 +3053,20 @@
   }
 
   function checkReg() {
-    const ecart = parseNum(document.getElementById('reg-ecart')?.value || '0');
+    const ecart = parseNum(document.getElementById('reg-ecart')?.textContent || '0');
     const mdpInputs = document.querySelectorAll('.reg-mdp-inp');
     let sum = 0;
     mdpInputs.forEach(i => { sum += parseNum(i.value); });
 
     // Total saisi
     const sumDisplay = document.getElementById('reg-sum-display');
-    if (sumDisplay) sumDisplay.value = sum.toFixed(2).replace('.', ',');
+    if (sumDisplay) sumDisplay.textContent = sum.toFixed(2).replace('.', ',');
 
     // Écart restant = Total écart − Total saisi
     const restant = ecart - sum;
     const restantDisplay = document.getElementById('reg-restant-display');
     if (restantDisplay) {
-      restantDisplay.value = restant.toFixed(2).replace('.', ',');
+      restantDisplay.textContent = restant.toFixed(2).replace('.', ',');
       restantDisplay.classList.remove('restant-ok', 'restant-err');
       restantDisplay.classList.add(Math.abs(restant) < 0.01 ? 'restant-ok' : 'restant-err');
     }
