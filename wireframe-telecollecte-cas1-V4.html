@@ -1281,9 +1281,17 @@
 </div>
 
 <script>
+  const IS_LOCAL = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
+
   // Afficher le bouton Retours PO uniquement en local
-  if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
+  if (IS_LOCAL) {
     document.getElementById('briefs-nav-btn').style.display = 'flex';
+  }
+
+  // Masquer le panel OPTIONS sur GitHub Pages
+  if (!IS_LOCAL) {
+    const panel = document.getElementById('wf-panel');
+    if (panel) panel.style.display = 'none';
   }
 
   // ══ Retours PO ══════════════════════════════════════════════
@@ -1333,6 +1341,28 @@
     localStorage.setItem(BRIEFS_KEY, json);
     // Backup uniquement si non vide
     if (briefs.length > 0) localStorage.setItem(BRIEFS_BACKUP_KEY, json);
+  }
+
+  // Migration one-shot — uniquement en local
+  // Écrit archived:true sur Firebase pour tous les briefs done=true existants
+  // S'exécute après fbLoad() pour avoir les commentaires disponibles
+  async function migrateArchivedPins() {
+    if (!IS_LOCAL) return;
+    const doneBriefs = briefs.filter(b => b.done && b.sourcePin);
+    if (!doneBriefs.length) return;
+    let changed = false;
+    doneBriefs.forEach(b => {
+      const idx = comments.findIndex(c => String(c.id) === String(b.sourcePin));
+      if (idx !== -1 && !comments[idx].archived) {
+        comments[idx].archived = true;
+        changed = true;
+      }
+    });
+    if (changed) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(comments));
+      await fbSave();
+      console.log('[WF] Migration archivés : ' + doneBriefs.length + ' pins mis à jour sur Firebase');
+    }
   }
 
   const TYPE_LABELS = { retour:'💬 Retour', idee:'💡 Idée', rg:'📋 Règle de gestion', question:'❓ Question', team:'💬 Équipe' };
@@ -2496,8 +2526,8 @@
 
   // Poll toutes les 5s pour voir les nouveaux commentaires
   setInterval(fbLoad, 5000);
-  // Chargement initial depuis Firebase
-  fbLoad();
+  // Chargement initial depuis Firebase + migration one-shot des archivés
+  fbLoad().then(() => migrateArchivedPins());
   let commentMode = localStorage.getItem('wf_pins_visible') === '1';
   let pendingPin = null;
   let currentTab = 'tpe'; // tab active au moment du commentaire
