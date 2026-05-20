@@ -2820,11 +2820,9 @@
   if (cpUser) cpUser.textContent = CURRENT_USER;
   if (replyUser) replyUser.textContent = `Répondre en tant que ${CURRENT_USER}`;
 
-  // Pour les POs : afficher le sélecteur de type dans le popover
-  if (CURRENT_USER !== 'Sébastien') {
-    const cpTypeZone = document.getElementById('cp-type-zone');
-    if (cpTypeZone) cpTypeZone.style.display = 'block';
-  }
+  // Sélecteur de type visible pour tout le monde
+  const cpTypeZone = document.getElementById('cp-type-zone');
+  if (cpTypeZone) cpTypeZone.style.display = 'block';
 
   function updateCpType() {
     const types = { retour: { color:'#1E2643', label:'💬 Retour' }, idee: { color:'#D97706', label:'💡 Idée' }, rg: { color:'#7C3AED', label:'📋 Règle de gestion' }, question: { color:'#0891B2', label:'❓ Question' } };
