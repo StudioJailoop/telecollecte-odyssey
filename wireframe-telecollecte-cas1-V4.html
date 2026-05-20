@@ -2108,10 +2108,21 @@
       document.getElementById('claude-prompt-text').value = '';
       return;
     }
-    if (!confirm('Supprimer tous les messages de cet onglet ? Ils seront placés dans la corbeille.')) return;
-    briefs = [];
-    localStorage.setItem(BRIEFS_KEY, JSON.stringify(briefs)); fbSave();
+    const TYPE_LABEL_FR = { retour:'Retours', idee:'Idées', rg:'Règles de gestion', question:'Questions' };
+    const label = TYPE_LABEL_FR[currentBriefTab] || currentBriefTab;
+    const toDelete = briefs.filter(b => b.type === currentBriefTab && (archivesMode ? b.done : !b.done));
+    if (!toDelete.length) return;
+    if (!confirm(`Supprimer les ${toDelete.length} éléments de l'onglet "${label}" ? Ils seront placés dans la corbeille.`)) return;
+    // Envoyer dans la corbeille
+    const trash = JSON.parse(localStorage.getItem(TRASH_KEY) || '[]');
+    const now = Date.now();
+    toDelete.forEach(b => trash.unshift({ ...b, deletedAt: now }));
+    localStorage.setItem(TRASH_KEY, JSON.stringify(trash));
+    // Supprimer uniquement ceux de l'onglet actif
+    briefs = briefs.filter(b => !(b.type === currentBriefTab && (archivesMode ? b.done : !b.done)));
+    localStorage.setItem(BRIEFS_KEY, JSON.stringify(briefs));
     renderBriefs();
+    updateAllCounts();
   }
 
   function buildPrompt() {
