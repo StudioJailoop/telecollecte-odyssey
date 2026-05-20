@@ -1076,15 +1076,15 @@
       <!-- Vue Régularisation -->
       <div id="view-reg" style="display:none;">
 
-        <!-- Bloc date — même composant DS -->
+        <!-- Bloc date — lecture seule, date de référence de l'écart -->
         <div class="bloc-date">
-          <span class="date-label">Please enter an accounting date to proceed with the telecollection</span>
-          <div class="tf-field">
+          <span class="date-label">Outstanding discrepancy to regularize as of</span>
+          <div class="tf-field" style="cursor:default;pointer-events:none;opacity:0.75;">
             <svg viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
               <rect x="3" y="4" width="18" height="18" rx="2"/>
               <path d="M16 2v4M8 2v4M3 10h18"/>
             </svg>
-            <input type="text" value="2026 / 05 / 04" placeholder="YYYY / MM / DD" size="14" />
+            <input type="text" value="2026 / 05 / 04" size="14" readonly style="cursor:default;pointer-events:none;" />
           </div>
           <button class="btn-date-cta off" id="btnv-reg">Faire une régularisation</button>
         </div>
@@ -1218,7 +1218,7 @@
     <option value="wireframe-telecollecte-cas1-V3.html">V3</option>
     <option value="wireframe-telecollecte-cas1-V4.1.html">V4.1 — Snapshot 2026-05-20 ✓</option>
     <option value="wireframe-telecollecte-cas1-V4.2.html">V4.2 — Snapshot 2026-05-20 ✓</option>
-    <option value="wireframe-telecollecte-cas1-V4.3.html" selected>V4.3 — Pins synchro Archives ✓</option>
+    <option value="wireframe-telecollecte-cas1-V4.3.html" selected>V4.3 — Snapshot 2026-05-20 ✓</option>
     <option value="wireframe-telecollecte-cas1-V4.html">En cours ★</option>
   </select>
 
@@ -1385,7 +1385,6 @@
     if (inputZone) inputZone.style.display = on ? 'none' : (currentBriefTab === 'claude' ? 'none' : 'block');
     renderBriefs();
     updateAllCounts();
-    refreshPins();
   }
 
   function updateArchivesCount() {
@@ -1409,7 +1408,7 @@
     setBriefTab(currentBriefTab);
     renderBriefs();
     updateAllCounts();
-    document.body.style.cursor = ''; // curseur normal pendant la modale
+    document.body.style.cursor = '';
   }
   function closeBriefs() {
     document.getElementById('briefs-overlay').style.display = 'none';
@@ -1420,7 +1419,7 @@
       if (sw) sw.checked = false;
       toggleArchivesMode(false);
     }
-    updateCursor(); // restaure crosshair si commentMode actif
+    updateCursor();
   }
 
 
@@ -2255,7 +2254,6 @@
         claudeSelection.clear();
         updateAllCounts();
         renderBriefs();
-        refreshPins();
         setTimeout(() => { btn.textContent = '⚡ Envoyer à Claude'; }, 2000);
       }
     } catch {
@@ -2542,7 +2540,6 @@
   }
 
   function isPinArchived(commentId) {
-    // Un pin est archivé si au moins un de ses briefs liés est done=true
     return briefs.some(b => String(b.sourcePin) === String(commentId) && b.done);
   }
 
@@ -2554,7 +2551,6 @@
       .filter(c => (c.tab || 'tpe') === currentTab)
       .filter(c => !filterAuthor || c.author === filterAuthor)
       .filter(c => {
-        // Vérifier le type du commentaire ET celui du brief lié (requalification depuis la modale)
         if ((c.qualifiedType || c.commentType) === 'rg') return false;
         const linkedBrief = briefs.find(b => String(b.sourcePin) === String(c.id));
         if (linkedBrief && linkedBrief.type === 'rg') return false;

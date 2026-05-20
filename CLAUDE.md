@@ -38,6 +38,15 @@ Ouvrir le wireframe : `http://localhost:8765/wireframe-telecollecte-cas1-V4.html
 6. **Max 2 tentatives de fix** puis poser des questions précises
 7. **ARCHIVAGE** : seuls `claudeSelection` items → `done=true`. JAMAIS `briefs.forEach(b => b.done=true)`
 
+## Fichier de travail unique — RÈGLE ANTI-DIVERGENCE
+
+**Un seul fichier reçoit les modifications : `wireframe-telecollecte-cas1-V4.html`**
+
+- Toute nouvelle feature, fix, ou retour PO → appliqué sur **V4.html uniquement**
+- Les snapshots versionnés (V4.1, V4.2, V4.3…) sont des copies figées — **jamais modifiées**
+- Quand on crée un snapshot : `cp V4.html V4.X.html` → mettre à jour le sélecteur de version dans la copie seulement
+- **Playwright** : uniquement `navigate` + `screenshot` + `evaluate` en lecture — jamais appeler `goTo()`, `openBriefs()`, `toggleArchivesMode()` ou toute fonction JS qui modifie l'état visible dans le browser de l'utilisateur
+
 ## Conservation absolue de l'existant — RÈGLE CRITIQUE
 
 **Toute modification est additive. Jamais une réécriture.**
