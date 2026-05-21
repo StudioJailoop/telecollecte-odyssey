@@ -2105,7 +2105,7 @@
       // Commentaire principal
       if (p.author !== 'Sébastien' && !p.requalified) teamComments.push({key:'pin-'+p.id, pinId:p.id, isReply:false, replyIdx:null, author:p.author, text:p.text, date:p.date, tab:p.tab||'tpe', qualifiedType:p.qualifiedType||'', commentType:p.commentType||null, pinLabel:p.pinLabel||null});
       // Réponses
-      (p.replies||[]).forEach(r => {
+      (p.replies||[]).forEach((r, ri) => {
         if (r.author !== 'Sébastien' && !r.requalified) teamComments.push({key:'pin-'+p.id+'-reply-'+ri, pinId:p.id, isReply:true, replyIdx:ri, author:r.author, text:r.text, date:r.date, tab:p.tab||'tpe', qualifiedType:r.qualifiedType||''});
       });
     });
