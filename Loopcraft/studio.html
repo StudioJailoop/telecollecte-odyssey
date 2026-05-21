@@ -386,16 +386,40 @@
     ═══════════════════════════════════════ */
     #view-project { padding:40px 32px; display:none; }
 
-    .project-header {
-      display: flex; align-items:flex-start; gap:16px; margin-bottom:32px;
+    /* Header coloré page projet */
+    .project-banner {
+      margin: -40px -32px 32px;
+      padding: 32px 40px 28px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
     }
-    .project-header-icon {
-      width:48px; height:48px; border-radius:14px;
-      display:flex; align-items:center; justify-content:center;
-      font-size:20px; font-weight:800; color:#fff; flex-shrink:0;
+    .project-banner-icon {
+      width: 52px; height: 52px;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.15);
+      display: flex; align-items:center; justify-content:center;
+      flex-shrink: 0;
     }
-    .project-header-title { font-size:24px; font-weight:800; color:var(--navy); }
-    .project-header-desc { font-size:13px; color:var(--grey-txt); margin-top:3px; }
+    .project-banner-icon svg text { fill: #fff; }
+    .project-banner-title {
+      font-size: 22px; font-weight: 800; color: #fff; line-height: 1.2;
+    }
+    .project-banner-desc {
+      font-size: 13px; color: rgba(255,255,255,0.6); margin-top: 3px;
+    }
+    .project-banner-stats {
+      margin-left: auto;
+      display: flex; gap: 8px; align-items: center;
+    }
+    .banner-chip {
+      font-size: 12px; font-weight: 600;
+      padding: 5px 12px; border-radius: 20px;
+      background: rgba(255,255,255,0.15);
+      color: rgba(255,255,255,0.85);
+      white-space: nowrap;
+    }
+    .banner-chip.active { background: rgba(253,190,0,0.25); color: var(--yellow); }
 
     /* Sous-projets cards */
     .subprojects-grid {
@@ -613,36 +637,17 @@
 
     <!-- Vue Projet (niveau 2) -->
     <div id="view-project">
-      <div class="project-header">
-        <div class="project-header-icon" id="project-icon"></div>
+      <!-- Banner coloré — couleur injectée par JS -->
+      <div class="project-banner" id="project-banner">
+        <div class="project-banner-icon" id="project-icon"></div>
         <div>
-          <div class="project-header-title" id="project-title"></div>
-          <div class="project-header-desc" id="project-desc"></div>
+          <div class="project-banner-title" id="project-title"></div>
+          <div class="project-banner-desc" id="project-desc"></div>
         </div>
+        <div class="project-banner-stats" id="project-banner-stats"></div>
       </div>
 
-      <div class="kpi-row">
-        <div class="kpi-card accent">
-          <div class="kpi-label">Sous-projets</div>
-          <div class="kpi-value" id="proj-kpi-sp">—</div>
-          <div class="kpi-sub">Total</div>
-        </div>
-        <div class="kpi-card">
-          <div class="kpi-label">En cours</div>
-          <div class="kpi-value" id="proj-kpi-inprogress">—</div>
-          <div class="kpi-sub">Actifs</div>
-        </div>
-        <div class="kpi-card">
-          <div class="kpi-label">Terminés</div>
-          <div class="kpi-value" id="proj-kpi-done">—</div>
-          <div class="kpi-sub">Validés</div>
-        </div>
-      </div>
-
-      <div class="section-title">
-        Sous-projets
-        <button class="btn-add" onclick="openModal('subproject')">+ Nouveau sous-projet</button>
-      </div>
+      <div class="section-title">Sous-projets</div>
       <div class="subprojects-grid" id="subprojects-grid"></div>
     </div>
 
@@ -921,20 +926,25 @@ function showProjectView(pid) {
   const subs = activeProject.subprojects || [];
   const inProgress = subs.filter(s => s.status==='in_progress').length;
   const done = subs.filter(s => s.status==='done').length;
+  const color = activeProject.color || PALETTE[0];
 
-  // Header projet
+  // Banner coloré
+  const banner = document.getElementById('project-banner');
+  banner.style.background = `linear-gradient(135deg, ${color} 0%, ${color}CC 100%)`;
   const logoContent = PROJECT_LOGOS[activeProject.id]
     ? PROJECT_LOGOS[activeProject.id]
     : `<span style="font-size:20px;font-weight:800;color:#fff">${activeProject.name.slice(0,2).toUpperCase()}</span>`;
-  document.getElementById('project-icon').style.background = activeProject.color || PALETTE[0];
   document.getElementById('project-icon').innerHTML = logoContent;
   document.getElementById('project-title').textContent = activeProject.name;
   document.getElementById('project-desc').textContent = activeProject.description || '';
 
-  // KPIs
-  document.getElementById('proj-kpi-sp').textContent = subs.length;
-  document.getElementById('proj-kpi-inprogress').textContent = inProgress;
-  document.getElementById('proj-kpi-done').textContent = done;
+  // Chips stats
+  const statsEl = document.getElementById('project-banner-stats');
+  statsEl.innerHTML = `
+    <span class="banner-chip">${subs.length} sous-projet${subs.length>1?'s':''}</span>
+    ${inProgress > 0 ? `<span class="banner-chip active">${inProgress} en cours</span>` : ''}
+    ${done > 0 ? `<span class="banner-chip">${done} terminé${done>1?'s':''}</span>` : ''}
+  `;
 
   // Grille sous-projets
   const grid = document.getElementById('subprojects-grid');
