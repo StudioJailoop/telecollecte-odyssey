@@ -4,14 +4,14 @@
       "id": "club-med",
       "name": "Club Med",
       "color": "#0057A8",
-      "initials": "CM",
-      "wireframes": [
+      "description": "Refonte de l'outil Odyssey pour les équipes Club Med",
+      "subprojects": [
         {
-          "id": "telecollecte-cas1",
-          "title": "Télécollecte Cas 1",
-          "version": "V5",
+          "id": "telecollecte",
+          "name": "Télécollecte",
           "status": "in_progress",
-          "file": "../wireframe-telecollecte-cas1-V5.html",
+          "wireframe": "../wireframe-telecollecte-cas1-V5.html",
+          "version": "V5",
           "updated": "2026-05-21"
         }
       ]
