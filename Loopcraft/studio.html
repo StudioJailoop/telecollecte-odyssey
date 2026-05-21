@@ -768,44 +768,18 @@
       <!-- Grille 2 colonnes -->
       <div class="dash-grid">
 
-        <!-- Colonne gauche -->
-        <div class="dash-col">
-
-          <!-- Activité wireframes -->
-          <div class="dash-card">
-            <div class="dash-card-title">
-              Activité wireframes <span>7 derniers jours</span>
-            </div>
-            <div class="bar-chart" id="activity-chart"></div>
-          </div>
-
-          <!-- Projets avec progression -->
-          <div class="dash-card">
-            <div class="dash-card-title">
-              Projets
-              <button class="btn-add" onclick="openModal('project')">+ Nouveau</button>
-            </div>
-            <div id="projects-list"></div>
-          </div>
-
+        <!-- Messages PO récents -->
+        <div class="dash-card">
+          <div class="dash-card-title">Messages PO <span id="unread-count"></span></div>
+          <div class="msg-feed" id="msg-feed"></div>
         </div>
 
-        <!-- Colonne droite -->
-        <div class="dash-col">
-
-          <!-- Messages PO récents -->
-          <div class="dash-card">
-            <div class="dash-card-title">Messages PO <span id="unread-count"></span></div>
-            <div class="msg-feed" id="msg-feed"></div>
-          </div>
-
-          <!-- Dernière activité -->
-          <div class="dash-card">
-            <div class="dash-card-title">Dernière activité</div>
-            <div class="activity-list" id="activity-list"></div>
-          </div>
-
+        <!-- Dernière activité -->
+        <div class="dash-card">
+          <div class="dash-card-title">Dernière activité</div>
+          <div class="activity-list" id="activity-list"></div>
         </div>
+
       </div>
 
     </div>
@@ -1056,50 +1030,6 @@ function renderDashboard() {
   document.getElementById('kpi-msgs-trend').textContent = unread > 0 ? `${unread} non lu${unread>1?'s':''}` : 'Tout lu ✓';
   if (unread > 0) document.getElementById('topbar-notif').classList.add('has-notif');
 
-  // Graphique activité (simulé — 7 jours)
-  const DAY_LABELS = ['L','M','M','J','V','S','D'];
-  const ACTIVITY_DATA = [2, 0, 1, 3, 2, 0, 1]; // simulé
-  const todayIdx = (now.getDay() + 6) % 7; // Lundi = 0
-  const maxVal = Math.max(...ACTIVITY_DATA, 1);
-  const chart = document.getElementById('activity-chart');
-  chart.innerHTML = ACTIVITY_DATA.map((v, i) => `
-    <div class="bar-col">
-      <div class="bar ${i === todayIdx ? 'today' : v > 0 ? 'active' : ''}"
-           style="height:${Math.max(4, Math.round((v/maxVal)*72))}px"></div>
-      <div class="bar-label">${DAY_LABELS[i]}</div>
-    </div>
-  `).join('');
-
-  // Liste projets avec barre de progression
-  const list = document.getElementById('projects-list');
-  list.innerHTML = '';
-  if (projects.length === 0) {
-    list.innerHTML = `<div class="empty-state" style="padding:24px 0"><div class="empty-icon">📁</div><strong>Aucun projet</strong></div>`;
-    return;
-  }
-  projects.forEach(p => {
-    const subs = p.subprojects || [];
-    const done = subs.filter(s => s.status==='done').length;
-    const pct = subs.length > 0 ? Math.round((done/subs.length)*100) : 0;
-    const logoContent = PROJECT_LOGOS[p.id]
-      ? PROJECT_LOGOS[p.id]
-      : `<span style="font-size:12px;font-weight:800;color:#fff">${p.name.slice(0,2).toUpperCase()}</span>`;
-    const row = document.createElement('div');
-    row.className = 'project-row';
-    row.innerHTML = `
-      <div class="project-row-dot" style="background:${p.color||PALETTE[0]}">${logoContent}</div>
-      <div class="project-row-info">
-        <div class="project-row-name">${p.name}</div>
-        <div class="project-row-meta">${subs.length} sous-projet${subs.length>1?'s':''} · ${subs.filter(s=>s.status==='in_progress').length} en cours</div>
-      </div>
-      <div class="project-row-progress">
-        <div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:${pct}%"></div></div>
-        <div class="progress-pct">${pct}%</div>
-      </div>
-    `;
-    row.addEventListener('click', () => showProjectView(p.id));
-    list.appendChild(row);
-  });
 
   // Feed messages
   const feed = document.getElementById('msg-feed');
