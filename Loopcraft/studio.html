@@ -46,14 +46,15 @@
       margin-bottom: 36px;
     }
     .login-logo .icon {
-      width: 56px; height: 56px;
-      background: var(--yellow);
-      border-radius: 16px;
+      width: 80px; height: 80px;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      font-size: 26px;
       margin-bottom: 14px;
+    }
+    .login-logo .icon img {
+      width: 80px; height: 80px;
+      object-fit: contain;
     }
     .login-logo .brand {
       font-size: 20px;
@@ -144,12 +145,13 @@
     }
     .sidebar-logo {
       width: 44px; height: 44px;
-      background: var(--yellow);
-      border-radius: 14px;
       display: flex; align-items: center; justify-content: center;
-      font-size: 20px;
       margin-bottom: 8px;
       flex-shrink: 0;
+    }
+    .sidebar-logo img {
+      width: 44px; height: 44px;
+      object-fit: contain;
     }
     .sidebar-sep {
       width: 32px;
@@ -200,6 +202,27 @@
       z-index: 100;
     }
     .sidebar-project:hover .sidebar-project-tooltip { opacity: 1; }
+
+    /* bouton + ajouter projet */
+    .sidebar-add {
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      border: 2px dashed rgba(255,255,255,0.25);
+      background: none;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px;
+      color: rgba(255,255,255,0.4);
+      cursor: pointer;
+      transition: border-color 0.15s, color 0.15s, border-radius 0.2s;
+      flex-shrink: 0;
+      position: relative;
+    }
+    .sidebar-add:hover {
+      border-color: rgba(255,255,255,0.7);
+      color: #fff;
+      border-radius: 14px;
+    }
+    .sidebar-add .sidebar-project-tooltip { left: 56px; }
 
     /* spacer + bottom icons */
     .sidebar-spacer { flex: 1; }
@@ -267,10 +290,7 @@
     }
     .panel-wf-item:hover { background: rgba(255,255,255,0.06); }
     .panel-wf-item.active { background: rgba(253,190,0,0.12); }
-    .panel-wf-icon {
-      font-size: 14px;
-      flex-shrink: 0;
-    }
+    .panel-wf-icon { font-size: 14px; flex-shrink: 0; }
     .panel-wf-info { flex: 1; min-width: 0; }
     .panel-wf-title {
       font-size: 13px;
@@ -280,11 +300,80 @@
       overflow: hidden;
       text-overflow: ellipsis;
     }
-    .panel-wf-meta {
-      font-size: 11px;
-      color: rgba(255,255,255,0.35);
-      margin-top: 1px;
+    .panel-wf-meta { font-size: 11px; color: rgba(255,255,255,0.35); margin-top: 1px; }
+
+    /* ── Wireframes grid dans le main ── */
+    .wf-grid {
+      padding: 40px 32px;
+      display: none;
     }
+    .wf-grid.visible { display: block; }
+    .wf-grid-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 32px;
+    }
+    .wf-grid-project-icon {
+      width: 40px; height: 40px;
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+    .wf-grid-title {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--navy);
+    }
+    .wf-grid-sub {
+      font-size: 13px;
+      color: var(--grey-txt);
+      margin-top: 2px;
+    }
+    .wf-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px;
+    }
+    .wf-card {
+      background: #fff;
+      border-radius: 16px;
+      border: 1.5px solid var(--grey-bd);
+      padding: 20px 24px;
+      cursor: pointer;
+      transition: border-color 0.15s, box-shadow 0.15s;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .wf-card:hover {
+      border-color: var(--navy);
+      box-shadow: 0 4px 16px rgba(30,38,67,0.1);
+    }
+    .wf-card-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+    }
+    .wf-card-icon {
+      width: 40px; height: 40px;
+      background: var(--grey);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+    }
+    .wf-card-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--navy);
+    }
+    .wf-card-meta {
+      font-size: 12px;
+      color: var(--grey-txt);
+      margin-top: 3px;
+    }
+
     .status-badge {
       font-size: 10px;
       font-weight: 700;
@@ -305,14 +394,14 @@
 
     /* ── Main content ── */
     .main {
-      margin-left: calc(var(--sidebar-w) + var(--panel-w));
+      margin-left: var(--sidebar-w);
       flex: 1;
       min-height: 100vh;
       background: #F7F8FA;
       transition: margin-left 0.2s;
     }
-    .main.no-panel {
-      margin-left: var(--sidebar-w);
+    .main.with-panel {
+      margin-left: calc(var(--sidebar-w) + var(--panel-w));
     }
 
     /* Top bar */
@@ -554,7 +643,7 @@
 <div id="login-screen">
   <div class="login-card">
     <div class="login-logo">
-      <div class="icon">⚡</div>
+      <div class="icon"><img src="./logo-jailoop.png" alt="Studio Jailoop"/></div>
       <div class="brand">Loopcraft</div>
       <div class="sub">Studio Designer</div>
     </div>
@@ -576,10 +665,15 @@
 
   <!-- Sidebar -->
   <nav class="sidebar" id="sidebar">
-    <div class="sidebar-logo">⚡</div>
+    <div class="sidebar-logo"><img src="./logo-jailoop.png" alt="Studio Jailoop"/></div>
     <div class="sidebar-sep"></div>
     <!-- Projets injectés par JS -->
     <div id="sidebar-projects"></div>
+    <!-- Bouton ajouter projet -->
+    <div class="sidebar-add" onclick="addProject()" title="">
+      +
+      <span class="sidebar-project-tooltip">Nouveau projet</span>
+    </div>
     <div class="sidebar-spacer"></div>
     <div class="sidebar-bottom">
       <div class="sidebar-avatar" title="Studio Jailoop">SJ</div>
@@ -597,7 +691,7 @@
   </aside>
 
   <!-- Main -->
-  <main class="main" id="main">
+  <main class="main" id="main" style="margin-left:var(--sidebar-w)">
 
     <!-- Topbar -->
     <div class="topbar">
@@ -634,10 +728,6 @@
         </div>
       </div>
 
-      <div class="section-title">Messages récents</div>
-      <div class="msg-list" id="msg-list">
-        <div class="empty-msg">Aucun message pour l'instant.<br>Les commentaires des POs apparaîtront ici.</div>
-      </div>
     </div>
 
     <!-- Wireframe detail -->
@@ -764,17 +854,37 @@ async function initApp() {
 // ═══════════════════════════════════════
 // SIDEBAR
 // ═══════════════════════════════════════
+// Logo Club Med SVG (soleil stylisé blanc sur fond bleu Club Med)
+const PROJECT_LOGOS = {
+  'club-med': `<svg viewBox="0 0 44 44" width="36" height="36" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="22" cy="22" r="10" fill="white"/>
+    <g fill="white">
+      ${[0,45,90,135,180,225,270,315].map(a => {
+        const r = a * Math.PI / 180;
+        const x1 = 22 + 13 * Math.cos(r); const y1 = 22 + 13 * Math.sin(r);
+        const x2 = 22 + 18 * Math.cos(r); const y2 = 22 + 18 * Math.sin(r);
+        return `<line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" stroke="white" stroke-width="3" stroke-linecap="round"/>`;
+      }).join('')}
+    </g>
+  </svg>`
+};
+
 function renderSidebar() {
   const container = document.getElementById('sidebar-projects');
   container.innerHTML = '';
   projects.forEach((p, i) => {
     const color = p.color || COLORS[i % COLORS.length];
     const hasUnread = hasUnreadForProject(p);
+    const logo = PROJECT_LOGOS[p.id];
+    const inner = logo
+      ? logo
+      : `<span style="font-size:13px;font-weight:700;color:#fff">${p.initials || p.name.slice(0,2).toUpperCase()}</span>`;
     const el = document.createElement('div');
     el.className = 'sidebar-project' + (hasUnread ? ' has-notif' : '');
     el.style.background = color;
+    el.style.overflow = 'hidden';
     el.innerHTML = `
-      <span>${p.initials || p.name.slice(0,2).toUpperCase()}</span>
+      ${inner}
       <span class="notif-dot"></span>
       <span class="sidebar-project-tooltip">${p.name}</span>
     `;
@@ -791,6 +901,19 @@ function hasUnreadForProject(p) {
 // SELECT PROJET → Panel
 // ═══════════════════════════════════════
 function selectProject(projectId) {
+  const panel = document.getElementById('panel');
+  const main = document.getElementById('main');
+
+  // Toggle : si déjà actif et panel ouvert → fermer
+  if (activeProject && activeProject.id === projectId && panel.classList.contains('visible')) {
+    panel.classList.remove('visible');
+    main.style.marginLeft = 'var(--sidebar-w)';
+    document.querySelectorAll('.sidebar-project').forEach(el => el.classList.remove('active'));
+    activeProject = null;
+    document.getElementById('topbar-title').textContent = 'Dashboard';
+    return;
+  }
+
   activeProject = projects.find(p => p.id === projectId);
   if (!activeProject) return;
 
@@ -799,15 +922,22 @@ function selectProject(projectId) {
     el.classList.toggle('active', projects[i]?.id === projectId);
   });
 
-  // Panel
+  // Ouvrir panel
   document.getElementById('panel-project-name').textContent = activeProject.name;
   renderPanelWireframes();
-  document.getElementById('panel').classList.add('visible');
-  document.getElementById('main').classList.remove('no-panel');
+  panel.classList.add('visible');
+  main.style.marginLeft = 'calc(var(--sidebar-w) + var(--panel-w))';
 
-  // Retour dashboard si on change de projet
   showDashboard();
   document.getElementById('topbar-title').textContent = activeProject.name;
+}
+
+function addProject() {
+  const name = prompt('Nom du nouveau projet :');
+  if (!name || !name.trim()) return;
+  const id = name.trim().toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+  projects.push({ id, name: name.trim(), color: COLORS[projects.length % COLORS.length], initials: name.trim().slice(0,2).toUpperCase(), wireframes: [] });
+  renderSidebar();
 }
 
 function renderPanelWireframes() {
@@ -916,37 +1046,6 @@ function renderDashboard() {
   // Notif bell
   const bell = document.getElementById('topbar-notif');
   if (unread > 0) bell.classList.add('has-notif');
-
-  // Messages
-  renderMessages();
-}
-
-function renderMessages() {
-  const list = document.getElementById('msg-list');
-  if (allMessages.length === 0) {
-    list.innerHTML = '<div class="empty-msg">Aucun message pour l\'instant.<br>Les commentaires des POs apparaîtront ici.</div>';
-    return;
-  }
-  list.innerHTML = allMessages.slice(0,10).map(m => {
-    const initials = (m.author||'?').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
-    const project = projects.find(p => p.id === m.project);
-    const projectLabel = project ? project.name : (m.project || '');
-    const unreadClass = m.read ? '' : 'unread';
-    const time = m.timestamp ? new Date(m.timestamp).toLocaleDateString('fr-FR',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}) : '';
-    return `
-      <div class="msg-item ${unreadClass}">
-        <div class="msg-avatar">${initials}</div>
-        <div class="msg-body">
-          <div class="msg-header">
-            <span class="msg-author">${m.author||'Inconnu'}</span>
-            ${projectLabel ? `<span class="msg-project">${projectLabel}</span>` : ''}
-            <span class="msg-time">${time}</span>
-          </div>
-          <div class="msg-text">${m.text||m.comment||''}</div>
-        </div>
-      </div>
-    `;
-  }).join('');
 }
 </script>
 </body>
