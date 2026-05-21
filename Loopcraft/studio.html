@@ -368,14 +368,61 @@
     .treat-item-label { font-size:11px; color:rgba(255,255,255,0.7); font-weight:500; }
     .treat-empty { font-size:13px; color:rgba(255,255,255,0.5); padding:4px 0; }
 
-    /* Layout 70/30 */
-    .dash-grid {
+    /* Layout grille 3 colonnes égales */
+    .dash-grid-3 {
       display:grid;
-      grid-template-columns: 1fr 300px;
-      gap:16px;
+      grid-template-columns: repeat(3, 1fr);
+      gap:14px;
       align-items:start;
     }
-    .dash-col { display:flex; flex-direction:column; gap:14px; }
+
+    /* ── RACCOURCIS ── */
+    .shortcuts-list { display:flex; flex-direction:column; gap:8px; }
+    .shortcut-btn {
+      width:100%; padding:11px 16px;
+      border-radius:10px; font-size:13px; font-weight:700;
+      cursor:pointer; font-family:inherit; text-align:left;
+      transition:opacity 0.15s, transform 0.1s;
+      border:none;
+    }
+    .shortcut-btn:hover { opacity:0.88; transform:translateY(-1px); }
+    .shortcut-btn:active { transform:translateY(0); }
+    .shortcut-btn.primary { background:var(--yellow); color:var(--navy); }
+    .shortcut-btn.secondary { background:var(--navy); color:var(--yellow); }
+    .shortcut-btn.outline {
+      background:none; color:var(--navy);
+      border:1.5px solid var(--grey-bd);
+    }
+    .shortcut-btn.outline:hover { border-color:var(--navy); }
+
+    /* ── ESTIMATION ── */
+    .estim-item {
+      display:flex; align-items:center; gap:14px;
+      padding:10px 0; border-bottom:1px solid var(--grey-bd);
+    }
+    .estim-item:last-child { border-bottom:none; padding-bottom:0; }
+    .estim-item:first-child { padding-top:0; }
+    .estim-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+    .estim-info { flex:1; min-width:0; }
+    .estim-name { font-size:13px; font-weight:700; color:var(--navy); }
+    .estim-project { font-size:11px; color:var(--grey-txt); margin-top:1px; }
+    .estim-metrics { display:flex; gap:8px; align-items:center; flex-shrink:0; }
+    .estim-chip {
+      font-size:11px; font-weight:600; padding:3px 9px;
+      border-radius:20px; white-space:nowrap;
+    }
+    .estim-chip.tokens { background:#EEF2FF; color:#4338CA; }
+    .estim-chip.time { background:#FFF7ED; color:#C2410C; }
+    .estim-chip.easy { background:rgba(34,197,94,0.1); color:#166534; }
+    .estim-chip.medium { background:rgba(253,190,0,0.15); color:#A07800; }
+    .estim-chip.hard { background:rgba(220,38,38,0.1); color:#DC2626; }
+    .estim-edit {
+      background:none; border:1.5px solid var(--grey-bd); border-radius:6px;
+      font-size:11px; color:var(--grey-txt); padding:2px 8px;
+      cursor:pointer; font-family:inherit;
+      transition:border-color 0.1s, color 0.1s;
+    }
+    .estim-edit:hover { border-color:var(--navy); color:var(--navy); }
 
     /* Card générique */
     .dash-card {
@@ -814,56 +861,39 @@
         </div>
       </div>
 
-      <!-- À traiter -->
-      <div class="treat-card">
-        <div class="treat-header">
-          <div class="treat-title">
-            🔴 À traiter
-            <span class="treat-badge" id="treat-total">0</span>
+      <!-- Reprendre mon travail — tiles compactes -->
+      <div class="kpi-strip" id="resume-strip" style="margin-bottom:20px;flex-wrap:wrap;"></div>
+
+      <!-- Grille 3 colonnes -->
+      <div class="dash-grid-3">
+
+        <!-- Raccourcis -->
+        <div class="dash-card">
+          <div class="dash-card-title">Raccourcis</div>
+          <div class="shortcuts-list">
+            <button class="shortcut-btn primary" onclick="openModal('project')">+ Créer un projet</button>
+            <button class="shortcut-btn secondary" onclick="openModal('subproject')">+ Créer un sous-projet</button>
           </div>
-          <span style="font-size:11px;color:rgba(255,255,255,0.4)">depuis Firebase</span>
         </div>
-        <div class="treat-items" id="treat-items">
-          <div class="treat-empty">Aucun retour en attente — tout est traité ✓</div>
+
+        <!-- Contributions -->
+        <div class="dash-card">
+          <div class="dash-card-title">Contributions</div>
+          <div class="contrib-list" id="contrib-list"></div>
         </div>
+
+        <!-- Santé projets -->
+        <div class="dash-card">
+          <div class="dash-card-title">Santé des projets</div>
+          <div id="health-list"></div>
+        </div>
+
       </div>
 
-      <!-- Grille 70/30 -->
-      <div class="dash-grid">
-
-        <!-- Col gauche -->
-        <div class="dash-col">
-
-          <!-- Reprendre mon travail -->
-          <div class="dash-card">
-            <div class="dash-card-title">↗ Reprendre mon travail</div>
-            <div class="resume-list" id="resume-list"></div>
-          </div>
-
-          <!-- Timeline activité -->
-          <div class="dash-card">
-            <div class="dash-card-title">Activité récente <span id="activity-count"></span></div>
-            <div class="timeline" id="timeline"></div>
-          </div>
-
-        </div>
-
-        <!-- Col droite -->
-        <div class="dash-col">
-
-          <!-- Contributions -->
-          <div class="dash-card">
-            <div class="dash-card-title">Contributions</div>
-            <div class="contrib-list" id="contrib-list"></div>
-          </div>
-
-          <!-- Santé projets -->
-          <div class="dash-card">
-            <div class="dash-card-title">Santé des projets</div>
-            <div id="health-list"></div>
-          </div>
-
-        </div>
+      <!-- Estimation par sous-projet -->
+      <div class="dash-card" style="margin-top:14px;">
+        <div class="dash-card-title">Estimation par sous-projet <span>Tokens · Temps · Difficulté</span></div>
+        <div id="estimation-list" style="display:flex;flex-direction:column;gap:0;"></div>
       </div>
 
     </div>
@@ -1145,81 +1175,24 @@ function renderDashboard() {
   document.getElementById('kpi-msgs-trend').textContent = unread > 0 ? `${unread} non lu${unread>1?'s':''}` : 'Tout lu ✓';
   if (unread > 0) document.getElementById('topbar-notif').classList.add('has-notif');
 
-  // ── À TRAITER ──
-  const byType = {};
-  messages.forEach(m => {
-    const t = catLabel(m.type||m.category||'retour');
-    byType[t] = (byType[t]||0) + 1;
-  });
-  const treatTotal = messages.length;
-  document.getElementById('treat-total').textContent = treatTotal;
-  const treatEl = document.getElementById('treat-items');
-  if (treatTotal === 0) {
-    treatEl.innerHTML = '<div class="treat-empty">Aucun retour en attente — tout est traité ✓</div>';
-  } else {
-    treatEl.innerHTML = Object.entries(byType).map(([label, count]) => `
-      <div class="treat-item">
-        <div class="treat-item-count">${count}</div>
-        <div class="treat-item-label">${label}${count>1?'s':''}</div>
-      </div>
-    `).join('');
-  }
-
-  // ── REPRENDRE MON TRAVAIL ──
-  const resumeEl = document.getElementById('resume-list');
+  // ── REPRENDRE MON TRAVAIL — tiles compactes ──
+  const strip = document.getElementById('resume-strip');
   const allSPs = projects.flatMap(p => (p.subprojects||[]).map(sp => ({...sp, projectName:p.name, projectColor:p.color||PALETTE[0], projectId:p.id})));
   if (allSPs.length === 0) {
-    resumeEl.innerHTML = `<div style="font-size:13px;color:var(--grey-txt);padding:4px 0">Aucun sous-projet actif.</div>`;
+    strip.innerHTML = `<div class="kpi-tile" style="opacity:0.5"><div class="kpi-tile-icon" style="background:var(--grey)">📂</div><div class="kpi-tile-body"><div class="kpi-tile-value" style="font-size:14px">—</div><div class="kpi-tile-label">Aucun sous-projet</div></div></div>`;
   } else {
-    const msgBySP = {};
-    messages.forEach(m => { if(m.subproject) msgBySP[m.subproject] = (msgBySP[m.subproject]||0)+1; });
-    resumeEl.innerHTML = allSPs.slice(0,4).map(sp => {
-      const newMsgs = msgBySP[sp.id] || 0;
-      return `
-        <div class="resume-item" onclick="openSubproject('${sp.projectId}','${sp.id}')">
-          <div class="resume-dot" style="background:${sp.projectColor}">
-            <span style="font-size:10px;font-weight:700;color:#fff">${sp.projectName.slice(0,2).toUpperCase()}</span>
-          </div>
-          <div class="resume-info">
-            <div class="resume-name">${sp.name}</div>
-            <div class="resume-meta">${sp.projectName} · ${sp.version||''} · ${sp.updated||''}</div>
-          </div>
-          ${newMsgs > 0 ? `<div class="resume-badge">${newMsgs} nouveau${newMsgs>1?'x':''}</div>` : ''}
+    strip.innerHTML = allSPs.slice(0,4).map(sp => `
+      <div class="kpi-tile" style="cursor:pointer;flex:1;min-width:180px;" onclick="openSubproject('${sp.projectId}','${sp.id}')">
+        <div class="kpi-tile-icon" style="background:${sp.projectColor}20">
+          <span style="font-size:13px;font-weight:800;color:${sp.projectColor}">${sp.projectName.slice(0,2).toUpperCase()}</span>
         </div>
-      `;
-    }).join('');
-  }
-
-  // ── TIMELINE ACTIVITÉ ──
-  const tlEl = document.getElementById('timeline');
-  const tlCount = document.getElementById('activity-count');
-  const tlItems = messages.slice(0,6).map(m => ({
-    author: m.author || 'Inconnu',
-    text: m.text || m.comment || '',
-    type: m.type || m.category || 'retour',
-    ts: m.timestamp || 0
-  }));
-  tlCount.textContent = tlItems.length > 0 ? `${tlItems.length} événements` : '';
-  if (tlItems.length === 0) {
-    tlEl.innerHTML = `<div style="font-size:13px;color:var(--grey-txt)">Aucune activité récente.</div>`;
-  } else {
-    tlEl.innerHTML = tlItems.map(item => {
-      const initials = item.author.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
-      const avCls = avatarClass(item.author);
-      const label = catLabel(item.type);
-      const catCls = catClass(item.type);
-      const ago = timeAgo(item.ts);
-      return `
-        <div class="timeline-item">
-          <div class="tl-avatar ${avCls}">${initials}</div>
-          <div class="tl-body">
-            <div class="tl-text"><strong>${item.author}</strong> — ${item.text.slice(0,60)}${item.text.length>60?'…':''}</div>
-            <span class="tl-cat ${catCls}">${label}</span>
-          </div>
-          <div class="tl-time">${ago}</div>
+        <div class="kpi-tile-body">
+          <div class="kpi-tile-value" style="font-size:15px;font-weight:800">${sp.name}</div>
+          <div class="kpi-tile-label">${sp.version||''} · ${sp.updated||''}</div>
+          <div class="kpi-tile-trend neutral">↗ Reprendre</div>
         </div>
-      `;
-    }).join('');
+      </div>
+    `).join('');
   }
 
   // ── CONTRIBUTIONS ──
@@ -1279,6 +1252,51 @@ function renderDashboard() {
       `;
     }).join('');
   }
+
+  // ── ESTIMATION PAR SOUS-PROJET ──
+  const estimEl = document.getElementById('estimation-list');
+  const DIFFICULTY_DEFAULTS = { 'telecollecte':'medium' };
+  const TIME_DEFAULTS = { 'telecollecte':'2j' };
+  if (allSPs.length === 0) {
+    estimEl.innerHTML = `<div style="font-size:13px;color:var(--grey-txt);padding:8px 0">Aucun sous-projet.</div>`;
+  } else {
+    estimEl.innerHTML = allSPs.map(sp => {
+      const saved = JSON.parse(localStorage.getItem('loopcraft_estim_'+sp.id)||'{}');
+      const difficulty = saved.difficulty || DIFFICULTY_DEFAULTS[sp.id] || 'medium';
+      const time = saved.time || TIME_DEFAULTS[sp.id] || '—';
+      const difficultyLabel = {easy:'Facile', medium:'Moyen', hard:'Complexe'}[difficulty] || 'Moyen';
+      const difficultyClass = {easy:'easy', medium:'medium', hard:'hard'}[difficulty] || 'medium';
+      const msgCount = messages.filter(m => m.project === sp.projectId).length;
+      const avgLen = messages.length > 0 ? Math.round(messages.reduce((s,m)=>(s+(m.text||'').length),0)/messages.length) : 40;
+      const tokensEst = Math.round(msgCount * avgLen / 4);
+      return `
+        <div class="estim-item">
+          <div class="estim-dot" style="background:${sp.projectColor}"></div>
+          <div class="estim-info">
+            <div class="estim-name">${sp.name}</div>
+            <div class="estim-project">${sp.projectName} · ${sp.version||''}</div>
+          </div>
+          <div class="estim-metrics">
+            <span class="estim-chip tokens">~${tokensEst > 0 ? tokensEst.toLocaleString() : '—'} tokens</span>
+            <span class="estim-chip time">⏱ ${time}</span>
+            <span class="estim-chip ${difficultyClass}">${difficultyLabel}</span>
+            <button class="estim-edit" onclick="editEstim('${sp.id}','${sp.projectId}')">Modifier</button>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+}
+
+function editEstim(spId, projectId) {
+  const saved = JSON.parse(localStorage.getItem('loopcraft_estim_'+spId)||'{}');
+  const time = prompt('Temps estimé (ex: 2j, 4h, 30min) :', saved.time||'');
+  if (time === null) return;
+  const diff = prompt('Difficulté (easy / medium / hard) :', saved.difficulty||'medium');
+  if (diff === null) return;
+  const valid = ['easy','medium','hard'].includes(diff.toLowerCase()) ? diff.toLowerCase() : 'medium';
+  localStorage.setItem('loopcraft_estim_'+spId, JSON.stringify({time: time.trim()||'—', difficulty: valid}));
+  renderDashboard();
 }
 
 // ═══════════════════════════════════════════════════════
