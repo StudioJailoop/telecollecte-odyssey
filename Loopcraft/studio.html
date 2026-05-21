@@ -690,11 +690,7 @@ let selectedColor = PALETTE[0];
 // Logos SVG projets connus
 const PROJECT_LOGOS = {
   'club-med': `<svg viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
-    <circle cx="18" cy="18" r="7" fill="white"/>
-    ${[0,45,90,135,180,225,270,315].map(a => {
-      const r = a*Math.PI/180;
-      return `<line x1="${(18+9*Math.cos(r)).toFixed(1)}" y1="${(18+9*Math.sin(r)).toFixed(1)}" x2="${(18+14*Math.cos(r)).toFixed(1)}" y2="${(18+14*Math.sin(r)).toFixed(1)}" stroke="white" stroke-width="2.5" stroke-linecap="round"/>`;
-    }).join('')}
+    <text x="18" y="25" text-anchor="middle" font-size="22" font-family="Georgia, serif" fill="white">Ψ</text>
   </svg>`
 };
 
