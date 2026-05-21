@@ -633,6 +633,16 @@
   <div class="avatar">JD</div>
 </header>
 
+<!-- Bouton Retour dashboard — local only -->
+<a id="back-dashboard-btn" href="Loopcraft/studio.html?go=dashboard" title="Retour au dashboard"
+  style="display:none;position:fixed;bottom:84px;left:24px;width:48px;height:48px;border-radius:100px;background:var(--white);cursor:pointer;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,0.15);z-index:300;border:1.5px solid var(--grey-bd);text-decoration:none;transition:border-color 0.15s,box-shadow 0.15s;"
+  onmouseover="this.style.borderColor='#C8D0E0';this.style.boxShadow='0 4px 14px rgba(0,0,0,0.18)'"
+  onmouseout="this.style.borderColor='var(--grey-bd)';this.style.boxShadow='0 2px 8px rgba(0,0,0,0.15)'">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1E2643" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+    <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
+  </svg>
+</a>
+
 <!-- Bouton Retours PO — local only -->
 <div id="briefs-nav-btn" onclick="openBriefs()" title="Retours PO"
   style="display:none;position:fixed;bottom:24px;left:24px;width:48px;height:48px;border-radius:100px;background:var(--yellow);cursor:pointer;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(0,0,0,0.4);z-index:300;">
@@ -1281,9 +1291,10 @@
 </div>
 
 <script>
-  // Afficher le bouton Retours PO uniquement en local
+  // Afficher les boutons locaux uniquement en local
   if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
     document.getElementById('briefs-nav-btn').style.display = 'flex';
+    document.getElementById('back-dashboard-btn').style.display = 'flex';
   }
 
   // ══ Retours PO ══════════════════════════════════════════════
