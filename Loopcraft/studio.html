@@ -249,12 +249,12 @@
       position: relative;
     }
     .main-watermark {
-      position: fixed;
-      left: calc(var(--sidebar-w) + 50%);
+      position: absolute;
+      left: 50%;
       top: 50%;
       transform: translate(-50%, -50%);
-      width: 140%;
-      max-width: 900px;
+      width: 130%;
+      max-width: 860px;
       pointer-events: none;
       opacity: 0.015;
       z-index: 0;
@@ -314,7 +314,7 @@
     /* ═══════════════════════════════════════
        VUE DASHBOARD (niveau 1)
     ═══════════════════════════════════════ */
-    #view-dashboard { padding:48px 48px 56px; }
+    #view-dashboard { padding:48px 48px 56px; position:relative; z-index:1; }
 
     /* Header */
     .dash-header { display:flex; align-items:flex-end; justify-content:space-between; margin-bottom:28px; }
