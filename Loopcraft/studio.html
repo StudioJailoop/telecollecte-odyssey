@@ -246,6 +246,19 @@
       background: #F7F8FA;
       display: flex;
       flex-direction: column;
+      position: relative;
+    }
+    .main-watermark {
+      position: fixed;
+      left: calc(var(--sidebar-w) + 50%);
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 140%;
+      max-width: 900px;
+      pointer-events: none;
+      opacity: 0.015;
+      z-index: 0;
+      user-select: none;
     }
 
     /* Topbar */
@@ -834,6 +847,7 @@
 
   <!-- ── MAIN ── -->
   <main class="main">
+    <img src="logo-jailoop-color.png" class="main-watermark" alt="" aria-hidden="true">
 
     <!-- Topbar -->
     <div class="topbar">
