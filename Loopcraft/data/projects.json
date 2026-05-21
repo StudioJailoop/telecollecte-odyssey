@@ -1,0 +1,20 @@
+{
+  "projects": [
+    {
+      "id": "club-med",
+      "name": "Club Med",
+      "color": "#0057A8",
+      "initials": "CM",
+      "wireframes": [
+        {
+          "id": "telecollecte-cas1",
+          "title": "Télécollecte Cas 1",
+          "version": "V5",
+          "status": "in_progress",
+          "file": "../wireframe-telecollecte-cas1-V5.html",
+          "updated": "2026-05-21"
+        }
+      ]
+    }
+  ]
+}
