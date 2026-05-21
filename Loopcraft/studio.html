@@ -889,11 +889,11 @@
           </div>
         </div>
         <div class="kpi-tile">
-          <div class="kpi-tile-icon" style="background:#FEF2F2">💬</div>
+          <div class="kpi-tile-icon" style="background:#FEF2F2">⏳</div>
           <div class="kpi-tile-body">
             <div class="kpi-tile-value" id="kpi-msgs">—</div>
-            <div class="kpi-tile-label">Non lus</div>
-            <div class="kpi-tile-trend alert" id="kpi-msgs-trend"></div>
+            <div class="kpi-tile-label">En attente</div>
+            <div class="kpi-tile-trend" id="kpi-msgs-trend"></div>
           </div>
         </div>
       </div>
@@ -1186,7 +1186,8 @@ function renderDashboard() {
   const totalSP = projects.reduce((s, p) => s + (p.subprojects||[]).length, 0);
   const totalDone = projects.reduce((s, p) => s + (p.subprojects||[]).filter(sp=>sp.status==='done').length, 0);
   const totalInProgress = totalSP - totalDone;
-  const unread = messages.filter(m => !m.read).length;
+  const allBriefs = JSON.parse(localStorage.getItem('wf_briefs_telecollecte') || '[]');
+  const pending = allBriefs.filter(b => !b.done).length;
 
   document.getElementById('kpi-projects').textContent = projects.length;
   document.getElementById('kpi-projects-trend').textContent = projects.length > 0 ? `${projects.length} client${projects.length>1?'s':''}` : '—';
@@ -1194,9 +1195,11 @@ function renderDashboard() {
   document.getElementById('kpi-sp-trend').textContent = `${totalInProgress} en cours`;
   document.getElementById('kpi-done').textContent = totalDone;
   document.getElementById('kpi-done-trend').textContent = totalDone > 0 ? `↑ ${totalDone} validé${totalDone>1?'s':''}` : 'Aucun encore';
-  document.getElementById('kpi-msgs').textContent = unread;
-  document.getElementById('kpi-msgs-trend').textContent = unread > 0 ? `${unread} non lu${unread>1?'s':''}` : 'Tout lu ✓';
-  if (unread > 0) document.getElementById('topbar-notif').classList.add('has-notif');
+  document.getElementById('kpi-msgs').textContent = pending;
+  const trendEl = document.getElementById('kpi-msgs-trend');
+  trendEl.textContent = pending > 0 ? `${pending} à traiter` : 'Tout traité ✓';
+  trendEl.className = 'kpi-tile-trend ' + (pending > 0 ? 'alert' : 'up');
+  if (pending > 0) document.getElementById('topbar-notif').classList.add('has-notif');
 
   // ── REPRENDRE MON TRAVAIL — tiles compactes ──
   const strip = document.getElementById('resume-strip');
