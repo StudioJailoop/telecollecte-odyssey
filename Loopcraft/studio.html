@@ -342,11 +342,16 @@
     .kpi-tile-trend.neutral { color:var(--grey-txt); }
     .kpi-tile-trend.alert { color:#DC2626; }
 
-    /* Tiles "Reprendre" — taille fixe, pas étirées */
+    /* Layout ligne Analyse + Raccourcis */
+    .dash-row-split { display:flex; gap:20px; align-items:flex-start; margin-bottom:0; }
+    .dash-col-main { flex:1; min-width:0; }
+    .dash-col-aside { width:220px; flex-shrink:0; }
+
+    /* Tiles "Reprendre" — taille naturelle, pas étirée */
     .resume-tiles { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:0; }
     .resume-tiles .kpi-tile {
-      flex:0 1 calc(25% - 8px);
-      min-width:160px; max-width:280px;
+      flex:0 1 auto;
+      min-width:180px; max-width:300px;
       cursor:pointer;
     }
     .resume-tiles .kpi-tile:hover { border-color:var(--navy); }
@@ -881,44 +886,44 @@
         </div>
       </div>
 
-      <!-- ── SECTION 2 : Dernier projet travaillé ── -->
+      <!-- ── LIGNE 2 : Analyse + Raccourcis côte à côte ── -->
+      <div class="dash-row-split">
+
+        <!-- Analyse (gauche) -->
+        <div class="dash-col-main">
+          <div class="dash-section-label">Analyse</div>
+          <div style="display:flex;gap:10px;">
+            <div class="kpi-tile" style="flex:1;flex-direction:column;align-items:flex-start;gap:12px;">
+              <div class="kpi-tile-label">Contributions</div>
+              <div class="contrib-list" id="contrib-list" style="width:100%"></div>
+            </div>
+            <div class="kpi-tile" style="flex:1;flex-direction:column;align-items:flex-start;gap:12px;">
+              <div class="kpi-tile-label">Santé des projets</div>
+              <div id="health-list" style="width:100%"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Raccourcis (droite) -->
+        <div class="dash-col-aside">
+          <div class="dash-section-label">Raccourcis</div>
+          <div class="kpi-tile" style="flex-direction:column;align-items:stretch;gap:8px;">
+            <button class="shortcut-btn primary" onclick="openModal('project')">Création d'un projet</button>
+            <button class="shortcut-btn outline" onclick="openModal('subproject')">Création d'un sous-projet</button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ── SECTION 3 : Dernier projet travaillé ── -->
       <div class="dash-section-label">Dernier projet travaillé</div>
       <div class="resume-tiles" id="resume-strip"></div>
 
-      <!-- ── SECTION 3 : Raccourcis ── -->
-      <div class="dash-section-label">Raccourcis</div>
-      <div style="display:flex;gap:10px;flex-wrap:wrap;">
-        <button class="shortcut-btn primary" onclick="openModal('project')">+ Créer un projet</button>
-        <button class="shortcut-btn secondary" onclick="openModal('subproject')">+ Créer un sous-projet</button>
-      </div>
-
-      <!-- ── SECTION 4 : Analyse ── -->
-      <div class="dash-section-label">Analyse</div>
-      <div style="display:flex;gap:10px;align-items:flex-start;flex-wrap:wrap;">
-
-        <div class="kpi-tile" style="flex:1;min-width:200px;align-items:flex-start;flex-direction:column;gap:12px;">
-          <div class="kpi-tile-body" style="width:100%">
-            <div class="kpi-tile-label" style="margin-bottom:10px">Contributions</div>
-            <div class="contrib-list" id="contrib-list"></div>
-          </div>
-        </div>
-
-        <div class="kpi-tile" style="flex:1;min-width:200px;align-items:flex-start;flex-direction:column;gap:12px;">
-          <div class="kpi-tile-body" style="width:100%">
-            <div class="kpi-tile-label" style="margin-bottom:10px">Santé des projets</div>
-            <div id="health-list"></div>
-          </div>
-        </div>
-
-      </div>
-
-      <!-- ── SECTION 5 : Estimation ── -->
+      <!-- ── SECTION 4 : Estimation ── -->
       <div class="dash-section-label">Estimation par sous-projet</div>
-      <div class="kpi-tile" style="align-items:flex-start;flex-direction:column;gap:0;width:100%;">
-        <div class="kpi-tile-body" style="width:100%">
-          <div class="kpi-tile-label" style="margin-bottom:12px">Tokens · Temps · Difficulté</div>
-          <div id="estimation-list"></div>
-        </div>
+      <div class="kpi-tile" style="flex-direction:column;align-items:flex-start;gap:0;width:100%;">
+        <div class="kpi-tile-label" style="margin-bottom:12px">Tokens · Temps · Difficulté</div>
+        <div id="estimation-list" style="width:100%"></div>
       </div>
 
     </div>
