@@ -303,144 +303,174 @@
     ═══════════════════════════════════════ */
     #view-dashboard { padding:32px 32px 40px; }
 
-    /* Header dashboard */
-    .dash-header {
-      display:flex; align-items:flex-end; justify-content:space-between;
-      margin-bottom:28px;
-    }
-    .dash-greeting { font-size:24px; font-weight:800; color:var(--navy); }
+    /* Header */
+    .dash-header { display:flex; align-items:flex-end; justify-content:space-between; margin-bottom:20px; }
+    .dash-greeting { font-size:22px; font-weight:800; color:var(--navy); }
     .dash-sub { font-size:13px; color:var(--grey-txt); margin-top:3px; }
     .dash-date-block { text-align:right; }
-    .dash-date-day { font-size:14px; font-weight:700; color:var(--navy); }
-    .dash-date-full { font-size:12px; color:var(--grey-txt); margin-top:2px; }
+    .dash-date-day { font-size:13px; font-weight:700; color:var(--navy); }
+    .dash-date-full { font-size:11px; color:var(--grey-txt); margin-top:2px; }
 
-    /* KPI strip */
-    .kpi-strip { display:flex; gap:12px; margin-bottom:28px; }
+    /* KPI strip compact */
+    .kpi-strip { display:flex; gap:10px; margin-bottom:20px; }
     .kpi-tile {
-      flex:1; background:#fff; border-radius:14px;
-      border:1.5px solid var(--grey-bd); padding:18px 20px;
-      display:flex; align-items:center; gap:14px;
+      flex:1; background:#fff; border-radius:12px;
+      border:1.5px solid var(--grey-bd); padding:14px 16px;
+      display:flex; align-items:center; gap:10px;
       transition:border-color 0.15s, box-shadow 0.15s;
     }
-    .kpi-tile:hover { border-color:#C8D0E0; box-shadow:0 2px 12px rgba(30,38,67,0.06); }
-    .kpi-tile-icon {
-      width:40px; height:40px; border-radius:12px;
-      display:flex; align-items:center; justify-content:center;
-      font-size:18px; flex-shrink:0;
-    }
+    .kpi-tile:hover { border-color:#C8D0E0; box-shadow:0 2px 10px rgba(30,38,67,0.05); }
+    .kpi-tile-icon { width:34px; height:34px; border-radius:9px; display:flex; align-items:center; justify-content:center; font-size:16px; flex-shrink:0; }
     .kpi-tile-body { flex:1; min-width:0; }
-    .kpi-tile-value { font-size:26px; font-weight:800; color:var(--navy); line-height:1; }
-    .kpi-tile-label { font-size:11px; color:var(--grey-txt); margin-top:3px; text-transform:uppercase; letter-spacing:0.6px; font-weight:600; }
-    .kpi-tile-trend { font-size:11px; font-weight:700; margin-top:4px; }
+    .kpi-tile-value {
+      font-size:22px; font-weight:800; color:var(--navy); line-height:1;
+      transition:all 0.4s ease;
+    }
+    .kpi-tile-label { font-size:10px; color:var(--grey-txt); margin-top:2px; text-transform:uppercase; letter-spacing:0.6px; font-weight:600; }
+    .kpi-tile-trend { font-size:10px; font-weight:700; margin-top:3px; }
     .kpi-tile-trend.up { color:#16A34A; }
     .kpi-tile-trend.neutral { color:var(--grey-txt); }
     .kpi-tile-trend.alert { color:#DC2626; }
 
-    /* Grille principale 2 colonnes */
+    /* ── CARTE "À TRAITER" ── */
+    .treat-card {
+      background: linear-gradient(135deg, var(--navy) 0%, #2D3B6B 100%);
+      border-radius: 16px; padding: 20px 24px;
+      margin-bottom: 20px;
+      position: relative; overflow: hidden;
+    }
+    .treat-card::before {
+      content:''; position:absolute; top:-30px; right:-30px;
+      width:120px; height:120px; border-radius:50%;
+      background:rgba(253,190,0,0.08);
+    }
+    .treat-header {
+      display:flex; align-items:center; justify-content:space-between; margin-bottom:14px;
+    }
+    .treat-title {
+      font-size:13px; font-weight:700; color:#fff;
+      display:flex; align-items:center; gap:7px;
+    }
+    .treat-badge {
+      background:#E94B4B; color:#fff; font-size:10px; font-weight:700;
+      padding:2px 7px; border-radius:20px;
+    }
+    .treat-items { display:flex; gap:8px; flex-wrap:wrap; }
+    .treat-item {
+      display:flex; align-items:center; gap:6px;
+      background:rgba(255,255,255,0.1); border-radius:10px;
+      padding:8px 13px; cursor:pointer;
+      transition:background 0.15s, transform 0.15s;
+      border:1px solid rgba(255,255,255,0.08);
+    }
+    .treat-item:hover { background:rgba(255,255,255,0.18); transform:translateY(-1px); }
+    .treat-item-count { font-size:18px; font-weight:800; color:var(--yellow); line-height:1; }
+    .treat-item-label { font-size:11px; color:rgba(255,255,255,0.7); font-weight:500; }
+    .treat-empty { font-size:13px; color:rgba(255,255,255,0.5); padding:4px 0; }
+
+    /* Layout 70/30 */
     .dash-grid {
       display:grid;
-      grid-template-columns: 1fr 320px;
+      grid-template-columns: 1fr 300px;
       gap:16px;
       align-items:start;
     }
-    .dash-col { display:flex; flex-direction:column; gap:16px; }
+    .dash-col { display:flex; flex-direction:column; gap:14px; }
 
     /* Card générique */
     .dash-card {
-      background:#fff; border-radius:16px;
-      border:1.5px solid var(--grey-bd); padding:22px 24px;
+      background:#fff; border-radius:14px;
+      border:1.5px solid var(--grey-bd); padding:18px 20px;
+      transition:box-shadow 0.15s;
     }
+    .dash-card:hover { box-shadow:0 2px 12px rgba(30,38,67,0.05); }
     .dash-card-title {
-      font-size:13px; font-weight:700; color:var(--navy);
-      margin-bottom:16px; display:flex; align-items:center; justify-content:space-between;
+      font-size:12px; font-weight:700; color:var(--navy);
+      margin-bottom:14px; display:flex; align-items:center; justify-content:space-between;
+      text-transform:uppercase; letter-spacing:0.5px;
     }
-    .dash-card-title span { font-size:11px; font-weight:600; color:var(--grey-txt); }
+    .dash-card-title span { font-size:11px; font-weight:500; color:var(--grey-txt); text-transform:none; letter-spacing:0; }
 
-    /* Graphique barres activité */
-    .bar-chart {
-      display:flex; align-items:flex-end; gap:6px; height:80px;
-    }
-    .bar-col { flex:1; display:flex; flex-direction:column; align-items:center; gap:4px; }
-    .bar {
-      width:100%; border-radius:6px 6px 0 0;
-      background:var(--navy); opacity:0.15;
-      transition:opacity 0.2s;
-      min-height:4px;
-    }
-    .bar.active { opacity:1; background:var(--navy); }
-    .bar.today { background:var(--yellow); opacity:1; }
-    .bar-label { font-size:10px; color:var(--grey-txt); }
-
-    /* Liste projets */
-    .project-row {
+    /* ── REPRENDRE MON TRAVAIL ── */
+    .resume-list { display:flex; flex-direction:column; gap:0; }
+    .resume-item {
       display:flex; align-items:center; gap:12px;
-      padding:10px 0; border-bottom:1px solid var(--grey-bd);
-      cursor:pointer; transition:background 0.1s;
+      padding:9px 0; border-bottom:1px solid var(--grey-bd);
+      cursor:pointer;
+      transition:background 0.1s;
     }
-    .project-row:last-child { border-bottom:none; padding-bottom:0; }
-    .project-row:first-child { padding-top:0; }
-    .project-row:hover .project-row-name { color:var(--yellow); }
-    .project-row-dot {
-      width:32px; height:32px; border-radius:9px;
+    .resume-item:last-child { border-bottom:none; padding-bottom:0; }
+    .resume-item:first-child { padding-top:0; }
+    .resume-item:hover .resume-name { color:#0057A8; }
+    .resume-dot {
+      width:28px; height:28px; border-radius:8px; flex-shrink:0;
       display:flex; align-items:center; justify-content:center;
+      font-size:12px;
+    }
+    .resume-info { flex:1; min-width:0; }
+    .resume-name { font-size:13px; font-weight:600; color:var(--navy); transition:color 0.1s; }
+    .resume-meta { font-size:11px; color:var(--grey-txt); margin-top:1px; }
+    .resume-badge {
+      font-size:10px; font-weight:700; padding:2px 7px;
+      border-radius:20px; background:rgba(233,75,75,0.1); color:#DC2626;
       flex-shrink:0;
     }
-    .project-row-info { flex:1; min-width:0; }
-    .project-row-name { font-size:13px; font-weight:700; color:var(--navy); transition:color 0.1s; }
-    .project-row-meta { font-size:11px; color:var(--grey-txt); margin-top:2px; }
-    .project-row-progress { width:80px; }
-    .progress-bar-wrap {
-      height:5px; background:var(--grey); border-radius:10px; overflow:hidden; margin-bottom:3px;
-    }
-    .progress-bar-fill { height:100%; border-radius:10px; background:var(--yellow); }
-    .progress-pct { font-size:10px; color:var(--grey-txt); text-align:right; }
 
-    /* Feed messages */
-    .msg-feed { display:flex; flex-direction:column; gap:0; }
-    .msg-feed-item {
-      display:flex; gap:10px; padding:10px 0;
-      border-bottom:1px solid var(--grey-bd);
-    }
-    .msg-feed-item:last-child { border-bottom:none; padding-bottom:0; }
-    .msg-feed-item:first-child { padding-top:0; }
-    .msg-feed-avatar {
-      width:30px; height:30px; border-radius:8px; flex-shrink:0;
-      background:var(--navy);
-      display:flex; align-items:center; justify-content:center;
-      font-size:11px; font-weight:700; color:var(--yellow);
-    }
-    .msg-feed-body { flex:1; min-width:0; }
-    .msg-feed-author { font-size:12px; font-weight:700; color:var(--navy); }
-    .msg-feed-project { font-size:10px; color:var(--grey-txt); }
-    .msg-feed-text {
-      font-size:12px; color:#4B5563; margin-top:2px;
-      white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
-    }
-    .msg-feed-time { font-size:10px; color:var(--grey-txt); flex-shrink:0; padding-top:2px; }
-    .unread-dot {
-      width:6px; height:6px; border-radius:50%;
-      background:#E94B4B; flex-shrink:0; margin-top:5px;
-    }
-
-    /* Activity timeline */
-    .activity-list { display:flex; flex-direction:column; gap:0; }
-    .activity-item {
-      display:flex; gap:10px; padding:8px 0;
+    /* ── TIMELINE ACTIVITÉ ── */
+    .timeline { display:flex; flex-direction:column; gap:0; }
+    .timeline-item {
+      display:flex; gap:10px; padding:9px 0;
       border-bottom:1px solid var(--grey-bd); align-items:flex-start;
     }
-    .activity-item:last-child { border-bottom:none; padding-bottom:0; }
-    .activity-item:first-child { padding-top:0; }
-    .activity-dot {
-      width:8px; height:8px; border-radius:50%;
-      background:var(--grey-bd); margin-top:4px; flex-shrink:0;
+    .timeline-item:last-child { border-bottom:none; padding-bottom:0; }
+    .timeline-item:first-child { padding-top:0; }
+    .tl-avatar {
+      width:28px; height:28px; border-radius:8px; flex-shrink:0;
+      display:flex; align-items:center; justify-content:center;
+      font-size:11px; font-weight:700; color:#fff;
     }
-    .activity-dot.new { background:var(--yellow); }
-    .activity-dot.msg { background:#0057A8; }
-    .activity-text { font-size:12px; color:#374151; flex:1; line-height:1.4; }
-    .activity-text strong { color:var(--navy); }
-    .activity-time { font-size:10px; color:var(--grey-txt); flex-shrink:0; padding-top:2px; }
+    .tl-body { flex:1; min-width:0; }
+    .tl-text { font-size:12px; color:#374151; line-height:1.4; }
+    .tl-text strong { color:var(--navy); }
+    .tl-cat {
+      display:inline-flex; align-items:center;
+      font-size:10px; font-weight:600; padding:1px 6px; border-radius:4px;
+      margin-top:3px;
+    }
+    .tl-time { font-size:10px; color:var(--grey-txt); flex-shrink:0; margin-top:2px; white-space:nowrap; }
 
-    /* section-title */
+    /* ── CONTRIBUTIONS ── */
+    .contrib-list { display:flex; flex-direction:column; gap:0; }
+    .contrib-item {
+      display:flex; align-items:center; gap:9px;
+      padding:7px 0; border-bottom:1px solid var(--grey-bd);
+    }
+    .contrib-item:last-child { border-bottom:none; padding-bottom:0; }
+    .contrib-item:first-child { padding-top:0; }
+    .contrib-avatar {
+      width:26px; height:26px; border-radius:7px; flex-shrink:0;
+      display:flex; align-items:center; justify-content:center;
+      font-size:10px; font-weight:700; color:#fff;
+    }
+    .contrib-name { font-size:12px; font-weight:600; color:var(--navy); flex:1; }
+    .contrib-bar-wrap { width:60px; height:4px; background:var(--grey); border-radius:4px; overflow:hidden; }
+    .contrib-bar { height:100%; border-radius:4px; background:var(--navy); transition:width 0.6s ease; }
+    .contrib-count { font-size:11px; font-weight:700; color:var(--navy); width:24px; text-align:right; }
+
+    /* ── SANTÉ PROJETS ── */
+    .health-item { padding:10px 0; border-bottom:1px solid var(--grey-bd); }
+    .health-item:last-child { border-bottom:none; padding-bottom:0; }
+    .health-item:first-child { padding-top:0; }
+    .health-header { display:flex; align-items:center; gap:8px; margin-bottom:7px; }
+    .health-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+    .health-name { font-size:12px; font-weight:700; color:var(--navy); flex:1; }
+    .health-stats { display:flex; gap:10px; margin-bottom:7px; }
+    .health-stat { font-size:11px; color:var(--grey-txt); }
+    .health-stat strong { color:var(--navy); font-weight:700; }
+    .health-progress { height:4px; background:var(--grey); border-radius:4px; overflow:hidden; }
+    .health-progress-fill { height:100%; border-radius:4px; transition:width 0.6s ease; }
+
+    /* section-title (page projet) */
     .section-title {
       font-size:14px; font-weight:700; color:var(--navy);
       margin-bottom:14px; display:flex; align-items:center; justify-content:space-between;
@@ -452,6 +482,25 @@
       display:flex; align-items:center; gap:5px;
     }
     .btn-add:hover { opacity:0.88; }
+
+    /* Couleurs avatars */
+    .av-s { background:#0057A8; }
+    .av-j { background:#7C3AED; }
+    .av-n { background:#059669; }
+    .av-t { background:#EA580C; }
+    .av-k { background:#0891B2; }
+    .av-l { background:#BE185D; }
+    .av-e { background:#DC2626; }
+    .av-default { background:var(--navy); }
+
+    /* Type badges couleurs */
+    .cat-retour { background:rgba(253,190,0,0.12); color:#A07800; }
+    .cat-idee { background:rgba(124,58,237,0.1); color:#6D28D9; }
+    .cat-rg { background:rgba(5,150,105,0.1); color:#065F46; }
+    .cat-question { background:rgba(14,165,233,0.1); color:#0369A1; }
+
+    @keyframes countUp { from { opacity:0; transform:translateY(4px); } to { opacity:1; transform:translateY(0); } }
+    .kpi-tile-value { animation: countUp 0.4s ease forwards; }
 
     /* projets grid (page projet) */
     .projects-grid {
@@ -730,12 +779,12 @@
       </div>
 
       <!-- KPI strip -->
-      <div class="kpi-strip" id="kpi-strip">
+      <div class="kpi-strip">
         <div class="kpi-tile">
           <div class="kpi-tile-icon" style="background:#EEF2FF">📁</div>
           <div class="kpi-tile-body">
             <div class="kpi-tile-value" id="kpi-projects">—</div>
-            <div class="kpi-tile-label">Projets actifs</div>
+            <div class="kpi-tile-label">Projets</div>
             <div class="kpi-tile-trend neutral" id="kpi-projects-trend"></div>
           </div>
         </div>
@@ -759,27 +808,62 @@
           <div class="kpi-tile-icon" style="background:#FEF2F2">💬</div>
           <div class="kpi-tile-body">
             <div class="kpi-tile-value" id="kpi-msgs">—</div>
-            <div class="kpi-tile-label">Messages non lus</div>
+            <div class="kpi-tile-label">Non lus</div>
             <div class="kpi-tile-trend alert" id="kpi-msgs-trend"></div>
           </div>
         </div>
       </div>
 
-      <!-- Grille 2 colonnes -->
+      <!-- À traiter -->
+      <div class="treat-card">
+        <div class="treat-header">
+          <div class="treat-title">
+            🔴 À traiter
+            <span class="treat-badge" id="treat-total">0</span>
+          </div>
+          <span style="font-size:11px;color:rgba(255,255,255,0.4)">depuis Firebase</span>
+        </div>
+        <div class="treat-items" id="treat-items">
+          <div class="treat-empty">Aucun retour en attente — tout est traité ✓</div>
+        </div>
+      </div>
+
+      <!-- Grille 70/30 -->
       <div class="dash-grid">
 
-        <!-- Messages PO récents -->
-        <div class="dash-card">
-          <div class="dash-card-title">Messages PO <span id="unread-count"></span></div>
-          <div class="msg-feed" id="msg-feed"></div>
+        <!-- Col gauche -->
+        <div class="dash-col">
+
+          <!-- Reprendre mon travail -->
+          <div class="dash-card">
+            <div class="dash-card-title">↗ Reprendre mon travail</div>
+            <div class="resume-list" id="resume-list"></div>
+          </div>
+
+          <!-- Timeline activité -->
+          <div class="dash-card">
+            <div class="dash-card-title">Activité récente <span id="activity-count"></span></div>
+            <div class="timeline" id="timeline"></div>
+          </div>
+
         </div>
 
-        <!-- Dernière activité -->
-        <div class="dash-card">
-          <div class="dash-card-title">Dernière activité</div>
-          <div class="activity-list" id="activity-list"></div>
-        </div>
+        <!-- Col droite -->
+        <div class="dash-col">
 
+          <!-- Contributions -->
+          <div class="dash-card">
+            <div class="dash-card-title">Contributions</div>
+            <div class="contrib-list" id="contrib-list"></div>
+          </div>
+
+          <!-- Santé projets -->
+          <div class="dash-card">
+            <div class="dash-card-title">Santé des projets</div>
+            <div id="health-list"></div>
+          </div>
+
+        </div>
       </div>
 
     </div>
@@ -1008,20 +1092,51 @@ function updateBreadcrumb() {
 // ═══════════════════════════════════════════════════════
 // DASHBOARD
 // ═══════════════════════════════════════════════════════
+// Helpers
+function avatarClass(name) {
+  if (!name) return 'av-default';
+  const first = name.trim()[0].toLowerCase();
+  const map = {s:'av-s',j:'av-j',n:'av-n',t:'av-t',k:'av-k',l:'av-l',e:'av-e'};
+  return map[first] || 'av-default';
+}
+function timeAgo(ts) {
+  if (!ts) return '';
+  const diff = Date.now() - ts;
+  const m = Math.floor(diff/60000);
+  if (m < 1) return 'à l\'instant';
+  if (m < 60) return `il y a ${m}min`;
+  const h = Math.floor(m/60);
+  if (h < 24) return `il y a ${h}h`;
+  const d = Math.floor(h/24);
+  if (d === 1) return 'hier';
+  return `il y a ${d}j`;
+}
+function catLabel(type) {
+  const map = {feedback:'Retour',retour:'Retour',idee:'Idée',idea:'Idée',rg:'RG',question:'Question',comment:'Commentaire'};
+  return map[(type||'').toLowerCase()] || 'Retour';
+}
+function catClass(type) {
+  const t = (type||'').toLowerCase();
+  if (t==='idee'||t==='idea') return 'cat-idee';
+  if (t==='rg') return 'cat-rg';
+  if (t==='question') return 'cat-question';
+  return 'cat-retour';
+}
+
 function renderDashboard() {
   const now = new Date();
   const days = ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
   document.getElementById('dash-date-day').textContent = days[now.getDay()];
   document.getElementById('dash-date-full').textContent = now.toLocaleDateString('fr-FR', {day:'numeric',month:'long',year:'numeric'});
 
-  // KPIs
+  // ── KPIs ──
   const totalSP = projects.reduce((s, p) => s + (p.subprojects||[]).length, 0);
   const totalDone = projects.reduce((s, p) => s + (p.subprojects||[]).filter(sp=>sp.status==='done').length, 0);
-  const totalInProgress = projects.reduce((s, p) => s + (p.subprojects||[]).filter(sp=>sp.status==='in_progress').length, 0);
+  const totalInProgress = totalSP - totalDone;
   const unread = messages.filter(m => !m.read).length;
 
   document.getElementById('kpi-projects').textContent = projects.length;
-  document.getElementById('kpi-projects-trend').textContent = `${projects.length} client${projects.length>1?'s':''}`;
+  document.getElementById('kpi-projects-trend').textContent = projects.length > 0 ? `${projects.length} client${projects.length>1?'s':''}` : '—';
   document.getElementById('kpi-subprojects').textContent = totalSP;
   document.getElementById('kpi-sp-trend').textContent = `${totalInProgress} en cours`;
   document.getElementById('kpi-done').textContent = totalDone;
@@ -1030,52 +1145,140 @@ function renderDashboard() {
   document.getElementById('kpi-msgs-trend').textContent = unread > 0 ? `${unread} non lu${unread>1?'s':''}` : 'Tout lu ✓';
   if (unread > 0) document.getElementById('topbar-notif').classList.add('has-notif');
 
-
-  // Feed messages
-  const feed = document.getElementById('msg-feed');
-  const unreadCount = document.getElementById('unread-count');
-  unreadCount.textContent = unread > 0 ? `${unread} non lu${unread>1?'s':''}` : '';
-  if (messages.length === 0) {
-    feed.innerHTML = `<div style="font-size:13px;color:var(--grey-txt);padding:8px 0">Aucun message PO pour l'instant.</div>`;
+  // ── À TRAITER ──
+  const byType = {};
+  messages.forEach(m => {
+    const t = catLabel(m.type||m.category||'retour');
+    byType[t] = (byType[t]||0) + 1;
+  });
+  const treatTotal = messages.length;
+  document.getElementById('treat-total').textContent = treatTotal;
+  const treatEl = document.getElementById('treat-items');
+  if (treatTotal === 0) {
+    treatEl.innerHTML = '<div class="treat-empty">Aucun retour en attente — tout est traité ✓</div>';
   } else {
-    feed.innerHTML = messages.slice(0,5).map(m => {
-      const initials = (m.author||'?').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
-      const proj = projects.find(p => p.id === m.project);
-      const time = m.timestamp ? new Date(m.timestamp).toLocaleDateString('fr-FR',{day:'numeric',month:'short'}) : '';
+    treatEl.innerHTML = Object.entries(byType).map(([label, count]) => `
+      <div class="treat-item">
+        <div class="treat-item-count">${count}</div>
+        <div class="treat-item-label">${label}${count>1?'s':''}</div>
+      </div>
+    `).join('');
+  }
+
+  // ── REPRENDRE MON TRAVAIL ──
+  const resumeEl = document.getElementById('resume-list');
+  const allSPs = projects.flatMap(p => (p.subprojects||[]).map(sp => ({...sp, projectName:p.name, projectColor:p.color||PALETTE[0], projectId:p.id})));
+  if (allSPs.length === 0) {
+    resumeEl.innerHTML = `<div style="font-size:13px;color:var(--grey-txt);padding:4px 0">Aucun sous-projet actif.</div>`;
+  } else {
+    const msgBySP = {};
+    messages.forEach(m => { if(m.subproject) msgBySP[m.subproject] = (msgBySP[m.subproject]||0)+1; });
+    resumeEl.innerHTML = allSPs.slice(0,4).map(sp => {
+      const newMsgs = msgBySP[sp.id] || 0;
       return `
-        <div class="msg-feed-item">
-          ${!m.read ? '<div class="unread-dot"></div>' : '<div style="width:6px;flex-shrink:0"></div>'}
-          <div class="msg-feed-avatar">${initials}</div>
-          <div class="msg-feed-body">
-            <div style="display:flex;align-items:center;gap:6px">
-              <span class="msg-feed-author">${m.author||'Inconnu'}</span>
-              ${proj ? `<span class="msg-feed-project">${proj.name}</span>` : ''}
-            </div>
-            <div class="msg-feed-text">${m.text||m.comment||''}</div>
+        <div class="resume-item" onclick="openSubproject('${sp.projectId}','${sp.id}')">
+          <div class="resume-dot" style="background:${sp.projectColor}">
+            <span style="font-size:10px;font-weight:700;color:#fff">${sp.projectName.slice(0,2).toUpperCase()}</span>
           </div>
-          <div class="msg-feed-time">${time}</div>
+          <div class="resume-info">
+            <div class="resume-name">${sp.name}</div>
+            <div class="resume-meta">${sp.projectName} · ${sp.version||''} · ${sp.updated||''}</div>
+          </div>
+          ${newMsgs > 0 ? `<div class="resume-badge">${newMsgs} nouveau${newMsgs>1?'x':''}</div>` : ''}
         </div>
       `;
     }).join('');
   }
 
-  // Activité timeline
-  const actEl = document.getElementById('activity-list');
-  const allSPs = projects.flatMap(p => (p.subprojects||[]).map(sp => ({...sp, project: p.name, color: p.color})));
-  const recentSPs = allSPs.slice(-3).reverse();
-  const actItems = [
-    ...recentSPs.map(sp => ({ dot:'new', text:`<strong>${sp.name}</strong> — ${sp.project}`, time: sp.updated||'' })),
-    ...messages.slice(0,3).map(m => ({ dot:'msg', text:`Message de <strong>${m.author||'PO'}</strong>`, time: m.timestamp ? new Date(m.timestamp).toLocaleDateString('fr-FR',{day:'numeric',month:'short'}) : '' }))
-  ].slice(0,5);
-  actEl.innerHTML = actItems.length === 0
-    ? `<div style="font-size:13px;color:var(--grey-txt)">Aucune activité récente.</div>`
-    : actItems.map(a => `
-        <div class="activity-item">
-          <div class="activity-dot ${a.dot}"></div>
-          <div class="activity-text">${a.text}</div>
-          <div class="activity-time">${a.time}</div>
+  // ── TIMELINE ACTIVITÉ ──
+  const tlEl = document.getElementById('timeline');
+  const tlCount = document.getElementById('activity-count');
+  const tlItems = messages.slice(0,6).map(m => ({
+    author: m.author || 'Inconnu',
+    text: m.text || m.comment || '',
+    type: m.type || m.category || 'retour',
+    ts: m.timestamp || 0
+  }));
+  tlCount.textContent = tlItems.length > 0 ? `${tlItems.length} événements` : '';
+  if (tlItems.length === 0) {
+    tlEl.innerHTML = `<div style="font-size:13px;color:var(--grey-txt)">Aucune activité récente.</div>`;
+  } else {
+    tlEl.innerHTML = tlItems.map(item => {
+      const initials = item.author.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+      const avCls = avatarClass(item.author);
+      const label = catLabel(item.type);
+      const catCls = catClass(item.type);
+      const ago = timeAgo(item.ts);
+      return `
+        <div class="timeline-item">
+          <div class="tl-avatar ${avCls}">${initials}</div>
+          <div class="tl-body">
+            <div class="tl-text"><strong>${item.author}</strong> — ${item.text.slice(0,60)}${item.text.length>60?'…':''}</div>
+            <span class="tl-cat ${catCls}">${label}</span>
+          </div>
+          <div class="tl-time">${ago}</div>
         </div>
-      `).join('');
+      `;
+    }).join('');
+  }
+
+  // ── CONTRIBUTIONS ──
+  const contribMap = {};
+  messages.forEach(m => { const a = m.author||'?'; contribMap[a] = (contribMap[a]||0)+1; });
+  const contribs = Object.entries(contribMap).sort((a,b)=>b[1]-a[1]).slice(0,5);
+  const maxC = contribs[0]?.[1] || 1;
+  const contribEl = document.getElementById('contrib-list');
+  if (contribs.length === 0) {
+    contribEl.innerHTML = `<div style="font-size:13px;color:var(--grey-txt)">Aucune contribution.</div>`;
+  } else {
+    contribEl.innerHTML = contribs.map(([name, count]) => {
+      const initials = name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+      const avCls = avatarClass(name);
+      const pct = Math.round((count/maxC)*100);
+      return `
+        <div class="contrib-item">
+          <div class="contrib-avatar ${avCls}">${initials}</div>
+          <div class="contrib-name">${name}</div>
+          <div class="contrib-bar-wrap"><div class="contrib-bar" style="width:${pct}%"></div></div>
+          <div class="contrib-count">${count}</div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  // ── SANTÉ PROJETS ──
+  const healthEl = document.getElementById('health-list');
+  if (projects.length === 0) {
+    healthEl.innerHTML = `<div style="font-size:13px;color:var(--grey-txt)">Aucun projet.</div>`;
+  } else {
+    healthEl.innerHTML = projects.map(p => {
+      const subs = p.subprojects || [];
+      const done = subs.filter(s=>s.status==='done').length;
+      const inProg = subs.filter(s=>s.status==='in_progress').length;
+      const pct = subs.length > 0 ? Math.round((done/subs.length)*100) : 0;
+      const pMsgs = messages.filter(m=>m.project===p.id).length;
+      const lastMsg = messages.filter(m=>m.project===p.id).sort((a,b)=>(b.timestamp||0)-(a.timestamp||0))[0];
+      const ago = lastMsg ? timeAgo(lastMsg.timestamp) : 'Aucune activité';
+      const color = p.color || PALETTE[0];
+      return `
+        <div class="health-item">
+          <div class="health-header">
+            <div class="health-dot" style="background:${color}"></div>
+            <div class="health-name">${p.name}</div>
+            <span style="font-size:10px;color:var(--grey-txt)">${ago}</span>
+          </div>
+          <div class="health-stats">
+            <span class="health-stat"><strong>${pMsgs}</strong> retours</span>
+            <span class="health-stat"><strong>${inProg}</strong> en cours</span>
+            <span class="health-stat"><strong>${done}</strong> terminés</span>
+          </div>
+          <div class="health-progress">
+            <div class="health-progress-fill" style="width:${pct}%;background:${color}"></div>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
 }
 
 // ═══════════════════════════════════════════════════════
