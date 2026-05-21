@@ -301,7 +301,7 @@
     /* ═══════════════════════════════════════
        VUE DASHBOARD (niveau 1)
     ═══════════════════════════════════════ */
-    #view-dashboard { padding:32px 32px 40px; }
+    #view-dashboard { padding:48px 48px 56px; }
 
     /* Header */
     .dash-header { display:flex; align-items:flex-end; justify-content:space-between; margin-bottom:20px; }
@@ -311,8 +311,18 @@
     .dash-date-day { font-size:13px; font-weight:700; color:var(--navy); }
     .dash-date-full { font-size:11px; color:var(--grey-txt); margin-top:2px; }
 
+    /* Label de section */
+    .dash-section-label {
+      font-size:11px; font-weight:700; color:var(--grey-txt);
+      text-transform:uppercase; letter-spacing:1px;
+      margin:20px 0 10px;
+      padding-bottom:8px;
+      border-bottom:1px solid var(--grey-bd);
+    }
+    .dash-section-label:first-child { margin-top:0; }
+
     /* KPI strip compact */
-    .kpi-strip { display:flex; gap:10px; margin-bottom:20px; }
+    .kpi-strip { display:flex; gap:10px; margin-bottom:0; }
     .kpi-tile {
       flex:1; background:#fff; border-radius:12px;
       border:1.5px solid var(--grey-bd); padding:14px 16px;
@@ -331,6 +341,15 @@
     .kpi-tile-trend.up { color:#16A34A; }
     .kpi-tile-trend.neutral { color:var(--grey-txt); }
     .kpi-tile-trend.alert { color:#DC2626; }
+
+    /* Tiles "Reprendre" — taille fixe, pas étirées */
+    .resume-tiles { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:0; }
+    .resume-tiles .kpi-tile {
+      flex:0 1 calc(25% - 8px);
+      min-width:160px; max-width:280px;
+      cursor:pointer;
+    }
+    .resume-tiles .kpi-tile:hover { border-color:var(--navy); }
 
     /* ── CARTE "À TRAITER" ── */
     .treat-card {
@@ -379,11 +398,11 @@
     /* ── RACCOURCIS ── */
     .shortcuts-list { display:flex; flex-direction:column; gap:8px; }
     .shortcut-btn {
-      width:100%; padding:11px 16px;
+      width:auto; padding:11px 20px;
       border-radius:10px; font-size:13px; font-weight:700;
-      cursor:pointer; font-family:inherit; text-align:left;
+      cursor:pointer; font-family:inherit; text-align:center;
       transition:opacity 0.15s, transform 0.1s;
-      border:none;
+      border:none; white-space:nowrap;
     }
     .shortcut-btn:hover { opacity:0.88; transform:translateY(-1px); }
     .shortcut-btn:active { transform:translateY(0); }
@@ -825,7 +844,8 @@
         </div>
       </div>
 
-      <!-- KPI strip -->
+      <!-- ── SECTION 1 : Vue d'ensemble ── -->
+      <div class="dash-section-label">Vue d'ensemble</div>
       <div class="kpi-strip">
         <div class="kpi-tile">
           <div class="kpi-tile-icon" style="background:#EEF2FF">📁</div>
@@ -861,39 +881,44 @@
         </div>
       </div>
 
-      <!-- Reprendre mon travail — tiles compactes -->
-      <div class="kpi-strip" id="resume-strip" style="margin-bottom:20px;flex-wrap:wrap;"></div>
+      <!-- ── SECTION 2 : Dernier projet travaillé ── -->
+      <div class="dash-section-label">Dernier projet travaillé</div>
+      <div class="resume-tiles" id="resume-strip"></div>
 
-      <!-- Grille 3 colonnes -->
-      <div class="dash-grid-3">
+      <!-- ── SECTION 3 : Raccourcis ── -->
+      <div class="dash-section-label">Raccourcis</div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;">
+        <button class="shortcut-btn primary" onclick="openModal('project')">+ Créer un projet</button>
+        <button class="shortcut-btn secondary" onclick="openModal('subproject')">+ Créer un sous-projet</button>
+      </div>
 
-        <!-- Raccourcis -->
-        <div class="dash-card">
-          <div class="dash-card-title">Raccourcis</div>
-          <div class="shortcuts-list">
-            <button class="shortcut-btn primary" onclick="openModal('project')">+ Créer un projet</button>
-            <button class="shortcut-btn secondary" onclick="openModal('subproject')">+ Créer un sous-projet</button>
+      <!-- ── SECTION 4 : Analyse ── -->
+      <div class="dash-section-label">Analyse</div>
+      <div style="display:flex;gap:10px;align-items:flex-start;flex-wrap:wrap;">
+
+        <div class="kpi-tile" style="flex:1;min-width:200px;align-items:flex-start;flex-direction:column;gap:12px;">
+          <div class="kpi-tile-body" style="width:100%">
+            <div class="kpi-tile-label" style="margin-bottom:10px">Contributions</div>
+            <div class="contrib-list" id="contrib-list"></div>
           </div>
         </div>
 
-        <!-- Contributions -->
-        <div class="dash-card">
-          <div class="dash-card-title">Contributions</div>
-          <div class="contrib-list" id="contrib-list"></div>
-        </div>
-
-        <!-- Santé projets -->
-        <div class="dash-card">
-          <div class="dash-card-title">Santé des projets</div>
-          <div id="health-list"></div>
+        <div class="kpi-tile" style="flex:1;min-width:200px;align-items:flex-start;flex-direction:column;gap:12px;">
+          <div class="kpi-tile-body" style="width:100%">
+            <div class="kpi-tile-label" style="margin-bottom:10px">Santé des projets</div>
+            <div id="health-list"></div>
+          </div>
         </div>
 
       </div>
 
-      <!-- Estimation par sous-projet -->
-      <div class="dash-card" style="margin-top:14px;">
-        <div class="dash-card-title">Estimation par sous-projet <span>Tokens · Temps · Difficulté</span></div>
-        <div id="estimation-list" style="display:flex;flex-direction:column;gap:0;"></div>
+      <!-- ── SECTION 5 : Estimation ── -->
+      <div class="dash-section-label">Estimation par sous-projet</div>
+      <div class="kpi-tile" style="align-items:flex-start;flex-direction:column;gap:0;width:100%;">
+        <div class="kpi-tile-body" style="width:100%">
+          <div class="kpi-tile-label" style="margin-bottom:12px">Tokens · Temps · Difficulté</div>
+          <div id="estimation-list"></div>
+        </div>
       </div>
 
     </div>
