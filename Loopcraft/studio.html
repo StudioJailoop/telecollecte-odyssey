@@ -355,7 +355,10 @@
     .resume-tiles .kpi-tile {
       flex:0 1 auto;
       min-width:180px; max-width:300px;
+      height:74px;
+      padding:10px 14px;
       cursor:pointer;
+      overflow:hidden;
     }
     .resume-tiles .kpi-tile:hover { border-color:var(--navy); }
 
@@ -1221,7 +1224,7 @@ function renderDashboard() {
         <div class="kpi-tile-body">
           <div class="kpi-tile-value" style="font-size:15px;font-weight:800">${sp.name}</div>
           <div class="kpi-tile-label">${sp.version||''} · ${sp.updated||''}</div>
-          <div class="kpi-tile-trend neutral">↗ Reprendre</div>
+          <div class="kpi-tile-trend neutral" style="margin-top:3px">↗ Reprendre</div>
         </div>
       </div>
     `).join('');
