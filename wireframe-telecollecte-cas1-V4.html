@@ -2088,7 +2088,7 @@
       // Commentaire principal
       if (p.author !== 'Sébastien' && !p.requalified) teamComments.push({key:'pin-'+p.id, pinId:p.id, isReply:false, replyIdx:null, author:p.author, text:p.text, date:p.date, tab:p.tab||'tpe', qualifiedType:p.qualifiedType||'', commentType:p.commentType||null, pinLabel:p.pinLabel||null});
       // Réponses
-      (p.replies||[]).forEach(r => {
+      (p.replies||[]).forEach((r, ri) => {
         if (r.author !== 'Sébastien' && !r.requalified) teamComments.push({key:'pin-'+p.id+'-reply-'+ri, pinId:p.id, isReply:true, replyIdx:ri, author:r.author, text:r.text, date:r.date, tab:p.tab||'tpe', qualifiedType:r.qualifiedType||''});
       });
     });
@@ -2147,8 +2147,8 @@
   setTimeout(() => {
     const pins = JSON.parse(localStorage.getItem('wf_comments_telecollecte') || '[]');
     const count = pins.reduce((n, p) => {
-      const main = p.author !== 'Sébastien' ? 1 : 0;
-      const replies = (p.replies||[]).filter(r => r.author !== 'Sébastien').length;
+      const main = p.author !== 'Sébastien' && !p.requalified ? 1 : 0;
+      const replies = (p.replies||[]).filter(r => r.author !== 'Sébastien' && !r.requalified).length;
       return n + main + replies;
     }, 0);
     const badge = document.getElementById('team-comments-count');
