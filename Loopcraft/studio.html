@@ -1090,28 +1090,10 @@ function renderSidebar() {
       <span class="sidebar-project-dot" style="background:${p.color||PALETTE[0]}"></span>
       <span style="flex:1">${p.name}</span>
       ${hasNotif ? '<span class="sidebar-notif-dot"></span>' : ''}
-      <span class="sidebar-chevron">▶</span>
     `;
-    row.addEventListener('click', () => toggleSidebarProject(p.id));
-
-    // Sous-projets
-    const subList = document.createElement('div');
-    subList.className = 'sidebar-subprojects';
-    subList.id = `sidebar-sub-${p.id}`;
-    subs.forEach(sp => {
-      const sub = document.createElement('div');
-      sub.className = 'sidebar-sub-item';
-      sub.dataset.spid = sp.id;
-      sub.innerHTML = `
-        <span class="sub-status ${sp.status||'in-progress'}"></span>
-        ${sp.name}
-      `;
-      sub.addEventListener('click', (e) => { e.stopPropagation(); openSubproject(p.id, sp.id); });
-      subList.appendChild(sub);
-    });
+    row.addEventListener('click', () => showProjectView(p.id));
 
     container.appendChild(row);
-    container.appendChild(subList);
   });
 }
 
