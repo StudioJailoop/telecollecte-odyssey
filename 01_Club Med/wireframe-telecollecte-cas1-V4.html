@@ -2498,9 +2498,10 @@
   // ── Firebase sync ──
   async function fbSave() {
     try {
+      const tagged = comments.map(c => ({...c, project: 'club-med'}));
       await fetch(FB_URL + '.json', {
         method: 'PUT',
-        body: JSON.stringify(comments)
+        body: JSON.stringify(tagged)
       });
     } catch(e) { /* offline fallback */ }
   }
