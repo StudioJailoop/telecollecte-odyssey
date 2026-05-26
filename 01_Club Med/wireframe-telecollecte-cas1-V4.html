@@ -2091,9 +2091,8 @@
   function toggleTeamComments() { setBriefTab('team'); }
 
   function loadTeamComments() {
-    // Charge les commentaires depuis les pins (localStorage partagé)
-    // Plus tard : remplacé par Firebase
-    const pins = JSON.parse(localStorage.getItem('wf_comments_telecollecte') || '[]');
+    // Utilise la variable comments synchronisée depuis Firebase (polling 5s)
+    const pins = comments.length > 0 ? comments : JSON.parse(localStorage.getItem('wf_comments_telecollecte') || '[]');
     const list = document.getElementById('team-comments-list-panel');
     const count = document.getElementById('team-comments-count');
 
@@ -2160,7 +2159,7 @@
 
   // Initialiser le badge au chargement
   setTimeout(() => {
-    const pins = JSON.parse(localStorage.getItem('wf_comments_telecollecte') || '[]');
+    const pins = comments.length > 0 ? comments : JSON.parse(localStorage.getItem('wf_comments_telecollecte') || '[]');
     const count = pins.reduce((n, p) => {
       const main = p.author !== 'Sébastien' && !p.requalified ? 1 : 0;
       const replies = (p.replies||[]).filter(r => r.author !== 'Sébastien' && !r.requalified).length;
