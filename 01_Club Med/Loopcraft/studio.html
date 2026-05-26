@@ -1011,10 +1011,12 @@ const CREDENTIALS = [
 ];
 let currentUser = null;
 const PALETTE = ['#0057A8','#7C3AED','#059669','#DC2626','#EA580C','#0891B2','#BE185D','#1E2643'];
-const FB_URL = 'https://studio-jailoop-default-rtdb.firebaseio.com/comments.json';
+const FB_URL        = 'https://studio-jailoop-default-rtdb.firebaseio.com/comments.json';
+const FB_BRIEFS_URL = 'https://studio-jailoop-default-rtdb.firebaseio.com/briefs_telecollecte.json';
 
 let projects = [];
 let messages = [];
+let fbBriefs  = [];
 let activeProject = null;
 let currentView = 'dashboard';
 let modalMode = 'project';
@@ -1050,6 +1052,14 @@ async function loadData() {
     const d2 = await r2.json();
     if (d2) messages = Object.values(d2);
   } catch(e) { messages = []; }
+  try {
+    const r3 = await fetch(FB_BRIEFS_URL);
+    const d3 = await r3.json();
+    fbBriefs = d3 ? Object.values(d3) : [];
+  } catch(e) {
+    // fallback localStorage si Firebase indispo
+    fbBriefs = JSON.parse(localStorage.getItem('wf_briefs_telecollecte') || '[]');
+  }
 }
 
 // ═══════════════════════════════════════════════════════
@@ -1217,7 +1227,7 @@ function renderDashboard() {
   const totalSP = projects.reduce((s, p) => s + (p.subprojects||[]).length, 0);
   const totalDone = projects.reduce((s, p) => s + (p.subprojects||[]).filter(sp=>sp.status==='done').length, 0);
   const totalInProgress = totalSP - totalDone;
-  const allBriefs = JSON.parse(localStorage.getItem('wf_briefs_telecollecte') || '[]');
+  const allBriefs = fbBriefs.length > 0 ? fbBriefs : JSON.parse(localStorage.getItem('wf_briefs_telecollecte') || '[]');
   const pending = allBriefs.filter(b => !b.done).length;
 
   document.getElementById('kpi-projects').textContent = projects.length;

@@ -1349,8 +1349,14 @@
   function saveBriefs() {
     const json = JSON.stringify(briefs);
     localStorage.setItem(BRIEFS_KEY, json);
-    // Backup uniquement si non vide
     if (briefs.length > 0) localStorage.setItem(BRIEFS_BACKUP_KEY, json);
+    // Sync Firebase pour dashboard en ligne
+    const fbObj = {};
+    briefs.forEach((b, i) => { fbObj['b' + (b.id || i)] = b; });
+    fetch('https://studio-jailoop-default-rtdb.firebaseio.com/briefs_telecollecte.json', {
+      method: 'PUT', headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(fbObj)
+    }).catch(() => {});
   }
 
   const TYPE_LABELS = { retour:'💬 Retour', idee:'💡 Idée', rg:'📋 Règle de gestion', question:'❓ Question', team:'💬 Équipe' };
