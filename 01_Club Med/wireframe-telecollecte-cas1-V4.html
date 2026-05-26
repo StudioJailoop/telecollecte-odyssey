@@ -1406,8 +1406,21 @@
   const LIGHTNING_OFF = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>`;
   const LIGHTNING_ON  = `<svg width="14" height="14" viewBox="0 0 24 24" fill="#D97706" stroke="#D97706" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>`;
 
-  function openBriefs() {
-    briefs = JSON.parse(localStorage.getItem(BRIEFS_KEY) || '[]');
+  async function openBriefs() {
+    // Charger depuis Firebase en priorité, localStorage en fallback
+    try {
+      const res = await fetch('https://studio-jailoop-default-rtdb.firebaseio.com/briefs_telecollecte.json');
+      const data = await res.json();
+      if (data && typeof data === 'object') {
+        const fb = Array.isArray(data) ? data : Object.values(data);
+        if (fb.length > 0) {
+          briefs = fb;
+          localStorage.setItem(BRIEFS_KEY, JSON.stringify(briefs));
+        }
+      }
+    } catch(e) {
+      briefs = JSON.parse(localStorage.getItem(BRIEFS_KEY) || '[]');
+    }
     document.getElementById('briefs-overlay').style.display = 'block';
     document.getElementById('briefs-panel').style.display = 'flex';
     setBriefTab(currentBriefTab);
