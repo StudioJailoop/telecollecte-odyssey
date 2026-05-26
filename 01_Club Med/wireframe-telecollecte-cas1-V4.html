@@ -2510,23 +2510,36 @@
   const CURRENT_USER = decodeURIComponent(new URLSearchParams(window.location.search).get('user') || 'Sébastien');
 
   // ── Firebase sync ──
+  // Écriture atomique : chaque commentaire écrit individuellement par son ID
+  async function fbSaveOne(comment) {
+    try {
+      await fetch(FB_URL + '/' + comment.id + '.json', {
+        method: 'PUT',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({...comment, project: 'club-med'})
+      });
+    } catch(e) {}
+  }
+  // Mise à jour d'un commentaire existant (réponses, requalification, suppression)
   async function fbSave() {
     try {
-      const tagged = comments.map(c => ({...c, project: 'club-med'}));
+      const obj = {};
+      comments.forEach(c => { obj[c.id] = {...c, project: 'club-med'}; });
       await fetch(FB_URL + '.json', {
         method: 'PUT',
-        body: JSON.stringify(tagged)
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(obj)
       });
-    } catch(e) { /* offline fallback */ }
+    } catch(e) {}
   }
 
   async function fbLoad() {
     try {
       const res = await fetch(FB_URL + '.json');
       const data = await res.json();
-      if (data && Array.isArray(data)) {
-        comments = data;
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(comments)); fbSave();
+      if (data) {
+        comments = Array.isArray(data) ? data : Object.values(data);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(comments));
         refreshPins();
         updateAuthorFilter();
       }
@@ -2697,7 +2710,8 @@
       commentType: chosenType
     };
     comments.push(comment);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(comments)); fbSave();
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(comments));
+    fbSaveOne(comment); // écriture atomique — n'écrase pas les autres
 
     // Si designer : créer aussi un brief immédiatement dans la bonne catégorie
     if (isDesigner) {
