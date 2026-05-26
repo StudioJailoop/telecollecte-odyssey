@@ -11,12 +11,13 @@ Claude est le **développeur principal** de ce projet. Sébastien Keller, Produc
 ## Démarrage immédiat
 
 ```bash
-cd "/Users/sebastienkeller/Desktop/Claude Yaki"
+cd "/Users/sebastienkeller/Library/CloudStorage/Dropbox/Taff/01_Administratif/Claude Yaki/01_Club Med"
 python3 server.py   # Serveur local permanent (launchd auto-restart)
 # → http://localhost:8765
 ```
 
 Ouvrir le wireframe : `http://localhost:8765/wireframe-telecollecte-cas1-V4.html`
+Ouvrir le dashboard : `http://localhost:8765/Loopcraft/studio.html?go=dashboard`
 
 ## Design System — RÈGLE NON NÉGOCIABLE
 

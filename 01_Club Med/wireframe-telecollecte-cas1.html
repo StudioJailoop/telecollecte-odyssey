@@ -1,0 +1,1580 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+  <title>Wireframe — Télécollecte Cas 1 : Saisie Jour J</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --navy:     #1E2643;
+      --yellow:   #FDBE00;
+      --white:    #FFFFFF;
+      --lavender: #9EAEF4;
+      --grey-bg:  #F4F4F4;
+      --grey-bd:  #E0E0E0;
+      --grey-txt: #6B7280;
+      --red:      #D93025;
+    }
+
+    html, body {
+      width: 1440px;
+      height: 1024px;
+      overflow: hidden;
+      background: var(--navy);
+      font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+      font-size: 14px;
+      color: var(--navy);
+    }
+
+    /* ══════════════════════════════════════
+       HEADER — Odyssey DS exact
+       bg: #1E2643 | h: 72px | px: 24px | py: 12px
+    ══════════════════════════════════════ */
+    .header {
+      background: var(--navy);
+      height: 72px;
+      display: flex;
+      align-items: center;
+      padding: 12px 24px;
+      gap: 24px;
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+    }
+
+    /* Logo Odyssey (asset SVG from DS) */
+    .logo { height: 32px; display:flex; align-items:center; flex-shrink:0; }
+    .logo img { height: 32px; }
+
+    /* Search bar — pill blanc, border noir */
+    .search {
+      flex: 1; max-width: 698px;
+      background: var(--white);
+      border: 1px solid #000;
+      border-radius: 32px;
+      height: 40px;
+      display: flex; align-items: center;
+      padding: 6px; gap: 4px;
+    }
+    .search .s-icon {
+      width: 24px; height: 24px;
+      padding: 12px;
+      display:flex; align-items:center; justify-content:center;
+      flex-shrink:0;
+    }
+    .search .s-icon img { width: 16px; height: 16px; }
+    .search input {
+      flex:1; border:none; outline:none;
+      font-size:16px; color:#999;
+      background:transparent; font-family:inherit;
+    }
+    .search .s-btn {
+      background: var(--yellow);
+      border: none; border-radius: 50%;
+      width: 28px; height: 28px;
+      display:flex; align-items:center; justify-content:center;
+      cursor:pointer; flex-shrink:0;
+    }
+    .search .s-btn img { width: 12px; height: 12px; transform: scaleX(-1); }
+
+    /* Boutons header */
+    .h-btn {
+      height: 36px; border: none; border-radius: 32px;
+      padding: 0 24px; font-size: 14px; font-weight: 600;
+      cursor: pointer; white-space: nowrap; font-family: inherit;
+    }
+    .h-btn.yellow { background: var(--yellow); color: #000; }
+    .h-btn.white  { background: var(--white);  color: #000; }
+
+    /* Avatar */
+    .avatar {
+      margin-left: auto;
+      width: 48px; height: 48px;
+      background: var(--lavender);
+      border-radius: 50%;
+      display:flex; align-items:center; justify-content:center;
+      font-weight:600; font-size:16px; color:#000;
+      flex-shrink:0;
+    }
+
+    /* ══════════════════════════════════════
+       LAYOUT
+    ══════════════════════════════════════ */
+    .layout {
+      position: fixed;
+      top: 72px; left: 0;
+      width: 1440px;
+      height: calc(1024px - 72px);
+      display: flex;
+    }
+
+    /* ══════════════════════════════════════
+       SIDEBAR — Odyssey DS exact
+       open: 292px | closed: 94px
+       bg: #1E2643 | pl: 24px | py: 40px | gap: 16px
+    ══════════════════════════════════════ */
+    .sidebar {
+      background: var(--navy);
+      width: 292px;
+      flex-shrink: 0;
+      padding: 40px 0 40px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      overflow: hidden;
+      transition: width .2s ease;
+      position: relative;
+    }
+    .sidebar.closed { width: 94px; }
+
+    /* ── Bouton toggle : cercle ">" sur le bord droit ── */
+    .toggle-btn {
+      position: fixed;
+      top: calc(72px + 40px); /* aligné sur premier item */
+      left: 270px;
+      width: 44px; height: 44px;
+      background: var(--navy);
+      border: 2px solid rgba(255,255,255,0.15);
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      z-index: 200;
+      transition: left .2s ease;
+    }
+    .toggle-btn.closed { left: 72px; }
+    .toggle-btn svg {
+      width: 14px; height: 14px;
+      stroke: rgba(255,255,255,0.7);
+      fill: none; stroke-width: 2;
+      stroke-linecap: round; stroke-linejoin: round;
+      transition: transform .2s ease;
+    }
+    .toggle-btn.closed svg { transform: rotate(180deg); }
+
+    /* ── Nav item ── */
+    .nav-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      cursor: pointer;
+      padding-right: 16px;
+    }
+
+    /* Icône : 48×48, cercle blanc si actif, rien si inactif */
+    .nav-item .icon-circle {
+      width: 48px; height: 48px;
+      flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      border-radius: 100px;
+      background: transparent; /* inactif : pas de fond */
+    }
+    .nav-item.active .icon-circle {
+      background: var(--white); /* actif : cercle blanc */
+    }
+    .nav-item .icon-circle img { width: 24px; height: 24px; }
+    /* inactif : icône blanche semi-transparente */
+    .nav-item:not(.active) .icon-circle img { opacity: 0.7; }
+
+    /* Labels masqués sidebar fermée */
+    .nav-text { overflow: hidden; min-width: 0; }
+    .sidebar.closed .nav-text { display: none; }
+
+    /* Label principal */
+    .nav-label {
+      color: var(--white);
+      font-size: 16px;
+      font-weight: 600; /* semibold */
+      line-height: 24px;
+      padding-top: 12px;
+      white-space: nowrap;
+    }
+    .nav-item:not(.active) .nav-label { opacity: 0.7; font-weight: 400; }
+
+    /* ── Sous-menu ── */
+    .submenu {
+      display: flex; flex-direction: column;
+      gap: 0; padding-top: 8px;
+    }
+    .sub-item {
+      color: var(--white);
+      opacity: 0.75;
+      font-size: 16px; font-weight: 400;
+      line-height: 32px;
+      cursor: pointer;
+      white-space: nowrap;
+      padding-left: 0;
+      transition: opacity .1s;
+    }
+    .sub-item:hover { opacity: 1; }
+    .sub-item.active { opacity: 1; color: var(--white); font-weight: 600; }
+
+    /* Settings en bas */
+    .nav-item.bottom { margin-top: auto; }
+
+    /* ══════════════════════════════════════
+       MAIN CONTENT
+    ══════════════════════════════════════ */
+    .main {
+      flex: 1;
+      background: var(--white);
+      border-top-left-radius: 16px;
+      display: flex; flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* Tabs — pill noir */
+    .tabs-bar {
+      border-bottom: 1px solid var(--grey-bd);
+      padding: 12px 24px 0;
+      display: flex; align-items: center; gap: 4px;
+      flex-shrink: 0;
+    }
+    .tab {
+      padding: 8px 20px;
+      font-size: 14px; font-weight: 500;
+      border-radius: 20px; cursor: pointer;
+      color: var(--grey-txt); margin-bottom: 12px;
+      border: none; background: transparent; font-family: inherit;
+    }
+    .tab.active { background: var(--navy); color: var(--white); font-weight: 700; }
+
+    /* Content */
+    .content {
+      flex: 1; overflow-y: auto;
+      padding: 28px 32px 40px 32px;
+      background: var(--grey-bg);
+      position: relative; /* ancre les pins */
+      z-index: 1;
+    }
+
+    /* Alert */
+    .alert { display:none; gap:12px; background:#FFFBEA; border:1px solid var(--yellow); border-left:4px solid var(--yellow); border-radius:8px; padding:16px 20px; margin-bottom:20px; }
+    .alert.on { display:flex; }
+    .alert strong { display:block; font-weight:700; margin-bottom:4px; }
+    .alert ul { margin-top:6px; padding-left:18px; font-size:13px; }
+
+    /* Section title */
+    .s-title { font-size:22px; font-weight:700; color:var(--navy); margin-bottom:20px; }
+
+    /* Bloc date */
+    .bloc-date {
+      background: var(--white);
+      border: 1px solid var(--grey-bd);
+      border-radius: 12px;
+      padding: 16px 24px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+    .bloc-date .date-label {
+      font-size: 16px; color: var(--navy);
+    }
+
+    /* Textfield DS Main Trident 2.0 — State=Default, Icon=True */
+    .tf-field {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      height: 48px;
+      border: 1px solid #666;
+      border-radius: 100px;
+      padding: 0 21px;
+      background: var(--white);
+      flex-shrink: 0;
+      width: fit-content; /* s'adapte au contenu, padding symétrique */
+    }
+    .tf-field:focus-within { border-color: #000; }
+    .tf-field svg { width: 24px; height: 24px; flex-shrink: 0; color: #333; }
+    .tf-field input {
+      border: none; outline: none;
+      font-size: 16px; font-weight: 400; color: #333;
+      background: transparent; font-family: inherit;
+      width: auto; /* taille exacte du contenu */
+    }
+    .tf-field input:focus { color: #000; }
+
+    /* Badge variante */
+    .badge { display:inline-flex; align-items:center; gap:6px; font-size:12px; font-weight:600; padding:4px 14px; border-radius:20px; margin-bottom:16px; }
+    .badge.m { background:#FFF8E1; color:#7D5A00; border:1px solid var(--yellow); }
+    .badge.i { background:#E6F4EA; color:#1A6B31; border:1px solid #22863A; }
+
+    /* ── Tabs Tertiary DS Trident 2.0 — sticky dans le scroll ── */
+    .tpe-tabs-bar {
+      position: sticky;
+      top: -28px;
+      background: transparent;
+      border-bottom: 1px solid transparent;
+      margin: 0 -32px 24px -32px;
+      padding: 0 32px;
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      height: 44px;
+      z-index: 10;
+      transition: background 0.15s, border-color 0.15s, box-shadow 0.15s, height 0.15s, padding 0.15s;
+    }
+    /* Fond blanc + padding vertical 20px quand sticky */
+    .tpe-tabs-bar.is-stuck {
+      background: var(--white);
+      border-bottom-color: var(--grey-bd);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      height: auto;
+      padding-top: 12px;
+      padding-bottom: 12px;
+    }
+    /* Bouton Valider — DS Main Trident 2.0 — Saffran yellow */
+    .tpe-tabs-bar .btn-validate-inline {
+      margin-left: auto;
+      background: #FFE699;
+      color: #999;
+      border: none;
+      border-radius: 100px;
+      padding: 0 32px;
+      height: 48px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: not-allowed;
+      font-family: inherit;
+      white-space: nowrap;
+      flex-shrink: 0;
+      transition: background 0.15s, color 0.15s;
+    }
+    /* État actif — Saffran yellow Default */
+    .tpe-tabs-bar .btn-validate-inline.active-btn {
+      background: #FDBE00;
+      color: #000;
+      cursor: pointer;
+    }
+    .tpe-tab {
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--navy);
+      cursor: pointer;
+      height: 44px;
+      padding: 0;
+      border: none;
+      border-bottom: 2px solid transparent;
+      background: none;
+      font-family: inherit;
+      white-space: nowrap;
+    }
+    .tpe-tab.active {
+      font-weight: 700;
+      border-bottom: 2px solid var(--navy);
+    }
+
+    /* TPE */
+    .tpe-group { margin-bottom:24px; }
+    .tpe-label { font-size:15px; font-weight:700; color:var(--navy); margin-bottom:8px; }
+
+    /* Table */
+    .table-wrap { border-radius:12px; overflow:hidden; border:1px solid var(--grey-bd); }
+    .t-head { background:var(--navy); color:var(--white); display:grid; padding:0 20px; height:48px; align-items:center; font-size:13px; font-weight:600; gap:12px; }
+    .gm { grid-template-columns: 120px 1fr 160px 180px; }
+    .gi { grid-template-columns: 120px 1fr 130px 160px 180px; }
+    .t-row { background:var(--white); display:grid; padding:10px 20px; min-height:56px; align-items:center; gap:12px; border-bottom:1px solid var(--grey-bd); }
+    .t-row:last-child { border-bottom:none; }
+    .c-mdp { font-size:14px; font-weight:600; }
+    .c-loc { font-size:13px; color:var(--grey-txt); }
+    .c-amt { font-size:14px; }
+    .iw { position:relative; display:inline-flex; flex-direction:column; gap:2px; }
+    .inp { border:1px solid var(--grey-bd); border-radius:8px; height:36px; padding:0 10px 0 24px; font-size:14px; color:var(--navy); font-family:inherit; width:140px; outline:none; }
+    .inp:focus { border-color:var(--navy); }
+    .inp.err { border-color:var(--red); }
+    .inp.plain { padding-left:10px; }
+    .eur { position:absolute; left:8px; top:9px; font-size:13px; color:var(--grey-txt); pointer-events:none; }
+    .errmsg { font-size:11px; color:var(--red); }
+
+    /* Champ en erreur DS — State=Error, Icon=False */
+    .inp.field-error,
+    .inp-regul.field-error {
+      border-color: #BF2F17;
+    }
+    /* Message d'erreur — masqué, seul le stroke rouge est visible */
+    .field-error-msg { display: none; }
+
+    /* ── Vue Régularisation ── */
+    .reg-form {
+      background: var(--white);
+      border: 1px solid var(--grey-bd);
+      border-radius: 12px;
+      overflow: hidden;
+      margin-bottom: 24px;
+      max-width: 640px;
+    }
+    .reg-row {
+      display: flex;
+      align-items: center;
+      padding: 16px 24px;
+      gap: 24px;
+      border-bottom: 1px solid var(--grey-bd);
+    }
+    .reg-row:last-child { border-bottom: none; }
+    .reg-total-row { background: #F8F9FF; }
+    .reg-sum-row   { background: #F8F9FF; }
+    .reg-label-cell { flex: 1; }
+    .reg-label-main { font-size: 16px; font-weight: 600; color: var(--navy); display: block; }
+    .reg-label-sub  { font-size: 12px; color: var(--grey-txt); }
+    .reg-field-cell { display: flex; flex-direction: column; gap: 4px; align-items: flex-start; }
+    .reg-divider { height: 1px; background: var(--grey-bd); }
+    /* Champ écart en erreur si total ne correspond pas */
+    .reg-ecart-inp { font-weight: 700; font-size: 16px; }
+    .reg-ecart-inp.ecart-error { border-color: #BF2F17; color: #BF2F17; }
+    .reg-ecart-inp.ecart-ok    { border-color: #088A20; color: #088A20; }
+    .reg-hint { font-size: 12px; margin-top: 2px; }
+    .reg-hint.err { color: #BF2F17; }
+    .reg-hint.ok  { color: #088A20; }
+    /* Footer régul */
+    .reg-footer {
+      display: flex;
+      justify-content: flex-end;
+      padding-top: 8px;
+    }
+
+    /* ── Vue Date antérieure ── */
+
+    /* Layout principal : tableau données + bloc régul côte à côte */
+    .ant-row-layout {
+      display: flex;
+      gap: 12px;
+      align-items: stretch;
+    }
+
+    /* Partie gauche : tableau données (Date/MDP/Emplacement/Montant/N° Remise) */
+    .ant-main-wrap {
+      flex: 1;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid var(--grey-bd);
+    }
+    .g-ant-main { grid-template-columns: 110px 110px 1fr 130px 150px; }
+
+    /* Partie droite : bloc régularisation */
+    .ant-regul-wrap {
+      width: 320px;
+      flex-shrink: 0;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid var(--grey-bd);
+    }
+    .g-ant-regul { grid-template-columns: 1fr 1fr; }
+
+    /* Cellule read-only */
+    .c-ro { font-size:14px; color:var(--grey-txt); }
+
+    /* Inputs régularisation */
+    .inp-regul {
+      border: 1px solid var(--grey-bd);
+      border-radius: 8px;
+      height: 36px;
+      padding: 0 10px;
+      font-size: 14px;
+      color: var(--text-dark);
+      font-family: inherit;
+      width: 100%;
+      outline: none;
+      background: var(--white);
+    }
+    .inp-regul:focus { border-color: var(--navy); }
+
+    /* Ligne régul alignée sur la ligne données */
+    .ant-regul-rows { display: flex; flex-direction: column; }
+    .regul-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      padding: 10px 16px;
+      min-height: 56px;
+      align-items: center;
+      gap: 8px;
+      border-bottom: 1px solid var(--grey-bd);
+      background: var(--white);
+    }
+    .regul-row:last-child { border-bottom: none; }
+
+    /* Footer */
+    .footer { background:var(--white); border-top:1px solid var(--grey-bd); height:72px; display:flex; align-items:center; justify-content:flex-end; padding:0 32px; gap:12px; flex-shrink:0; }
+    .btn-c { background:transparent; border:1px solid var(--grey-bd); border-radius:8px; padding:0 24px; height:40px; font-size:14px; font-weight:600; color:var(--grey-txt); cursor:pointer; font-family:inherit; }
+    .btn-v { background:var(--navy); color:var(--white); border:none; border-radius:8px; padding:0 32px; height:40px; font-size:14px; font-weight:700; cursor:pointer; font-family:inherit; }
+    .btn-v.off { background:var(--grey-bd); color:var(--grey-txt); cursor:not-allowed; }
+
+    /* Panel wireframe */
+    .wf-panel.collapsed .panel-body { display: none; }
+    .wf-panel.collapsed { min-width: 0; }
+    .wf-panel {
+      position: fixed; bottom: 20px; right: 20px;
+      background: var(--white); border: 2px solid var(--navy);
+      border-radius: 12px; padding: 16px 18px;
+      z-index: 999; font-size: 13px;
+      box-shadow: 0 4px 20px rgba(0,0,0,.15);
+      min-width: 240px; display: flex; flex-direction: column; gap: 12px;
+    }
+    .panel-body {
+      display: flex; flex-direction: column; gap: 12px;
+    }
+    .wf-panel .panel-title {
+      font-size: 11px; font-weight: 700; color: var(--grey-txt);
+      text-transform: uppercase; letter-spacing: .5px;
+    }
+    .wf-panel hr { border: none; border-top: 1px solid var(--grey-bd); }
+
+    /* ── Système de commentaires ── */
+    .comment-pin {
+      position: absolute; /* relatif au .content */
+      width: 28px; height: 28px;
+      border-radius: 50% 50% 50% 0;
+      transform: rotate(-45deg);
+      display: flex; align-items: center; justify-content: center;
+      cursor: grab; z-index: 500;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+      transition: transform 0.15s;
+    }
+    .comment-pin:active { cursor: grabbing; }
+    .comment-pin:hover { transform: rotate(-45deg) scale(1.15); }
+    .comment-pin span { transform: rotate(45deg); font-size: 11px; font-weight: 700; }
+    .comment-popover {
+      position: fixed; background: var(--white);
+      border: 1px solid var(--grey-bd); border-radius: 12px;
+      padding: 14px; width: 280px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+      z-index: 1000; display: none;
+    }
+    .comment-popover.visible { display: block; }
+    .comment-popover .cp-header { font-size: 12px; font-weight: 700; color: var(--navy); margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+    .comment-popover .cp-author-select { flex:1; font-size:12px; font-family:inherit; border:1px solid var(--grey-bd); border-radius:6px; padding:4px 8px; outline:none; color:var(--navy); }
+    .comment-popover textarea { width:100%; height:80px; border:1px solid var(--grey-bd); border-radius:8px; padding:8px; font-size:13px; font-family:inherit; resize:none; outline:none; color:var(--navy); }
+    .comment-popover textarea:focus { border-color: var(--navy); }
+    .comment-popover .cp-actions { display:flex; gap:8px; margin-top:8px; justify-content:flex-end; }
+    .comment-popover .cp-cancel { background:none; border:1px solid var(--grey-bd); border-radius:6px; padding:5px 14px; font-size:12px; cursor:pointer; font-family:inherit; color:var(--grey-txt); }
+    .comment-popover .cp-save { background:var(--navy); color:var(--white); border:none; border-radius:6px; padding:5px 14px; font-size:12px; font-weight:700; cursor:pointer; font-family:inherit; }
+    .comment-list { display:flex; flex-direction:column; gap:6px; max-height:200px; overflow-y:auto; margin-top:4px; }
+    .comment-item { background:var(--grey-bg); border-radius:8px; padding:8px 10px; font-size:12px; cursor:pointer; border:1.5px solid transparent; transition:border-color 0.1s; }
+    .comment-item:hover { border-color: var(--navy); }
+    .comment-item .ci-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:3px; }
+    .comment-item .ci-author { font-weight:700; font-size:11px; }
+    .comment-item .ci-delete { background:none; border:none; cursor:pointer; color:var(--grey-txt); font-size:14px; line-height:1; padding:0 2px; }
+    .comment-item .ci-delete:hover { color:var(--red); }
+    .comment-item .ci-text { color:var(--navy); line-height:1.4; }
+    .comment-empty { font-size:12px; color:var(--grey-txt); font-style:italic; text-align:center; padding:8px 0; }
+    .comments-mode-toggle { display:flex; gap:4px; margin-bottom:6px; }
+    .cmt-mode-btn { flex:1; padding:5px 0; font-size:11px; font-weight:600; border:1px solid var(--grey-bd); border-radius:6px; background:var(--white); color:var(--grey-txt); cursor:pointer; font-family:inherit; }
+    .cmt-mode-btn.active { background:var(--navy); color:var(--white); border-color:var(--navy); }
+    .author-filter { width:100%; font-size:12px; font-family:inherit; border:1px solid var(--grey-bd); border-radius:6px; padding:5px 8px; outline:none; color:var(--navy); margin-bottom:6px; }
+    /* Messages thread */
+    .thread-msg { padding:8px 10px; border-radius:8px; background:var(--grey-bg); }
+    .thread-msg .tm-author { font-size:11px; font-weight:700; margin-bottom:3px; }
+    .thread-msg .tm-text { font-size:13px; color:var(--navy); line-height:1.4; }
+    .thread-msg .tm-date { font-size:10px; color:var(--grey-txt); margin-top:3px; }
+
+    /* Switch row */
+    .switch-row {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 12px;
+    }
+    .switch-row span { font-size: 13px; color: var(--navy); font-weight: 500; }
+    .switch {
+      position: relative; width: 44px; height: 24px; flex-shrink: 0;
+    }
+    .switch input { opacity: 0; width: 0; height: 0; }
+    .switch .track {
+      position: absolute; inset: 0;
+      background: var(--grey-bd); border-radius: 24px;
+      cursor: pointer; transition: background .2s;
+    }
+    .switch .track::after {
+      content: ''; position: absolute;
+      width: 18px; height: 18px; border-radius: 50%;
+      background: var(--white);
+      top: 3px; left: 3px;
+      transition: transform .2s;
+      box-shadow: 0 1px 3px rgba(0,0,0,.2);
+    }
+    .switch input:checked + .track { background: var(--navy); }
+    .switch input:checked + .track::after { transform: translateX(20px); }
+
+    /* Select version */
+    .version-select {
+      width: 100%; padding: 8px 10px;
+      border: 1px solid var(--grey-bd); border-radius: 8px;
+      font-size: 13px; font-family: inherit; color: var(--navy);
+      background: var(--white); cursor: pointer; outline: none;
+    }
+    .version-select:focus { border-color: var(--navy); }
+  </style>
+</head>
+<body>
+
+<!-- ══════════ HEADER DS Odyssey ══════════ -->
+<header class="header">
+  <!-- Logo Odyssey — asset SVG du DS -->
+  <div class="logo">
+    <img src="https://www.figma.com/api/mcp/asset/bd084c92-7e54-4ab0-9f9b-8070e351c39a" alt="odyssey" />
+  </div>
+
+  <!-- Search bar -->
+  <div class="search">
+    <div class="s-icon">
+      <img src="https://www.figma.com/api/mcp/asset/a8a25ef4-a846-48d0-a05d-ba1fc84d415e" alt="" />
+    </div>
+    <input type="text" placeholder="Search anything" />
+    <button class="s-btn">
+      <img src="https://www.figma.com/api/mcp/asset/588b1b81-88f0-4859-b358-ddd2fffe035c" alt="" />
+    </button>
+  </div>
+
+  <button class="h-btn yellow">Scan Bracelet</button>
+  <button class="h-btn white">What's new</button>
+
+  <div class="avatar">JD</div>
+</header>
+
+<!-- Bouton toggle sidebar -->
+<button class="toggle-btn closed" id="toggle-btn" onclick="toggleSidebar()" title="Ouvrir / Fermer">
+  <svg viewBox="0 0 14 14"><path d="M5 2l5 5-5 5"/></svg>
+</button>
+
+<!-- ══════════ LAYOUT ══════════ -->
+<div class="layout">
+
+  <!-- ══ SIDEBAR DS Odyssey ══ -->
+  <nav class="sidebar closed" id="sidebar">
+
+    <!-- Dashboard -->
+    <div class="nav-item">
+      <div class="icon-circle">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5L12 3l9 6.5V21a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5z"/><path d="M9 22V12h6v10"/></svg>
+      </div>
+      <div class="nav-text"><div class="nav-label">Dashboard</div></div>
+    </div>
+
+    <!-- GM list -->
+    <div class="nav-item">
+      <div class="icon-circle">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round"><circle cx="9" cy="7" r="4"/><path d="M2 21c0-4 3.1-7 7-7"/><circle cx="17" cy="11" r="3"/><path d="M22 21c0-2.8-2.2-5-5-5"/></svg>
+      </div>
+      <div class="nav-text"><div class="nav-label">GM list</div></div>
+    </div>
+
+    <!-- Room list -->
+    <div class="nav-item">
+      <div class="icon-circle">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="13" width="20" height="8" rx="1"/><path d="M2 13v-2a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v2"/><path d="M6 9V6a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v3"/></svg>
+      </div>
+      <div class="nav-text"><div class="nav-label">Room list</div></div>
+    </div>
+
+    <!-- Cash register — ACTIF, Télécollecte active -->
+    <div class="nav-item active" style="align-items:flex-start;">
+      <div class="icon-circle">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1E2643" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/><path d="M7 15h.01M12 15h.01M17 15h.01"/></svg>
+      </div>
+      <div class="nav-text">
+        <div class="nav-label">Cash register</div>
+        <div class="submenu">
+          <div class="sub-item">Close my cash register</div>
+          <div class="sub-item">Make a supply</div>
+          <div class="sub-item">Make a deposit</div>
+          <div class="sub-item">Easy check out</div>
+          <div class="sub-item active" id="sub-tpe" onclick="goTo('tpe')">Télécollecte</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Settings -->
+    <div class="nav-item bottom">
+      <div class="icon-circle">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33A1.65 1.65 0 0 0 14 20.65V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68A1.65 1.65 0 0 0 10 3.18V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      </div>
+      <div class="nav-text"><div class="nav-label">Settings</div></div>
+    </div>
+
+  </nav>
+
+  <!-- ══ MAIN ══ -->
+  <main class="main">
+
+    <!-- Tabs principales -->
+    <div class="tabs-bar">
+      <button class="tab active" id="tab-tpe" onclick="goTo('tpe')">Télécollecte</button>
+      <button class="tab"        id="tab-ant" onclick="goTo('ant')">Date antérieure</button>
+      <button class="tab"        id="tab-reg" onclick="goTo('reg')">Régularisation</button>
+    </div>
+
+
+    <div class="content">
+
+      <!-- Alerte -->
+      <div class="alert" id="alert">
+        <span style="font-size:20px;flex-shrink:0;">⚠️</span>
+        <div>
+          <strong>Impossible de lancer la télécollecte</strong>
+          Toutes les caisses doivent être fermées pour la saisie du Jour J.
+          <ul>
+            <li>DUPONT — Poste N°2 Réception</li>
+            <li>MARTIN — Poste N°4 Réception</li>
+          </ul>
+        </div>
+      </div>
+
+      <div id="mc">
+        <div class="s-title">Saisie de la télécollecte</div>
+
+        <div class="bloc-date">
+          <span class="date-label">Please enter an accounting date to proceed with the telecollection</span>
+          <!-- Textfield DS Main Trident 2.0 — State=Default, Icon=True -->
+          <div class="tf-field">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="4" width="18" height="18" rx="2"/>
+              <path d="M16 2v4M8 2v4M3 10h18"/>
+            </svg>
+            <input type="text" value="2026 / 05 / 05" placeholder="YYYY / MM / DD" size="14" />
+          </div>
+        </div>
+
+        <!-- Tabs Tertiary TPE — sticky au scroll, fond plein -->
+        <div class="tpe-tabs-bar" id="tpe-tabs-bar">
+          <button class="tpe-tab active" onclick="scrollToTpe(1,this)">TPE 1</button>
+          <button class="tpe-tab"        onclick="scrollToTpe(2,this)">TPE 2</button>
+          <button class="tpe-tab"        onclick="scrollToTpe(3,this)">TPE 3</button>
+          <button class="tpe-tab"        onclick="scrollToTpe(4,this)">TPE 4</button>
+          <button class="tpe-tab"        onclick="scrollToTpe(5,this)">TPE 5</button>
+          <button class="btn-validate-inline active-btn" id="btnv-inline">Valider la saisie</button>
+        </div>
+
+        <!-- TPE 1 -->
+        <div class="tpe-group" id="tpe-anchor-1">
+          <div class="tpe-label">TPE N°1</div>
+          <div class="table-wrap">
+            <div class="t-head gm" id="h1"><span>Mode de paiement</span><span>Emplacement</span><span>Montant</span><span>N° Remise</span></div>
+            <div id="rm1">
+              <div class="t-row gm"><span class="c-mdp">Visa</span><span class="c-loc">434 – Poste N°5 Réception</span><div class="iw"><span class="eur">€</span><input class="inp" type="text" placeholder="0,00"/></div><div class="iw"><input class="inp plain remise-inp" type="text" placeholder="" style="width:160px"/><span class="field-error-msg remise-err"><svg viewBox="0 0 20 20" fill="#BF2F17"><path d="M10 2a8 8 0 1 0 0 16A8 8 0 0 0 10 2zm0 4a1 1 0 0 1 1 1v3a1 1 0 0 1-2 0V7a1 1 0 0 1 1-1zm0 7a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg>N° de remise obligatoire</span></div></div>
+              <div class="t-row gm"><span class="c-mdp">Amex</span><span class="c-loc">434 – Poste N°5 Réception</span><div class="iw"><span class="eur">€</span><input class="inp" type="text" placeholder="0,00"/></div><div class="iw"><input class="inp plain remise-inp" type="text" placeholder="" style="width:160px"/><span class="field-error-msg remise-err"><svg viewBox="0 0 20 20" fill="#BF2F17"><path d="M10 2a8 8 0 1 0 0 16A8 8 0 0 0 10 2zm0 4a1 1 0 0 1 1 1v3a1 1 0 0 1-2 0V7a1 1 0 0 1 1-1zm0 7a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg>N° de remise obligatoire</span></div></div>
+              <div class="t-row gm"><span class="c-mdp">WeChat</span><span class="c-loc">434 – Poste N°5 Réception</span><div class="iw"><span class="eur">€</span><input class="inp" type="text" placeholder="0,00"/></div><div class="iw"><input class="inp plain remise-inp" type="text" placeholder="" style="width:160px"/><span class="field-error-msg remise-err"><svg viewBox="0 0 20 20" fill="#BF2F17"><path d="M10 2a8 8 0 1 0 0 16A8 8 0 0 0 10 2zm0 4a1 1 0 0 1 1 1v3a1 1 0 0 1-2 0V7a1 1 0 0 1 1-1zm0 7a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg>N° de remise obligatoire</span></div></div>
+            </div>
+            <div id="ri1" style="display:none">
+              <div class="t-row gi"><span class="c-mdp">Visa</span><span class="c-loc">434 – Poste N°5 Réception</span><span class="c-amt">25,00 €</span><div class="iw"><span class="eur">€</span><input class="inp" type="text" value="25,00"/></div><input class="inp plain" type="text" value="652356233652" style="width:160px"/></div>
+              <div class="t-row gi"><span class="c-mdp">Amex</span><span class="c-loc">434 – Poste N°5 Réception</span><span class="c-amt">120,00 €</span><div class="iw"><span class="eur">€</span><input class="inp err" type="text" value="20,00"/><span class="errmsg">Montant corrigé invalide</span></div><input class="inp plain" type="text" value="652356233652" style="width:160px"/></div>
+              <div class="t-row gi"><span class="c-mdp">WeChat</span><span class="c-loc">434 – Poste N°5 Réception</span><span class="c-amt">0,00 €</span><div class="iw"><span class="eur">€</span><input class="inp" type="text" value="0,00"/></div><div class="iw"><input class="inp plain remise-inp" type="text" placeholder="" style="width:160px"/><span class="field-error-msg remise-err"><svg viewBox="0 0 20 20" fill="#BF2F17"><path d="M10 2a8 8 0 1 0 0 16A8 8 0 0 0 10 2zm0 4a1 1 0 0 1 1 1v3a1 1 0 0 1-2 0V7a1 1 0 0 1 1-1zm0 7a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg>N° de remise obligatoire</span></div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TPE 2 -->
+        <div class="tpe-group" id="tpe-anchor-2">
+          <div class="tpe-label">TPE N°2</div>
+          <div class="table-wrap">
+            <div class="t-head gm" id="h2"><span>Mode de paiement</span><span>Emplacement</span><span>Montant</span><span>N° Remise</span></div>
+            <div id="rm2">
+              <div class="t-row gm"><span class="c-mdp">Visa</span><span class="c-loc">434 – Poste N°3 Réception</span><div class="iw"><span class="eur">€</span><input class="inp" type="text" placeholder="0,00"/></div><div class="iw"><input class="inp plain remise-inp" type="text" placeholder="" style="width:160px"/><span class="field-error-msg remise-err"><svg viewBox="0 0 20 20" fill="#BF2F17"><path d="M10 2a8 8 0 1 0 0 16A8 8 0 0 0 10 2zm0 4a1 1 0 0 1 1 1v3a1 1 0 0 1-2 0V7a1 1 0 0 1 1-1zm0 7a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg>N° de remise obligatoire</span></div></div>
+              <div class="t-row gm"><span class="c-mdp">Amex</span><span class="c-loc">434 – Poste N°3 Réception</span><div class="iw"><span class="eur">€</span><input class="inp" type="text" placeholder="0,00"/></div><div class="iw"><input class="inp plain remise-inp" type="text" placeholder="" style="width:160px"/><span class="field-error-msg remise-err"><svg viewBox="0 0 20 20" fill="#BF2F17"><path d="M10 2a8 8 0 1 0 0 16A8 8 0 0 0 10 2zm0 4a1 1 0 0 1 1 1v3a1 1 0 0 1-2 0V7a1 1 0 0 1 1-1zm0 7a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg>N° de remise obligatoire</span></div></div>
+            </div>
+            <div id="ri2" style="display:none">
+              <div class="t-row gi"><span class="c-mdp">Visa</span><span class="c-loc">434 – Poste N°3 Réception</span><span class="c-amt">80,00 €</span><div class="iw"><span class="eur">€</span><input class="inp" type="text" value="80,00"/></div><input class="inp plain" type="text" value="652356233659" style="width:160px"/></div>
+              <div class="t-row gi"><span class="c-mdp">Amex</span><span class="c-loc">434 – Poste N°3 Réception</span><span class="c-amt">45,00 €</span><div class="iw"><span class="eur">€</span><input class="inp" type="text" value="45,00"/></div><input class="inp plain" type="text" value="652356233659" style="width:160px"/></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TPE 3 -->
+        <div class="tpe-group" id="tpe-anchor-3">
+          <div class="tpe-label">TPE N°3</div>
+          <div class="table-wrap">
+            <div class="t-head gm"><span>Mode de paiement</span><span>Emplacement</span><span>Montant</span><span>N° Remise</span></div>
+            <div class="rows-manual">
+              <div class="t-row gm"><span class="c-mdp">Visa</span><span class="c-loc">434 – Poste N°1 Spa</span><div class="iw"><span class="eur">€</span><input class="inp" type="text" placeholder="0,00"/></div><div class="iw"><input class="inp plain remise-inp" type="text" placeholder="" style="width:160px"/><span class="field-error-msg remise-err"><svg viewBox="0 0 20 20" fill="#BF2F17"><path d="M10 2a8 8 0 1 0 0 16A8 8 0 0 0 10 2zm0 4a1 1 0 0 1 1 1v3a1 1 0 0 1-2 0V7a1 1 0 0 1 1-1zm0 7a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg>N° de remise obligatoire</span></div></div>
+              <div class="t-row gm"><span class="c-mdp">Amex</span><span class="c-loc">434 – Poste N°1 Spa</span><div class="iw"><span class="eur">€</span><input class="inp" type="text" placeholder="0,00"/></div><div class="iw"><input class="inp plain remise-inp" type="text" placeholder="" style="width:160px"/><span class="field-error-msg remise-err"><svg viewBox="0 0 20 20" fill="#BF2F17"><path d="M10 2a8 8 0 1 0 0 16A8 8 0 0 0 10 2zm0 4a1 1 0 0 1 1 1v3a1 1 0 0 1-2 0V7a1 1 0 0 1 1-1zm0 7a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg>N° de remise obligatoire</span></div></div>
+              <div class="t-row gm"><span class="c-mdp">WeChat</span><span class="c-loc">434 – Poste N°1 Spa</span><div class="iw"><span class="eur">€</span><input class="inp" type="text" placeholder="0,00"/></div><div class="iw"><input class="inp plain remise-inp" type="text" placeholder="" style="width:160px"/><span class="field-error-msg remise-err"><svg viewBox="0 0 20 20" fill="#BF2F17"><path d="M10 2a8 8 0 1 0 0 16A8 8 0 0 0 10 2zm0 4a1 1 0 0 1 1 1v3a1 1 0 0 1-2 0V7a1 1 0 0 1 1-1zm0 7a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg>N° de remise obligatoire</span></div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TPE 4 -->
+        <div class="tpe-group" id="tpe-anchor-4">
+          <div class="tpe-label">TPE N°4</div>
+          <div class="table-wrap">
+            <div class="t-head gm"><span>Mode de paiement</span><span>Emplacement</span><span>Montant</span><span>N° Remise</span></div>
+            <div class="rows-manual">
+              <div class="t-row gm"><span class="c-mdp">Visa</span><span class="c-loc">434 – Poste N°2 Restaurant</span><div class="iw"><span class="eur">€</span><input class="inp" type="text" placeholder="0,00"/></div><div class="iw"><input class="inp plain remise-inp" type="text" placeholder="" style="width:160px"/><span class="field-error-msg remise-err"><svg viewBox="0 0 20 20" fill="#BF2F17"><path d="M10 2a8 8 0 1 0 0 16A8 8 0 0 0 10 2zm0 4a1 1 0 0 1 1 1v3a1 1 0 0 1-2 0V7a1 1 0 0 1 1-1zm0 7a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg>N° de remise obligatoire</span></div></div>
+              <div class="t-row gm"><span class="c-mdp">Amex</span><span class="c-loc">434 – Poste N°2 Restaurant</span><div class="iw"><span class="eur">€</span><input class="inp" type="text" placeholder="0,00"/></div><div class="iw"><input class="inp plain remise-inp" type="text" placeholder="" style="width:160px"/><span class="field-error-msg remise-err"><svg viewBox="0 0 20 20" fill="#BF2F17"><path d="M10 2a8 8 0 1 0 0 16A8 8 0 0 0 10 2zm0 4a1 1 0 0 1 1 1v3a1 1 0 0 1-2 0V7a1 1 0 0 1 1-1zm0 7a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg>N° de remise obligatoire</span></div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TPE 5 -->
+        <div class="tpe-group" id="tpe-anchor-5">
+          <div class="tpe-label">TPE N°5</div>
+          <div class="table-wrap">
+            <div class="t-head gm"><span>Mode de paiement</span><span>Emplacement</span><span>Montant</span><span>N° Remise</span></div>
+            <div class="rows-manual">
+              <div class="t-row gm"><span class="c-mdp">Visa</span><span class="c-loc">434 – Poste N°1 Boutique</span><div class="iw"><span class="eur">€</span><input class="inp" type="text" placeholder="0,00"/></div><div class="iw"><input class="inp plain remise-inp" type="text" placeholder="" style="width:160px"/><span class="field-error-msg remise-err"><svg viewBox="0 0 20 20" fill="#BF2F17"><path d="M10 2a8 8 0 1 0 0 16A8 8 0 0 0 10 2zm0 4a1 1 0 0 1 1 1v3a1 1 0 0 1-2 0V7a1 1 0 0 1 1-1zm0 7a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg>N° de remise obligatoire</span></div></div>
+              <div class="t-row gm"><span class="c-mdp">Amex</span><span class="c-loc">434 – Poste N°1 Boutique</span><div class="iw"><span class="eur">€</span><input class="inp" type="text" placeholder="0,00"/></div><div class="iw"><input class="inp plain remise-inp" type="text" placeholder="" style="width:160px"/><span class="field-error-msg remise-err"><svg viewBox="0 0 20 20" fill="#BF2F17"><path d="M10 2a8 8 0 1 0 0 16A8 8 0 0 0 10 2zm0 4a1 1 0 0 1 1 1v3a1 1 0 0 1-2 0V7a1 1 0 0 1 1-1zm0 7a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg>N° de remise obligatoire</span></div></div>
+              <div class="t-row gm"><span class="c-mdp">WeChat</span><span class="c-loc">434 – Poste N°1 Boutique</span><div class="iw"><span class="eur">€</span><input class="inp" type="text" placeholder="0,00"/></div><div class="iw"><input class="inp plain remise-inp" type="text" placeholder="" style="width:160px"/><span class="field-error-msg remise-err"><svg viewBox="0 0 20 20" fill="#BF2F17"><path d="M10 2a8 8 0 1 0 0 16A8 8 0 0 0 10 2zm0 4a1 1 0 0 1 1 1v3a1 1 0 0 1-2 0V7a1 1 0 0 1 1-1zm0 7a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg>N° de remise obligatoire</span></div></div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /mc -->
+
+      <!-- Vue Date antérieure -->
+      <div id="view-ant" style="display:none;">
+
+        <div class="s-title">Saisie date antérieure</div>
+
+        <!-- Bloc date — même composant DS -->
+        <div class="bloc-date">
+          <span class="date-label">Please enter an accounting date to proceed with the telecollection</span>
+          <div class="tf-field">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="4" width="18" height="18" rx="2"/>
+              <path d="M16 2v4M8 2v4M3 10h18"/>
+            </svg>
+            <input type="text" value="2026 / 05 / 04" placeholder="YYYY / MM / DD" size="14" />
+          </div>
+        </div>
+
+        <!-- Tabs TPE tertiary sticky -->
+        <div class="tpe-tabs-bar" id="tpe-tabs-bar-ant">
+          <button class="tpe-tab active" onclick="scrollToAntTpe(1,this)">TPE 1</button>
+          <button class="tpe-tab"        onclick="scrollToAntTpe(2,this)">TPE 2</button>
+          <button class="tpe-tab"        onclick="scrollToAntTpe(3,this)">TPE 3</button>
+          <button class="tpe-tab"        onclick="scrollToAntTpe(4,this)">TPE 4</button>
+          <button class="tpe-tab"        onclick="scrollToAntTpe(5,this)">TPE 5</button>
+          <button class="btn-validate-inline active-btn" id="btnv-ant">Valider la régularisation</button>
+        </div>
+
+        <!-- Macro helper pour chaque TPE -->
+        <!-- TPE 1 -->
+        <div class="tpe-group" id="ant-anchor-1">
+          <div class="tpe-label">TPE N°1</div>
+          <div class="ant-row-layout">
+            <!-- Tableau principal données -->
+            <div class="ant-main-wrap">
+              <div class="t-head g-ant-main"><span>Date</span><span>Mode de paiement</span><span>Emplacement</span><span>Montant</span><span>N° Remise</span></div>
+              <div class="t-row g-ant-main"><span class="c-ro">04/05/2026</span><span class="c-mdp">Visa</span><span class="c-loc">434 – Poste N°5 Réception</span><span class="c-ro">25,00 €</span><span class="c-ro">652356233659</span></div>
+              <div class="t-row g-ant-main"><span class="c-ro">04/05/2026</span><span class="c-mdp">Amex</span><span class="c-loc">434 – Poste N°5 Réception</span><span class="c-ro">120,00 €</span><span class="c-ro">652356233659</span></div>
+              <div class="t-row g-ant-main"><span class="c-ro">04/05/2026</span><span class="c-mdp">WeChat</span><span class="c-loc">434 – Poste N°5 Réception</span><span class="c-ro">0,00 €</span><span class="c-ro">—</span></div>
+            </div>
+            <!-- Bloc Régularisation -->
+            <div class="ant-regul-wrap">
+              <div class="t-head g-ant-regul" style="text-align:center;line-height:1.3;"><span>Régularisation<br>montant</span><span>Régularisation<br>n° remise</span></div>
+              <div class="regul-row"><input class="inp-regul" type="text" placeholder="0,00 €"/><div class="iw"><input class="inp-regul" type="text" placeholder=""/><span class="field-error-msg remise-err"><svg viewBox="0 0 20 20" fill="#BF2F17"><path d="M10 2a8 8 0 1 0 0 16A8 8 0 0 0 10 2zm0 4a1 1 0 0 1 1 1v3a1 1 0 0 1-2 0V7a1 1 0 0 1 1-1zm0 7a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg>N° de remise obligatoire</span></div></div>
+              <div class="regul-row"><input class="inp-regul" type="text" placeholder="0,00 €"/><div class="iw"><input class="inp-regul" type="text" placeholder=""/><span class="field-error-msg remise-err"><svg viewBox="0 0 20 20" fill="#BF2F17"><path d="M10 2a8 8 0 1 0 0 16A8 8 0 0 0 10 2zm0 4a1 1 0 0 1 1 1v3a1 1 0 0 1-2 0V7a1 1 0 0 1 1-1zm0 7a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg>N° de remise obligatoire</span></div></div>
+              <div class="regul-row"><input class="inp-regul" type="text" placeholder="0,00 €"/><div class="iw"><input class="inp-regul" type="text" placeholder=""/><span class="field-error-msg remise-err"><svg viewBox="0 0 20 20" fill="#BF2F17"><path d="M10 2a8 8 0 1 0 0 16A8 8 0 0 0 10 2zm0 4a1 1 0 0 1 1 1v3a1 1 0 0 1-2 0V7a1 1 0 0 1 1-1zm0 7a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg>N° de remise obligatoire</span></div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TPE 2 -->
+        <div class="tpe-group" id="ant-anchor-2">
+          <div class="tpe-label">TPE N°2</div>
+          <div class="ant-row-layout">
+            <div class="ant-main-wrap">
+              <div class="t-head g-ant-main"><span>Date</span><span>Mode de paiement</span><span>Emplacement</span><span>Montant</span><span>N° Remise</span></div>
+              <div class="t-row g-ant-main"><span class="c-ro">04/05/2026</span><span class="c-mdp">Visa</span><span class="c-loc">434 – Poste N°3 Réception</span><span class="c-ro">0,00 €</span><span class="c-ro">—</span></div>
+              <div class="t-row g-ant-main"><span class="c-ro">04/05/2026</span><span class="c-mdp">Amex</span><span class="c-loc">434 – Poste N°3 Réception</span><span class="c-ro">45,00 €</span><span class="c-ro">652356233659</span></div>
+            </div>
+            <div class="ant-regul-wrap">
+              <div class="t-head g-ant-regul" style="text-align:center;line-height:1.3;"><span>Régularisation<br>montant</span><span>Régularisation<br>n° remise</span></div>
+              <div class="regul-row"><input class="inp-regul" type="text" placeholder="0,00 €"/><div class="iw"><input class="inp-regul" type="text" placeholder=""/><span class="field-error-msg remise-err"><svg viewBox="0 0 20 20" fill="#BF2F17"><path d="M10 2a8 8 0 1 0 0 16A8 8 0 0 0 10 2zm0 4a1 1 0 0 1 1 1v3a1 1 0 0 1-2 0V7a1 1 0 0 1 1-1zm0 7a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg>N° de remise obligatoire</span></div></div>
+              <div class="regul-row"><input class="inp-regul" type="text" placeholder="0,00 €"/><div class="iw"><input class="inp-regul" type="text" placeholder=""/><span class="field-error-msg remise-err"><svg viewBox="0 0 20 20" fill="#BF2F17"><path d="M10 2a8 8 0 1 0 0 16A8 8 0 0 0 10 2zm0 4a1 1 0 0 1 1 1v3a1 1 0 0 1-2 0V7a1 1 0 0 1 1-1zm0 7a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg>N° de remise obligatoire</span></div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TPE 3 -->
+        <div class="tpe-group" id="ant-anchor-3">
+          <div class="tpe-label">TPE N°3</div>
+          <div class="ant-row-layout">
+            <div class="ant-main-wrap">
+              <div class="t-head g-ant-main"><span>Date</span><span>Mode de paiement</span><span>Emplacement</span><span>Montant</span><span>N° Remise</span></div>
+              <div class="t-row g-ant-main"><span class="c-ro">04/05/2026</span><span class="c-mdp">Visa</span><span class="c-loc">434 – Poste N°1 Spa</span><span class="c-ro">55,00 €</span><span class="c-ro">652356233659</span></div>
+              <div class="t-row g-ant-main"><span class="c-ro">04/05/2026</span><span class="c-mdp">Amex</span><span class="c-loc">434 – Poste N°1 Spa</span><span class="c-ro">30,00 €</span><span class="c-ro">652356233659</span></div>
+            </div>
+            <div class="ant-regul-wrap">
+              <div class="t-head g-ant-regul" style="text-align:center;line-height:1.3;"><span>Régularisation<br>montant</span><span>Régularisation<br>n° remise</span></div>
+              <div class="regul-row"><input class="inp-regul" type="text" placeholder="0,00 €"/><div class="iw"><input class="inp-regul" type="text" placeholder=""/><span class="field-error-msg remise-err"><svg viewBox="0 0 20 20" fill="#BF2F17"><path d="M10 2a8 8 0 1 0 0 16A8 8 0 0 0 10 2zm0 4a1 1 0 0 1 1 1v3a1 1 0 0 1-2 0V7a1 1 0 0 1 1-1zm0 7a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg>N° de remise obligatoire</span></div></div>
+              <div class="regul-row"><input class="inp-regul" type="text" placeholder="0,00 €"/><div class="iw"><input class="inp-regul" type="text" placeholder=""/><span class="field-error-msg remise-err"><svg viewBox="0 0 20 20" fill="#BF2F17"><path d="M10 2a8 8 0 1 0 0 16A8 8 0 0 0 10 2zm0 4a1 1 0 0 1 1 1v3a1 1 0 0 1-2 0V7a1 1 0 0 1 1-1zm0 7a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg>N° de remise obligatoire</span></div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TPE 4 -->
+        <div class="tpe-group" id="ant-anchor-4">
+          <div class="tpe-label">TPE N°4</div>
+          <div class="ant-row-layout">
+            <div class="ant-main-wrap">
+              <div class="t-head g-ant-main"><span>Date</span><span>Mode de paiement</span><span>Emplacement</span><span>Montant</span><span>N° Remise</span></div>
+              <div class="t-row g-ant-main"><span class="c-ro">04/05/2026</span><span class="c-mdp">Visa</span><span class="c-loc">434 – Poste N°2 Restaurant</span><span class="c-ro">80,00 €</span><span class="c-ro">652356233659</span></div>
+              <div class="t-row g-ant-main"><span class="c-ro">04/05/2026</span><span class="c-mdp">Amex</span><span class="c-loc">434 – Poste N°2 Restaurant</span><span class="c-ro">15,00 €</span><span class="c-ro">652356233659</span></div>
+            </div>
+            <div class="ant-regul-wrap">
+              <div class="t-head g-ant-regul" style="text-align:center;line-height:1.3;"><span>Régularisation<br>montant</span><span>Régularisation<br>n° remise</span></div>
+              <div class="regul-row"><input class="inp-regul" type="text" placeholder="0,00 €"/><div class="iw"><input class="inp-regul" type="text" placeholder=""/><span class="field-error-msg remise-err"><svg viewBox="0 0 20 20" fill="#BF2F17"><path d="M10 2a8 8 0 1 0 0 16A8 8 0 0 0 10 2zm0 4a1 1 0 0 1 1 1v3a1 1 0 0 1-2 0V7a1 1 0 0 1 1-1zm0 7a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg>N° de remise obligatoire</span></div></div>
+              <div class="regul-row"><input class="inp-regul" type="text" placeholder="0,00 €"/><div class="iw"><input class="inp-regul" type="text" placeholder=""/><span class="field-error-msg remise-err"><svg viewBox="0 0 20 20" fill="#BF2F17"><path d="M10 2a8 8 0 1 0 0 16A8 8 0 0 0 10 2zm0 4a1 1 0 0 1 1 1v3a1 1 0 0 1-2 0V7a1 1 0 0 1 1-1zm0 7a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg>N° de remise obligatoire</span></div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TPE 5 -->
+        <div class="tpe-group" id="ant-anchor-5">
+          <div class="tpe-label">TPE N°5</div>
+          <div class="ant-row-layout">
+            <div class="ant-main-wrap">
+              <div class="t-head g-ant-main"><span>Date</span><span>Mode de paiement</span><span>Emplacement</span><span>Montant</span><span>N° Remise</span></div>
+              <div class="t-row g-ant-main"><span class="c-ro">04/05/2026</span><span class="c-mdp">Visa</span><span class="c-loc">434 – Poste N°1 Boutique</span><span class="c-ro">40,00 €</span><span class="c-ro">652356233659</span></div>
+              <div class="t-row g-ant-main"><span class="c-ro">04/05/2026</span><span class="c-mdp">Amex</span><span class="c-loc">434 – Poste N°1 Boutique</span><span class="c-ro">20,00 €</span><span class="c-ro">652356233659</span></div>
+            </div>
+            <div class="ant-regul-wrap">
+              <div class="t-head g-ant-regul" style="text-align:center;line-height:1.3;"><span>Régularisation<br>montant</span><span>Régularisation<br>n° remise</span></div>
+              <div class="regul-row"><input class="inp-regul" type="text" placeholder="0,00 €"/><div class="iw"><input class="inp-regul" type="text" placeholder=""/><span class="field-error-msg remise-err"><svg viewBox="0 0 20 20" fill="#BF2F17"><path d="M10 2a8 8 0 1 0 0 16A8 8 0 0 0 10 2zm0 4a1 1 0 0 1 1 1v3a1 1 0 0 1-2 0V7a1 1 0 0 1 1-1zm0 7a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg>N° de remise obligatoire</span></div></div>
+              <div class="regul-row"><input class="inp-regul" type="text" placeholder="0,00 €"/><div class="iw"><input class="inp-regul" type="text" placeholder=""/><span class="field-error-msg remise-err"><svg viewBox="0 0 20 20" fill="#BF2F17"><path d="M10 2a8 8 0 1 0 0 16A8 8 0 0 0 10 2zm0 4a1 1 0 0 1 1 1v3a1 1 0 0 1-2 0V7a1 1 0 0 1 1-1zm0 7a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg>N° de remise obligatoire</span></div></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Vue Régularisation -->
+      <div id="view-reg" style="display:none;">
+
+        <div class="s-title">Régularisation de la télécollecte</div>
+
+        <!-- Bloc date — même composant DS -->
+        <div class="bloc-date">
+          <span class="date-label">Please enter an accounting date to proceed with the telecollection</span>
+          <div class="tf-field">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="4" width="18" height="18" rx="2"/>
+              <path d="M16 2v4M8 2v4M3 10h18"/>
+            </svg>
+            <input type="text" value="2026 / 05 / 04" placeholder="YYYY / MM / DD" size="14" />
+          </div>
+        </div>
+
+        <!-- Formulaire régularisation -->
+        <div class="reg-form">
+
+          <!-- Total écart -->
+          <div class="reg-row reg-total-row">
+            <div class="reg-label-cell">
+              <span class="reg-label-main">Total écart</span>
+              <span class="reg-label-sub">Montant total à régulariser</span>
+            </div>
+            <div class="reg-field-cell">
+              <div class="iw">
+                <span class="eur">€</span>
+                <input class="inp reg-ecart-inp" id="reg-ecart" type="text" value="1 000,00" readonly />
+              </div>
+              <span class="reg-hint" id="reg-hint"></span>
+            </div>
+          </div>
+
+          <div class="reg-divider"></div>
+
+          <!-- Régul par mode de paiement -->
+          <div class="reg-row">
+            <div class="reg-label-cell">
+              <span class="reg-label-main">Régul. Visa</span>
+            </div>
+            <div class="reg-field-cell">
+              <div class="iw">
+                <span class="eur">€</span>
+                <input class="inp reg-mdp-inp" type="text" placeholder="0,00" data-mdp="Visa" />
+              </div>
+            </div>
+          </div>
+
+          <div class="reg-row">
+            <div class="reg-label-cell">
+              <span class="reg-label-main">Régul. Amex</span>
+            </div>
+            <div class="reg-field-cell">
+              <div class="iw">
+                <span class="eur">€</span>
+                <input class="inp reg-mdp-inp" type="text" placeholder="0,00" data-mdp="Amex" />
+              </div>
+            </div>
+          </div>
+
+          <div class="reg-row">
+            <div class="reg-label-cell">
+              <span class="reg-label-main">Régul. WeChat</span>
+            </div>
+            <div class="reg-field-cell">
+              <div class="iw">
+                <span class="eur">€</span>
+                <input class="inp reg-mdp-inp" type="text" placeholder="0,00" data-mdp="WeChat" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Total saisi (calculé en temps réel) -->
+          <div class="reg-divider"></div>
+          <div class="reg-row reg-sum-row">
+            <div class="reg-label-cell">
+              <span class="reg-label-main">Total saisi</span>
+            </div>
+            <div class="reg-field-cell">
+              <div class="iw">
+                <span class="eur">€</span>
+                <input class="inp" id="reg-sum-display" type="text" value="0,00" readonly />
+              </div>
+            </div>
+          </div>
+
+        </div><!-- /reg-form -->
+
+        <!-- Bouton Valider régularisation -->
+        <div class="reg-footer">
+          <button class="btn-validate-inline" id="btnv-reg" disabled>Valider la régularisation</button>
+        </div>
+
+      </div>
+
+    </div><!-- /content -->
+
+    <footer class="footer">
+      <button class="btn-c">Annuler</button>
+      <button class="btn-v" id="btnv">Valider la saisie</button>
+    </footer>
+  </main>
+</div>
+
+<!-- Panel wireframe -->
+<div class="wf-panel" id="wf-panel">
+
+  <div class="panel-title" style="display:flex;align-items:center;justify-content:space-between;">
+    Options
+    <button onclick="togglePanel()" style="background:none;border:none;cursor:pointer;font-size:16px;color:var(--grey-txt);line-height:1;" title="Réduire">−</button>
+  </div>
+
+  <div class="panel-body">
+
+  <!-- Interfacé -->
+  <div class="switch-row">
+    <span>Interfacé</span>
+    <label class="switch">
+      <input type="checkbox" id="sw-iface" onchange="setV(this.checked)">
+      <span class="track"></span>
+    </label>
+  </div>
+
+  <!-- Caisses ouvertes -->
+  <div class="switch-row">
+    <span>Caisses ouvertes</span>
+    <label class="switch">
+      <input type="checkbox" id="sw-caisse" onchange="setB(this.checked)">
+      <span class="track"></span>
+    </label>
+  </div>
+
+  <hr>
+
+  <!-- Sélecteur de version -->
+  <div class="panel-title">Version</div>
+  <select class="version-select" id="version-select" onchange="loadVersion(this.value)">
+    <option value="wireframe-telecollecte-cas1-V1.html">V1 — Saisie Jour J</option>
+    <option value="wireframe-telecollecte-cas1-V2.html">V2 — Tabs TPE</option>
+    <option value="wireframe-telecollecte-cas1-V3.html" selected>V3 — En cours</option>
+  </select>
+
+  <hr>
+
+  <!-- Commentaires -->
+  <div class="panel-title">Commentaires</div>
+
+  <!-- Mode avec/sans pins — switch -->
+  <div class="switch-row">
+    <span>Afficher les pins</span>
+    <label class="switch">
+      <input type="checkbox" id="sw-comments" onchange="setCmtMode(this.checked)">
+      <span class="track"></span>
+    </label>
+  </div>
+
+  <!-- Filtre auteur -->
+  <select class="author-filter" id="author-filter" onchange="renderComments()">
+    <option value="">Tous les auteurs</option>
+  </select>
+
+  </div><!-- /panel-body -->
+</div>
+
+<!-- Popover nouveau commentaire -->
+<div class="comment-popover" id="comment-popover">
+  <div class="cp-header">
+    <span>Nouveau commentaire</span>
+    <select class="cp-author-select" id="cp-author">
+      <option>Sébastien</option>
+      <option>Julie</option>
+      <option>Nelly</option>
+      <option>Éric</option>
+    </select>
+  </div>
+  <textarea id="cp-text" placeholder="Écrire un commentaire..."></textarea>
+  <div class="cp-actions">
+    <button class="cp-cancel" onclick="closePopover()">Annuler</button>
+    <button class="cp-save" onclick="saveComment()">Enregistrer</button>
+  </div>
+</div>
+
+<!-- Thread popover (lecture + réponse) -->
+<div class="comment-popover" id="thread-popover" style="width:320px;">
+  <div class="cp-header" style="justify-content:space-between;">
+    <span>Commentaire</span>
+    <button onclick="closeThread()" style="background:none;border:none;cursor:pointer;font-size:18px;color:var(--grey-txt);line-height:1;">×</button>
+  </div>
+  <!-- Messages du thread -->
+  <div id="thread-messages" style="display:flex;flex-direction:column;gap:8px;max-height:200px;overflow-y:auto;margin-bottom:10px;"></div>
+  <!-- Zone réponse -->
+  <div style="border-top:1px solid var(--grey-bd);padding-top:10px;">
+    <select class="cp-author-select" id="reply-author" style="width:100%;margin-bottom:6px;">
+      <option>Sébastien</option>
+      <option>Julie</option>
+      <option>Nelly</option>
+      <option>Éric</option>
+    </select>
+    <textarea id="reply-text" placeholder="Répondre..." style="width:100%;height:60px;border:1px solid var(--grey-bd);border-radius:8px;padding:8px;font-size:13px;font-family:inherit;resize:none;outline:none;"></textarea>
+    <div class="cp-actions">
+      <button class="cp-cancel" onclick="deleteThreadComment()" style="color:var(--red);border-color:var(--red);">Supprimer</button>
+      <button class="cp-cancel" onclick="closeThread()">Fermer</button>
+      <button class="cp-save" onclick="saveReply()">Répondre</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  function toggleSidebar() {
+    const sb  = document.getElementById('sidebar');
+    const btn = document.getElementById('toggle-btn');
+    const closing = !sb.classList.contains('closed');
+    sb.classList.toggle('closed', closing);
+    btn.classList.toggle('closed', closing);
+  }
+  function goTo(id) {
+    currentTab = id;
+    ['tpe','ant','reg'].forEach(k => {
+      document.getElementById('tab-'+k).className = k === id ? 'tab active' : 'tab';
+    });
+    document.getElementById('sub-tpe').className = id === 'tpe' ? 'sub-item active' : 'sub-item';
+    document.getElementById('mc').style.display       = id === 'tpe' ? 'block' : 'none';
+    document.getElementById('view-ant').style.display = id === 'ant' ? 'block' : 'none';
+    document.getElementById('view-reg').style.display = id === 'reg' ? 'block' : 'none';
+    document.querySelector('.footer').style.display = id === 'tpe' ? 'flex' : 'none';
+    const antBar = document.getElementById('tpe-tabs-bar-ant');
+    if (antBar) antBar.style.display = id === 'ant' ? 'flex' : 'none';
+    closeThread();
+    refreshPins();
+  }
+  // Détection sticky : fond blanc uniquement quand la barre est collée
+  const tpeBar = document.getElementById('tpe-tabs-bar');
+  // Sentinelle invisible juste au-dessus de la barre
+  const sentinel = document.createElement('div');
+  sentinel.style.cssText = 'height:1px;margin-bottom:-1px;';
+  tpeBar.parentNode.insertBefore(sentinel, tpeBar);
+
+  const observer = new IntersectionObserver(([entry]) => {
+    tpeBar.classList.toggle('is-stuck', !entry.isIntersecting);
+  }, { root: document.querySelector('.content'), threshold: 0 });
+  observer.observe(sentinel);
+
+  // Observer sticky pour la barre ant
+  const tpeBarAnt = document.getElementById('tpe-tabs-bar-ant');
+  const sentinelAnt = document.createElement('div');
+  sentinelAnt.style.cssText = 'height:1px;margin-bottom:-1px;';
+  tpeBarAnt.parentNode.insertBefore(sentinelAnt, tpeBarAnt);
+  new IntersectionObserver(([entry]) => {
+    tpeBarAnt.classList.toggle('is-stuck', !entry.isIntersecting);
+  }, { root: document.querySelector('.content'), threshold: 0 }).observe(sentinelAnt);
+
+  function scrollToAntTpe(n, el) {
+    document.querySelectorAll('#tpe-tabs-bar-ant .tpe-tab').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+    const anchor = document.getElementById('ant-anchor-' + n);
+    if (anchor) anchor.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function scrollToTpe(n, el) {
+    document.querySelectorAll('.tpe-tab').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+    const anchor = document.getElementById('tpe-anchor-' + n);
+    if (anchor) anchor.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function setV(checked) {
+    const i = checked;
+    const gc = i ? 'gi' : 'gm';
+    const hh = i
+      ? '<span>Mode de paiement</span><span>Emplacement</span><span>Montant calculé</span><span>Montant corrigé</span><span>N° Remise</span>'
+      : '<span>Mode de paiement</span><span>Emplacement</span><span>Montant</span><span>N° Remise</span>';
+    ['1','2'].forEach(n => {
+      const h = document.getElementById('h'+n);
+      h.className = 't-head ' + gc; h.innerHTML = hh;
+      document.getElementById('rm'+n).style.display = i ? 'none' : 'block';
+      document.getElementById('ri'+n).style.display = i ? 'block' : 'none';
+    });
+    ['3','4','5'].forEach(n => {
+      const h = document.querySelector('#tpe-anchor-' + n + ' .t-head');
+      if (h) { h.className = 't-head ' + gc; h.innerHTML = hh; }
+    });
+  }
+  function setB(checked) {
+    const ko = checked;
+    document.getElementById('alert').classList.toggle('on', ko);
+    document.getElementById('mc').style.cssText = ko ? 'opacity:.3;pointer-events:none' : '';
+    document.getElementById('btnv').className = ko ? 'btn-v off' : 'btn-v';
+    document.getElementById('btnv-inline').className = ko ? 'btn-validate-inline off' : 'btn-validate-inline';
+  }
+  function loadVersion(file) {
+    window.location.href = file;
+  }
+
+  function togglePanel() {
+    const panel = document.getElementById('wf-panel');
+    const btn = panel.querySelector('button[onclick="togglePanel()"]');
+    const collapsed = panel.classList.toggle('collapsed');
+    btn.textContent = collapsed ? '+' : '−';
+    btn.title = collapsed ? 'Afficher' : 'Réduire';
+  }
+
+  // ══ Système de commentaires ══════════════════════════════════
+  const STORAGE_KEY = 'wf_comments_telecollecte';
+  let comments = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+  let commentMode = false;
+  let pendingPin = null;
+  let currentTab = 'tpe'; // tab active au moment du commentaire
+  const AUTHOR_COLORS = {
+    'Sébastien': '#1E2643',
+    'Julie':     '#7C3AED',
+    'Nelly':     '#059669',
+    'Éric':      '#DC2626',
+  };
+
+  function getColor(author) {
+    return '#D93025'; // toujours rouge
+  }
+
+  function setCmtMode(on) {
+    commentMode = on;
+    document.getElementById('sw-comments').checked = on;
+    document.body.style.cursor = on ? 'crosshair' : '';
+    refreshPins();
+  }
+
+  function refreshPins() {
+    // Supprimer tous les pins du DOM et recréer uniquement ceux du tab actif
+    document.querySelectorAll('.comment-pin').forEach(p => p.remove());
+    comments
+      .filter(c => (c.tab || 'tpe') === currentTab)
+      .forEach(c => renderPin(c));
+  }
+
+  // Clic sur le layout principal pour poser un pin
+  document.querySelector('.layout').addEventListener('click', function(e) {
+    if (!commentMode) return;
+    if (e.target.closest('.wf-panel, .comment-popover, .comment-pin, button, input, textarea, select')) return;
+    // Coordonnées relatives au container .content (inclut le scroll)
+    const content = document.querySelector('.content');
+    const contentRect = content.getBoundingClientRect();
+    pendingPin = {
+      x: (e.clientX - contentRect.left + content.scrollLeft).toFixed(0),
+      y: (e.clientY - contentRect.top  + content.scrollTop).toFixed(0)
+    };
+    const pop = document.getElementById('comment-popover');
+    pop.style.left = Math.min(e.clientX + 12, window.innerWidth - 300) + 'px';
+    pop.style.top  = Math.min(e.clientY + 12, window.innerHeight - 200) + 'px';
+    pop.classList.add('visible');
+    document.getElementById('cp-text').value = '';
+    document.getElementById('cp-text').focus();
+  });
+
+  function closePopover() {
+    document.getElementById('comment-popover').classList.remove('visible');
+    pendingPin = null;
+  }
+
+  function saveComment() {
+    const text = document.getElementById('cp-text').value.trim();
+    if (!text || !pendingPin) return;
+    const author = document.getElementById('cp-author').value;
+    const comment = {
+      id: Date.now(),
+      x: pendingPin.x,
+      y: pendingPin.y,
+      author,
+      text,
+      date: new Date().toLocaleDateString('fr-FR'),
+      tab: currentTab
+    };
+    comments.push(comment);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(comments));
+    closePopover();
+    renderPin(comment);
+    renderComments();
+    updateAuthorFilter();
+  }
+
+  function renderPin(c) {
+    const content = document.querySelector('.content');
+    const pin = document.createElement('div');
+    pin.className = 'comment-pin';
+    pin.id = 'pin-' + c.id;
+    pin.style.left = c.x + 'px';
+    pin.style.top  = c.y + 'px';
+    pin.style.background = '#D93025';
+    pin.style.display = commentMode ? 'flex' : 'none';
+    pin.innerHTML = `<span style="color:white">${comments.findIndex(cc=>cc.id===c.id) + 1}</span>`;
+    pin.title = `${c.author} : ${c.text}`;
+
+    // ── Drag relatif au .content ──
+    let dragging = false, startX, startY, origLeft, origTop;
+    pin.addEventListener('mousedown', e => {
+      e.stopPropagation();
+      dragging = true;
+      startX = e.clientX; startY = e.clientY;
+      origLeft = parseFloat(pin.style.left);
+      origTop  = parseFloat(pin.style.top);
+      document.body.style.cursor = 'grabbing';
+    });
+    document.addEventListener('mousemove', e => {
+      if (!dragging) return;
+      pin.style.left = (origLeft + e.clientX - startX) + 'px';
+      pin.style.top  = (origTop  + e.clientY - startY) + 'px';
+    });
+    document.addEventListener('mouseup', () => {
+      if (!dragging) return;
+      dragging = false;
+      document.body.style.cursor = commentMode ? 'crosshair' : '';
+      const idx = comments.findIndex(cc => cc.id === c.id);
+      if (idx !== -1) {
+        comments[idx].x = parseFloat(pin.style.left).toFixed(0);
+        comments[idx].y = parseFloat(pin.style.top).toFixed(0);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(comments));
+      }
+    });
+
+    pin.addEventListener('click', e => {
+      e.stopPropagation();
+      if (!dragging) openThread(c.id, pin);
+    });
+
+    content.appendChild(pin);
+  }
+
+  function highlightComment(id) {
+    document.querySelectorAll('.comment-item').forEach(el => {
+      el.style.borderColor = el.dataset.id == id ? 'var(--navy)' : 'transparent';
+    });
+    const el = document.querySelector(`.comment-item[data-id="${id}"]`);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  function renderComments() {
+    // Mettre à jour le filtre auteur uniquement
+    updateAuthorFilter();
+  }
+
+  // ── Thread (lecture + réponse) ──
+  let currentThreadId = null;
+
+  function openThread(id, pin) {
+    currentThreadId = id;
+    const c = comments.find(cc => cc.id === id);
+    if (!c) return;
+
+    // Initialiser replies si besoin
+    if (!c.replies) c.replies = [];
+
+    // Positionner le popover près du pin
+    const pinRect = pin.getBoundingClientRect();
+    const pop = document.getElementById('thread-popover');
+    pop.style.left = Math.min(pinRect.right + 12, window.innerWidth - 340) + 'px';
+    pop.style.top  = Math.max(pinRect.top - 20, 80) + 'px';
+
+    // Pas de titre dynamique, le header affiche juste "Commentaire"
+    renderThreadMessages(c);
+    pop.classList.add('visible');
+    document.getElementById('reply-text').value = '';
+  }
+
+  function renderThreadMessages(c) {
+    const container = document.getElementById('thread-messages');
+    const all = [{ author: c.author, text: c.text, date: c.date }, ...(c.replies || [])];
+    container.innerHTML = all.map((m, i) => `
+      <div class="thread-msg">
+        <div class="tm-author" style="color:${getColor(m.author)}">${m.author}${i === 0 ? ' <span style="color:var(--grey-txt);font-weight:400;">(auteur)</span>' : ''}</div>
+        <div class="tm-text">${m.text}</div>
+        <div class="tm-date">${m.date}</div>
+      </div>
+    `).join('');
+    container.scrollTop = container.scrollHeight;
+  }
+
+  function saveReply() {
+    const text = document.getElementById('reply-text').value.trim();
+    if (!text) return;
+    const author = document.getElementById('reply-author').value;
+    const c = comments.find(cc => cc.id === currentThreadId);
+    if (!c) return;
+    if (!c.replies) c.replies = [];
+    c.replies.push({ author, text, date: new Date().toLocaleDateString('fr-FR') });
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(comments));
+    renderThreadMessages(c);
+    document.getElementById('reply-text').value = '';
+    // Mettre une pastille sur le pin pour indiquer les réponses
+    const pin = document.getElementById('pin-' + c.id);
+    if (pin) pin.title = `${c.author} + ${c.replies.length} réponse(s)`;
+  }
+
+  function closeThread() {
+    document.getElementById('thread-popover').classList.remove('visible');
+    currentThreadId = null;
+  }
+
+  function deleteThreadComment() {
+    if (!currentThreadId) return;
+    closeThread();
+    // Réutiliser deleteComment
+    comments = comments.filter(c => c.id !== currentThreadId);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(comments));
+    const pin = document.getElementById('pin-' + currentThreadId);
+    if (pin) pin.remove();
+    currentThreadId = null;
+    updateAuthorFilter();
+    document.querySelectorAll('.comment-pin').forEach(p => p.remove());
+    comments.forEach(c => renderPin(c));
+  }
+
+  function deleteComment(e, id) {
+    e.stopPropagation();
+    comments = comments.filter(c => c.id !== id);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(comments));
+    const pin = document.getElementById('pin-' + id);
+    if (pin) pin.remove();
+    renderComments();
+    updateAuthorFilter();
+    // Renuméroter les pins
+    document.querySelectorAll('.comment-pin').forEach(p => p.remove());
+    comments.forEach(c => renderPin(c));
+  }
+
+  function updateAuthorFilter() {
+    const sel = document.getElementById('author-filter');
+    const current = sel.value;
+    const authors = [...new Set(comments.map(c => c.author))];
+    sel.innerHTML = '<option value="">Tous les auteurs</option>' +
+      authors.map(a => `<option value="${a}" ${a === current ? 'selected' : ''}>${a} (${comments.filter(c=>c.author===a).length})</option>`).join('');
+  }
+
+  // Charger les commentaires du tab actif au démarrage
+  refreshPins();
+  renderComments();
+  updateAuthorFilter();
+
+  // Fermer popover si clic ailleurs
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closePopover(); });
+
+  // ── Validation montant / remise ──────────────────────────────
+  // Règle : bouton actif par défaut
+  //         si montant rempli sans remise → champ remise rouge + bouton disabled
+  //         si remise remplie → rouge effacé, bouton réactif
+  //         si montant effacé → reset remise, bouton réactif
+
+  function checkAll() {
+    // ── Télécollecte — uniquement les rows visibles ──
+    let tpeOk = true;
+    document.querySelectorAll('#mc .t-row').forEach(row => {
+      // Ignorer les rows dans un conteneur masqué (variante interfacée cachée)
+      if (row.closest('[style*="display:none"], [style*="display: none"]')) return;
+      const inputs = row.querySelectorAll('input');
+      if (inputs.length < 2) return;
+      if (inputs[0].value.trim() !== '' && inputs[1].value.trim() === '') {
+        inputs[1].classList.add('field-error');
+        tpeOk = false;
+      } else {
+        inputs[1].classList.remove('field-error');
+      }
+    });
+    const btnTpe = document.getElementById('btnv-inline');
+    if (tpeOk) { btnTpe.classList.add('active-btn');    btnTpe.removeAttribute('disabled'); }
+    else        { btnTpe.classList.remove('active-btn'); btnTpe.setAttribute('disabled',''); }
+
+    // ── Date antérieure ──
+    let antOk = true;
+    document.querySelectorAll('#view-ant .regul-row').forEach(row => {
+      const inputs = row.querySelectorAll('input');
+      if (inputs.length < 2) return;
+      if (inputs[0].value.trim() !== '' && inputs[1].value.trim() === '') {
+        inputs[1].classList.add('field-error');
+        antOk = false;
+      } else {
+        inputs[1].classList.remove('field-error');
+      }
+    });
+    const btnAnt = document.getElementById('btnv-ant');
+    if (btnAnt) {
+      if (antOk) { btnAnt.classList.add('active-btn');    btnAnt.removeAttribute('disabled'); }
+      else       { btnAnt.classList.remove('active-btn'); btnAnt.setAttribute('disabled',''); }
+    }
+  }
+
+  document.querySelector('.content').addEventListener('input', function(e) {
+    if (e.target.tagName === 'INPUT') {
+      checkAll();
+      checkReg();
+    }
+  });
+
+  function parseNum(str) {
+    return parseFloat(str.replace(/\s/g,'').replace(',','.')) || 0;
+  }
+
+  function checkReg() {
+    const ecart = parseNum(document.getElementById('reg-ecart')?.value || '0');
+    const mdpInputs = document.querySelectorAll('.reg-mdp-inp');
+    let sum = 0;
+    mdpInputs.forEach(i => { sum += parseNum(i.value); });
+
+    // Afficher total saisi
+    const sumDisplay = document.getElementById('reg-sum-display');
+    if (sumDisplay) sumDisplay.value = sum.toFixed(2).replace('.', ',');
+
+    const ecartInp = document.getElementById('reg-ecart');
+    const hint = document.getElementById('reg-hint');
+    const btn = document.getElementById('btnv-reg');
+    if (!btn) return;
+
+    const diff = Math.abs(sum - ecart);
+    const allEmpty = [...mdpInputs].every(i => i.value.trim() === '');
+
+    if (allEmpty) {
+      // Rien saisi — état neutre
+      ecartInp.classList.remove('ecart-error', 'ecart-ok');
+      hint.textContent = '';
+      hint.className = 'reg-hint';
+      btn.classList.remove('active-btn');
+      btn.setAttribute('disabled', '');
+    } else if (diff < 0.01) {
+      // Total correct
+      ecartInp.classList.remove('ecart-error');
+      ecartInp.classList.add('ecart-ok');
+      hint.textContent = '✓ Le total correspond à l\'écart';
+      hint.className = 'reg-hint ok';
+      btn.classList.add('active-btn');
+      btn.removeAttribute('disabled');
+    } else {
+      // Écart non soldé
+      ecartInp.classList.remove('ecart-ok');
+      ecartInp.classList.add('ecart-error');
+      const restant = (ecart - sum).toFixed(2).replace('.', ',');
+      hint.textContent = `Écart restant : ${restant} €`;
+      hint.className = 'reg-hint err';
+      btn.classList.remove('active-btn');
+      btn.setAttribute('disabled', '');
+    }
+  }
+</script>
+</body>
+</html>
