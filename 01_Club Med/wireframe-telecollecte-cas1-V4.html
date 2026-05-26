@@ -2096,14 +2096,12 @@
     const list = document.getElementById('team-comments-list-panel');
     const count = document.getElementById('team-comments-count');
 
-    // Filtrer uniquement les commentaires de l'équipe (pas Sébastien)
+    // Tous les commentaires (équipe + Sébastien), non requalifiés
     const teamComments = [];
     pins.forEach(p => {
-      // Commentaire principal
-      if (p.author !== 'Sébastien' && !p.requalified) teamComments.push({key:'pin-'+p.id, pinId:p.id, isReply:false, replyIdx:null, author:p.author, text:p.text, date:p.date, tab:p.tab||'tpe', qualifiedType:p.qualifiedType||'', commentType:p.commentType||null, pinLabel:p.pinLabel||null});
-      // Réponses
+      if (!p.requalified) teamComments.push({key:'pin-'+p.id, pinId:p.id, isReply:false, replyIdx:null, author:p.author, text:p.text, date:p.date, tab:p.tab||'tpe', qualifiedType:p.qualifiedType||'', commentType:p.commentType||null, pinLabel:p.pinLabel||null});
       (p.replies||[]).forEach((r, ri) => {
-        if (r.author !== 'Sébastien' && !r.requalified) teamComments.push({key:'pin-'+p.id+'-reply-'+ri, pinId:p.id, isReply:true, replyIdx:ri, author:r.author, text:r.text, date:r.date, tab:p.tab||'tpe', qualifiedType:r.qualifiedType||''});
+        if (!r.requalified) teamComments.push({key:'pin-'+p.id+'-reply-'+ri, pinId:p.id, isReply:true, replyIdx:ri, author:r.author, text:r.text, date:r.date, tab:p.tab||'tpe', qualifiedType:r.qualifiedType||''});
       });
     });
 
@@ -2161,8 +2159,8 @@
   setTimeout(() => {
     const pins = comments.length > 0 ? comments : JSON.parse(localStorage.getItem('wf_comments_telecollecte') || '[]');
     const count = pins.reduce((n, p) => {
-      const main = p.author !== 'Sébastien' && !p.requalified ? 1 : 0;
-      const replies = (p.replies||[]).filter(r => r.author !== 'Sébastien' && !r.requalified).length;
+      const main = !p.requalified ? 1 : 0;
+      const replies = (p.replies||[]).filter(r => !r.requalified).length;
       return n + main + replies;
     }, 0);
     const badge = document.getElementById('team-comments-count');
