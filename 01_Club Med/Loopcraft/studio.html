@@ -1104,6 +1104,28 @@ if (new URLSearchParams(location.search).get('go') === 'dashboard') {
 }
 
 // ═══════════════════════════════════════════════════════
+// POLLING FIREBASE — temps réel (10s)
+// ═══════════════════════════════════════════════════════
+async function pollFirebase() {
+  try {
+    const [r2, r3] = await Promise.all([fetch(FB_URL), fetch(FB_BRIEFS_URL)]);
+    const d2 = await r2.json();
+    const d3 = await r3.json();
+    const newMessages = d2 ? Object.values(d2) : [];
+    const newBriefs   = d3 ? Object.values(d3) : [];
+    const prevPending = fbBriefs.filter(b => !b.done).length;
+    const newPending  = newBriefs.filter(b => !b.done).length;
+    const prevMsgCount = messages.length;
+    messages  = newMessages;
+    fbBriefs  = newBriefs;
+    if (newPending !== prevPending || newMessages.length !== prevMsgCount) {
+      renderDashboard();
+      renderSidebar();
+    }
+  } catch(e) {}
+}
+
+// ═══════════════════════════════════════════════════════
 // INIT
 // ═══════════════════════════════════════════════════════
 async function initApp() {
@@ -1111,6 +1133,7 @@ async function initApp() {
   renderSidebar();
   renderDashboard();
   showView('dashboard');
+  setInterval(pollFirebase, 10000);
 }
 
 // ═══════════════════════════════════════════════════════
