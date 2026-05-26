@@ -640,8 +640,8 @@
   <div class="avatar">JD</div>
 </header>
 
-<!-- Bouton Retour dashboard — local only -->
-<a id="back-dashboard-btn" href="Loopcraft/studio.html?go=dashboard" title="Retour au dashboard"
+<!-- Bouton Retour dashboard -->
+<a id="back-dashboard-btn" href="https://studiojailoop.github.io/telecollecte-odyssey/01_Club%20Med/Loopcraft/studio.html?go=dashboard" title="Retour au dashboard"
   style="display:none;position:fixed;bottom:24px;left:24px;width:48px;height:48px;border-radius:100px;background:var(--white);cursor:pointer;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,0.15);z-index:300;border:1.5px solid var(--grey-bd);text-decoration:none;transition:border-color 0.15s,box-shadow 0.15s;"
   onmouseover="this.style.borderColor='#C8D0E0';this.style.boxShadow='0 4px 14px rgba(0,0,0,0.18)'"
   onmouseout="this.style.borderColor='var(--grey-bd)';this.style.boxShadow='0 2px 8px rgba(0,0,0,0.15)'">
@@ -1298,8 +1298,10 @@
 </div>
 
 <script>
-  // Afficher les boutons locaux uniquement en local
-  if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
+  // Afficher les boutons designer en local OU si ?designer=1 dans l'URL
+  const isDesigner = location.hostname === 'localhost' || location.hostname === '127.0.0.1' ||
+    new URLSearchParams(location.search).get('designer') === '1';
+  if (isDesigner) {
     document.getElementById('briefs-nav-btn').style.display = 'flex';
     document.getElementById('back-dashboard-btn').style.display = 'flex';
   }
@@ -2899,11 +2901,10 @@
     });
   }
 
-  // Masquer le bouton Retours PO uniquement sur GitHub Pages (pas en local)
-  if (location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
+  // Afficher le panneau PO uniquement pour les non-designers
+  if (!isDesigner) {
     const btn = document.getElementById('briefs-nav-btn');
     if (btn) btn.style.display = 'none';
-    // Afficher le bouton "Mes commentaires" pour les POs
     createPoPanel();
   }
 
