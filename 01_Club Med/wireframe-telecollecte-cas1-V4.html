@@ -2305,10 +2305,46 @@
       list.innerHTML = `<div style="text-align:center;color:var(--grey-txt);font-size:13px;padding:32px 0;">Aucun élément dans cet onglet</div>`;
       return;
     }
-    list.innerHTML = filtered.map(b => {
-      const key = String(b.id);
-      const inClaude = claudeSelection.has(key);
-      return `
+
+    // En mode archives : grouper par date avec séparateur
+    if (archivesMode) {
+      const MONTHS_FR = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
+      function formatDateLabel(d) {
+        if (!d) return 'Date inconnue';
+        const parts = d.split('/');
+        if (parts.length === 3) {
+          const day = parseInt(parts[0], 10);
+          const month = parseInt(parts[1], 10) - 1;
+          const year = parts[2];
+          return `${day} ${MONTHS_FR[month]} ${year}`;
+        }
+        return d;
+      }
+      // Grouper par date (ordre chronologique inverse — plus récent en haut)
+      const groups = {};
+      filtered.forEach(b => { const k = b.date || ''; (groups[k] = groups[k] || []).push(b); });
+      const sortedDates = Object.keys(groups).sort((a, b) => {
+        const pa = a.split('/').reverse().join(''), pb = b.split('/').reverse().join('');
+        return pb.localeCompare(pa);
+      });
+      list.innerHTML = sortedDates.map(date => `
+        <div style="display:flex;align-items:center;gap:10px;margin:8px 0 4px;">
+          <span style="font-size:11px;font-weight:700;color:#9CA3AF;text-transform:uppercase;letter-spacing:0.06em;white-space:nowrap;">${formatDateLabel(date)}</span>
+          <div style="flex:1;height:1px;background:#EAECF0;"></div>
+          <span style="font-size:11px;color:#9CA3AF;">${groups[date].length} élément${groups[date].length > 1 ? 's' : ''}</span>
+        </div>
+        ${groups[date].map(b => renderBriefCard(b, color)).join('')}
+      `).join('');
+      return;
+    }
+
+    list.innerHTML = filtered.map(b => renderBriefCard(b, color)).join('');
+  }
+
+  function renderBriefCard(b, color) {
+    const key = String(b.id);
+    const inClaude = claudeSelection.has(key);
+    return `
       <div style="background:var(--white);border:1px solid ${color+'33'};border-left:3px solid ${color};border-radius:10px;padding:12px 14px;">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
           <div style="display:flex;align-items:center;gap:8px;">
@@ -2374,7 +2410,6 @@
           `).join('')}
         </div>
       </div>`;
-    }).join('');
   }
 
   // Soumettre avec Cmd+Enter
