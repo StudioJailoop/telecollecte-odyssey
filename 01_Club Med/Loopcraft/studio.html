@@ -1453,7 +1453,9 @@ function openSubproject(pid, spid) {
     el.classList.toggle('active', el.dataset.spid === spid);
   });
 
-  window.open(sp.wireframe, '_blank');
+  const url = new URL(sp.wireframe, location.href);
+  url.searchParams.set('designer', '1');
+  window.open(url.toString(), '_blank');
 }
 
 // ═══════════════════════════════════════════════════════
