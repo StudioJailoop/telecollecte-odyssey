@@ -1864,6 +1864,8 @@
     localStorage.setItem(STORAGE_KEY, JSON.stringify(comments)); fbSave();
     saveBriefs();
     loadTeamComments();
+    // Basculer sur l'onglet cible pour que le brief soit visible
+    setBriefTab(newType);
     renderBriefs();
     updateAllCounts();
   }
