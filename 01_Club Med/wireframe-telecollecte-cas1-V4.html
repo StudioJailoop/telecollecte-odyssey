@@ -2685,6 +2685,27 @@
     };
     comments.push(comment);
     localStorage.setItem(STORAGE_KEY, JSON.stringify(comments)); fbSave();
+
+    // Si designer : créer aussi un brief immédiatement dans la bonne catégorie
+    if (isDesigner) {
+      const TYPE_MAP = {retour:'retour', idee:'idee', rg:'rg', question:'question'};
+      const briefType = TYPE_MAP[chosenType] || 'retour';
+      const newBrief = {
+        id: comment.id,
+        author: comment.author,
+        text: comment.text,
+        type: briefType,
+        date: comment.date,
+        time: '',
+        done: false,
+        pinLabel: comment.pinLabel,
+        sourcePin: comment.id,
+        tab: comment.tab
+      };
+      briefs.push(newBrief);
+      saveBriefs();
+    }
+
     closePopover();
     renderComments();
     updateAuthorFilter();
