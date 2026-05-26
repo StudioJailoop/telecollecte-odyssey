@@ -1342,17 +1342,28 @@
     }
   })();
 
-  // Fonction centrale de sauvegarde — toujours passer par ici
+  // Sauvegarde locale + sync Firebase atomique par brief
   function saveBriefs() {
     const json = JSON.stringify(briefs);
     localStorage.setItem(BRIEFS_KEY, json);
     if (briefs.length > 0) localStorage.setItem(BRIEFS_BACKUP_KEY, json);
-    // Sync Firebase pour dashboard en ligne
-    const fbObj = {};
-    briefs.forEach((b, i) => { fbObj['b' + (b.id || i)] = b; });
-    fetch('https://studio-jailoop-default-rtdb.firebaseio.com/briefs_telecollecte.json', {
+  }
+
+  // Écriture atomique d'un seul brief dans Firebase — n'écrase jamais les autres
+  function fbSaveBriefOne(b) {
+    const key = 'b' + (b.id || Date.now());
+    fetch('https://studio-jailoop-default-rtdb.firebaseio.com/briefs_telecollecte/' + key + '.json', {
       method: 'PUT', headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify(fbObj)
+      body: JSON.stringify(b)
+    }).catch(() => {});
+  }
+
+  // Mise à jour d'un brief existant (ex: done, type, text)
+  function fbUpdateBrief(b) {
+    const key = 'b' + (b.id || '');
+    fetch('https://studio-jailoop-default-rtdb.firebaseio.com/briefs_telecollecte/' + key + '.json', {
+      method: 'PUT', headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(b)
     }).catch(() => {});
   }
 
@@ -1456,7 +1467,7 @@
     const b = briefs.find(b => b.id === id);
     if (!b) return;
     b.text = newText;
-    saveBriefs();
+    saveBriefs(); fbUpdateBrief(b);
     // Mise à jour directe sans tout re-render (évite le flicker)
     document.getElementById('brief-text-' + id).textContent = newText;
     document.getElementById('brief-text-' + id).style.display = 'block';
@@ -1545,8 +1556,9 @@
     const existing = briefs.find(b => b.sourcePin === currentThreadId);
     if (existing) {
       existing.type = type;
+      saveBriefs(); fbUpdateBrief(existing);
     } else {
-      briefs.unshift({
+      const nb = {
         id: Date.now(),
         author: c.author,
         type,
@@ -1556,9 +1568,10 @@
         done: false,
         pinLabel: c.pinLabel,
         sourcePin: currentThreadId
-      });
+      };
+      briefs.unshift(nb);
+      saveBriefs(); fbSaveBriefOne(nb);
     }
-    saveBriefs();
     updateAllCounts();
     renderThreadCatButtons(currentThreadId);
     // Feedback visuel
@@ -1614,7 +1627,7 @@
     if (!b) return;
     delete b.deletedAt; b.done = false;
     briefs.unshift(b);
-    saveBriefs();
+    saveBriefs(); fbSaveBriefOne(b);
     localStorage.setItem(TRASH_KEY, JSON.stringify(trash));
     renderTrash(); renderBriefs(); updateAllCounts(); updateTrashCount();
   }
@@ -1635,7 +1648,7 @@
     const b = briefs.find(b => b.id === id);
     if (!b) return;
     b.type = newType;
-    saveBriefs();
+    saveBriefs(); fbUpdateBrief(b);
     // Fermer la zone reclassification
     const el = document.getElementById('reclassify-brief-' + id);
     if (el) el.style.display = 'none';
@@ -1649,7 +1662,7 @@
     if (!b) return;
     b.done = false;
     setCommentArchived(b.sourcePin, false);
-    saveBriefs();
+    saveBriefs(); fbUpdateBrief(b);
     updateArchivesCount();
     renderBriefs();
     refreshPins();
@@ -1691,7 +1704,7 @@
               const d = await r.json();
               clearInterval(poll);
               brief.journalText = d.text;
-              saveBriefs();
+              saveBriefs(); fbUpdateBrief(brief);
               // Mettre à jour l'affichage
               const el = document.getElementById('journal-text-' + brief.id);
               if (el) el.textContent = d.text;
@@ -1796,7 +1809,7 @@
     if (!b) return;
     // Remettre en actif
     b.done = false;
-    saveBriefs();
+    saveBriefs(); fbUpdateBrief(b);
     // Désactiver le mode archives
     const sw = document.getElementById('sw-archives');
     if (sw && sw.checked) {
@@ -1862,7 +1875,9 @@
       pin.requalified = true;
     }
     localStorage.setItem(STORAGE_KEY, JSON.stringify(comments)); fbSave();
-    saveBriefs();
+    // Enregistrer le brief créé de façon atomique
+    const newBrief = briefs.find(b => b.sourceKey === key);
+    if (newBrief) { saveBriefs(); fbSaveBriefOne(newBrief); } else { saveBriefs(); }
     loadTeamComments();
     // Basculer sur l'onglet cible pour que le brief soit visible
     setBriefTab(newType);
@@ -2060,7 +2075,7 @@
       done: false
     };
     briefs.unshift(brief);
-    saveBriefs();
+    saveBriefs(); fbSaveBriefOne(brief);
     document.getElementById('brief-text').value = '';
     renderBriefs();
   }
@@ -2074,8 +2089,10 @@
       localStorage.setItem(TRASH_KEY, JSON.stringify(trash));
       updateTrashCount();
     }
+    const deletedId = id;
     briefs = briefs.filter(b => b.id !== id);
     saveBriefs();
+    fetch('https://studio-jailoop-default-rtdb.firebaseio.com/briefs_telecollecte/b' + deletedId + '.json', { method: 'DELETE' }).catch(() => {});
     renderBriefs();
     updateAllCounts();
   }
@@ -2184,7 +2201,7 @@
     if (!b) return;
     b.done = !b.done;
     setCommentArchived(b.sourcePin, b.done);
-    saveBriefs();
+    saveBriefs(); fbUpdateBrief(b);
     renderBriefs();
     refreshPins();
     updateArchivesCount();
@@ -2210,8 +2227,10 @@
     toDelete.forEach(b => trash.unshift({ ...b, deletedAt: now }));
     localStorage.setItem(TRASH_KEY, JSON.stringify(trash));
     // Supprimer uniquement ceux de l'onglet actif
+    const toDeleteIds = toDelete.map(b => b.id);
     briefs = briefs.filter(b => !(b.type === currentBriefTab && (archivesMode ? b.done : !b.done)));
     saveBriefs();
+    toDeleteIds.forEach(id => fetch('https://studio-jailoop-default-rtdb.firebaseio.com/briefs_telecollecte/b' + id + '.json', { method: 'DELETE' }).catch(() => {}));
     renderBriefs();
     updateAllCounts();
   }
@@ -2266,7 +2285,7 @@
         // Marquer UNIQUEMENT les briefs sélectionnés pour Claude comme traités
         claudeSelection.forEach(key => {
           const b = briefs.find(b => String(b.id) === String(key));
-          if (b) { b.done = true; setCommentArchived(b.sourcePin, true); }
+          if (b) { b.done = true; setCommentArchived(b.sourcePin, true); fbUpdateBrief(b); }
         });
         saveBriefs();
         claudeSelection.clear();
