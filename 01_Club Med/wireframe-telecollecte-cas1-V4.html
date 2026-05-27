@@ -890,6 +890,33 @@
             <span class="date-label">Please proceed with the telecollection of <strong>2026 / 05 / 05</strong></span>
             <button class="btn-date-cta" id="btnv">Valider la saisie</button>
           </div>
+          <!-- ── Proposition Abis — tout sur une ligne (caché par défaut) ── -->
+          <div id="proposal-abis" style="display:none; margin-top:0; padding-top:0; border-top:none;">
+            <!-- Ligne unique : date + KPI + bouton -->
+            <div style="display:flex; align-items:center; gap:0; width:100%;">
+              <span class="date-label" style="flex-shrink:0;">Please proceed with the telecollection of <strong>2026 / 05 / 05</strong></span>
+              <div style="display:flex; align-items:center; gap:0; margin-left:auto; flex-shrink:0;">
+                <div style="display:flex; align-items:center; gap:28px; padding:0 32px; border-right:1px solid var(--grey-bd);">
+                  <div style="display:flex;flex-direction:column;gap:2px;align-items:center;">
+                    <span style="font-size:11px;font-weight:600;color:var(--grey-txt);text-transform:uppercase;letter-spacing:.05em;">Attendu</span>
+                    <span style="font-size:15px;font-weight:700;color:var(--navy);">1 250,00 €</span>
+                  </div>
+                  <div style="width:1px;height:28px;background:var(--grey-bd);flex-shrink:0;"></div>
+                  <div style="display:flex;flex-direction:column;gap:2px;align-items:center;">
+                    <span style="font-size:11px;font-weight:600;color:var(--grey-txt);text-transform:uppercase;letter-spacing:.05em;">Saisi</span>
+                    <span style="font-size:15px;font-weight:700;color:var(--navy);">1 245,00 €</span>
+                  </div>
+                  <div style="width:1px;height:28px;background:var(--grey-bd);flex-shrink:0;"></div>
+                  <div style="display:flex;flex-direction:column;gap:2px;align-items:center;">
+                    <span style="font-size:11px;font-weight:600;color:var(--grey-txt);text-transform:uppercase;letter-spacing:.05em;">Écart</span>
+                    <span style="font-size:15px;font-weight:700;color:#BF2F17;">-5,00 €</span>
+                  </div>
+                </div>
+                <button class="btn-date-cta" style="pointer-events:none; margin-left:24px;">Valider la saisie</button>
+              </div>
+            </div>
+          </div>
+
           <!-- ── Proposition A — KPI + badge sur la même ligne (caché par défaut) ── -->
           <div id="proposal-a" style="display:none; margin-top:14px; padding-top:14px; border-top:1px solid var(--grey-bd);">
             <div style="display:flex; align-items:center; gap:20px; flex-wrap:wrap;">
@@ -2617,19 +2644,24 @@
   // Valider = la proposition devient En cours (son HTML est injecté en permanent), liste vidée.
 
   // ── Propositions — système minimal ───────────────────────────────────
-  // activeProposal : 'current' | 'a' | 'b' | 'c'
+  // activeProposal : 'current' | 'a' | 'abis' | 'b' | 'c'
   let activeProposal = 'current';
 
   function showProposal(id) {
     activeProposal = id;
-    // Cacher les 3 blocs
-    ['a','b','c'].forEach(x => {
-      document.getElementById('proposal-' + x).style.display = 'none';
+    // Cacher tous les blocs
+    ['a','abis','b','c'].forEach(x => {
+      const el = document.getElementById('proposal-' + x);
+      if (el) el.style.display = 'none';
     });
     // Afficher le bloc demandé
     if (id !== 'current') {
-      document.getElementById('proposal-' + id).style.display = '';
+      const el = document.getElementById('proposal-' + id);
+      if (el) el.style.display = '';
     }
+    // Prop_Abis remplace toute la ligne date+bouton → la cacher/montrer
+    const dateRow = document.querySelector('#mc .bloc-date > div:first-child');
+    if (dateRow) dateRow.style.display = (id === 'abis') ? 'none' : '';
     // Pill sticky géré par l'IntersectionObserver — on force à none au changement de prop
     const pill = document.getElementById('proposal-a-pill');
     if (pill) pill.style.display = 'none';
@@ -2642,9 +2674,10 @@
     if (!list) return;
     const items = [
       { id: 'current', label: 'En cours' },
-      { id: 'a', label: 'Prop_A' },
-      { id: 'b', label: 'Prop_B' },
-      { id: 'c', label: 'Prop_C' },
+      { id: 'a',    label: 'Prop_A' },
+      { id: 'abis', label: 'Prop_Abis' },
+      { id: 'b',    label: 'Prop_B' },
+      { id: 'c',    label: 'Prop_C' },
     ];
     list.innerHTML = items.map(v => {
       const isActive = activeProposal === v.id;
