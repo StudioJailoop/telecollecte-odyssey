@@ -886,11 +886,18 @@
 
       <div id="mc">
         <div class="bloc-date" style="flex-direction:column; align-items:stretch; gap:0;">
-          <div style="display:flex; align-items:center; gap:24px;">
-            <span class="date-label">Please proceed with the telecollection of <strong>2026 / 05 / 05</strong></span>
-            <button class="btn-date-cta" id="btnv">Valider la saisie</button>
+          <div style="display:flex; align-items:flex-start; gap:24px;">
+            <span class="date-label" style="padding-top:12px;">Please proceed with the telecollection of <strong>2026 / 05 / 05</strong></span>
+            <!-- Colonne droite : bouton + badge Prop_A empilés -->
+            <div style="margin-left:auto; display:flex; flex-direction:column; align-items:flex-end; gap:8px; flex-shrink:0;">
+              <button class="btn-date-cta" id="btnv" style="margin-left:0;">Valider la saisie</button>
+              <div id="proposal-a-badge" style="display:none; align-items:center; gap:6px; font-size:12px; font-weight:600; padding:4px 12px; border-radius:20px; background:#FEF2F2; color:#BF2F17;">
+                <span style="width:8px;height:8px;border-radius:50%;background:#BF2F17;flex-shrink:0;"></span>
+                Écart détecté
+              </div>
+            </div>
           </div>
-          <!-- ── Proposition A — KPI intégrés dans le bloc-date (caché par défaut) ── -->
+          <!-- ── Proposition A — KPI uniquement (caché par défaut) ── -->
           <div id="proposal-a" style="display:none; margin-top:14px; padding-top:14px; border-top:1px solid var(--grey-bd);">
             <div style="display:flex; align-items:center; gap:20px; flex-wrap:wrap;">
               <div style="display:flex;flex-direction:column;gap:2px;">
@@ -906,10 +913,6 @@
               <div style="display:flex;flex-direction:column;gap:2px;">
                 <span style="font-size:11px;font-weight:700;color:var(--grey-txt);text-transform:uppercase;letter-spacing:.05em;">Écart</span>
                 <span style="font-size:14px;font-weight:600;color:#BF2F17;">-5,00 €</span>
-              </div>
-              <div style="margin-left:40px;display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:4px 12px;border-radius:20px;background:#FEF2F2;color:#BF2F17;">
-                <span style="width:8px;height:8px;border-radius:50%;background:#BF2F17;flex-shrink:0;"></span>
-                Écart détecté
               </div>
             </div>
           </div>
@@ -2626,9 +2629,11 @@
     if (id !== 'current') {
       document.getElementById('proposal-' + id).style.display = '';
     }
-    // Pill sticky Prop_A : visible uniquement si Prop_A active (le display:flex le rend visible)
+    // Badge sous le bouton (état normal) + pill sticky — uniquement si Prop_A active
     const pill = document.getElementById('proposal-a-pill');
     if (pill) pill.style.display = (id === 'a') ? 'flex' : 'none';
+    const badge = document.getElementById('proposal-a-badge');
+    if (badge) badge.style.display = (id === 'a') ? 'flex' : 'none';
     // Mettre à jour le panneau
     renderVersionPanel();
   }
