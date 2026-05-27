@@ -885,31 +885,32 @@
       </div>
 
       <div id="mc">
-        <div class="bloc-date">
-          <span class="date-label">Please proceed with the telecollection of <strong>2026 / 05 / 05</strong></span>
-          <button class="btn-date-cta" id="btnv">Valider la saisie</button>
-        </div>
-
-        <!-- ── Proposition A — Synthèse compacte (cachée par défaut) ── -->
-        <div id="proposal-a" style="display:none; background:var(--white); border:1px solid var(--grey-bd); border-radius:12px; padding:14px 24px; margin-bottom:20px;">
-          <div style="display:flex;align-items:center;gap:20px;flex-wrap:wrap;">
-            <div style="display:flex;flex-direction:column;gap:2px;">
-              <span style="font-size:11px;font-weight:700;color:var(--grey-txt);text-transform:uppercase;letter-spacing:.05em;">Montant attendu</span>
-              <span style="font-size:14px;font-weight:600;color:var(--navy);">1 250,00 €</span>
-            </div>
-            <div style="width:1px;height:28px;background:var(--grey-bd);flex-shrink:0;"></div>
-            <div style="display:flex;flex-direction:column;gap:2px;">
-              <span style="font-size:11px;font-weight:700;color:var(--grey-txt);text-transform:uppercase;letter-spacing:.05em;">Montant saisi</span>
-              <span style="font-size:14px;font-weight:600;color:var(--navy);">1 245,00 €</span>
-            </div>
-            <div style="width:1px;height:28px;background:var(--grey-bd);flex-shrink:0;"></div>
-            <div style="display:flex;flex-direction:column;gap:2px;">
-              <span style="font-size:11px;font-weight:700;color:var(--grey-txt);text-transform:uppercase;letter-spacing:.05em;">Écart</span>
-              <span style="font-size:14px;font-weight:600;color:#BF2F17;">-5,00 €</span>
-            </div>
-            <div style="margin-left:auto;display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:4px 12px;border-radius:20px;background:#FEF2F2;color:#BF2F17;">
-              <span style="width:8px;height:8px;border-radius:50%;background:#BF2F17;flex-shrink:0;"></span>
-              <span>Écart détecté</span>
+        <div class="bloc-date" style="flex-direction:column; align-items:stretch; gap:0;">
+          <div style="display:flex; align-items:center; gap:24px;">
+            <span class="date-label">Please proceed with the telecollection of <strong>2026 / 05 / 05</strong></span>
+            <button class="btn-date-cta" id="btnv">Valider la saisie</button>
+          </div>
+          <!-- ── Proposition A — KPI intégrés dans le bloc-date (caché par défaut) ── -->
+          <div id="proposal-a" style="display:none; margin-top:14px; padding-top:14px; border-top:1px solid var(--grey-bd);">
+            <div style="display:flex; align-items:center; gap:20px; flex-wrap:wrap;">
+              <div style="display:flex;flex-direction:column;gap:2px;">
+                <span style="font-size:11px;font-weight:700;color:var(--grey-txt);text-transform:uppercase;letter-spacing:.05em;">Montant attendu</span>
+                <span style="font-size:14px;font-weight:600;color:var(--navy);">1 250,00 €</span>
+              </div>
+              <div style="width:1px;height:28px;background:var(--grey-bd);flex-shrink:0;"></div>
+              <div style="display:flex;flex-direction:column;gap:2px;">
+                <span style="font-size:11px;font-weight:700;color:var(--grey-txt);text-transform:uppercase;letter-spacing:.05em;">Montant saisi</span>
+                <span style="font-size:14px;font-weight:600;color:var(--navy);">1 245,00 €</span>
+              </div>
+              <div style="width:1px;height:28px;background:var(--grey-bd);flex-shrink:0;"></div>
+              <div style="display:flex;flex-direction:column;gap:2px;">
+                <span style="font-size:11px;font-weight:700;color:var(--grey-txt);text-transform:uppercase;letter-spacing:.05em;">Écart</span>
+                <span style="font-size:14px;font-weight:600;color:#BF2F17;">-5,00 €</span>
+              </div>
+              <div style="margin-left:auto;display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:4px 12px;border-radius:20px;background:#FEF2F2;color:#BF2F17;">
+                <span style="width:8px;height:8px;border-radius:50%;background:#BF2F17;flex-shrink:0;"></span>
+                Écart détecté
+              </div>
             </div>
           </div>
         </div>
@@ -952,6 +953,11 @@
           <button class="tpe-tab"        onclick="scrollToTpe(3,this)">TPE 3</button>
           <button class="tpe-tab"        onclick="scrollToTpe(4,this)">TPE 4</button>
           <button class="tpe-tab"        onclick="scrollToTpe(5,this)">TPE 5</button>
+          <!-- Pill statut Prop_A — injecté dans le sticky, géré par showProposal() -->
+          <div id="proposal-a-pill" style="display:none; align-items:center; gap:6px; font-size:12px; font-weight:600; padding:4px 12px; border-radius:20px; background:#FEF2F2; color:#BF2F17; margin-left:auto;">
+            <span style="width:7px;height:7px;border-radius:50%;background:#BF2F17;flex-shrink:0;"></span>
+            Écart : -5,00 €
+          </div>
           <button class="btn-date-cta" id="btnv-sticky" style="display:none;">Valider la saisie</button>
         </div>
 
@@ -2620,6 +2626,9 @@
     if (id !== 'current') {
       document.getElementById('proposal-' + id).style.display = '';
     }
+    // Pill sticky Prop_A : visible uniquement si Prop_A active (le display:flex le rend visible)
+    const pill = document.getElementById('proposal-a-pill');
+    if (pill) pill.style.display = (id === 'a') ? 'flex' : 'none';
     // Mettre à jour le panneau
     renderVersionPanel();
   }
