@@ -886,11 +886,11 @@
 
       <div id="mc">
         <!-- bloc-date — toujours dans le DOM pour l'IntersectionObserver -->
-        <div class="bloc-date" id="bloc-date-main" style="flex-direction:column; align-items:stretch; gap:0; padding:16px 24px;">
+        <div class="bloc-date" id="bloc-date-main" style="display:block; padding:16px 24px;">
 
           <!-- Ligne date + bouton : visible sauf en Prop_Abis -->
           <div id="bloc-date-row" style="display:flex; align-items:center; width:100%;">
-            <span class="date-label">Please proceed with the telecollection of <strong>2026 / 05 / 05</strong></span>
+            <span class="date-label" style="flex:1;">Please proceed with the telecollection of <strong>2026 / 05 / 05</strong></span>
             <button class="btn-date-cta" id="btnv">Valider la saisie</button>
           </div>
 
@@ -2663,7 +2663,7 @@
     }
     // Prop_Abis remplace la ligne date+bouton — cacher/montrer cette ligne uniquement
     const blocDateRow = document.getElementById('bloc-date-row');
-    if (blocDateRow) blocDateRow.style.display = (id === 'abis') ? 'none' : '';
+    if (blocDateRow) blocDateRow.style.display = (id === 'abis') ? 'none' : 'flex';
     // Pill sticky géré par l'IntersectionObserver — on force à none au changement de prop
     const pill = document.getElementById('proposal-a-pill');
     if (pill) pill.style.display = 'none';
