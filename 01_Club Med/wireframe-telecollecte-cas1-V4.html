@@ -646,13 +646,35 @@
       font-size: 12px; color: var(--navy);
     }
     .version-item.active { border-color: var(--navy); background: #F0F1F8; font-weight: 700; }
-    .version-item-name { flex: 1; }
-    .version-copy-btn {
-      background: none; border: none; cursor: pointer;
-      color: var(--grey-txt); font-size: 11px; padding: 2px 6px;
-      border-radius: 4px; font-family: inherit;
+    .version-item-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .version-btn {
+      background: none; border: 1px solid var(--grey-bd); cursor: pointer;
+      color: var(--grey-txt); font-size: 11px; padding: 2px 7px;
+      border-radius: 4px; font-family: inherit; flex-shrink: 0;
     }
-    .version-copy-btn:hover { background: var(--grey-bg); color: var(--navy); }
+    .version-btn:hover { border-color: var(--navy); color: var(--navy); }
+    .version-btn.danger:hover { border-color: var(--red); color: var(--red); }
+
+    /* ── Bannière prévisualisation ── */
+    #preview-bar {
+      display: none;
+      position: fixed; top: 72px; left: 0; right: 0;
+      z-index: 200;
+      background: var(--navy); color: var(--white);
+      font-size: 12px; font-weight: 600;
+      padding: 8px 24px;
+      align-items: center; gap: 16px;
+    }
+    #preview-bar.visible { display: flex; }
+    #preview-bar-label { flex: 1; }
+    .preview-action-btn {
+      padding: 4px 14px; border-radius: 20px; font-size: 12px;
+      font-weight: 600; cursor: pointer; font-family: inherit; border: none;
+    }
+    .preview-action-btn.refuse { background: rgba(255,255,255,0.15); color: var(--white); }
+    .preview-action-btn.refuse:hover { background: rgba(255,255,255,0.25); }
+    .preview-action-btn.validate { background: var(--yellow); color: #000; }
+    .preview-action-btn.validate:hover { background: #e6ab00; }
   </style>
 </head>
 <body>
@@ -831,6 +853,13 @@
 <button class="toggle-btn closed" id="toggle-btn" onclick="toggleSidebar()" title="Ouvrir / Fermer">
   <svg viewBox="0 0 14 14"><path d="M5 2l5 5-5 5"/></svg>
 </button>
+
+<!-- Bannière prévisualisation -->
+<div id="preview-bar">
+  <span id="preview-bar-label">Prévisualisation</span>
+  <button class="preview-action-btn refuse" onclick="vRefuse()">Refuser</button>
+  <button class="preview-action-btn validate" onclick="vValidate()">Valider cette proposition</button>
+</div>
 
 <!-- ══════════ LAYOUT ══════════ -->
 <div class="layout">
@@ -2572,42 +2601,114 @@
     document.getElementById('mc').style.cssText = ko ? 'opacity:.3;pointer-events:none' : '';
     document.getElementById('btnv').className = ko ? 'btn-date-cta off' : 'btn-date-cta';
   }
-  // ── Système de versions / propositions ──────────────────────────────
-  // Chaque proposition = { slug, label }
-  // "En cours" = aucun paramètre ?version=
-  // Proposition = ?version=slug → active les blocs [data-version="slug"]
+  // ══ Système de versions / propositions ══════════════════════════════
+  // État persisté dans localStorage :
+  //   proposals : [{ id, label, html }]  — blocs additifs injectés dans le wireframe
+  //   activeView : 'current' | proposal.id
+  //
+  // "En cours" = wireframe natif, jamais modifié.
+  // Propositions = blocs HTML additifs activés/désactivés par id.
+  // Refuser = supprime la proposition, retour En cours.
+  // Valider = la proposition devient En cours (son HTML est injecté en permanent), liste vidée.
 
-  const VERSIONS = [
-    { slug: null,        label: 'En cours' },
-    { slug: 'variante-a', label: 'Proposition A — Synthèse compacte' },
-    { slug: 'variante-b', label: 'Proposition B — KPI card' },
-    { slug: 'variante-c', label: 'Proposition C — Badge statut' },
-  ];
+  const PROPOSALS_KEY = 'wf_proposals_v1';
 
-  const currentVersion = new URLSearchParams(window.location.search).get('version') || null;
+  let vState = {
+    proposals: [],
+    activeView: 'current'
+  };
 
-  function buildVersionPanel() {
-    const list = document.getElementById('version-list');
-    if (!list) return;
-    list.innerHTML = VERSIONS.map(v => {
-      const isActive = v.slug === currentVersion;
-      const url = v.slug
-        ? window.location.pathname + '?version=' + v.slug + (CURRENT_USER !== 'Sébastien' ? '&user=' + encodeURIComponent(CURRENT_USER) : '')
-        : window.location.pathname + (CURRENT_USER !== 'Sébastien' ? '?user=' + encodeURIComponent(CURRENT_USER) : '');
-      return `<div class="version-item${isActive ? ' active' : ''}">
-        <span class="version-item-name">${isActive ? '★ ' : ''}${v.label}</span>
-        ${!isActive ? `<button class="version-copy-btn" onclick="window.location.href='${url}'" title="Aller à cette version">Voir</button>` : ''}
-        <button class="version-copy-btn" onclick="navigator.clipboard.writeText('${window.location.origin}${url}');this.textContent='✓';setTimeout(()=>this.textContent='Copier',1500);" title="Copier le lien">Copier</button>
-      </div>`;
-    }).join('');
+  function vLoad() {
+    try {
+      const s = JSON.parse(localStorage.getItem(PROPOSALS_KEY));
+      if (s && Array.isArray(s.proposals)) vState = s;
+    } catch(e) {}
   }
 
-  // Active les blocs marqués [data-version="slug"] selon le paramètre URL
-  function applyVersionParam() {
-    document.querySelectorAll('[data-version]').forEach(el => {
-      const v = el.dataset.version;
-      el.style.display = (v === currentVersion) ? '' : 'none';
+  function vSave() {
+    localStorage.setItem(PROPOSALS_KEY, JSON.stringify(vState));
+  }
+
+  // Ajouter une proposition (appelé programmatiquement par le designer)
+  function vAddProposal(id, label, html) {
+    if (vState.proposals.find(p => p.id === id)) return;
+    vState.proposals.push({ id, label, html });
+    vSave();
+    vRender();
+  }
+
+  // Prévisualiser une proposition
+  function vPreview(id) {
+    vState.activeView = id;
+    vSave();
+    vRender();
+  }
+
+  // Revenir à En cours
+  function vShowCurrent() {
+    vState.activeView = 'current';
+    vSave();
+    vRender();
+  }
+
+  // Refuser la proposition active
+  function vRefuse() {
+    const id = vState.activeView;
+    if (id === 'current') return;
+    vState.proposals = vState.proposals.filter(p => p.id !== id);
+    vState.activeView = 'current';
+    vSave();
+    vRender();
+  }
+
+  // Valider la proposition active → devient En cours
+  function vValidate() {
+    const id = vState.activeView;
+    if (id === 'current') return;
+    const prop = vState.proposals.find(p => p.id === id);
+    if (!prop) return;
+    // Injecter le HTML de la proposition dans le wireframe (zone dédiée)
+    const zone = document.getElementById('proposal-zone');
+    if (zone && prop.html) zone.innerHTML = prop.html;
+    vState.proposals = [];
+    vState.activeView = 'current';
+    vSave();
+    vRender();
+  }
+
+  function vRender() {
+    // ── Panneau ──
+    const list = document.getElementById('version-list');
+    if (!list) return;
+    const isCurrent = vState.activeView === 'current';
+    let html = `<div class="version-item${isCurrent ? ' active' : ''}" style="cursor:${isCurrent ? 'default' : 'pointer'};" ${!isCurrent ? 'onclick="vShowCurrent()"' : ''}>
+      <span class="version-item-name">★ En cours</span>
+    </div>`;
+    vState.proposals.forEach(p => {
+      const isActive = vState.activeView === p.id;
+      html += `<div class="version-item${isActive ? ' active' : ''}">
+        <span class="version-item-name">${isActive ? '▶ ' : ''}${p.label}</span>
+        ${!isActive ? `<button class="version-btn" onclick="vPreview('${p.id}')">Voir</button>` : ''}
+      </div>`;
     });
+    list.innerHTML = html;
+
+    // ── Blocs HTML des propositions ──
+    vState.proposals.forEach(p => {
+      const zone = document.getElementById('proposal-zone-' + p.id);
+      if (zone) zone.style.display = (vState.activeView === p.id) ? '' : 'none';
+    });
+
+    // ── Bannière prévisualisation ──
+    const bar = document.getElementById('preview-bar');
+    const barLabel = document.getElementById('preview-bar-label');
+    if (isCurrent) {
+      bar.classList.remove('visible');
+    } else {
+      const prop = vState.proposals.find(p => p.id === vState.activeView);
+      barLabel.textContent = 'Prévisualisation — ' + (prop ? prop.label : '');
+      bar.classList.add('visible');
+    }
   }
 
   function togglePanel() {
@@ -3297,8 +3398,17 @@
   }
 
   // ── Init versions ────────────────────────────────────────────────────
-  buildVersionPanel();
-  applyVersionParam();
+  vLoad();
+  // Seed propositions si aucune n'existe encore
+  if (vState.proposals.length === 0) {
+    vState.proposals = [
+      { id: 'variante-a', label: 'Proposition A — Synthèse compacte', html: '' },
+      { id: 'variante-b', label: 'Proposition B — KPI card', html: '' },
+      { id: 'variante-c', label: 'Proposition C — Badge statut', html: '' },
+    ];
+    vSave();
+  }
+  vRender();
 </script>
 </body>
 </html>
