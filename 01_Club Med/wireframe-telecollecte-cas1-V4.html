@@ -604,14 +604,55 @@
     .switch input:checked + .track { background: var(--navy); }
     .switch input:checked + .track::after { transform: translateX(20px); }
 
-    /* Select version */
-    .version-select {
-      width: 100%; padding: 8px 10px;
-      border: 1px solid var(--grey-bd); border-radius: 8px;
-      font-size: 13px; font-family: inherit; color: var(--navy);
-      background: var(--white); cursor: pointer; outline: none;
+    /* ── Bloc synthèse financière ── */
+    .synth-row {
+      display: flex; align-items: center; gap: 20px;
+      padding: 10px 16px;
+      background: var(--grey-bg);
+      border-radius: 8px;
+      margin: 10px 0 0;
+      font-size: 13px;
+      flex-wrap: wrap;
     }
-    .version-select:focus { border-color: var(--navy); }
+    .synth-item { display: flex; flex-direction: column; gap: 2px; }
+    .synth-label { font-size: 11px; font-weight: 600; color: var(--grey-txt); text-transform: uppercase; letter-spacing: 0.05em; }
+    .synth-value { font-size: 14px; font-weight: 600; color: var(--navy); }
+    .synth-divider { width: 1px; height: 28px; background: var(--grey-bd); flex-shrink: 0; }
+    .synth-status {
+      margin-left: auto; display: flex; align-items: center; gap: 6px;
+      font-size: 12px; font-weight: 600; padding: 4px 12px;
+      border-radius: 20px; white-space: nowrap;
+    }
+    .synth-status.ok { background: #E6F4EA; color: #1A6B31; }
+    .synth-status.ko { background: #FEF2F2; color: #BF2F17; }
+    .synth-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .synth-status.ok .synth-dot { background: #1A6B31; }
+    .synth-status.ko .synth-dot { background: #BF2F17; }
+    /* Synthèse compacte dans le sticky — version pill seul */
+    .synth-pill-sticky {
+      display: none; align-items: center; gap: 6px;
+      font-size: 12px; font-weight: 600; padding: 4px 12px;
+      border-radius: 20px; white-space: nowrap;
+    }
+    .synth-pill-sticky.ok { background: #E6F4EA; color: #1A6B31; }
+    .synth-pill-sticky.ko { background: #FEF2F2; color: #BF2F17; }
+
+    /* ── Panneau versions ── */
+    .version-list { display: flex; flex-direction: column; gap: 6px; }
+    .version-item {
+      display: flex; align-items: center; justify-content: space-between; gap: 8px;
+      padding: 8px 10px; border-radius: 8px;
+      border: 1px solid var(--grey-bd); background: var(--white);
+      font-size: 12px; color: var(--navy);
+    }
+    .version-item.active { border-color: var(--navy); background: #F0F1F8; font-weight: 700; }
+    .version-item-name { flex: 1; }
+    .version-copy-btn {
+      background: none; border: none; cursor: pointer;
+      color: var(--grey-txt); font-size: 11px; padding: 2px 6px;
+      border-radius: 4px; font-family: inherit;
+    }
+    .version-copy-btn:hover { background: var(--grey-bg); color: var(--navy); }
   </style>
 </head>
 <body>
@@ -875,9 +916,34 @@
       </div>
 
       <div id="mc">
-        <div class="bloc-date">
-          <span class="date-label">Please proceed with the telecollection of <strong>2026 / 05 / 05</strong></span>
-          <button class="btn-date-cta" id="btnv">Valider la saisie</button>
+        <div class="bloc-date" style="flex-direction:column;align-items:stretch;">
+          <div style="display:flex;align-items:center;gap:24px;">
+            <span class="date-label">Please proceed with the telecollection of <strong>2026 / 05 / 05</strong></span>
+            <button class="btn-date-cta" id="btnv">Valider la saisie</button>
+          </div>
+          <!-- Bloc synthèse — visible uniquement en mode interfacé (setV) -->
+          <div id="synth-bloc" style="display:none;">
+            <div class="synth-row">
+              <div class="synth-item">
+                <span class="synth-label">Montant attendu</span>
+                <span class="synth-value" id="synth-attendu">— €</span>
+              </div>
+              <div class="synth-divider"></div>
+              <div class="synth-item">
+                <span class="synth-label">Montant saisi</span>
+                <span class="synth-value" id="synth-saisi">— €</span>
+              </div>
+              <div class="synth-divider"></div>
+              <div class="synth-item">
+                <span class="synth-label">Écart</span>
+                <span class="synth-value" id="synth-ecart">— €</span>
+              </div>
+              <div class="synth-status ok" id="synth-status">
+                <span class="synth-dot"></span>
+                <span id="synth-status-txt">Aucun écart détecté</span>
+              </div>
+            </div>
+          </div>
         </div>
 
         <!-- Tabs Tertiary TPE — sticky au scroll, fond plein -->
@@ -887,6 +953,7 @@
           <button class="tpe-tab"        onclick="scrollToTpe(3,this)">TPE 3</button>
           <button class="tpe-tab"        onclick="scrollToTpe(4,this)">TPE 4</button>
           <button class="tpe-tab"        onclick="scrollToTpe(5,this)">TPE 5</button>
+          <div class="synth-pill-sticky" id="synth-pill-sticky"><span class="synth-dot"></span><span id="synth-pill-txt">Aucun écart</span></div>
           <button class="btn-date-cta" id="btnv-sticky" style="display:none;">Valider la saisie</button>
         </div>
 
@@ -1200,18 +1267,9 @@
 
   <hr>
 
-  <!-- Sélecteur de version -->
-  <div class="panel-title">Version</div>
-  <select class="version-select" id="version-select" onchange="loadVersion(this.value)">
-        <option value="wireframe-telecollecte-cas1-V1.html">V1 — Saisie Jour J</option>
-    <option value="wireframe-telecollecte-cas1-V2.html">V2 — Tabs TPE</option>
-    <option value="wireframe-telecollecte-cas1-V3.html">V3</option>
-    <option value="wireframe-telecollecte-cas1-V4.1.html">V4.1 — Snapshot 2026-05-20 ✓</option>
-    <option value="wireframe-telecollecte-cas1-V4.2.html">V4.2 — Snapshot 2026-05-20 ✓</option>
-    <option value="wireframe-telecollecte-cas1-V4.3.html">V4.3 — Snapshot 2026-05-20 ✓</option>
-    <option value="wireframe-telecollecte-cas1-V5.html">V5 — Présentation Éric ✓</option>
-    <option value="wireframe-telecollecte-cas1-V4.html" selected>En cours ★</option>
-  </select>
+  <!-- Versions / propositions -->
+  <div class="panel-title">Versions</div>
+  <div class="version-list" id="version-list"></div>
 
   <hr>
 
@@ -2517,6 +2575,60 @@
     if (anchor) anchor.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
+  // ── Synthèse financière (visible uniquement en mode interfacé) ──────
+  function checkSynth() {
+    const interfaced = document.getElementById('sw-iface')?.checked;
+    const bloc = document.getElementById('synth-bloc');
+    const pill = document.getElementById('synth-pill-sticky');
+    if (!bloc) return;
+
+    if (!interfaced) {
+      bloc.style.display = 'none';
+      if (pill) pill.style.display = 'none';
+      return;
+    }
+    bloc.style.display = '';
+
+    // Montant attendu = somme des .c-amt dans les rows visibles (mode interfacé)
+    let attendu = 0;
+    document.querySelectorAll('#mc .t-row.gi').forEach(row => {
+      if (row.closest('[style*="display:none"], [style*="display: none"]')) return;
+      const amt = row.querySelector('.c-amt');
+      if (amt) attendu += parseNum(amt.textContent.replace('€','').trim());
+    });
+
+    // Montant saisi = somme des inputs corrigés (1er input des .iw dans .gi)
+    let saisi = 0;
+    document.querySelectorAll('#mc .t-row.gi').forEach(row => {
+      if (row.closest('[style*="display:none"], [style*="display: none"]')) return;
+      const inp = row.querySelector('.iw input.inp');
+      if (inp) saisi += parseNum(inp.value);
+    });
+
+    const ecart = saisi - attendu;
+    const fmt = n => n.toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' €';
+    const ok = Math.abs(ecart) < 0.01;
+
+    document.getElementById('synth-attendu').textContent = fmt(attendu);
+    document.getElementById('synth-saisi').textContent = fmt(saisi);
+    document.getElementById('synth-ecart').textContent = (ecart >= 0 ? '+' : '') + fmt(ecart);
+    document.getElementById('synth-ecart').style.color = ok ? '#1A6B31' : '#BF2F17';
+
+    const status = document.getElementById('synth-status');
+    const statusTxt = document.getElementById('synth-status-txt');
+    if (status && statusTxt) {
+      status.className = 'synth-status ' + (ok ? 'ok' : 'ko');
+      statusTxt.textContent = ok ? 'Aucun écart détecté' : 'Écart détecté';
+    }
+
+    // Pill dans le sticky
+    if (pill) {
+      pill.style.display = 'flex';
+      pill.className = 'synth-pill-sticky ' + (ok ? 'ok' : 'ko');
+      document.getElementById('synth-pill-txt').textContent = ok ? 'Aucun écart' : 'Écart : ' + (ecart >= 0 ? '+' : '') + fmt(ecart);
+    }
+  }
+
   function setV(checked) {
     const i = checked;
     const gc = i ? 'gi' : 'gm';
@@ -2533,6 +2645,7 @@
       const h = document.querySelector('#tpe-anchor-' + n + ' .t-head');
       if (h) { h.className = 't-head ' + gc; h.innerHTML = hh; }
     });
+    checkSynth();
   }
   function setB(checked) {
     const ko = checked;
@@ -2540,8 +2653,42 @@
     document.getElementById('mc').style.cssText = ko ? 'opacity:.3;pointer-events:none' : '';
     document.getElementById('btnv').className = ko ? 'btn-date-cta off' : 'btn-date-cta';
   }
-  function loadVersion(file) {
-    window.location.href = file;
+  // ── Système de versions / propositions ──────────────────────────────
+  // Chaque proposition = { slug, label }
+  // "En cours" = aucun paramètre ?version=
+  // Proposition = ?version=slug → active les blocs [data-version="slug"]
+
+  const VERSIONS = [
+    { slug: null,        label: 'En cours' },
+    { slug: 'variante-a', label: 'Proposition A — Synthèse compacte' },
+    { slug: 'variante-b', label: 'Proposition B — KPI card' },
+    { slug: 'variante-c', label: 'Proposition C — Badge statut' },
+  ];
+
+  const currentVersion = new URLSearchParams(window.location.search).get('version') || null;
+
+  function buildVersionPanel() {
+    const list = document.getElementById('version-list');
+    if (!list) return;
+    list.innerHTML = VERSIONS.map(v => {
+      const isActive = v.slug === currentVersion;
+      const url = v.slug
+        ? window.location.pathname + '?version=' + v.slug + (CURRENT_USER !== 'Sébastien' ? '&user=' + encodeURIComponent(CURRENT_USER) : '')
+        : window.location.pathname + (CURRENT_USER !== 'Sébastien' ? '?user=' + encodeURIComponent(CURRENT_USER) : '');
+      return `<div class="version-item${isActive ? ' active' : ''}">
+        <span class="version-item-name">${isActive ? '★ ' : ''}${v.label}</span>
+        ${!isActive ? `<button class="version-copy-btn" onclick="window.location.href='${url}'" title="Aller à cette version">Voir</button>` : ''}
+        <button class="version-copy-btn" onclick="navigator.clipboard.writeText('${window.location.origin}${url}');this.textContent='✓';setTimeout(()=>this.textContent='Copier',1500);" title="Copier le lien">Copier</button>
+      </div>`;
+    }).join('');
+  }
+
+  // Active les blocs marqués [data-version="slug"] selon le paramètre URL
+  function applyVersionParam() {
+    document.querySelectorAll('[data-version]').forEach(el => {
+      const v = el.dataset.version;
+      el.style.display = (v === currentVersion) ? '' : 'none';
+    });
   }
 
   function togglePanel() {
@@ -3190,6 +3337,7 @@
     if (e.target.tagName === 'INPUT') {
       checkAll();
       checkReg();
+      checkSynth();
     }
   });
 
@@ -3229,6 +3377,11 @@
       btn.className = 'btn-date-cta';
     }
   }
+
+  // ── Init versions ────────────────────────────────────────────────────
+  buildVersionPanel();
+  applyVersionParam();
+  checkSynth();
 </script>
 </body>
 </html>
