@@ -2629,14 +2629,19 @@
     if (!list) return;
     const items = [
       { id: 'current', label: 'En cours' },
-      { id: 'a', label: 'Proposition A — Synthèse compacte' },
-      { id: 'b', label: 'Proposition B — KPI card' },
-      { id: 'c', label: 'Proposition C — Badge statut' },
+      { id: 'a', label: 'Prop_A' },
+      { id: 'b', label: 'Prop_B' },
+      { id: 'c', label: 'Prop_C' },
     ];
     list.innerHTML = items.map(v => {
       const isActive = activeProposal === v.id;
+      const isCurrent = v.id === 'current';
       return `<div class="version-item${isActive ? ' active' : ''}" ${!isActive ? `onclick="showProposal('${v.id}')" style="cursor:pointer;"` : ''}>
         <span class="version-item-name">${isActive ? '★ ' : ''}${v.label}</span>
+        ${!isCurrent ? `
+          <button class="version-btn" title="Valider" style="padding:2px 6px;font-size:13px;">✓</button>
+          <button class="version-btn danger" title="Supprimer" style="padding:2px 6px;font-size:13px;">🗑</button>
+        ` : ''}
       </div>`;
     }).join('');
   }
