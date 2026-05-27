@@ -953,12 +953,14 @@
           <button class="tpe-tab"        onclick="scrollToTpe(3,this)">TPE 3</button>
           <button class="tpe-tab"        onclick="scrollToTpe(4,this)">TPE 4</button>
           <button class="tpe-tab"        onclick="scrollToTpe(5,this)">TPE 5</button>
-          <!-- Pill statut Prop_A — injecté dans le sticky, géré par showProposal() -->
-          <div id="proposal-a-pill" style="display:none; align-items:center; gap:6px; font-size:12px; font-weight:600; padding:4px 12px; border-radius:20px; background:#FEF2F2; color:#BF2F17; margin-left:auto; margin-right:48px;">
-            <span style="width:7px;height:7px;border-radius:50%;background:#BF2F17;flex-shrink:0;"></span>
-            Écart : -5,00 €
+          <!-- Groupe droite sticky : pill Prop_A + bouton valider, séparés par 48px -->
+          <div style="margin-left:auto; display:flex; align-items:center; gap:48px;">
+            <div id="proposal-a-pill" style="display:none; align-items:center; gap:6px; font-size:12px; font-weight:600; padding:4px 12px; border-radius:20px; background:#FEF2F2; color:#BF2F17;">
+              <span style="width:7px;height:7px;border-radius:50%;background:#BF2F17;flex-shrink:0;"></span>
+              Écart : -5,00 €
+            </div>
+            <button class="btn-date-cta" id="btnv-sticky" style="display:none; margin-left:0;">Valider la saisie</button>
           </div>
-          <button class="btn-date-cta" id="btnv-sticky" style="display:none;">Valider la saisie</button>
         </div>
 
         <!-- TPE 1 -->
