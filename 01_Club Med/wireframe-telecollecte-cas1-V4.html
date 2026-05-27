@@ -2536,8 +2536,10 @@
   new IntersectionObserver(([entry]) => {
     const hidden = !entry.isIntersecting;
     btnvSticky.style.display = hidden ? 'flex' : 'none';
-    // Synchronise l'état actif/inactif
     btnvSticky.className = btnvMain.className;
+    // Pill Prop_A : visible seulement si sticky ET Prop_A active
+    const pill = document.getElementById('proposal-a-pill');
+    if (pill) pill.style.display = (hidden && activeProposal === 'a') ? 'flex' : 'none';
   }, { root: scrollRoot, threshold: 0 }).observe(blocDateTpe);
 
   const observer = new IntersectionObserver(([entry]) => {
@@ -2626,9 +2628,9 @@
     if (id !== 'current') {
       document.getElementById('proposal-' + id).style.display = '';
     }
-    // Badge sous le bouton (état normal) + pill sticky — uniquement si Prop_A active
+    // Pill sticky géré par l'IntersectionObserver — on force à none au changement de prop
     const pill = document.getElementById('proposal-a-pill');
-    if (pill) pill.style.display = (id === 'a') ? 'flex' : 'none';
+    if (pill) pill.style.display = 'none';
     // Mettre à jour le panneau
     renderVersionPanel();
   }
