@@ -916,34 +916,9 @@
       </div>
 
       <div id="mc">
-        <div class="bloc-date" style="flex-direction:column;align-items:stretch;">
-          <div style="display:flex;align-items:center;gap:24px;">
-            <span class="date-label">Please proceed with the telecollection of <strong>2026 / 05 / 05</strong></span>
-            <button class="btn-date-cta" id="btnv">Valider la saisie</button>
-          </div>
-          <!-- Bloc synthèse — visible uniquement en mode interfacé (setV) -->
-          <div id="synth-bloc" style="display:none;">
-            <div class="synth-row">
-              <div class="synth-item">
-                <span class="synth-label">Montant attendu</span>
-                <span class="synth-value" id="synth-attendu">— €</span>
-              </div>
-              <div class="synth-divider"></div>
-              <div class="synth-item">
-                <span class="synth-label">Montant saisi</span>
-                <span class="synth-value" id="synth-saisi">— €</span>
-              </div>
-              <div class="synth-divider"></div>
-              <div class="synth-item">
-                <span class="synth-label">Écart</span>
-                <span class="synth-value" id="synth-ecart">— €</span>
-              </div>
-              <div class="synth-status ok" id="synth-status">
-                <span class="synth-dot"></span>
-                <span id="synth-status-txt">Aucun écart détecté</span>
-              </div>
-            </div>
-          </div>
+        <div class="bloc-date">
+          <span class="date-label">Please proceed with the telecollection of <strong>2026 / 05 / 05</strong></span>
+          <button class="btn-date-cta" id="btnv">Valider la saisie</button>
         </div>
 
         <!-- Tabs Tertiary TPE — sticky au scroll, fond plein -->
@@ -953,7 +928,6 @@
           <button class="tpe-tab"        onclick="scrollToTpe(3,this)">TPE 3</button>
           <button class="tpe-tab"        onclick="scrollToTpe(4,this)">TPE 4</button>
           <button class="tpe-tab"        onclick="scrollToTpe(5,this)">TPE 5</button>
-          <div class="synth-pill-sticky" id="synth-pill-sticky"><span class="synth-dot"></span><span id="synth-pill-txt">Aucun écart</span></div>
           <button class="btn-date-cta" id="btnv-sticky" style="display:none;">Valider la saisie</button>
         </div>
 
@@ -2575,60 +2549,6 @@
     if (anchor) anchor.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
-  // ── Synthèse financière (visible uniquement en mode interfacé) ──────
-  function checkSynth() {
-    const interfaced = document.getElementById('sw-iface')?.checked;
-    const bloc = document.getElementById('synth-bloc');
-    const pill = document.getElementById('synth-pill-sticky');
-    if (!bloc) return;
-
-    if (!interfaced) {
-      bloc.style.display = 'none';
-      if (pill) pill.style.display = 'none';
-      return;
-    }
-    bloc.style.display = '';
-
-    // Montant attendu = somme des .c-amt dans les rows visibles (mode interfacé)
-    let attendu = 0;
-    document.querySelectorAll('#mc .t-row.gi').forEach(row => {
-      if (row.closest('[style*="display:none"], [style*="display: none"]')) return;
-      const amt = row.querySelector('.c-amt');
-      if (amt) attendu += parseNum(amt.textContent.replace('€','').trim());
-    });
-
-    // Montant saisi = somme des inputs corrigés (1er input des .iw dans .gi)
-    let saisi = 0;
-    document.querySelectorAll('#mc .t-row.gi').forEach(row => {
-      if (row.closest('[style*="display:none"], [style*="display: none"]')) return;
-      const inp = row.querySelector('.iw input.inp');
-      if (inp) saisi += parseNum(inp.value);
-    });
-
-    const ecart = saisi - attendu;
-    const fmt = n => n.toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' €';
-    const ok = Math.abs(ecart) < 0.01;
-
-    document.getElementById('synth-attendu').textContent = fmt(attendu);
-    document.getElementById('synth-saisi').textContent = fmt(saisi);
-    document.getElementById('synth-ecart').textContent = (ecart >= 0 ? '+' : '') + fmt(ecart);
-    document.getElementById('synth-ecart').style.color = ok ? '#1A6B31' : '#BF2F17';
-
-    const status = document.getElementById('synth-status');
-    const statusTxt = document.getElementById('synth-status-txt');
-    if (status && statusTxt) {
-      status.className = 'synth-status ' + (ok ? 'ok' : 'ko');
-      statusTxt.textContent = ok ? 'Aucun écart détecté' : 'Écart détecté';
-    }
-
-    // Pill dans le sticky
-    if (pill) {
-      pill.style.display = 'flex';
-      pill.className = 'synth-pill-sticky ' + (ok ? 'ok' : 'ko');
-      document.getElementById('synth-pill-txt').textContent = ok ? 'Aucun écart' : 'Écart : ' + (ecart >= 0 ? '+' : '') + fmt(ecart);
-    }
-  }
-
   function setV(checked) {
     const i = checked;
     const gc = i ? 'gi' : 'gm';
@@ -2645,7 +2565,6 @@
       const h = document.querySelector('#tpe-anchor-' + n + ' .t-head');
       if (h) { h.className = 't-head ' + gc; h.innerHTML = hh; }
     });
-    checkSynth();
   }
   function setB(checked) {
     const ko = checked;
@@ -3337,7 +3256,6 @@
     if (e.target.tagName === 'INPUT') {
       checkAll();
       checkReg();
-      checkSynth();
     }
   });
 
@@ -3381,7 +3299,6 @@
   // ── Init versions ────────────────────────────────────────────────────
   buildVersionPanel();
   applyVersionParam();
-  checkSynth();
 </script>
 </body>
 </html>
