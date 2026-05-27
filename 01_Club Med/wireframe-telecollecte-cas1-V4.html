@@ -604,39 +604,6 @@
     .switch input:checked + .track { background: var(--navy); }
     .switch input:checked + .track::after { transform: translateX(20px); }
 
-    /* ── Bloc synthèse financière ── */
-    .synth-row {
-      display: flex; align-items: center; gap: 20px;
-      padding: 10px 16px;
-      background: var(--grey-bg);
-      border-radius: 8px;
-      margin: 10px 0 0;
-      font-size: 13px;
-      flex-wrap: wrap;
-    }
-    .synth-item { display: flex; flex-direction: column; gap: 2px; }
-    .synth-label { font-size: 11px; font-weight: 600; color: var(--grey-txt); text-transform: uppercase; letter-spacing: 0.05em; }
-    .synth-value { font-size: 14px; font-weight: 600; color: var(--navy); }
-    .synth-divider { width: 1px; height: 28px; background: var(--grey-bd); flex-shrink: 0; }
-    .synth-status {
-      margin-left: auto; display: flex; align-items: center; gap: 6px;
-      font-size: 12px; font-weight: 600; padding: 4px 12px;
-      border-radius: 20px; white-space: nowrap;
-    }
-    .synth-status.ok { background: #E6F4EA; color: #1A6B31; }
-    .synth-status.ko { background: #FEF2F2; color: #BF2F17; }
-    .synth-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-    .synth-status.ok .synth-dot { background: #1A6B31; }
-    .synth-status.ko .synth-dot { background: #BF2F17; }
-    /* Synthèse compacte dans le sticky — version pill seul */
-    .synth-pill-sticky {
-      display: none; align-items: center; gap: 6px;
-      font-size: 12px; font-weight: 600; padding: 4px 12px;
-      border-radius: 20px; white-space: nowrap;
-    }
-    .synth-pill-sticky.ok { background: #E6F4EA; color: #1A6B31; }
-    .synth-pill-sticky.ko { background: #FEF2F2; color: #BF2F17; }
-
     /* ── Panneau versions ── */
     .version-list { display: flex; flex-direction: column; gap: 6px; }
     .version-item {
@@ -655,26 +622,6 @@
     .version-btn:hover { border-color: var(--navy); color: var(--navy); }
     .version-btn.danger:hover { border-color: var(--red); color: var(--red); }
 
-    /* ── Bannière prévisualisation ── */
-    #preview-bar {
-      display: none;
-      position: fixed; top: 72px; left: 0; right: 0;
-      z-index: 200;
-      background: var(--navy); color: var(--white);
-      font-size: 12px; font-weight: 600;
-      padding: 8px 24px;
-      align-items: center; gap: 16px;
-    }
-    #preview-bar.visible { display: flex; }
-    #preview-bar-label { flex: 1; }
-    .preview-action-btn {
-      padding: 4px 14px; border-radius: 20px; font-size: 12px;
-      font-weight: 600; cursor: pointer; font-family: inherit; border: none;
-    }
-    .preview-action-btn.refuse { background: rgba(255,255,255,0.15); color: var(--white); }
-    .preview-action-btn.refuse:hover { background: rgba(255,255,255,0.25); }
-    .preview-action-btn.validate { background: var(--yellow); color: #000; }
-    .preview-action-btn.validate:hover { background: #e6ab00; }
   </style>
 </head>
 <body>
@@ -854,13 +801,6 @@
   <svg viewBox="0 0 14 14"><path d="M5 2l5 5-5 5"/></svg>
 </button>
 
-<!-- Bannière prévisualisation -->
-<div id="preview-bar">
-  <span id="preview-bar-label">Prévisualisation</span>
-  <button class="preview-action-btn refuse" onclick="vRefuse()">Refuser</button>
-  <button class="preview-action-btn validate" onclick="vValidate()">Valider cette proposition</button>
-</div>
-
 <!-- ══════════ LAYOUT ══════════ -->
 <div class="layout">
 
@@ -950,67 +890,58 @@
           <button class="btn-date-cta" id="btnv">Valider la saisie</button>
         </div>
 
-        <!-- ── Proposition A — Synthèse compacte ── -->
-        <div id="proposal-zone-variante-a" style="display:none; background:#fff; border:1px solid var(--grey-bd); border-radius:12px; padding:14px 24px; margin-bottom:20px;">
-          <div style="display:flex; align-items:center; gap:20px; flex-wrap:wrap; font-size:13px;">
+        <!-- ── Proposition A — Synthèse compacte (cachée par défaut) ── -->
+        <div id="proposal-a" style="display:none; background:var(--white); border:1px solid var(--grey-bd); border-radius:12px; padding:14px 24px; margin-bottom:20px;">
+          <div style="display:flex;align-items:center;gap:20px;flex-wrap:wrap;">
             <div style="display:flex;flex-direction:column;gap:2px;">
               <span style="font-size:11px;font-weight:700;color:var(--grey-txt);text-transform:uppercase;letter-spacing:.05em;">Montant attendu</span>
-              <span id="pa-attendu" style="font-size:14px;font-weight:600;color:var(--navy);">— €</span>
+              <span style="font-size:14px;font-weight:600;color:var(--navy);">1 250,00 €</span>
             </div>
             <div style="width:1px;height:28px;background:var(--grey-bd);flex-shrink:0;"></div>
             <div style="display:flex;flex-direction:column;gap:2px;">
               <span style="font-size:11px;font-weight:700;color:var(--grey-txt);text-transform:uppercase;letter-spacing:.05em;">Montant saisi</span>
-              <span id="pa-saisi" style="font-size:14px;font-weight:600;color:var(--navy);">— €</span>
+              <span style="font-size:14px;font-weight:600;color:var(--navy);">1 245,00 €</span>
             </div>
             <div style="width:1px;height:28px;background:var(--grey-bd);flex-shrink:0;"></div>
             <div style="display:flex;flex-direction:column;gap:2px;">
               <span style="font-size:11px;font-weight:700;color:var(--grey-txt);text-transform:uppercase;letter-spacing:.05em;">Écart</span>
-              <span id="pa-ecart" style="font-size:14px;font-weight:600;">— €</span>
+              <span style="font-size:14px;font-weight:600;color:#BF2F17;">-5,00 €</span>
             </div>
-            <div id="pa-status" style="margin-left:auto;display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:4px 12px;border-radius:20px;background:#E6F4EA;color:#1A6B31;">
-              <span id="pa-dot" style="width:8px;height:8px;border-radius:50%;background:#1A6B31;flex-shrink:0;"></span>
-              <span id="pa-status-txt">Aucun écart détecté</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- ── Proposition B — KPI card ── -->
-        <div id="proposal-zone-variante-b" style="display:none; background:#fff; border:1px solid var(--grey-bd); border-radius:12px; padding:16px 24px; margin-bottom:20px;">
-          <div style="display:flex;align-items:stretch;gap:0;border:1px solid var(--grey-bd);border-radius:10px;overflow:hidden;">
-            <div style="flex:1;padding:12px 16px;border-right:1px solid var(--grey-bd);">
-              <div style="font-size:11px;font-weight:700;color:var(--grey-txt);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px;">Montant attendu</div>
-              <div id="pb-attendu" style="font-size:20px;font-weight:700;color:var(--navy);">— €</div>
-            </div>
-            <div style="flex:1;padding:12px 16px;border-right:1px solid var(--grey-bd);">
-              <div style="font-size:11px;font-weight:700;color:var(--grey-txt);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px;">Montant saisi</div>
-              <div id="pb-saisi" style="font-size:20px;font-weight:700;color:var(--navy);">— €</div>
-            </div>
-            <div style="flex:1;padding:12px 16px;border-right:1px solid var(--grey-bd);">
-              <div style="font-size:11px;font-weight:700;color:var(--grey-txt);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px;">Écart</div>
-              <div id="pb-ecart" style="font-size:20px;font-weight:700;">— €</div>
-            </div>
-            <div id="pb-status" style="flex:1.2;padding:12px 16px;display:flex;flex-direction:column;justify-content:center;gap:4px;background:#E6F4EA;">
-              <div style="display:flex;align-items:center;gap:6px;">
-                <span id="pb-dot" style="width:10px;height:10px;border-radius:50%;background:#1A6B31;flex-shrink:0;"></span>
-                <span id="pb-status-txt" style="font-size:12px;font-weight:700;color:#1A6B31;">Aucun écart</span>
-              </div>
+            <div style="margin-left:auto;display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:4px 12px;border-radius:20px;background:#FEF2F2;color:#BF2F17;">
+              <span style="width:8px;height:8px;border-radius:50%;background:#BF2F17;flex-shrink:0;"></span>
+              <span>Écart détecté</span>
             </div>
           </div>
         </div>
 
-        <!-- ── Proposition C — Badge statut ── -->
-        <div id="proposal-zone-variante-c" style="display:none; background:#fff; border:1px solid var(--grey-bd); border-radius:12px; padding:12px 24px; margin-bottom:20px;">
-          <div style="display:flex;align-items:center;gap:12px;">
-            <div id="pc-badge" style="display:inline-flex;align-items:center;gap:7px;padding:6px 14px;border-radius:20px;font-size:13px;font-weight:700;background:#E6F4EA;color:#1A6B31;cursor:pointer;" onclick="document.getElementById('pc-detail').style.display=document.getElementById('pc-detail').style.display==='none'?'flex':'none'">
-              <span id="pc-dot" style="width:9px;height:9px;border-radius:50%;background:#1A6B31;flex-shrink:0;"></span>
-              <span id="pc-badge-txt">Aucun écart détecté</span>
-              <svg viewBox="0 0 10 6" style="width:10px;height:6px;opacity:.5;"><path d="M0 0l5 6 5-6" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
+        <!-- ── Proposition B — KPI card (cachée par défaut) ── -->
+        <div id="proposal-b" style="display:none; background:var(--white); border:1px solid var(--grey-bd); border-radius:12px; padding:16px 24px; margin-bottom:20px;">
+          <div style="display:flex;align-items:stretch;border:1px solid var(--grey-bd);border-radius:10px;overflow:hidden;">
+            <div style="flex:1;padding:12px 16px;border-right:1px solid var(--grey-bd);">
+              <div style="font-size:11px;font-weight:700;color:var(--grey-txt);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px;">Montant attendu</div>
+              <div style="font-size:22px;font-weight:700;color:var(--navy);">1 250,00 €</div>
             </div>
-            <div id="pc-detail" style="display:none;align-items:center;gap:16px;font-size:12px;color:var(--grey-txt);">
-              <span>Attendu : <strong id="pc-attendu" style="color:var(--navy);">—</strong></span>
-              <span>Saisi : <strong id="pc-saisi" style="color:var(--navy);">—</strong></span>
-              <span>Écart : <strong id="pc-ecart">—</strong></span>
+            <div style="flex:1;padding:12px 16px;border-right:1px solid var(--grey-bd);">
+              <div style="font-size:11px;font-weight:700;color:var(--grey-txt);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px;">Montant saisi</div>
+              <div style="font-size:22px;font-weight:700;color:var(--navy);">1 245,00 €</div>
             </div>
+            <div style="flex:1;padding:12px 16px;border-right:1px solid var(--grey-bd);">
+              <div style="font-size:11px;font-weight:700;color:var(--grey-txt);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px;">Écart</div>
+              <div style="font-size:22px;font-weight:700;color:#BF2F17;">-5,00 €</div>
+            </div>
+            <div style="flex:1.2;padding:12px 16px;display:flex;align-items:center;gap:8px;background:#FEF2F2;">
+              <span style="width:10px;height:10px;border-radius:50%;background:#BF2F17;flex-shrink:0;"></span>
+              <span style="font-size:12px;font-weight:700;color:#BF2F17;">Vérification requise</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Proposition C — Badge statut (caché par défaut) ── -->
+        <div id="proposal-c" style="display:none; background:var(--white); border:1px solid var(--grey-bd); border-radius:12px; padding:12px 24px; margin-bottom:20px;">
+          <div style="display:inline-flex;align-items:center;gap:7px;padding:6px 16px;border-radius:20px;font-size:13px;font-weight:700;background:#FEF2F2;color:#BF2F17;">
+            <span style="width:9px;height:9px;border-radius:50%;background:#BF2F17;flex-shrink:0;"></span>
+            Écart détecté : -5,00 €
+            <svg viewBox="0 0 10 6" style="width:10px;height:6px;opacity:.5;"><path d="M0 0l5 6 5-6" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
           </div>
         </div>
 
@@ -2675,182 +2606,39 @@
   // Refuser = supprime la proposition, retour En cours.
   // Valider = la proposition devient En cours (son HTML est injecté en permanent), liste vidée.
 
-  const PROPOSALS_KEY = 'wf_proposals_v1';
+  // ── Propositions — système minimal ───────────────────────────────────
+  // activeProposal : 'current' | 'a' | 'b' | 'c'
+  let activeProposal = 'current';
 
-  let vState = {
-    proposals: [],
-    activeView: 'current'
-  };
-
-  // ── Calcul synthèse financière — alimente les 3 propositions ──────────
-  function checkSynth() {
-    const interfaced = document.getElementById('sw-iface')?.checked;
-    const fmt = n => n.toLocaleString('fr-FR', {minimumFractionDigits:2, maximumFractionDigits:2}) + ' €';
-
-    if (!interfaced) {
-      // Pas en mode interfacé : afficher tirets
-      ['pa','pb','pc'].forEach(p => {
-        const el = id => document.getElementById(p + '-' + id);
-        if (el('attendu')) el('attendu').textContent = '— €';
-        if (el('saisi'))   el('saisi').textContent   = '— €';
-        if (el('ecart'))   el('ecart').textContent   = '— €';
-      });
-      return;
-    }
-
-    // Montant attendu = somme des .c-amt des rows interfacées visibles
-    let attendu = 0;
-    document.querySelectorAll('#mc .t-row.gi').forEach(row => {
-      if (row.closest('[style*="display:none"],[style*="display: none"]')) return;
-      const amt = row.querySelector('.c-amt');
-      if (amt) attendu += parseNum(amt.textContent.replace('€','').trim());
+  function showProposal(id) {
+    activeProposal = id;
+    // Cacher les 3 blocs
+    ['a','b','c'].forEach(x => {
+      document.getElementById('proposal-' + x).style.display = 'none';
     });
-
-    // Montant saisi = 1er input .iw de chaque row interfacée
-    let saisi = 0;
-    document.querySelectorAll('#mc .t-row.gi').forEach(row => {
-      if (row.closest('[style*="display:none"],[style*="display: none"]')) return;
-      const inp = row.querySelector('.iw input.inp');
-      if (inp) saisi += parseNum(inp.value);
-    });
-
-    const ecart = saisi - attendu;
-    const ok = Math.abs(ecart) < 0.01;
-    const ecartFmt = (ecart >= 0 ? '+' : '') + fmt(ecart);
-    const okBg = '#E6F4EA', okClr = '#1A6B31', koBg = '#FEF2F2', koClr = '#BF2F17';
-
-    // Proposition A
-    const pa = id => document.getElementById('pa-' + id);
-    if (pa('attendu')) {
-      pa('attendu').textContent = fmt(attendu);
-      pa('saisi').textContent   = fmt(saisi);
-      pa('ecart').textContent   = ecartFmt;
-      pa('ecart').style.color   = ok ? okClr : koClr;
-      pa('status').style.background = ok ? okBg : koBg;
-      pa('status').style.color      = ok ? okClr : koClr;
-      pa('dot').style.background    = ok ? okClr : koClr;
-      pa('status-txt').textContent  = ok ? 'Aucun écart détecté' : 'Écart détecté';
+    // Afficher le bloc demandé
+    if (id !== 'current') {
+      document.getElementById('proposal-' + id).style.display = '';
     }
-
-    // Proposition B
-    const pb = id => document.getElementById('pb-' + id);
-    if (pb('attendu')) {
-      pb('attendu').textContent = fmt(attendu);
-      pb('saisi').textContent   = fmt(saisi);
-      pb('ecart').textContent   = ecartFmt;
-      pb('ecart').style.color   = ok ? okClr : koClr;
-      pb('status').style.background = ok ? okBg : koBg;
-      pb('dot').style.background    = ok ? okClr : koClr;
-      pb('status-txt').textContent  = ok ? 'Aucun écart' : 'Écart détecté';
-      pb('status-txt').style.color  = ok ? okClr : koClr;
-    }
-
-    // Proposition C
-    const pc = id => document.getElementById('pc-' + id);
-    if (pc('badge')) {
-      pc('badge').style.background = ok ? okBg : koBg;
-      pc('badge').style.color      = ok ? okClr : koClr;
-      pc('dot').style.background   = ok ? okClr : koClr;
-      pc('badge-txt').textContent  = ok ? 'Aucun écart détecté' : 'Écart : ' + ecartFmt;
-      pc('attendu').textContent    = fmt(attendu);
-      pc('saisi').textContent      = fmt(saisi);
-      pc('ecart').textContent      = ecartFmt;
-      pc('ecart').style.color      = ok ? okClr : koClr;
-    }
+    // Mettre à jour le panneau
+    renderVersionPanel();
   }
 
-  function vLoad() {
-    try {
-      const s = JSON.parse(localStorage.getItem(PROPOSALS_KEY));
-      if (s && Array.isArray(s.proposals)) vState = s;
-    } catch(e) {}
-  }
-
-  function vSave() {
-    localStorage.setItem(PROPOSALS_KEY, JSON.stringify(vState));
-  }
-
-  // Ajouter une proposition (appelé programmatiquement par le designer)
-  function vAddProposal(id, label, html) {
-    if (vState.proposals.find(p => p.id === id)) return;
-    vState.proposals.push({ id, label, html });
-    vSave();
-    vRender();
-  }
-
-  // Prévisualiser une proposition
-  function vPreview(id) {
-    vState.activeView = id;
-    vSave();
-    vRender();
-  }
-
-  // Revenir à En cours
-  function vShowCurrent() {
-    vState.activeView = 'current';
-    vSave();
-    vRender();
-  }
-
-  // Refuser la proposition active
-  function vRefuse() {
-    const id = vState.activeView;
-    if (id === 'current') return;
-    vState.proposals = vState.proposals.filter(p => p.id !== id);
-    vState.activeView = 'current';
-    vSave();
-    vRender();
-  }
-
-  // Valider la proposition active → devient En cours
-  function vValidate() {
-    const id = vState.activeView;
-    if (id === 'current') return;
-    const prop = vState.proposals.find(p => p.id === id);
-    if (!prop) return;
-    // Injecter le HTML de la proposition dans le wireframe (zone dédiée)
-    const zone = document.getElementById('proposal-zone');
-    if (zone && prop.html) zone.innerHTML = prop.html;
-    vState.proposals = [];
-    vState.activeView = 'current';
-    vSave();
-    vRender();
-  }
-
-  function vRender() {
-    // ── Panneau ──
+  function renderVersionPanel() {
     const list = document.getElementById('version-list');
     if (!list) return;
-    const isCurrent = vState.activeView === 'current';
-    let html = `<div class="version-item${isCurrent ? ' active' : ''}" style="cursor:${isCurrent ? 'default' : 'pointer'};" ${!isCurrent ? 'onclick="vShowCurrent()"' : ''}>
-      <span class="version-item-name">★ En cours</span>
-    </div>`;
-    vState.proposals.forEach(p => {
-      const isActive = vState.activeView === p.id;
-      html += `<div class="version-item${isActive ? ' active' : ''}">
-        <span class="version-item-name">${isActive ? '▶ ' : ''}${p.label}</span>
-        ${!isActive ? `<button class="version-btn" onclick="vPreview('${p.id}')">Voir</button>` : ''}
+    const items = [
+      { id: 'current', label: 'En cours' },
+      { id: 'a', label: 'Proposition A — Synthèse compacte' },
+      { id: 'b', label: 'Proposition B — KPI card' },
+      { id: 'c', label: 'Proposition C — Badge statut' },
+    ];
+    list.innerHTML = items.map(v => {
+      const isActive = activeProposal === v.id;
+      return `<div class="version-item${isActive ? ' active' : ''}" ${!isActive ? `onclick="showProposal('${v.id}')" style="cursor:pointer;"` : ''}>
+        <span class="version-item-name">${isActive ? '★ ' : ''}${v.label}</span>
       </div>`;
-    });
-    list.innerHTML = html;
-
-    // ── Blocs HTML des propositions ──
-    vState.proposals.forEach(p => {
-      const zone = document.getElementById('proposal-zone-' + p.id);
-      if (zone) zone.style.display = (vState.activeView === p.id) ? '' : 'none';
-    });
-    checkSynth();
-
-    // ── Bannière prévisualisation ──
-    const bar = document.getElementById('preview-bar');
-    const barLabel = document.getElementById('preview-bar-label');
-    if (isCurrent) {
-      bar.classList.remove('visible');
-    } else {
-      const prop = vState.proposals.find(p => p.id === vState.activeView);
-      barLabel.textContent = 'Prévisualisation — ' + (prop ? prop.label : '');
-      bar.classList.add('visible');
-    }
+    }).join('');
   }
 
   function togglePanel() {
@@ -3499,7 +3287,6 @@
     if (e.target.tagName === 'INPUT') {
       checkAll();
       checkReg();
-      checkSynth();
     }
   });
 
@@ -3540,18 +3327,8 @@
     }
   }
 
-  // ── Init versions ────────────────────────────────────────────────────
-  vLoad();
-  // Seed propositions si aucune n'existe encore
-  if (vState.proposals.length === 0) {
-    vState.proposals = [
-      { id: 'variante-a', label: 'Proposition A — Synthèse compacte', html: '' },
-      { id: 'variante-b', label: 'Proposition B — KPI card', html: '' },
-      { id: 'variante-c', label: 'Proposition C — Badge statut', html: '' },
-    ];
-    vSave();
-  }
-  vRender();
+  // ── Init versions ─────────────────────────────────────────────────────
+  renderVersionPanel();
 </script>
 </body>
 </html>
