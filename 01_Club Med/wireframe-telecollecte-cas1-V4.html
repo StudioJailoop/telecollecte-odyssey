@@ -950,6 +950,70 @@
           <button class="btn-date-cta" id="btnv">Valider la saisie</button>
         </div>
 
+        <!-- ── Proposition A — Synthèse compacte ── -->
+        <div id="proposal-zone-variante-a" style="display:none; background:#fff; border:1px solid var(--grey-bd); border-radius:12px; padding:14px 24px; margin-bottom:20px;">
+          <div style="display:flex; align-items:center; gap:20px; flex-wrap:wrap; font-size:13px;">
+            <div style="display:flex;flex-direction:column;gap:2px;">
+              <span style="font-size:11px;font-weight:700;color:var(--grey-txt);text-transform:uppercase;letter-spacing:.05em;">Montant attendu</span>
+              <span id="pa-attendu" style="font-size:14px;font-weight:600;color:var(--navy);">— €</span>
+            </div>
+            <div style="width:1px;height:28px;background:var(--grey-bd);flex-shrink:0;"></div>
+            <div style="display:flex;flex-direction:column;gap:2px;">
+              <span style="font-size:11px;font-weight:700;color:var(--grey-txt);text-transform:uppercase;letter-spacing:.05em;">Montant saisi</span>
+              <span id="pa-saisi" style="font-size:14px;font-weight:600;color:var(--navy);">— €</span>
+            </div>
+            <div style="width:1px;height:28px;background:var(--grey-bd);flex-shrink:0;"></div>
+            <div style="display:flex;flex-direction:column;gap:2px;">
+              <span style="font-size:11px;font-weight:700;color:var(--grey-txt);text-transform:uppercase;letter-spacing:.05em;">Écart</span>
+              <span id="pa-ecart" style="font-size:14px;font-weight:600;">— €</span>
+            </div>
+            <div id="pa-status" style="margin-left:auto;display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:4px 12px;border-radius:20px;background:#E6F4EA;color:#1A6B31;">
+              <span id="pa-dot" style="width:8px;height:8px;border-radius:50%;background:#1A6B31;flex-shrink:0;"></span>
+              <span id="pa-status-txt">Aucun écart détecté</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Proposition B — KPI card ── -->
+        <div id="proposal-zone-variante-b" style="display:none; background:#fff; border:1px solid var(--grey-bd); border-radius:12px; padding:16px 24px; margin-bottom:20px;">
+          <div style="display:flex;align-items:stretch;gap:0;border:1px solid var(--grey-bd);border-radius:10px;overflow:hidden;">
+            <div style="flex:1;padding:12px 16px;border-right:1px solid var(--grey-bd);">
+              <div style="font-size:11px;font-weight:700;color:var(--grey-txt);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px;">Montant attendu</div>
+              <div id="pb-attendu" style="font-size:20px;font-weight:700;color:var(--navy);">— €</div>
+            </div>
+            <div style="flex:1;padding:12px 16px;border-right:1px solid var(--grey-bd);">
+              <div style="font-size:11px;font-weight:700;color:var(--grey-txt);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px;">Montant saisi</div>
+              <div id="pb-saisi" style="font-size:20px;font-weight:700;color:var(--navy);">— €</div>
+            </div>
+            <div style="flex:1;padding:12px 16px;border-right:1px solid var(--grey-bd);">
+              <div style="font-size:11px;font-weight:700;color:var(--grey-txt);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px;">Écart</div>
+              <div id="pb-ecart" style="font-size:20px;font-weight:700;">— €</div>
+            </div>
+            <div id="pb-status" style="flex:1.2;padding:12px 16px;display:flex;flex-direction:column;justify-content:center;gap:4px;background:#E6F4EA;">
+              <div style="display:flex;align-items:center;gap:6px;">
+                <span id="pb-dot" style="width:10px;height:10px;border-radius:50%;background:#1A6B31;flex-shrink:0;"></span>
+                <span id="pb-status-txt" style="font-size:12px;font-weight:700;color:#1A6B31;">Aucun écart</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Proposition C — Badge statut ── -->
+        <div id="proposal-zone-variante-c" style="display:none; background:#fff; border:1px solid var(--grey-bd); border-radius:12px; padding:12px 24px; margin-bottom:20px;">
+          <div style="display:flex;align-items:center;gap:12px;">
+            <div id="pc-badge" style="display:inline-flex;align-items:center;gap:7px;padding:6px 14px;border-radius:20px;font-size:13px;font-weight:700;background:#E6F4EA;color:#1A6B31;cursor:pointer;" onclick="document.getElementById('pc-detail').style.display=document.getElementById('pc-detail').style.display==='none'?'flex':'none'">
+              <span id="pc-dot" style="width:9px;height:9px;border-radius:50%;background:#1A6B31;flex-shrink:0;"></span>
+              <span id="pc-badge-txt">Aucun écart détecté</span>
+              <svg viewBox="0 0 10 6" style="width:10px;height:6px;opacity:.5;"><path d="M0 0l5 6 5-6" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
+            </div>
+            <div id="pc-detail" style="display:none;align-items:center;gap:16px;font-size:12px;color:var(--grey-txt);">
+              <span>Attendu : <strong id="pc-attendu" style="color:var(--navy);">—</strong></span>
+              <span>Saisi : <strong id="pc-saisi" style="color:var(--navy);">—</strong></span>
+              <span>Écart : <strong id="pc-ecart">—</strong></span>
+            </div>
+          </div>
+        </div>
+
         <!-- Tabs Tertiary TPE — sticky au scroll, fond plein -->
         <div class="tpe-tabs-bar" id="tpe-tabs-bar">
           <button class="tpe-tab active" onclick="scrollToTpe(1,this)">TPE 1</button>
@@ -2618,6 +2682,83 @@
     activeView: 'current'
   };
 
+  // ── Calcul synthèse financière — alimente les 3 propositions ──────────
+  function checkSynth() {
+    const interfaced = document.getElementById('sw-iface')?.checked;
+    const fmt = n => n.toLocaleString('fr-FR', {minimumFractionDigits:2, maximumFractionDigits:2}) + ' €';
+
+    if (!interfaced) {
+      // Pas en mode interfacé : afficher tirets
+      ['pa','pb','pc'].forEach(p => {
+        const el = id => document.getElementById(p + '-' + id);
+        if (el('attendu')) el('attendu').textContent = '— €';
+        if (el('saisi'))   el('saisi').textContent   = '— €';
+        if (el('ecart'))   el('ecart').textContent   = '— €';
+      });
+      return;
+    }
+
+    // Montant attendu = somme des .c-amt des rows interfacées visibles
+    let attendu = 0;
+    document.querySelectorAll('#mc .t-row.gi').forEach(row => {
+      if (row.closest('[style*="display:none"],[style*="display: none"]')) return;
+      const amt = row.querySelector('.c-amt');
+      if (amt) attendu += parseNum(amt.textContent.replace('€','').trim());
+    });
+
+    // Montant saisi = 1er input .iw de chaque row interfacée
+    let saisi = 0;
+    document.querySelectorAll('#mc .t-row.gi').forEach(row => {
+      if (row.closest('[style*="display:none"],[style*="display: none"]')) return;
+      const inp = row.querySelector('.iw input.inp');
+      if (inp) saisi += parseNum(inp.value);
+    });
+
+    const ecart = saisi - attendu;
+    const ok = Math.abs(ecart) < 0.01;
+    const ecartFmt = (ecart >= 0 ? '+' : '') + fmt(ecart);
+    const okBg = '#E6F4EA', okClr = '#1A6B31', koBg = '#FEF2F2', koClr = '#BF2F17';
+
+    // Proposition A
+    const pa = id => document.getElementById('pa-' + id);
+    if (pa('attendu')) {
+      pa('attendu').textContent = fmt(attendu);
+      pa('saisi').textContent   = fmt(saisi);
+      pa('ecart').textContent   = ecartFmt;
+      pa('ecart').style.color   = ok ? okClr : koClr;
+      pa('status').style.background = ok ? okBg : koBg;
+      pa('status').style.color      = ok ? okClr : koClr;
+      pa('dot').style.background    = ok ? okClr : koClr;
+      pa('status-txt').textContent  = ok ? 'Aucun écart détecté' : 'Écart détecté';
+    }
+
+    // Proposition B
+    const pb = id => document.getElementById('pb-' + id);
+    if (pb('attendu')) {
+      pb('attendu').textContent = fmt(attendu);
+      pb('saisi').textContent   = fmt(saisi);
+      pb('ecart').textContent   = ecartFmt;
+      pb('ecart').style.color   = ok ? okClr : koClr;
+      pb('status').style.background = ok ? okBg : koBg;
+      pb('dot').style.background    = ok ? okClr : koClr;
+      pb('status-txt').textContent  = ok ? 'Aucun écart' : 'Écart détecté';
+      pb('status-txt').style.color  = ok ? okClr : koClr;
+    }
+
+    // Proposition C
+    const pc = id => document.getElementById('pc-' + id);
+    if (pc('badge')) {
+      pc('badge').style.background = ok ? okBg : koBg;
+      pc('badge').style.color      = ok ? okClr : koClr;
+      pc('dot').style.background   = ok ? okClr : koClr;
+      pc('badge-txt').textContent  = ok ? 'Aucun écart détecté' : 'Écart : ' + ecartFmt;
+      pc('attendu').textContent    = fmt(attendu);
+      pc('saisi').textContent      = fmt(saisi);
+      pc('ecart').textContent      = ecartFmt;
+      pc('ecart').style.color      = ok ? okClr : koClr;
+    }
+  }
+
   function vLoad() {
     try {
       const s = JSON.parse(localStorage.getItem(PROPOSALS_KEY));
@@ -2698,6 +2839,7 @@
       const zone = document.getElementById('proposal-zone-' + p.id);
       if (zone) zone.style.display = (vState.activeView === p.id) ? '' : 'none';
     });
+    checkSynth();
 
     // ── Bannière prévisualisation ──
     const bar = document.getElementById('preview-bar');
@@ -3357,6 +3499,7 @@
     if (e.target.tagName === 'INPUT') {
       checkAll();
       checkReg();
+      checkSynth();
     }
   });
 
