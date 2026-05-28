@@ -919,65 +919,6 @@
             </div>
           </div>
 
-          <!-- Proposition Abis : ligne unique date+KPI+bouton (caché par défaut) -->
-          <div id="proposal-abis" style="display:none;">
-            <div style="display:flex; align-items:center; gap:0; width:100%;">
-              <span class="date-label" style="flex:1;">Please proceed with the telecollection of <strong>2026 / 05 / 05</strong></span>
-              <div style="display:flex; align-items:center; gap:28px; padding:0 32px; border-right:1px solid var(--grey-bd);">
-                <div style="display:flex;flex-direction:column;gap:2px;align-items:center;">
-                  <span style="font-size:11px;font-weight:600;color:var(--grey-txt);text-transform:uppercase;letter-spacing:.05em;">Attendu</span>
-                  <span style="font-size:15px;font-weight:700;color:var(--navy);">1 250,00 €</span>
-                </div>
-                <div style="width:1px;height:28px;background:var(--grey-bd);flex-shrink:0;"></div>
-                <div style="display:flex;flex-direction:column;gap:2px;align-items:center;">
-                  <span style="font-size:11px;font-weight:600;color:var(--grey-txt);text-transform:uppercase;letter-spacing:.05em;">Saisi</span>
-                  <span style="font-size:15px;font-weight:700;color:var(--navy);">1 245,00 €</span>
-                </div>
-                <div style="width:1px;height:28px;background:var(--grey-bd);flex-shrink:0;"></div>
-                <div style="display:flex;flex-direction:column;gap:2px;align-items:center;">
-                  <span style="font-size:11px;font-weight:600;color:var(--grey-txt);text-transform:uppercase;letter-spacing:.05em;">Écart</span>
-                  <span style="font-size:15px;font-weight:700;color:#BF2F17;">-5,00 €</span>
-                </div>
-              </div>
-              <button class="btn-date-cta" style="margin-left:24px; flex-shrink:0;">Valider la saisie</button>
-            </div>
-          </div>
-
-        </div>
-
-        <!-- ── Proposition B — KPI card (cachée par défaut) ── -->
-        <div id="proposal-b" style="display:none; background:var(--white); border:1px solid var(--grey-bd); border-radius:12px; padding:16px 24px; margin-bottom:20px;">
-          <div style="display:flex;align-items:stretch;border:1px solid var(--grey-bd);border-radius:10px;overflow:hidden;">
-            <div style="flex:1;padding:12px 16px;border-right:1px solid var(--grey-bd);">
-              <div style="font-size:11px;font-weight:700;color:var(--grey-txt);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px;">Montant attendu</div>
-              <div style="font-size:22px;font-weight:700;color:var(--navy);">1 250,00 €</div>
-            </div>
-            <div style="flex:1;padding:12px 16px;border-right:1px solid var(--grey-bd);">
-              <div style="font-size:11px;font-weight:700;color:var(--grey-txt);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px;">Montant saisi</div>
-              <div style="font-size:22px;font-weight:700;color:var(--navy);">1 245,00 €</div>
-            </div>
-            <div style="flex:1;padding:12px 16px;border-right:1px solid var(--grey-bd);">
-              <div style="font-size:11px;font-weight:700;color:var(--grey-txt);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px;">Écart</div>
-              <div style="font-size:22px;font-weight:700;color:#BF2F17;">-5,00 €</div>
-            </div>
-            <div style="flex:1.2;padding:12px 16px;display:flex;align-items:center;gap:10px;background:#FFFBEB;">
-              <span style="width:7px;height:7px;border-radius:50%;background:#D97706;flex-shrink:0;margin-top:1px;"></span>
-              <div style="display:flex;flex-direction:column;gap:3px;">
-                <span style="font-size:10px;font-weight:700;color:#92400E;text-transform:uppercase;letter-spacing:.06em;">À vérifier</span>
-                <span style="font-size:13px;font-weight:600;color:var(--navy);">Visa</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- ── Proposition C — Signal discret dans le tableau (caché par défaut) ── -->
-        <div id="proposal-c" style="display:none; padding:10px 24px 6px;">
-          <div style="display:flex; align-items:center; gap:8px;">
-            <span style="display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;color:#92400E;letter-spacing:.02em;">
-              <span style="width:6px;height:6px;border-radius:50%;background:#D97706;flex-shrink:0;"></span>
-              Lignes à vérifier
-            </span>
-          </div>
         </div>
 
         <!-- Tabs Tertiary TPE — sticky au scroll, fond plein -->
@@ -1307,9 +1248,18 @@
 
   <hr>
 
-  <!-- Versions / propositions -->
-  <div class="panel-title">Versions</div>
-  <div class="version-list" id="version-list"></div>
+  <!-- En cours -->
+  <div class="panel-title">En cours</div>
+  <div id="current-version-block" style="display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:8px;border:1.5px solid var(--navy);background:#F0F1F8;font-size:13px;font-weight:700;color:var(--navy);">
+    <span style="font-size:11px;">★</span>
+    <span style="flex:1;">Version active</span>
+  </div>
+
+  <hr>
+
+  <!-- Propositions -->
+  <div class="panel-title">Propositions</div>
+  <div id="version-list"></div>
 
   <hr>
 
@@ -2575,7 +2525,7 @@
     btnvSticky.className = btnvMain.className;
     // Pill : visible seulement si sticky ET Prop_A ou Prop_Abis active
     const pill = document.getElementById('proposal-a-pill');
-    if (pill) pill.style.display = (hidden && (activeProposal === 'current' || activeProposal === 'a' || activeProposal === 'abis')) ? 'flex' : 'none';
+    if (pill) pill.style.display = hidden ? 'flex' : 'none';
   }, { root: scrollRoot, threshold: 0 }).observe(blocDateTpe);
 
   const observer = new IntersectionObserver(([entry]) => {
@@ -2650,81 +2600,73 @@
   // Refuser = supprime la proposition, retour En cours.
   // Valider = la proposition devient En cours (son HTML est injecté en permanent), liste vidée.
 
-  // ── Propositions — système minimal ───────────────────────────────────
-  // activeProposal : 'current' | 'a' | 'abis' | 'b' | 'c'
+  // ── Propositions — pipeline ──────────────────────────────────────────
+  // proposals : tableau des propositions actives { id, label, htmlId, signals? }
+  // htmlId : id du bloc HTML à afficher dans #mc (null si pas de bloc dédié)
   let activeProposal = 'current';
-
-  // Lignes marquées pour Prop_B : [tpeContainerId, indexLigne (0-based)]
-  const PROP_B_SIGNALS = [
-    ['rm1', 0], // TPE1 — Visa
-    ['rm2', 0], // TPE2 — Visa
-  ];
-
-  // Lignes marquées pour Prop_C : [tpeContainerId, indexLigne (0-based)]
-  const PROP_C_SIGNALS = [
-    ['rm1', 0], // TPE1 — Visa
-    ['rm1', 2], // TPE1 — WeChat
-    ['rm2', 1], // TPE2 — Amex
-  ];
-
-  function applySignals(signals, active) {
-    document.querySelectorAll('#mc .c-mdp').forEach(el => el.classList.remove('prop-c-signal'));
-    if (!active) return;
-    signals.forEach(([containerId, rowIndex]) => {
-      const container = document.getElementById(containerId);
-      if (!container) return;
-      const rows = container.querySelectorAll('.t-row');
-      if (rows[rowIndex]) rows[rowIndex].querySelector('.c-mdp')?.classList.add('prop-c-signal');
-    });
-  }
+  let proposals = [];  // vide = aucune proposition en attente
 
   function showProposal(id) {
     activeProposal = id;
-    // proposal-a est le En cours — visible pour 'current' et 'a', caché pour les autres
-    const elA = document.getElementById('proposal-a');
-    if (elA) elA.style.display = (id === 'current' || id === 'a') ? 'block' : 'none';
-    // Cacher les autres blocs puis afficher celui demandé
-    ['abis','b','c'].forEach(x => {
-      const el = document.getElementById('proposal-' + x);
-      if (el) el.style.display = 'none';
+    // Masquer tous les blocs de propositions
+    proposals.forEach(p => {
+      if (p.htmlId) {
+        const el = document.getElementById(p.htmlId);
+        if (el) el.style.display = 'none';
+      }
+      // Nettoyer les dots du tableau
+      document.querySelectorAll('#mc .c-mdp').forEach(el => el.classList.remove('prop-c-signal'));
     });
-    if (id !== 'current' && id !== 'a') {
-      const el = document.getElementById('proposal-' + id);
-      if (el) el.style.display = '';
+    if (id === 'current') {
+      // Rien à faire — En cours est toujours visible
+    } else {
+      const prop = proposals.find(p => p.id === id);
+      if (prop) {
+        if (prop.htmlId) {
+          const el = document.getElementById(prop.htmlId);
+          if (el) el.style.display = '';
+        }
+        // Appliquer les dots si définis
+        if (prop.signals) {
+          prop.signals.forEach(([containerId, rowIndex]) => {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            const rows = container.querySelectorAll('.t-row');
+            if (rows[rowIndex]) rows[rowIndex].querySelector('.c-mdp')?.classList.add('prop-c-signal');
+          });
+        }
+      }
     }
-    // Prop_Abis remplace la ligne date+bouton — cacher/montrer cette ligne uniquement
-    const blocDateRow = document.getElementById('bloc-date-row');
-    if (blocDateRow) blocDateRow.style.display = (id === 'abis') ? 'none' : 'flex';
-    // Pill sticky géré par l'IntersectionObserver — on force à none au changement de prop
+    // Pill sticky : visible en En cours (toujours)
     const pill = document.getElementById('proposal-a-pill');
     if (pill) pill.style.display = 'none';
-    // Dots dans le tableau : Prop_B (Visa) et Prop_C (Visa, WeChat, Amex)
-    if (id === 'b') applySignals(PROP_B_SIGNALS, true);
-    else if (id === 'c') applySignals(PROP_C_SIGNALS, true);
-    else applySignals([], false);
-    // Mettre à jour le panneau
     renderVersionPanel();
+  }
+
+  function validateProposal(id) {
+    // Câblage futur : remplace En cours par cette proposition
+    alert('Validation à câbler — ' + id);
+  }
+
+  function deleteProposal(id) {
+    proposals = proposals.filter(p => p.id !== id);
+    if (activeProposal === id) showProposal('current');
+    else renderVersionPanel();
   }
 
   function renderVersionPanel() {
     const list = document.getElementById('version-list');
     if (!list) return;
-    const items = [
-      { id: 'current', label: 'En cours' },
-      { id: 'a',    label: 'Prop_A' },
-      { id: 'abis', label: 'Prop_Abis' },
-      { id: 'b',    label: 'Prop_B' },
-      { id: 'c',    label: 'Prop_C' },
-    ];
-    list.innerHTML = items.map(v => {
-      const isActive = activeProposal === v.id;
-      const isCurrent = v.id === 'current';
-      return `<div class="version-item${isActive ? ' active' : ''}" ${!isActive ? `onclick="showProposal('${v.id}')" style="cursor:pointer;"` : ''}>
-        <span class="version-item-name">${isActive ? '★ ' : ''}${v.label}</span>
-        ${!isCurrent ? `
-          <button class="version-btn" title="Valider" style="padding:2px 6px;font-size:13px;">✓</button>
-          <button class="version-btn danger" title="Supprimer" style="padding:2px 6px;font-size:13px;">🗑</button>
-        ` : ''}
+    if (proposals.length === 0) {
+      list.innerHTML = `<div style="font-size:12px;color:var(--grey-txt);padding:8px 4px;font-style:italic;">Pas de proposition en attente</div>`;
+      return;
+    }
+    list.innerHTML = proposals.map(p => {
+      const isActive = activeProposal === p.id;
+      return `<div class="version-item${isActive ? ' active' : ''}" ${!isActive ? `onclick="showProposal('${p.id}')" style="cursor:pointer;"` : ''}>
+        <span class="version-item-name">${isActive ? '★ ' : ''}${p.label}</span>
+        <button class="version-btn" title="Valider" onclick="event.stopPropagation();validateProposal('${p.id}')" style="padding:2px 6px;font-size:13px;">✓</button>
+        <button class="version-btn danger" title="Supprimer" onclick="event.stopPropagation();deleteProposal('${p.id}')" style="padding:2px 6px;font-size:13px;">🗑</button>
       </div>`;
     }).join('');
   }
