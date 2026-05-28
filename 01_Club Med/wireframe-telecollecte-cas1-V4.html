@@ -912,8 +912,8 @@
               </div>
               <div style="margin-left:auto;display:flex;align-items:center;gap:48px;flex-shrink:0;">
 
-                <!-- Badge Opt_A (En cours) : pill seule -->
-                <div id="badge-opt-a" style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:4px 12px;border-radius:20px;background:#FEF2F2;color:#BF2F17;">
+                <!-- Badge Opt_A : pill seule (archivée) -->
+                <div id="badge-opt-a" style="display:none;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:4px 12px;border-radius:20px;background:#FEF2F2;color:#BF2F17;">
                   <span style="width:8px;height:8px;border-radius:50%;background:#BF2F17;flex-shrink:0;"></span>
                   Écart détecté
                 </div>
@@ -930,8 +930,8 @@
                   </div>
                 </div>
 
-                <!-- Badge Opt_C : tout en un pill enrichi -->
-                <div id="badge-opt-c" style="display:none;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:5px 14px;border-radius:20px;background:#FEF2F2;color:#BF2F17;">
+                <!-- Badge Opt_C (En cours) : pill enrichie avec moyens de paiement -->
+                <div id="badge-opt-c" style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:5px 14px;border-radius:20px;background:#FEF2F2;color:#BF2F17;">
                   <span style="width:8px;height:8px;border-radius:50%;background:#BF2F17;flex-shrink:0;"></span>
                   Écart détecté · <span style="color:var(--navy);margin-left:2px;">Visa · Amex</span>
                 </div>
@@ -954,7 +954,7 @@
           <div style="margin-left:auto; display:flex; align-items:center; gap:48px;">
             <div id="proposal-a-pill" style="display:none; align-items:center; gap:6px; font-size:12px; font-weight:600; padding:4px 12px; border-radius:20px; background:#FEF2F2; color:#BF2F17;">
               <span style="width:7px;height:7px;border-radius:50%;background:#BF2F17;flex-shrink:0;"></span>
-              Écart : -5,00 €
+              Écart détecté · <span style="color:var(--navy);margin-left:2px;">Visa · Amex</span>
             </div>
             <button class="btn-date-cta" id="btnv-sticky" style="display:none; margin-left:0;">Valider la saisie</button>
           </div>
@@ -2628,11 +2628,7 @@
   let activeProposal = 'current';
 
   // badgeId : id du div badge à afficher dans la ligne KPI
-  let proposals = [
-    { id: 'opt-a', label: 'Opt_A — Pill seule',    badgeId: 'badge-opt-a' },
-    { id: 'opt-b', label: 'Opt_B — Pill + labels', badgeId: 'badge-opt-b' },
-    { id: 'opt-c', label: 'Opt_C — Pill enrichie', badgeId: 'badge-opt-c' },
-  ];
+  let proposals = [];  // Opt_C validée et intégrée dans En cours
 
   function showProposal(id) {
     activeProposal = id;
@@ -2644,8 +2640,8 @@
     // Nettoyer dots tableau
     document.querySelectorAll('#mc .c-mdp').forEach(el => el.classList.remove('prop-c-signal'));
     if (id === 'current') {
-      // En cours : badge-opt-a visible
-      const el = document.getElementById('badge-opt-a');
+      // En cours : badge-opt-c visible (Opt_C validée)
+      const el = document.getElementById('badge-opt-c');
       if (el) el.style.display = 'flex';
     } else {
       const prop = proposals.find(p => p.id === id);
