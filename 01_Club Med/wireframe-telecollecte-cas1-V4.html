@@ -964,7 +964,7 @@
               <span style="width:7px;height:7px;border-radius:50%;background:#D97706;flex-shrink:0;margin-top:1px;"></span>
               <div style="display:flex;flex-direction:column;gap:3px;">
                 <span style="font-size:10px;font-weight:700;color:#92400E;text-transform:uppercase;letter-spacing:.06em;">À vérifier</span>
-                <span style="font-size:13px;font-weight:600;color:var(--navy);">Visa · WeChat · Amex</span>
+                <span style="font-size:13px;font-weight:600;color:var(--navy);">Visa</span>
               </div>
             </div>
           </div>
@@ -2654,6 +2654,12 @@
   // activeProposal : 'current' | 'a' | 'abis' | 'b' | 'c'
   let activeProposal = 'current';
 
+  // Lignes marquées pour Prop_B : [tpeContainerId, indexLigne (0-based)]
+  const PROP_B_SIGNALS = [
+    ['rm1', 0], // TPE1 — Visa
+    ['rm2', 0], // TPE2 — Visa
+  ];
+
   // Lignes marquées pour Prop_C : [tpeContainerId, indexLigne (0-based)]
   const PROP_C_SIGNALS = [
     ['rm1', 0], // TPE1 — Visa
@@ -2661,10 +2667,10 @@
     ['rm2', 1], // TPE2 — Amex
   ];
 
-  function applyPropCSignals(active) {
+  function applySignals(signals, active) {
     document.querySelectorAll('#mc .c-mdp').forEach(el => el.classList.remove('prop-c-signal'));
     if (!active) return;
-    PROP_C_SIGNALS.forEach(([containerId, rowIndex]) => {
+    signals.forEach(([containerId, rowIndex]) => {
       const container = document.getElementById(containerId);
       if (!container) return;
       const rows = container.querySelectorAll('.t-row');
@@ -2690,8 +2696,10 @@
     // Pill sticky géré par l'IntersectionObserver — on force à none au changement de prop
     const pill = document.getElementById('proposal-a-pill');
     if (pill) pill.style.display = 'none';
-    // Prop_C : dots dans le tableau
-    applyPropCSignals(id === 'c');
+    // Dots dans le tableau : Prop_B (Visa) et Prop_C (Visa, WeChat, Amex)
+    if (id === 'b') applySignals(PROP_B_SIGNALS, true);
+    else if (id === 'c') applySignals(PROP_C_SIGNALS, true);
+    else applySignals([], false);
     // Mettre à jour le panneau
     renderVersionPanel();
   }
