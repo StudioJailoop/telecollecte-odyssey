@@ -889,13 +889,12 @@
         <!-- bloc-date — toujours dans le DOM pour l'IntersectionObserver -->
         <div class="bloc-date" id="bloc-date-main" style="display:block; padding:16px 24px;">
 
-          <!-- Ligne date + bouton : visible sauf en Prop_Abis -->
+          <!-- Ligne 1 : texte date seul -->
           <div id="bloc-date-row" style="display:flex; align-items:center; width:100%;">
-            <span class="date-label" style="flex:1;">Please proceed with the telecollection of <strong>2026 / 05 / 05</strong></span>
-            <button class="btn-date-cta" id="btnv">Valider la saisie</button>
+            <span class="date-label">Please proceed with the telecollection of <strong>2026 / 05 / 05</strong></span>
           </div>
 
-          <!-- Proposition A : 2e ligne KPI + badge — visible par défaut (intégré dans En cours) -->
+          <!-- Ligne 2 : KPI + badge + bouton -->
           <div id="proposal-a" style="display:block; margin-top:14px; padding-top:14px; border-top:1px solid var(--grey-bd);">
             <div style="display:flex; align-items:center; gap:20px; flex-wrap:wrap;">
               <div style="display:flex;flex-direction:column;gap:2px;">
@@ -912,10 +911,11 @@
                 <span style="font-size:11px;font-weight:700;color:var(--grey-txt);text-transform:uppercase;letter-spacing:.05em;">Écart</span>
                 <span style="font-size:14px;font-weight:600;color:#BF2F17;">-5,00 €</span>
               </div>
-              <div style="margin-left:auto;display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:4px 12px;border-radius:20px;background:#FEF2F2;color:#BF2F17;">
+              <div style="margin-left:auto;display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:4px 12px;border-radius:20px;background:#FEF2F2;color:#BF2F17;flex-shrink:0;">
                 <span style="width:8px;height:8px;border-radius:50%;background:#BF2F17;flex-shrink:0;"></span>
                 Écart détecté
               </div>
+              <button class="btn-date-cta" id="btnv" style="flex-shrink:0;">Valider la saisie</button>
             </div>
           </div>
 
