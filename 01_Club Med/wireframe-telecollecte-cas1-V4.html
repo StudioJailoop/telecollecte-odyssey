@@ -387,7 +387,8 @@
     .gi { grid-template-columns: 120px 1fr 130px 160px 180px; }
     .t-row { background:var(--white); display:grid; padding:10px 20px; min-height:56px; align-items:center; gap:12px; border-bottom:1px solid var(--grey-bd); }
     .t-row:last-child { border-bottom:none; }
-    .c-mdp { font-size:14px; font-weight:600; }
+    .c-mdp { font-size:14px; font-weight:600; position:relative; }
+    .c-mdp.prop-c-signal::after { content:''; display:inline-block; width:6px; height:6px; border-radius:50%; background:#D97706; margin-left:7px; vertical-align:middle; opacity:.85; }
     .c-loc { font-size:13px; color:var(--grey-txt); }
     .c-amt { font-size:14px; }
     .iw { position:relative; display:inline-flex; flex-direction:column; gap:2px; }
@@ -966,12 +967,13 @@
           </div>
         </div>
 
-        <!-- ── Proposition C — Badge statut (caché par défaut) ── -->
-        <div id="proposal-c" style="display:none; background:var(--white); border:1px solid var(--grey-bd); border-radius:12px; padding:12px 24px; margin-bottom:20px;">
-          <div style="display:inline-flex;align-items:center;gap:7px;padding:6px 16px;border-radius:20px;font-size:13px;font-weight:700;background:#FEF2F2;color:#BF2F17;">
-            <span style="width:9px;height:9px;border-radius:50%;background:#BF2F17;flex-shrink:0;"></span>
-            Écart détecté : -5,00 €
-            <svg viewBox="0 0 10 6" style="width:10px;height:6px;opacity:.5;"><path d="M0 0l5 6 5-6" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
+        <!-- ── Proposition C — Signal discret dans le tableau (caché par défaut) ── -->
+        <div id="proposal-c" style="display:none; padding:10px 24px 6px;">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <span style="display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;color:#92400E;letter-spacing:.02em;">
+              <span style="width:6px;height:6px;border-radius:50%;background:#D97706;flex-shrink:0;"></span>
+              Lignes à vérifier
+            </span>
           </div>
         </div>
 
@@ -2649,6 +2651,24 @@
   // activeProposal : 'current' | 'a' | 'abis' | 'b' | 'c'
   let activeProposal = 'current';
 
+  // Lignes marquées pour Prop_C : [tpeContainerId, indexLigne (0-based)]
+  const PROP_C_SIGNALS = [
+    ['rm1', 0], // TPE1 — Visa
+    ['rm1', 2], // TPE1 — WeChat
+    ['rm2', 1], // TPE2 — Amex
+  ];
+
+  function applyPropCSignals(active) {
+    document.querySelectorAll('#mc .c-mdp').forEach(el => el.classList.remove('prop-c-signal'));
+    if (!active) return;
+    PROP_C_SIGNALS.forEach(([containerId, rowIndex]) => {
+      const container = document.getElementById(containerId);
+      if (!container) return;
+      const rows = container.querySelectorAll('.t-row');
+      if (rows[rowIndex]) rows[rowIndex].querySelector('.c-mdp')?.classList.add('prop-c-signal');
+    });
+  }
+
   function showProposal(id) {
     activeProposal = id;
     // Cacher tous les blocs
@@ -2667,6 +2687,8 @@
     // Pill sticky géré par l'IntersectionObserver — on force à none au changement de prop
     const pill = document.getElementById('proposal-a-pill');
     if (pill) pill.style.display = 'none';
+    // Prop_C : dots dans le tableau
+    applyPropCSignals(id === 'c');
     // Mettre à jour le panneau
     renderVersionPanel();
   }
