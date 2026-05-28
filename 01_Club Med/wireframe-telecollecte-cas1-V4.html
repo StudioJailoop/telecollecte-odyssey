@@ -895,8 +895,8 @@
             <button class="btn-date-cta" id="btnv">Valider la saisie</button>
           </div>
 
-          <!-- Proposition A : 2e ligne KPI + badge (caché par défaut) -->
-          <div id="proposal-a" style="display:none; margin-top:14px; padding-top:14px; border-top:1px solid var(--grey-bd);">
+          <!-- Proposition A : 2e ligne KPI + badge — visible par défaut (intégré dans En cours) -->
+          <div id="proposal-a" style="display:block; margin-top:14px; padding-top:14px; border-top:1px solid var(--grey-bd);">
             <div style="display:flex; align-items:center; gap:20px; flex-wrap:wrap;">
               <div style="display:flex;flex-direction:column;gap:2px;">
                 <span style="font-size:11px;font-weight:700;color:var(--grey-txt);text-transform:uppercase;letter-spacing:.05em;">Montant attendu</span>
@@ -2575,7 +2575,7 @@
     btnvSticky.className = btnvMain.className;
     // Pill : visible seulement si sticky ET Prop_A ou Prop_Abis active
     const pill = document.getElementById('proposal-a-pill');
-    if (pill) pill.style.display = (hidden && (activeProposal === 'a' || activeProposal === 'abis')) ? 'flex' : 'none';
+    if (pill) pill.style.display = (hidden && (activeProposal === 'current' || activeProposal === 'a' || activeProposal === 'abis')) ? 'flex' : 'none';
   }, { root: scrollRoot, threshold: 0 }).observe(blocDateTpe);
 
   const observer = new IntersectionObserver(([entry]) => {
@@ -2680,13 +2680,15 @@
 
   function showProposal(id) {
     activeProposal = id;
-    // Cacher tous les blocs
-    ['a','abis','b','c'].forEach(x => {
+    // proposal-a est le En cours — visible pour 'current' et 'a', caché pour les autres
+    const elA = document.getElementById('proposal-a');
+    if (elA) elA.style.display = (id === 'current' || id === 'a') ? 'block' : 'none';
+    // Cacher les autres blocs puis afficher celui demandé
+    ['abis','b','c'].forEach(x => {
       const el = document.getElementById('proposal-' + x);
       if (el) el.style.display = 'none';
     });
-    // Afficher le bloc demandé
-    if (id !== 'current') {
+    if (id !== 'current' && id !== 'a') {
       const el = document.getElementById('proposal-' + id);
       if (el) el.style.display = '';
     }
