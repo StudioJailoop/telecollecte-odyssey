@@ -911,10 +911,31 @@
                 <span style="font-size:14px;font-weight:600;color:#BF2F17;">-5,00 €</span>
               </div>
               <div style="margin-left:auto;display:flex;align-items:center;gap:48px;flex-shrink:0;">
-                <div style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:4px 12px;border-radius:20px;background:#FEF2F2;color:#BF2F17;">
+
+                <!-- Badge Opt_A (En cours) : pill seule -->
+                <div id="badge-opt-a" style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:4px 12px;border-radius:20px;background:#FEF2F2;color:#BF2F17;">
                   <span style="width:8px;height:8px;border-radius:50%;background:#BF2F17;flex-shrink:0;"></span>
                   Écart détecté
                 </div>
+
+                <!-- Badge Opt_B : pill + noms moyens de paiement inline -->
+                <div id="badge-opt-b" style="display:none;align-items:center;gap:8px;">
+                  <div style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:4px 12px;border-radius:20px;background:#FEF2F2;color:#BF2F17;flex-shrink:0;">
+                    <span style="width:8px;height:8px;border-radius:50%;background:#BF2F17;flex-shrink:0;"></span>
+                    Écart détecté
+                  </div>
+                  <div style="display:flex;align-items:center;gap:6px;">
+                    <span style="font-size:12px;font-weight:600;padding:3px 10px;border-radius:20px;border:1px solid #E5E7EB;background:#F9FAFB;color:var(--navy);">Visa</span>
+                    <span style="font-size:12px;font-weight:600;padding:3px 10px;border-radius:20px;border:1px solid #E5E7EB;background:#F9FAFB;color:var(--navy);">Amex</span>
+                  </div>
+                </div>
+
+                <!-- Badge Opt_C : tout en un pill enrichi -->
+                <div id="badge-opt-c" style="display:none;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:5px 14px;border-radius:20px;background:#FEF2F2;color:#BF2F17;">
+                  <span style="width:8px;height:8px;border-radius:50%;background:#BF2F17;flex-shrink:0;"></span>
+                  Écart détecté · <span style="color:var(--navy);margin-left:2px;">Visa · Amex</span>
+                </div>
+
                 <button class="btn-date-cta" id="btnv">Valider la saisie</button>
               </div>
             </div>
@@ -2605,27 +2626,34 @@
   // proposals : tableau des propositions actives { id, label, htmlId, signals? }
   // htmlId : id du bloc HTML à afficher dans #mc (null si pas de bloc dédié)
   let activeProposal = 'current';
-  let proposals = [];  // vide = aucune proposition en attente
+
+  // badgeId : id du div badge à afficher dans la ligne KPI
+  let proposals = [
+    { id: 'opt-a', label: 'Opt_A — Pill seule',    badgeId: 'badge-opt-a' },
+    { id: 'opt-b', label: 'Opt_B — Pill + labels', badgeId: 'badge-opt-b' },
+    { id: 'opt-c', label: 'Opt_C — Pill enrichie', badgeId: 'badge-opt-c' },
+  ];
 
   function showProposal(id) {
     activeProposal = id;
-    // Masquer tous les blocs de propositions
-    proposals.forEach(p => {
-      if (p.htmlId) {
-        const el = document.getElementById(p.htmlId);
-        if (el) el.style.display = 'none';
-      }
-      // Nettoyer les dots du tableau
-      document.querySelectorAll('#mc .c-mdp').forEach(el => el.classList.remove('prop-c-signal'));
+    // Masquer tous les badges, réafficher badge-opt-a par défaut (En cours)
+    ['badge-opt-a','badge-opt-b','badge-opt-c'].forEach(bid => {
+      const el = document.getElementById(bid);
+      if (el) el.style.display = 'none';
     });
+    // Nettoyer dots tableau
+    document.querySelectorAll('#mc .c-mdp').forEach(el => el.classList.remove('prop-c-signal'));
     if (id === 'current') {
-      // Rien à faire — En cours est toujours visible
+      // En cours : badge-opt-a visible
+      const el = document.getElementById('badge-opt-a');
+      if (el) el.style.display = 'flex';
     } else {
       const prop = proposals.find(p => p.id === id);
       if (prop) {
-        if (prop.htmlId) {
-          const el = document.getElementById(prop.htmlId);
-          if (el) el.style.display = '';
+        // Afficher le badge de la prop
+        if (prop.badgeId) {
+          const el = document.getElementById(prop.badgeId);
+          if (el) el.style.display = 'flex';
         }
         // Appliquer les dots si définis
         if (prop.signals) {
@@ -2638,7 +2666,7 @@
         }
       }
     }
-    // Pill sticky : visible en En cours (toujours)
+    // Pill sticky géré par l'IntersectionObserver
     const pill = document.getElementById('proposal-a-pill');
     if (pill) pill.style.display = 'none';
     renderVersionPanel();
