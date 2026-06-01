@@ -384,6 +384,8 @@
     .t-head { background:var(--navy); color:var(--white); display:grid; padding:0 20px; height:48px; align-items:center; font-size:13px; font-weight:600; gap:12px; }
     .gm { grid-template-columns: 120px 1fr 160px 180px; }
     .gi { grid-template-columns: 120px 1fr 130px 160px 180px; }
+    .gs { grid-template-columns: 120px 1fr 130px 160px 180px; }
+    .c-saisi { font-size:14px; color:#6B7280; background:#F3F4F6; padding:5px 10px; border-radius:6px; display:inline-block; cursor:not-allowed; }
     .t-row { background:var(--white); display:grid; padding:10px 20px; min-height:56px; align-items:center; gap:12px; border-bottom:1px solid var(--grey-bd); }
     .t-row:last-child { border-bottom:none; }
     .c-mdp { font-size:14px; font-weight:600; position:relative; }
@@ -983,6 +985,11 @@
               <div class="t-row gi"><span class="c-mdp">Amex</span><span class="c-loc">434 – Poste N°5 Réception</span><span class="c-amt">120,00 €</span><div class="iw"><span class="eur">€</span><input class="inp err" type="text" value="20,00"/><span class="errmsg">Montant corrigé invalide</span></div><input class="inp plain" type="text" value="652356233652" style="width:160px"/></div>
               <div class="t-row gi"><span class="c-mdp">WeChat</span><span class="c-loc">434 – Poste N°5 Réception</span><span class="c-amt">0,00 €</span><div class="iw"><span class="eur">€</span><input class="inp" type="text" value="0,00"/></div><div class="iw"><input class="inp plain remise-inp" type="text" placeholder="" style="width:160px"/><span class="field-error-msg remise-err"><svg viewBox="0 0 20 20" fill="#BF2F17"><path d="M10 2a8 8 0 1 0 0 16A8 8 0 0 0 10 2zm0 4a1 1 0 0 1 1 1v3a1 1 0 0 1-2 0V7a1 1 0 0 1 1-1zm0 7a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg>N° de remise obligatoire</span></div></div>
             </div>
+            <div id="rs1" style="display:none">
+              <div class="t-row gs"><span class="c-mdp">Visa</span><span class="c-loc">434 – Poste N°5 Réception</span><span class="c-saisi">100,00 €</span><div class="iw"><span class="eur">€</span><input class="inp inp-complement" type="text" placeholder="—"/></div><div class="iw"><input class="inp plain remise-inp" type="text" placeholder="" style="width:160px"/><span class="field-error-msg remise-err"><svg viewBox="0 0 20 20" fill="#BF2F17"><path d="M10 2a8 8 0 1 0 0 16A8 8 0 0 0 10 2zm0 4a1 1 0 0 1 1 1v3a1 1 0 0 1-2 0V7a1 1 0 0 1 1-1zm0 7a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg>N° de remise obligatoire</span></div></div>
+              <div class="t-row gs"><span class="c-mdp">Amex</span><span class="c-loc">434 – Poste N°5 Réception</span><span class="c-saisi">20,00 €</span><div class="iw"><span class="eur">€</span><input class="inp inp-complement" type="text" placeholder="—"/></div><div class="iw"><input class="inp plain remise-inp" type="text" placeholder="" style="width:160px"/><span class="field-error-msg remise-err"><svg viewBox="0 0 20 20" fill="#BF2F17"><path d="M10 2a8 8 0 1 0 0 16A8 8 0 0 0 10 2zm0 4a1 1 0 0 1 1 1v3a1 1 0 0 1-2 0V7a1 1 0 0 1 1-1zm0 7a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg>N° de remise obligatoire</span></div></div>
+              <div class="t-row gs"><span class="c-mdp">WeChat</span><span class="c-loc">434 – Poste N°5 Réception</span><span class="c-saisi">0,00 €</span><div class="iw"><span class="eur">€</span><input class="inp inp-complement" type="text" placeholder="—"/></div><div class="iw"><input class="inp plain remise-inp" type="text" placeholder="" style="width:160px"/><span class="field-error-msg remise-err"><svg viewBox="0 0 20 20" fill="#BF2F17"><path d="M10 2a8 8 0 1 0 0 16A8 8 0 0 0 10 2zm0 4a1 1 0 0 1 1 1v3a1 1 0 0 1-2 0V7a1 1 0 0 1 1-1zm0 7a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg>N° de remise obligatoire</span></div></div>
+            </div>
           </div>
         </div>
 
@@ -1001,6 +1008,11 @@
               <div class="t-row gi"><span class="c-mdp">Amex</span><span class="c-loc">434 – Poste N°3 Réception</span><span class="c-amt">45,00 €</span><div class="iw"><span class="eur">€</span><input class="inp" type="text" value="45,00"/></div><input class="inp plain" type="text" value="652356233659" style="width:160px"/></div>
               <div class="t-row gi"><span class="c-mdp">WeChat</span><span class="c-loc">434 – Poste N°3 Réception</span><span class="c-amt">0,00 €</span><div class="iw"><span class="eur">€</span><input class="inp" type="text" value="0,00"/></div><div class="iw"><input class="inp plain remise-inp" type="text" placeholder="" style="width:160px"/><span class="field-error-msg remise-err"><svg viewBox="0 0 20 20" fill="#BF2F17"><path d="M10 2a8 8 0 1 0 0 16A8 8 0 0 0 10 2zm0 4a1 1 0 0 1 1 1v3a1 1 0 0 1-2 0V7a1 1 0 0 1 1-1zm0 7a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg>N° de remise obligatoire</span></div></div>
             </div>
+            <div id="rs2" style="display:none">
+              <div class="t-row gs"><span class="c-mdp">Visa</span><span class="c-loc">434 – Poste N°3 Réception</span><span class="c-saisi">80,00 €</span><div class="iw"><span class="eur">€</span><input class="inp inp-complement" type="text" placeholder="—"/></div><div class="iw"><input class="inp plain remise-inp" type="text" placeholder="" style="width:160px"/><span class="field-error-msg remise-err"><svg viewBox="0 0 20 20" fill="#BF2F17"><path d="M10 2a8 8 0 1 0 0 16A8 8 0 0 0 10 2zm0 4a1 1 0 0 1 1 1v3a1 1 0 0 1-2 0V7a1 1 0 0 1 1-1zm0 7a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg>N° de remise obligatoire</span></div></div>
+              <div class="t-row gs"><span class="c-mdp">Amex</span><span class="c-loc">434 – Poste N°3 Réception</span><span class="c-saisi">45,00 €</span><div class="iw"><span class="eur">€</span><input class="inp inp-complement" type="text" placeholder="—"/></div><div class="iw"><input class="inp plain remise-inp" type="text" placeholder="" style="width:160px"/><span class="field-error-msg remise-err"><svg viewBox="0 0 20 20" fill="#BF2F17"><path d="M10 2a8 8 0 1 0 0 16A8 8 0 0 0 10 2zm0 4a1 1 0 0 1 1 1v3a1 1 0 0 1-2 0V7a1 1 0 0 1 1-1zm0 7a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg>N° de remise obligatoire</span></div></div>
+              <div class="t-row gs"><span class="c-mdp">WeChat</span><span class="c-loc">434 – Poste N°3 Réception</span><span class="c-saisi">0,00 €</span><div class="iw"><span class="eur">€</span><input class="inp inp-complement" type="text" placeholder="—"/></div><div class="iw"><input class="inp plain remise-inp" type="text" placeholder="" style="width:160px"/><span class="field-error-msg remise-err"><svg viewBox="0 0 20 20" fill="#BF2F17"><path d="M10 2a8 8 0 1 0 0 16A8 8 0 0 0 10 2zm0 4a1 1 0 0 1 1 1v3a1 1 0 0 1-2 0V7a1 1 0 0 1 1-1zm0 7a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg>N° de remise obligatoire</span></div></div>
+            </div>
           </div>
         </div>
 
@@ -1008,11 +1020,16 @@
         <div class="tpe-group" id="tpe-anchor-3">
           <div class="tpe-label">TPE N°3</div>
           <div class="table-wrap">
-            <div class="t-head gm"><span>Mode de paiement</span><span>Emplacement</span><span>Montant</span><span>N° Remise</span></div>
+            <div class="t-head gm" id="h3"><span>Mode de paiement</span><span>Emplacement</span><span>Montant</span><span>N° Remise</span></div>
             <div class="rows-manual">
               <div class="t-row gm"><span class="c-mdp">Visa</span><span class="c-loc">434 – Poste N°1 Spa</span><div class="iw"><span class="eur">€</span><input class="inp" type="text" placeholder="0,00"/></div><div class="iw"><input class="inp plain remise-inp" type="text" placeholder="" style="width:160px"/><span class="field-error-msg remise-err"><svg viewBox="0 0 20 20" fill="#BF2F17"><path d="M10 2a8 8 0 1 0 0 16A8 8 0 0 0 10 2zm0 4a1 1 0 0 1 1 1v3a1 1 0 0 1-2 0V7a1 1 0 0 1 1-1zm0 7a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg>N° de remise obligatoire</span></div></div>
               <div class="t-row gm"><span class="c-mdp">Amex</span><span class="c-loc">434 – Poste N°1 Spa</span><div class="iw"><span class="eur">€</span><input class="inp" type="text" placeholder="0,00"/></div><div class="iw"><input class="inp plain remise-inp" type="text" placeholder="" style="width:160px"/><span class="field-error-msg remise-err"><svg viewBox="0 0 20 20" fill="#BF2F17"><path d="M10 2a8 8 0 1 0 0 16A8 8 0 0 0 10 2zm0 4a1 1 0 0 1 1 1v3a1 1 0 0 1-2 0V7a1 1 0 0 1 1-1zm0 7a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg>N° de remise obligatoire</span></div></div>
               <div class="t-row gm"><span class="c-mdp">WeChat</span><span class="c-loc">434 – Poste N°1 Spa</span><div class="iw"><span class="eur">€</span><input class="inp" type="text" placeholder="0,00"/></div><div class="iw"><input class="inp plain remise-inp" type="text" placeholder="" style="width:160px"/><span class="field-error-msg remise-err"><svg viewBox="0 0 20 20" fill="#BF2F17"><path d="M10 2a8 8 0 1 0 0 16A8 8 0 0 0 10 2zm0 4a1 1 0 0 1 1 1v3a1 1 0 0 1-2 0V7a1 1 0 0 1 1-1zm0 7a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg>N° de remise obligatoire</span></div></div>
+            </div>
+            <div class="rows-saisie" style="display:none">
+              <div class="t-row gs"><span class="c-mdp">Visa</span><span class="c-loc">434 – Poste N°1 Spa</span><span class="c-saisi">55,00 €</span><div class="iw"><span class="eur">€</span><input class="inp inp-complement" type="text" placeholder="—"/></div><div class="iw"><input class="inp plain remise-inp" type="text" placeholder="" style="width:160px"/><span class="field-error-msg remise-err"><svg viewBox="0 0 20 20" fill="#BF2F17"><path d="M10 2a8 8 0 1 0 0 16A8 8 0 0 0 10 2zm0 4a1 1 0 0 1 1 1v3a1 1 0 0 1-2 0V7a1 1 0 0 1 1-1zm0 7a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg>N° de remise obligatoire</span></div></div>
+              <div class="t-row gs"><span class="c-mdp">Amex</span><span class="c-loc">434 – Poste N°1 Spa</span><span class="c-saisi">30,00 €</span><div class="iw"><span class="eur">€</span><input class="inp inp-complement" type="text" placeholder="—"/></div><div class="iw"><input class="inp plain remise-inp" type="text" placeholder="" style="width:160px"/><span class="field-error-msg remise-err"><svg viewBox="0 0 20 20" fill="#BF2F17"><path d="M10 2a8 8 0 1 0 0 16A8 8 0 0 0 10 2zm0 4a1 1 0 0 1 1 1v3a1 1 0 0 1-2 0V7a1 1 0 0 1 1-1zm0 7a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg>N° de remise obligatoire</span></div></div>
+              <div class="t-row gs"><span class="c-mdp">WeChat</span><span class="c-loc">434 – Poste N°1 Spa</span><span class="c-saisi">0,00 €</span><div class="iw"><span class="eur">€</span><input class="inp inp-complement" type="text" placeholder="—"/></div><div class="iw"><input class="inp plain remise-inp" type="text" placeholder="" style="width:160px"/><span class="field-error-msg remise-err"><svg viewBox="0 0 20 20" fill="#BF2F17"><path d="M10 2a8 8 0 1 0 0 16A8 8 0 0 0 10 2zm0 4a1 1 0 0 1 1 1v3a1 1 0 0 1-2 0V7a1 1 0 0 1 1-1zm0 7a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg>N° de remise obligatoire</span></div></div>
             </div>
           </div>
         </div>
@@ -1021,11 +1038,16 @@
         <div class="tpe-group" id="tpe-anchor-4">
           <div class="tpe-label">TPE N°4</div>
           <div class="table-wrap">
-            <div class="t-head gm"><span>Mode de paiement</span><span>Emplacement</span><span>Montant</span><span>N° Remise</span></div>
+            <div class="t-head gm" id="h4"><span>Mode de paiement</span><span>Emplacement</span><span>Montant</span><span>N° Remise</span></div>
             <div class="rows-manual">
               <div class="t-row gm"><span class="c-mdp">Visa</span><span class="c-loc">434 – Poste N°2 Restaurant</span><div class="iw"><span class="eur">€</span><input class="inp" type="text" placeholder="0,00"/></div><div class="iw"><input class="inp plain remise-inp" type="text" placeholder="" style="width:160px"/><span class="field-error-msg remise-err"><svg viewBox="0 0 20 20" fill="#BF2F17"><path d="M10 2a8 8 0 1 0 0 16A8 8 0 0 0 10 2zm0 4a1 1 0 0 1 1 1v3a1 1 0 0 1-2 0V7a1 1 0 0 1 1-1zm0 7a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg>N° de remise obligatoire</span></div></div>
               <div class="t-row gm"><span class="c-mdp">Amex</span><span class="c-loc">434 – Poste N°2 Restaurant</span><div class="iw"><span class="eur">€</span><input class="inp" type="text" placeholder="0,00"/></div><div class="iw"><input class="inp plain remise-inp" type="text" placeholder="" style="width:160px"/><span class="field-error-msg remise-err"><svg viewBox="0 0 20 20" fill="#BF2F17"><path d="M10 2a8 8 0 1 0 0 16A8 8 0 0 0 10 2zm0 4a1 1 0 0 1 1 1v3a1 1 0 0 1-2 0V7a1 1 0 0 1 1-1zm0 7a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg>N° de remise obligatoire</span></div></div>
               <div class="t-row gm"><span class="c-mdp">WeChat</span><span class="c-loc">434 – Poste N°2 Restaurant</span><div class="iw"><span class="eur">€</span><input class="inp" type="text" placeholder="0,00"/></div><div class="iw"><input class="inp plain remise-inp" type="text" placeholder="" style="width:160px"/><span class="field-error-msg remise-err"><svg viewBox="0 0 20 20" fill="#BF2F17"><path d="M10 2a8 8 0 1 0 0 16A8 8 0 0 0 10 2zm0 4a1 1 0 0 1 1 1v3a1 1 0 0 1-2 0V7a1 1 0 0 1 1-1zm0 7a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg>N° de remise obligatoire</span></div></div>
+            </div>
+            <div class="rows-saisie" style="display:none">
+              <div class="t-row gs"><span class="c-mdp">Visa</span><span class="c-loc">434 – Poste N°2 Restaurant</span><span class="c-saisi">80,00 €</span><div class="iw"><span class="eur">€</span><input class="inp inp-complement" type="text" placeholder="—"/></div><div class="iw"><input class="inp plain remise-inp" type="text" placeholder="" style="width:160px"/><span class="field-error-msg remise-err"><svg viewBox="0 0 20 20" fill="#BF2F17"><path d="M10 2a8 8 0 1 0 0 16A8 8 0 0 0 10 2zm0 4a1 1 0 0 1 1 1v3a1 1 0 0 1-2 0V7a1 1 0 0 1 1-1zm0 7a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg>N° de remise obligatoire</span></div></div>
+              <div class="t-row gs"><span class="c-mdp">Amex</span><span class="c-loc">434 – Poste N°2 Restaurant</span><span class="c-saisi">15,00 €</span><div class="iw"><span class="eur">€</span><input class="inp inp-complement" type="text" placeholder="—"/></div><div class="iw"><input class="inp plain remise-inp" type="text" placeholder="" style="width:160px"/><span class="field-error-msg remise-err"><svg viewBox="0 0 20 20" fill="#BF2F17"><path d="M10 2a8 8 0 1 0 0 16A8 8 0 0 0 10 2zm0 4a1 1 0 0 1 1 1v3a1 1 0 0 1-2 0V7a1 1 0 0 1 1-1zm0 7a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg>N° de remise obligatoire</span></div></div>
+              <div class="t-row gs"><span class="c-mdp">WeChat</span><span class="c-loc">434 – Poste N°2 Restaurant</span><span class="c-saisi">0,00 €</span><div class="iw"><span class="eur">€</span><input class="inp inp-complement" type="text" placeholder="—"/></div><div class="iw"><input class="inp plain remise-inp" type="text" placeholder="" style="width:160px"/><span class="field-error-msg remise-err"><svg viewBox="0 0 20 20" fill="#BF2F17"><path d="M10 2a8 8 0 1 0 0 16A8 8 0 0 0 10 2zm0 4a1 1 0 0 1 1 1v3a1 1 0 0 1-2 0V7a1 1 0 0 1 1-1zm0 7a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg>N° de remise obligatoire</span></div></div>
             </div>
           </div>
         </div>
@@ -1034,7 +1056,7 @@
         <div class="tpe-group" id="tpe-anchor-5">
           <div class="tpe-label">TPE N°5</div>
           <div class="table-wrap">
-            <div class="t-head gm"><span>Mode de paiement</span><span>Emplacement</span><span>Montant</span><span>N° Remise</span></div>
+            <div class="t-head gm" id="h5"><span>Mode de paiement</span><span>Emplacement</span><span>Montant</span><span>N° Remise</span></div>
             <div class="rows-manual">
               <div class="t-row gm"><span class="c-mdp">Visa</span><span class="c-loc">434 – Poste N°1 Boutique</span><div class="iw"><span class="eur">€</span><input class="inp" type="text" placeholder="0,00"/></div><div class="iw"><input class="inp plain remise-inp" type="text" placeholder="" style="width:160px"/><span class="field-error-msg remise-err"><svg viewBox="0 0 20 20" fill="#BF2F17"><path d="M10 2a8 8 0 1 0 0 16A8 8 0 0 0 10 2zm0 4a1 1 0 0 1 1 1v3a1 1 0 0 1-2 0V7a1 1 0 0 1 1-1zm0 7a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg>N° de remise obligatoire</span></div></div>
               <div class="t-row gm"><span class="c-mdp">Amex</span><span class="c-loc">434 – Poste N°1 Boutique</span><div class="iw"><span class="eur">€</span><input class="inp" type="text" placeholder="0,00"/></div><div class="iw"><input class="inp plain remise-inp" type="text" placeholder="" style="width:160px"/><span class="field-error-msg remise-err"><svg viewBox="0 0 20 20" fill="#BF2F17"><path d="M10 2a8 8 0 1 0 0 16A8 8 0 0 0 10 2zm0 4a1 1 0 0 1 1 1v3a1 1 0 0 1-2 0V7a1 1 0 0 1 1-1zm0 7a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg>N° de remise obligatoire</span></div></div>
@@ -1252,7 +1274,7 @@
 <div class="wf-panel" id="wf-panel">
 
   <div class="panel-title" style="display:flex;align-items:center;justify-content:space-between;">
-    Options
+    Règles de gestion
     <button onclick="togglePanel()" style="background:none;border:none;cursor:pointer;font-size:16px;color:var(--grey-txt);line-height:1;" title="Réduire">−</button>
   </div>
 
@@ -1272,6 +1294,15 @@
     <span>Caisses ouvertes</span>
     <label class="switch">
       <input type="checkbox" id="sw-caisse" onchange="setB(this.checked)">
+      <span class="track"></span>
+    </label>
+  </div>
+
+  <!-- Télécollecte saisie -->
+  <div class="switch-row">
+    <span>Télécollecte saisie</span>
+    <label class="switch">
+      <input type="checkbox" id="sw-saisie" onchange="setS(this.checked)">
       <span class="track"></span>
     </label>
   </div>
@@ -2680,6 +2711,66 @@
     document.getElementById('mc').style.cssText = ko ? 'opacity:.3;pointer-events:none' : '';
     document.getElementById('btnv').className = ko ? 'btn-date-cta off' : 'btn-date-cta';
   }
+
+  let saisieMode = false;
+  function setS(checked) {
+    saisieMode = checked;
+    const gc = 'gs';
+    const hSaisie = '<span>Mode de paiement</span><span>Emplacement</span><span>Déjà saisi 🔒</span><span>Complément</span><span>N° Remise</span>';
+    const hNormal = document.getElementById('sw-iface')?.checked
+      ? '<span>Mode de paiement</span><span>Emplacement</span><span>Montant calculé</span><span>Montant corrigé</span><span>N° Remise</span>'
+      : '<span>Mode de paiement</span><span>Emplacement</span><span>Montant</span><span>N° Remise</span>';
+
+    // TPE 1 & 2 : basculer rm/ri ↔ rs
+    ['1','2'].forEach(n => {
+      const rm = document.getElementById('rm'+n);
+      const ri = document.getElementById('ri'+n);
+      const rs = document.getElementById('rs'+n);
+      const h  = document.getElementById('h'+n);
+      if (checked) {
+        if (rm) rm.style.display = 'none';
+        if (ri) ri.style.display = 'none';
+        if (rs) rs.style.display = 'block';
+        if (h)  { h.className = 't-head ' + gc; h.innerHTML = hSaisie; }
+      } else {
+        const ifaceOn = document.getElementById('sw-iface')?.checked;
+        if (rm) rm.style.display = ifaceOn ? 'none' : 'block';
+        if (ri) ri.style.display = ifaceOn ? 'block' : 'none';
+        if (rs) rs.style.display = 'none';
+        if (h)  { h.className = 't-head ' + (ifaceOn ? 'gi' : 'gm'); h.innerHTML = hNormal; }
+      }
+    });
+
+    // TPE 3-5 : basculer rows-manual ↔ rows-saisie
+    ['3','4','5'].forEach(n => {
+      const anchor = document.getElementById('tpe-anchor-' + n);
+      if (!anchor) return;
+      const manual = anchor.querySelector('.rows-manual');
+      const saisie = anchor.querySelector('.rows-saisie');
+      const h = anchor.querySelector('.t-head');
+      if (checked) {
+        if (manual) manual.style.display = 'none';
+        if (saisie) saisie.style.display = 'block';
+        if (h) { h.className = 't-head ' + gc; h.innerHTML = hSaisie; }
+      } else {
+        if (manual) manual.style.display = 'block';
+        if (saisie) saisie.style.display = 'none';
+        if (h) { h.className = 't-head gm'; h.innerHTML = hNormal; }
+      }
+    });
+
+    // Bouton principal + sticky
+    const btnv = document.getElementById('btnv');
+    const btnvS = document.getElementById('btnv-sticky');
+    if (checked) {
+      if (btnv)  { btnv.textContent  = 'Compléter la saisie'; btnv.className  = 'btn-date-cta off'; }
+      if (btnvS) { btnvS.textContent = 'Compléter la saisie'; btnvS.className = 'btn-date-cta off'; }
+    } else {
+      if (btnv)  { btnv.textContent  = 'Valider la saisie';   btnv.className  = 'btn-date-cta'; }
+      if (btnvS) { btnvS.textContent = 'Valider la saisie';   btnvS.className = 'btn-date-cta'; }
+    }
+    checkAll();
+  }
   // ══ Système de versions / propositions ══════════════════════════════
   // État persisté dans localStorage :
   //   proposals : [{ id, label, html }]  — blocs additifs injectés dans le wireframe
@@ -3366,18 +3457,26 @@
   function checkAll() {
     // ── Télécollecte — uniquement les rows visibles ──
     let tpeOk = true;
-    document.querySelectorAll('#mc .t-row').forEach(row => {
-      // Ignorer les rows dans un conteneur masqué (variante interfacée cachée)
-      if (row.closest('[style*="display:none"], [style*="display: none"]')) return;
-      const inputs = row.querySelectorAll('input');
-      if (inputs.length < 2) return;
-      if (inputs[0].value.trim() !== '' && inputs[1].value.trim() === '') {
-        inputs[1].classList.add('field-error');
-        tpeOk = false;
-      } else {
-        inputs[1].classList.remove('field-error');
-      }
-    });
+
+    if (saisieMode) {
+      // Mode complément : bouton actif si au moins un complément saisi
+      const complements = document.querySelectorAll('#mc .inp-complement');
+      const anyFilled = [...complements].some(i => i.value.trim() !== '');
+      tpeOk = anyFilled;
+    } else {
+      document.querySelectorAll('#mc .t-row').forEach(row => {
+        if (row.closest('[style*="display:none"], [style*="display: none"]')) return;
+        const inputs = row.querySelectorAll('input');
+        if (inputs.length < 2) return;
+        if (inputs[0].value.trim() !== '' && inputs[1].value.trim() === '') {
+          inputs[1].classList.add('field-error');
+          tpeOk = false;
+        } else {
+          inputs[1].classList.remove('field-error');
+        }
+      });
+    }
+
     const btnTpe = document.getElementById('btnv');
     if (btnTpe) {
       const cls = tpeOk ? 'btn-date-cta' : 'btn-date-cta off';
