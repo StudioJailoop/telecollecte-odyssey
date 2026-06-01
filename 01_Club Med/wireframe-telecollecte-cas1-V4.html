@@ -625,6 +625,67 @@
       border-radius: 4px; font-family: inherit; flex-shrink: 0;
     }
     .version-btn:hover { border-color: var(--navy); color: var(--navy); }
+
+    /* ── Modale validation télécollecte ── */
+    #modal-validation-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,0.45); z-index: 3000;
+      align-items: center; justify-content: center;
+    }
+    #modal-validation-overlay.visible { display: flex; }
+    #modal-validation {
+      background: white; border-radius: 16px; width: 480px;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.2); overflow: hidden; position: relative;
+    }
+    #modal-validation .mv-close {
+      position: absolute; top: -14px; right: -14px;
+      width: 30px; height: 30px; border-radius: 50%;
+      background: white; border: 1px solid var(--grey-bd);
+      cursor: pointer; font-size: 16px; color: var(--grey-txt);
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 1px 4px rgba(0,0,0,.12); z-index: 1;
+    }
+    #modal-validation .mv-header {
+      background: #8B3A0F; padding: 14px 20px;
+      font-size: 13px; font-weight: 600; color: white;
+    }
+    #modal-validation .mv-body { padding: 24px 28px 20px; }
+    #modal-validation .mv-title { font-size: 17px; font-weight: 700; color: var(--navy); text-align: center; margin-bottom: 16px; }
+    #modal-validation .mv-text { font-size: 14px; color: var(--navy); line-height: 1.6; margin-bottom: 10px; }
+    #modal-validation .mv-actions {
+      display: flex; justify-content: flex-end; gap: 10px;
+      padding: 16px 28px; border-top: 1px solid var(--grey-bd);
+    }
+    #modal-validation .mv-cancel {
+      background: none; border: 1.5px solid var(--navy); border-radius: 100px;
+      padding: 9px 22px; font-size: 14px; font-weight: 600; color: var(--navy);
+      cursor: pointer; font-family: inherit;
+    }
+    #modal-validation .mv-confirm {
+      background: var(--yellow); border: none; border-radius: 100px;
+      padding: 9px 22px; font-size: 14px; font-weight: 700; color: var(--navy);
+      cursor: pointer; font-family: inherit;
+    }
+
+    /* ── Toaster succès ── */
+    #toaster-validation {
+      position: fixed; bottom: 28px; right: 28px; z-index: 4000;
+      background: #166534; color: white; border-radius: 12px;
+      padding: 14px 18px; width: 340px;
+      display: flex; align-items: flex-start; gap: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+      transform: translateX(120%); transition: transform 0.35s cubic-bezier(.22,1,.36,1);
+    }
+    #toaster-validation.show { transform: translateX(0); }
+    #toaster-validation.hide { transform: translateX(120%); transition: transform 0.3s ease-in; }
+    #toaster-validation .tv-icon { flex-shrink: 0; margin-top: 1px; }
+    #toaster-validation .tv-title { font-size: 14px; font-weight: 700; margin-bottom: 3px; }
+    #toaster-validation .tv-text  { font-size: 13px; opacity: 0.9; line-height: 1.4; }
+    #toaster-validation .tv-close {
+      background: none; border: none; color: white; opacity: 0.7;
+      font-size: 18px; cursor: pointer; line-height: 1; margin-left: auto; padding: 0;
+      flex-shrink: 0;
+    }
     .version-btn.danger:hover { border-color: var(--red); color: var(--red); }
 
   /* ── DRAG & DROP briefs ── */
@@ -1315,6 +1376,15 @@
     <span>Télécollecte saisie</span>
     <label class="switch">
       <input type="checkbox" id="sw-saisie" onchange="setS(this.checked)">
+      <span class="track"></span>
+    </label>
+  </div>
+
+  <!-- Valider la saisie -->
+  <div class="switch-row">
+    <span>Valider la saisie</span>
+    <label class="switch">
+      <input type="checkbox" id="sw-validate" onchange="setValidateMode(this.checked)">
       <span class="track"></span>
     </label>
   </div>
@@ -3568,6 +3638,85 @@
 
   // ── Init versions ─────────────────────────────────────────────────────
   renderVersionPanel();
+
+  // ── Modale validation ────────────────────────────────────────────────
+  let validateMode = false;
+  function setValidateMode(on) {
+    validateMode = on;
+  }
+
+  function openValidationModal() {
+    if (!validateMode) return;
+    const today = new Date().toLocaleDateString('fr-FR', { day:'numeric', month:'long', year:'numeric' });
+    document.getElementById('mv-date-1').textContent = today;
+    document.getElementById('modal-validation-overlay').classList.add('visible');
+  }
+
+  function closeValidationModal() {
+    document.getElementById('modal-validation-overlay').classList.remove('visible');
+  }
+
+  function confirmValidation() {
+    closeValidationModal();
+    const today = new Date().toLocaleDateString('fr-FR', { day:'numeric', month:'long', year:'numeric' });
+    document.getElementById('tv-date').textContent = today;
+    showToaster();
+  }
+
+  function showToaster() {
+    const t = document.getElementById('toaster-validation');
+    t.classList.remove('hide');
+    t.classList.add('show');
+    clearTimeout(t._timer);
+    t._timer = setTimeout(() => hideToaster(), 5000);
+  }
+
+  function hideToaster() {
+    const t = document.getElementById('toaster-validation');
+    t.classList.remove('show');
+    t.classList.add('hide');
+  }
+
+  // Brancher btnv sur la modale si validateMode
+  document.getElementById('btnv').addEventListener('click', () => {
+    if (validateMode) openValidationModal();
+  });
+  document.getElementById('btnv-sticky').addEventListener('click', () => {
+    if (validateMode) openValidationModal();
+  });
 </script>
+
+<!-- Modale validation télécollecte -->
+<div id="modal-validation-overlay">
+  <div id="modal-validation">
+    <button class="mv-close" onclick="closeValidationModal()">×</button>
+    <div class="mv-header">Validation de la télécollecte</div>
+    <div class="mv-body">
+      <div class="mv-title">Validation de la télécollecte</div>
+      <p class="mv-text">Vous êtes sur le point de valider la saisie de la télécollecte du <strong id="mv-date-1"></strong>.</p>
+      <p class="mv-text">Cette action confirme la saisie actuellement réalisée.</p>
+    </div>
+    <div class="mv-actions">
+      <button class="mv-cancel" onclick="closeValidationModal()">Annuler</button>
+      <button class="mv-confirm" onclick="confirmValidation()">Confirmer</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toaster succès -->
+<div id="toaster-validation">
+  <div class="tv-icon">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="10" stroke="white" stroke-width="1.8"/>
+      <polyline points="7 12 10 15 17 9" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </div>
+  <div>
+    <div class="tv-title">Télécollecte validée</div>
+    <div class="tv-text">Votre télécollecte du <span id="tv-date"></span> a bien été saisie.<br>Vous pouvez toujours la compléter.</div>
+  </div>
+  <button class="tv-close" onclick="hideToaster()">×</button>
+</div>
+
 </body>
 </html>
