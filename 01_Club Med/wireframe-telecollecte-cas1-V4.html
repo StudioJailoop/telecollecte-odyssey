@@ -513,8 +513,11 @@
     /* Footer */
 
     /* Panel wireframe */
-    .wf-panel.collapsed .panel-body { display: none; }
-    .wf-panel.collapsed { min-width: 0; }
+    .wf-panel.collapsed > .panel-body { display: none; }
+    .wf-panel.collapsed > .panel-header { display: none !important; }
+    .wf-panel.collapsed { min-width: 0; padding: 6px; border: none; background: none; box-shadow: none; }
+    .wf-panel.collapsed > #btn-panel-open { display: flex !important; }
+    #btn-panel-open { display: none; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 50%; background: var(--white); border: 2px solid var(--navy); cursor: pointer; font-size: 18px; font-weight: 700; color: var(--navy); box-shadow: 0 2px 8px rgba(0,0,0,.15); }
     .wf-panel {
       position: fixed; bottom: 20px; right: 20px;
       background: var(--white); border: 2px solid var(--navy);
@@ -1278,8 +1281,10 @@
 <!-- Panel wireframe -->
 <div class="wf-panel" id="wf-panel">
 
-  <div class="panel-title" style="display:flex;align-items:center;justify-content:space-between;">
-    Règles de gestion
+  <button id="btn-panel-open" onclick="togglePanel()" title="Ouvrir">+</button>
+
+  <div class="panel-header" style="display:flex;align-items:center;justify-content:space-between;">
+    <span class="panel-title">Règles de gestion</span>
     <button onclick="togglePanel()" style="background:none;border:none;cursor:pointer;font-size:16px;color:var(--grey-txt);line-height:1;" title="Réduire">−</button>
   </div>
 
@@ -2855,11 +2860,7 @@
   }
 
   function togglePanel() {
-    const panel = document.getElementById('wf-panel');
-    const btn = panel.querySelector('button[onclick="togglePanel()"]');
-    const collapsed = panel.classList.toggle('collapsed');
-    btn.textContent = collapsed ? '+' : '−';
-    btn.title = collapsed ? 'Afficher' : 'Réduire';
+    document.getElementById('wf-panel').classList.toggle('collapsed');
   }
 
   // ══ Système de commentaires ══════════════════════════════════
