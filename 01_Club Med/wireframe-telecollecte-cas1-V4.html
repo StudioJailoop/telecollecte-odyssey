@@ -2922,13 +2922,13 @@
   let pendingPin = null;
   let currentTab = 'tpe'; // tab active au moment du commentaire
   const AUTHOR_COLORS = {
-    'Sébastien': '#1E2643',
-    'Julie':     '#7C3AED',
-    'Nelly':     '#059669',
-    'Éric':      '#DC2626',
-    'Jérôme':    '#DC2626',
-    'Kirsty':    '#0891B2',
-    'Laurent':   '#D97706',
+    'Sébastien': '#FDBE00',
+    'Julie':     '#EC4899',
+    'Laurent':   '#F97316',
+    'Nelly':     '#10B981',
+    'Éric':      '#EF4444',
+    'Jérôme':    '#A855F7',
+    'Kirsty':    '#38BDF8',
   };
 
   function getColor(author) {
@@ -3058,13 +3058,14 @@
     const text = document.getElementById('cp-text').value.trim();
     if (!text || !pendingPin) return;
     const author = CURRENT_USER;
-    // Numérotation : compteur global + initiale auteur
-    const initial = CURRENT_USER.charAt(0).toUpperCase();
-    const globalCount = (JSON.parse(localStorage.getItem('wf_pin_counter') || '0')) + 1;
-    localStorage.setItem('wf_pin_counter', JSON.stringify(globalCount));
+    // Numérotation : préfixe catégorie + numéro séquentiel global par type
+    const TYPE_PREFIX = { retour:'R', idee:'I', rg:'RG', question:'Q' };
+    const chosenTypeForLabel = document.querySelector('input[name="cp-type"]:checked')?.value || 'retour';
+    const prefix = TYPE_PREFIX[chosenTypeForLabel] || 'R';
+    const countForType = comments.filter(c => c.commentType === chosenTypeForLabel).length + 1;
+    const newLabel = `${prefix}${countForType}`;
 
-    // Type choisi par le PO (si disponible)
-    const chosenType = document.querySelector('input[name="cp-type"]:checked')?.value || null;
+    // chosenTypeForLabel défini plus haut — utilisé pour le label ET le brief
 
     const comment = {
       id: Date.now(),
@@ -3074,8 +3075,8 @@
       text,
       date: new Date().toLocaleDateString('fr-FR'),
       tab: currentTab,
-      pinLabel: `${globalCount}${initial}`,
-      commentType: chosenType
+      pinLabel: newLabel,
+      commentType: chosenTypeForLabel
     };
     comments.push(comment);
     localStorage.setItem(STORAGE_KEY, JSON.stringify(comments));
@@ -3084,7 +3085,7 @@
     // Si designer : créer aussi un brief immédiatement dans la bonne catégorie
     if (isDesigner) {
       const TYPE_MAP = {retour:'retour', idee:'idee', rg:'rg', question:'question'};
-      const briefType = TYPE_MAP[chosenType] || 'retour';
+      const briefType = TYPE_MAP[chosenTypeForLabel] || 'retour';
       const newBrief = {
         id: comment.id,
         author: comment.author,
@@ -3115,12 +3116,15 @@
     pin.id = 'pin-' + c.id;
     pin.style.left = c.x + 'px';
     pin.style.top  = c.y + 'px';
-    // Couleur selon le type du commentaire
-    const pinColors = { retour:'#1E2643', idee:'#D97706', rg:'#7C3AED' };
-    pin.style.background = c.commentType ? (pinColors[c.commentType] || '#D93025') : '#D93025';
+    // Couleur par auteur
+    const pinBg = getColor(c.author);
+    pin.style.background = pinBg;
     pin.style.display = commentMode ? 'flex' : 'none';
     const label = c.pinLabel || (comments.findIndex(cc=>cc.id===c.id) + 1);
-    pin.innerHTML = `<span style="color:white;font-size:10px;font-weight:700;">${label}</span>`;
+    // Texte noir sur fond jaune/clair, blanc sur fond foncé
+    const lightBgs = ['#FDBE00','#10B981','#38BDF8','#F97316'];
+    const textColor = lightBgs.includes(pinBg) ? '#1E2643' : 'white';
+    pin.innerHTML = `<span style="color:${textColor};font-size:10px;font-weight:700;">${label}</span>`;
     pin.title = `${c.author} : ${c.text}`;
 
     // Drag volontaire (clic maintenu + glisser) vs clic simple (ouvre/ferme)
