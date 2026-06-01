@@ -1474,6 +1474,7 @@
     if (inputZone) inputZone.style.display = on ? 'none' : (currentBriefTab === 'claude' ? 'none' : 'block');
     renderBriefs();
     updateAllCounts();
+    refreshPins();
   }
 
   function updateArchivesCount() {
