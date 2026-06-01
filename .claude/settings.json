@@ -1,0 +1,16 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "pgrep -f 'server.py' > /dev/null 2>&1 || python3 \"/Users/sebastienkeller/Library/CloudStorage/Dropbox/Taff/01_Administratif/02_Studio Jaïloop/Studio J/00_Club med/01_Club Med/server.py\" > /tmp/loopcraft-server.log 2>&1 &",
+            "async": true,
+            "statusMessage": "Démarrage serveur local..."
+          }
+        ]
+      }
+    ]
+  }
+}

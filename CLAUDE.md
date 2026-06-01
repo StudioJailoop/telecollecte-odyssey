@@ -11,7 +11,7 @@ Claude est le **développeur principal** de ce projet. Sébastien Keller, Produc
 ## Démarrage immédiat
 
 ```bash
-cd "/Users/sebastienkeller/Library/CloudStorage/Dropbox/Taff/01_Administratif/Claude Yaki/01_Club Med"
+cd "/Users/sebastienkeller/Library/CloudStorage/Dropbox/Taff/01_Administratif/02_Studio Jaïloop/Studio J/00_Club med/01_Club Med"
 python3 server.py   # Serveur local permanent (launchd auto-restart)
 # → http://localhost:8765
 ```
