@@ -669,7 +669,7 @@
 
     /* ── Toaster succès ── */
     #toaster-validation {
-      position: fixed; bottom: 28px; right: 28px; z-index: 4000;
+      position: fixed; bottom: 28px; right: 28px; z-index: 9999;
       background: #166534; color: white; border-radius: 12px;
       padding: 14px 18px; width: 340px;
       display: flex; align-items: flex-start; gap: 12px;
@@ -3665,6 +3665,8 @@
 
   function showToaster() {
     const t = document.getElementById('toaster-validation');
+    // S'assurer qu'il est enfant direct de body pour éviter tout stacking context parasite
+    if (t.parentElement !== document.body) document.body.appendChild(t);
     t.classList.remove('hide');
     t.classList.add('show');
     clearTimeout(t._timer);
