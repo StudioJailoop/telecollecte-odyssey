@@ -622,6 +622,14 @@
     .version-btn:hover { border-color: var(--navy); color: var(--navy); }
     .version-btn.danger:hover { border-color: var(--red); color: var(--red); }
 
+  /* ── DRAG & DROP briefs ── */
+  .brief-draggable { cursor: grab; }
+  .brief-draggable:active { cursor: grabbing; }
+  .brief-dragging { opacity: 0.4; }
+  .brief-drop-before { box-shadow: 0 -2px 0 0 var(--navy); }
+  .brief-drop-after  { box-shadow: 0 2px 0 0 var(--navy); }
+  .brief-drag-handle { display:flex; align-items:center; color:#CBD5E1; padding:0 8px 0 0; flex-shrink:0; cursor:grab; }
+  .brief-drag-handle:hover { color:#6B7280; }
   </style>
 </head>
 <body>
@@ -2429,14 +2437,17 @@
       return;
     }
 
+    // Trier par order si défini, sinon conserver l'ordre d'insertion (id croissant)
+    filtered.sort((a, b) => (a.order ?? a.id) - (b.order ?? b.id));
     list.innerHTML = filtered.map(b => renderBriefCard(b, color)).join('');
+    attachDragHandlers(list);
   }
 
   function renderBriefCard(b, color) {
     const key = String(b.id);
     const inClaude = claudeSelection.has(key);
     return `
-      <div style="background:var(--white);border:1px solid ${color+'33'};border-left:3px solid ${color};border-radius:10px;padding:12px 14px;">
+      <div class="brief-draggable" data-brief-id="${b.id}" draggable="true" style="background:var(--white);border:1px solid ${color+'33'};border-left:3px solid ${color};border-radius:10px;padding:12px 14px;">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
           <div style="display:flex;align-items:center;gap:8px;">
             <span style="font-size:11px;font-weight:700;color:var(--navy);">${b.author}</span>
@@ -2501,6 +2512,62 @@
           `).join('')}
         </div>
       </div>`;
+  }
+
+  // ── Drag & drop réordonnancement briefs ──
+  function attachDragHandlers(list) {
+    if (archivesMode) return;
+    let dragId = null;
+
+    list.querySelectorAll('.brief-draggable').forEach(card => {
+      card.addEventListener('dragstart', e => {
+        dragId = card.dataset.briefId;
+        card.classList.add('brief-dragging');
+        e.dataTransfer.effectAllowed = 'move';
+      });
+      card.addEventListener('dragend', () => {
+        card.classList.remove('brief-dragging');
+        list.querySelectorAll('.brief-drop-before, .brief-drop-after').forEach(el => {
+          el.classList.remove('brief-drop-before', 'brief-drop-after');
+        });
+        dragId = null;
+      });
+      card.addEventListener('dragover', e => {
+        e.preventDefault();
+        if (!dragId || card.dataset.briefId === dragId) return;
+        const rect = card.getBoundingClientRect();
+        const mid  = rect.top + rect.height / 2;
+        list.querySelectorAll('.brief-drop-before, .brief-drop-after').forEach(el => {
+          el.classList.remove('brief-drop-before', 'brief-drop-after');
+        });
+        card.classList.add(e.clientY < mid ? 'brief-drop-before' : 'brief-drop-after');
+      });
+      card.addEventListener('drop', e => {
+        e.preventDefault();
+        if (!dragId || card.dataset.briefId === dragId) return;
+        const rect = card.getBoundingClientRect();
+        const before = e.clientY < rect.top + rect.height / 2;
+
+        // Reconstruire l'ordre à partir du DOM actuel
+        const cards = [...list.querySelectorAll('.brief-draggable')];
+        const ids = cards.map(c => Number(c.dataset.briefId));
+        const fromIdx = ids.indexOf(Number(dragId));
+        let toIdx = ids.indexOf(Number(card.dataset.briefId));
+        if (fromIdx === -1 || toIdx === -1) return;
+
+        ids.splice(fromIdx, 1);
+        toIdx = ids.indexOf(Number(card.dataset.briefId));
+        ids.splice(before ? toIdx : toIdx + 1, 0, Number(dragId));
+
+        // Appliquer le nouvel order à briefs[]
+        ids.forEach((id, idx) => {
+          const b = briefs.find(b => b.id === id);
+          if (b) b.order = idx;
+        });
+        localStorage.setItem(BRIEFS_KEY, JSON.stringify(briefs));
+        renderBriefs();
+      });
+    });
   }
 
   // Soumettre avec Cmd+Enter
