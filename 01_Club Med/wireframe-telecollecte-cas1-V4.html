@@ -2922,7 +2922,7 @@
   let pendingPin = null;
   let currentTab = 'tpe'; // tab active au moment du commentaire
   const AUTHOR_COLORS = {
-    'Sébastien': '#FDBE00',
+    'Sébastien': '#FF6B35',
     'Julie':     '#EC4899',
     'Laurent':   '#F97316',
     'Nelly':     '#10B981',
@@ -3122,7 +3122,7 @@
     pin.style.display = commentMode ? 'flex' : 'none';
     const label = c.pinLabel || (comments.findIndex(cc=>cc.id===c.id) + 1);
     // Texte noir sur fond jaune/clair, blanc sur fond foncé
-    const lightBgs = ['#FDBE00','#10B981','#38BDF8','#F97316'];
+    const lightBgs = ['#10B981','#38BDF8'];
     const textColor = lightBgs.includes(pinBg) ? '#1E2643' : 'white';
     pin.innerHTML = `<span style="color:${textColor};font-size:10px;font-weight:700;">${label}</span>`;
     pin.title = `${c.author} : ${c.text}`;
@@ -3224,7 +3224,11 @@
     pop.style.left = Math.min(pinRect.right + 12, window.innerWidth - 340) + 'px';
     pop.style.top  = Math.max(pinRect.top - 20, 80) + 'px';
 
-    // Pas de titre dynamique, le header affiche juste "Commentaire"
+    // Picto selon le type
+    const TYPE_PICTO = { retour:'💬', idee:'💡', rg:'📋', question:'❓' };
+    const picto = TYPE_PICTO[c.commentType] || '💬';
+    const headerSpan = document.querySelector('#thread-popover .cp-header span');
+    if (headerSpan) headerSpan.textContent = `${picto} Commentaire`;
     renderThreadMessages(c);
     pop.classList.add('visible');
     document.getElementById('reply-text').value = '';
