@@ -3225,10 +3225,12 @@
     pop.style.top  = Math.max(pinRect.top - 20, 80) + 'px';
 
     // Picto selon le type
-    const TYPE_PICTO = { retour:'💬', idee:'💡', rg:'📋', question:'❓' };
+    const TYPE_PICTO  = { retour:'💬', idee:'💡', rg:'📋', question:'❓' };
+    const TYPE_LABEL  = { retour:'Retour', idee:'Idée', rg:'Règle de gestion', question:'Question' };
     const picto = TYPE_PICTO[c.commentType] || '💬';
+    const label = TYPE_LABEL[c.commentType] || 'Commentaire';
     const headerSpan = document.querySelector('#thread-popover .cp-header span');
-    if (headerSpan) headerSpan.textContent = `${picto} Commentaire`;
+    if (headerSpan) headerSpan.textContent = `${picto} ${label}`;
     renderThreadMessages(c);
     pop.classList.add('visible');
     document.getElementById('reply-text').value = '';
