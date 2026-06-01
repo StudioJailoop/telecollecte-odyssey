@@ -1332,24 +1332,18 @@
   <!-- Commentaires -->
   <div class="panel-title">Commentaires</div>
 
-  <!-- Mode avec/sans pins — switch -->
+  <!-- Mode avec/sans pings — switch -->
   <div class="switch-row">
-    <span>Afficher les pins</span>
+    <span>Afficher les pings</span>
     <label class="switch">
       <input type="checkbox" id="sw-comments" onchange="setCmtMode(this.checked)">
       <span class="track"></span>
     </label>
   </div>
 
-  <!-- Filtre auteur -->
-  <select class="author-filter" id="author-filter" onchange="refreshPins()">
+  <!-- Filtre auteur (caché, valeur vide = tous — nécessaire pour refreshPins) -->
+  <select class="author-filter" id="author-filter" onchange="refreshPins()" style="display:none;">
     <option value="">Tous les auteurs</option>
-    <option value="Julie">Julie</option>
-    <option value="Nelly">Nelly</option>
-    <option value="Jérôme">Jérôme</option>
-    <option value="Kirsty">Kirsty</option>
-    <option value="Laurent">Laurent</option>
-    <option value="Sébastien">Sébastien</option>
   </select>
 
   </div><!-- /panel-body -->
