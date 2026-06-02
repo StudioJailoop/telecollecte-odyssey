@@ -2452,29 +2452,129 @@
       return;
     }
 
+    const SVG_REWRITE = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.5"/></svg>`;
+    const SVG_EDIT    = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>`;
+    const SVG_DELETE  = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>`;
+    const SVG_CHECK_ON  = `<svg width="20" height="20" viewBox="0 0 24 24" fill="#7C3AED" stroke="none"><circle cx="12" cy="12" r="10"/><polyline points="7 12 10 15 17 9" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>`;
+    const SVG_CHECK_OFF = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6B7280" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="7 12 10 15 17 9"/></svg>`;
+
     list.innerHTML = rgBriefs.map(b => {
       const sel = rgSelection.has(String(b.id));
       return `
-      <div id="rg-card-${b.id}" style="background:white;border:1.5px solid ${sel ? '#7C3AED' : 'var(--grey-bd)'};border-radius:10px;padding:14px 16px;border-left:3px solid #7C3AED;">
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap;">
+      <div id="rg-card-${b.id}" style="background:white;border:1px solid var(--grey-bd);border-radius:10px;padding:12px 16px;border-left:3px solid #7C3AED;">
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:8px;">
           ${b.pinLabel ? `<span style="background:#7C3AED;color:white;border-radius:6px;padding:2px 8px;font-size:10px;font-weight:700;">${b.pinLabel}</span>` : ''}
-          <span style="font-size:11px;color:var(--grey-txt);">${b.author || '—'} · ${TAB_LABELS[b.tab] || b.tab || ''} · ${b.date || ''}</span>
-          <span style="margin-left:auto;display:flex;align-items:center;gap:6px;">
-            <label style="display:flex;align-items:center;gap:5px;cursor:pointer;font-size:12px;font-weight:600;color:${sel ? '#7C3AED' : 'var(--grey-txt)'};">
-              <input type="checkbox" ${sel ? 'checked' : ''} onchange="toggleRgSelection(${b.id}, this.checked)" style="accent-color:#7C3AED;width:14px;height:14px;cursor:pointer;"/>
-              PRD
-            </label>
-          </span>
+          <span style="font-size:11px;color:var(--grey-txt);flex:1;">${b.author || '—'} · ${TAB_LABELS[b.tab] || b.tab || ''} · ${b.date || ''}</span>
+          <!-- Actions -->
+          <div style="display:flex;align-items:center;gap:4px;flex-shrink:0;">
+            <!-- ⚡ PRD -->
+            <button onclick="toggleRgSelection(${b.id}, ${!sel})" title="${sel ? 'Retirer du PRD' : 'Ajouter au PRD'}"
+              style="background:none;border:none;cursor:pointer;padding:2px;display:flex;align-items:center;justify-content:center;opacity:${sel ? 1 : 0.35};transition:opacity .15s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=${sel ? 1 : 0.35}">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="${sel ? '#7C3AED' : 'none'}" stroke="${sel ? '#7C3AED' : 'currentColor'}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            </button>
+            <!-- ↻ Réécrire IA -->
+            <button onclick="rewriteRg(${b.id})" title="Réécrire avec l'IA"
+              style="background:none;border:none;cursor:pointer;padding:2px;display:flex;align-items:center;justify-content:center;color:var(--grey-txt);opacity:0.6;transition:opacity .15s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.6">${SVG_REWRITE}</button>
+            <!-- ✏️ Éditer -->
+            <button onclick="toggleEditRg(${b.id})" title="Modifier le texte"
+              style="background:none;border:none;cursor:pointer;padding:2px;display:flex;align-items:center;justify-content:center;color:var(--grey-txt);opacity:0.6;transition:opacity .15s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.6">${SVG_EDIT}</button>
+            <!-- ⇄ Recatégoriser -->
+            <button onclick="toggleRecatRg(${b.id})" title="Déplacer vers une autre catégorie"
+              style="background:none;border:none;cursor:pointer;padding:2px 4px;font-size:14px;display:flex;align-items:center;justify-content:center;color:var(--grey-txt);opacity:0.6;transition:opacity .15s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.6">⇄</button>
+            <!-- ✓ check PRD -->
+            <button onclick="toggleRgSelection(${b.id}, ${!sel})" title="${sel ? 'Retirer du PRD' : 'Inclure dans le PRD'}"
+              style="background:none;border:none;cursor:pointer;padding:2px;display:flex;align-items:center;justify-content:center;transition:opacity .15s;" onmouseover="this.style.opacity=0.7" onmouseout="this.style.opacity=1">
+              ${sel ? SVG_CHECK_ON : SVG_CHECK_OFF}
+            </button>
+            <!-- 🗑 Supprimer -->
+            <button onclick="deleteRg(${b.id})" title="Supprimer"
+              style="background:none;border:none;cursor:pointer;padding:2px;display:flex;align-items:center;justify-content:center;color:var(--grey-txt);opacity:0.5;transition:opacity .15s;" onmouseover="this.style.color='#D93025';this.style.opacity=1" onmouseout="this.style.color='var(--grey-txt)';this.style.opacity=0.5">${SVG_DELETE}</button>
+          </div>
         </div>
-        <!-- Texte éditable -->
-        <textarea id="rg-text-${b.id}" style="width:100%;font-size:13px;color:var(--navy);line-height:1.5;border:1px solid transparent;border-radius:6px;padding:4px;font-family:inherit;resize:vertical;background:transparent;outline:none;" onfocus="this.style.borderColor='var(--grey-bd)';this.style.background='#F8F9FB';" onblur="saveRgText(${b.id}, this.value);this.style.borderColor='transparent';this.style.background='transparent';">${b.text}</textarea>
-        <!-- Recatégoriser -->
-        <div style="display:flex;align-items:center;gap:6px;margin-top:8px;flex-wrap:wrap;">
-          <span style="font-size:11px;color:var(--grey-txt);">Déplacer vers :</span>
-          ${TYPE_OPTS.map(t => `<button onclick="recatRg(${b.id},'${t}')" style="font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;cursor:pointer;font-family:inherit;border:1.5px solid var(--grey-bd);background:none;color:var(--grey-txt);">${TYPE_LABELS[t]}</button>`).join('')}
+        <!-- Texte -->
+        <div id="rg-text-${b.id}" style="font-size:13px;color:var(--navy);line-height:1.5;">${b.text}</div>
+        <!-- Zone édition -->
+        <div id="rg-edit-${b.id}" style="display:none;margin-top:6px;">
+          <textarea id="rg-edit-ta-${b.id}" style="width:100%;border:1px solid var(--navy);border-radius:8px;padding:8px;font-size:13px;font-family:inherit;resize:vertical;outline:none;color:var(--navy);min-height:60px;">${b.text}</textarea>
+          <div style="display:flex;justify-content:flex-end;gap:6px;margin-top:6px;">
+            <button onclick="cancelEditRg(${b.id})" style="background:none;border:1px solid var(--grey-bd);border-radius:6px;padding:4px 12px;font-size:12px;cursor:pointer;font-family:inherit;color:var(--grey-txt);">Annuler</button>
+            <button onclick="saveEditRg(${b.id})" style="background:var(--navy);color:white;border:none;border-radius:6px;padding:4px 12px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;">Enregistrer</button>
+          </div>
+        </div>
+        <!-- Zone recatégorisation -->
+        <div id="rg-recat-${b.id}" style="display:none;margin-top:8px;padding-top:8px;border-top:1px dashed var(--grey-bd);display:none;">
+          <span style="font-size:11px;color:var(--grey-txt);margin-right:6px;">Déplacer vers :</span>
+          ${TYPE_OPTS.map(t => `<button onclick="recatRg(${b.id},'${t}')" style="font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;cursor:pointer;font-family:inherit;border:1.5px solid var(--grey-bd);background:none;color:var(--grey-txt);margin-right:4px;">${TYPE_LABELS[t]}</button>`).join('')}
         </div>
       </div>`;
     }).join('');
+  }
+
+  function toggleEditRg(id) {
+    const editZone = document.getElementById('rg-edit-' + id);
+    const textZone = document.getElementById('rg-text-' + id);
+    if (!editZone) return;
+    const open = editZone.style.display === 'block';
+    editZone.style.display = open ? 'none' : 'block';
+    if (textZone) textZone.style.display = open ? 'block' : 'none';
+  }
+
+  function saveEditRg(id) {
+    const ta = document.getElementById('rg-edit-ta-' + id);
+    if (!ta) return;
+    const b = briefs.find(b => String(b.id) === String(id));
+    if (b) { b.text = ta.value; saveBriefs(); if (typeof fbSaveBriefOne === 'function') fbSaveBriefOne(b); }
+    toggleEditRg(id);
+    const textZone = document.getElementById('rg-text-' + id);
+    if (textZone) textZone.textContent = ta.value;
+  }
+
+  function cancelEditRg(id) { toggleEditRg(id); }
+
+  function toggleRecatRg(id) {
+    const zone = document.getElementById('rg-recat-' + id);
+    if (!zone) return;
+    zone.style.display = zone.style.display === 'block' ? 'none' : 'block';
+  }
+
+  function deleteRg(id) {
+    briefs = briefs.filter(b => String(b.id) !== String(id));
+    rgSelection.delete(String(id));
+    saveRgSelection();
+    saveBriefs();
+    updateAllCounts();
+    renderRgList();
+  }
+
+  async function rewriteRg(id) {
+    const b = briefs.find(b => String(b.id) === String(id));
+    if (!b) return;
+    toggleEditRg(id);
+    const ta = document.getElementById('rg-edit-ta-' + id);
+    if (!ta) return;
+    ta.value = '⏳ Réécriture en cours...';
+    ta.disabled = true;
+    try {
+      await fetch('http://localhost:8765/rewrite-request', {
+        method: 'POST', headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ text: b.text, id: 'rg-' + id })
+      });
+      const poll = setInterval(async () => {
+        try {
+          const res = await fetch('http://localhost:8765/rewrite-result');
+          if (res.status === 200) {
+            const data = await res.json();
+            if (data.result && data.id === 'rg-' + id) {
+              clearInterval(poll);
+              ta.value = data.result;
+              ta.style.borderColor = '#059669';
+              ta.disabled = false;
+              ta.focus();
+            }
+          }
+        } catch(e) { clearInterval(poll); ta.value = b.text; ta.disabled = false; }
+      }, 2000);
+    } catch(e) { ta.value = b.text; ta.disabled = false; }
   }
 
   function toggleRgSelection(id, checked) {
