@@ -3674,6 +3674,8 @@
     const today = new Date().toLocaleDateString('fr-FR', { day:'numeric', month:'long', year:'numeric' });
     document.getElementById('tv-date').textContent = today;
     showToaster();
+    const swSaisie = document.getElementById('sw-saisie');
+    if (swSaisie) swSaisie.checked = true;
     setS(true);
   }
 
