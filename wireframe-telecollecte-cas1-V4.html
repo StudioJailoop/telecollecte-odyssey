@@ -2847,6 +2847,10 @@
     } else {
       if (btnv)  { btnv.textContent  = 'Valider la saisie';   btnv.className  = 'btn-date-cta'; }
       if (btnvS) { btnvS.textContent = 'Valider la saisie';   btnvS.className = 'btn-date-cta'; }
+      // Repasser sw-validate à OFF pour pouvoir refaire le parcours
+      const swValidate = document.getElementById('sw-validate');
+      if (swValidate) swValidate.checked = false;
+      setValidateMode(false);
     }
     checkAll();
   }
