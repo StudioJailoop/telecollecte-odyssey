@@ -2481,11 +2481,6 @@
             <!-- ⇄ Recatégoriser -->
             <button onclick="toggleRecatRg(${b.id})" title="Déplacer vers une autre catégorie"
               style="background:none;border:none;cursor:pointer;padding:2px 4px;font-size:14px;display:flex;align-items:center;justify-content:center;color:var(--grey-txt);opacity:0.6;transition:opacity .15s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.6">⇄</button>
-            <!-- ✓ check PRD -->
-            <button onclick="toggleRgSelection(${b.id}, ${!sel})" title="${sel ? 'Retirer du PRD' : 'Inclure dans le PRD'}"
-              style="background:none;border:none;cursor:pointer;padding:2px;display:flex;align-items:center;justify-content:center;transition:opacity .15s;" onmouseover="this.style.opacity=0.7" onmouseout="this.style.opacity=1">
-              ${sel ? SVG_CHECK_ON : SVG_CHECK_OFF}
-            </button>
             <!-- 🗑 Supprimer -->
             <button onclick="deleteRg(${b.id})" title="Supprimer"
               style="background:none;border:none;cursor:pointer;padding:2px;display:flex;align-items:center;justify-content:center;color:var(--grey-txt);opacity:0.5;transition:opacity .15s;" onmouseover="this.style.color='#D93025';this.style.opacity=1" onmouseout="this.style.color='var(--grey-txt)';this.style.opacity=0.5">${SVG_DELETE}</button>
