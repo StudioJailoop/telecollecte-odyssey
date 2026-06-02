@@ -2640,19 +2640,76 @@
 
   async function generatePrd() {
     const ctx = document.getElementById('rg-prd-context')?.value?.trim() || '';
-    const selectedRg = briefs.filter(b => b.type === 'rg' && rgSelection.has(String(b.id)));
-    if (selectedRg.length === 0) { alert('Sélectionne au moins une règle de gestion.'); return; }
+    // Prendre TOUTES les RG du panel, pas uniquement la sélection
+    const allRg = briefs.filter(b => b.type === 'rg');
+    if (allRg.length === 0) { alert('Aucune règle de gestion dans le panel.'); return; }
 
     const btn = document.getElementById('prd-generate-btn');
     if (btn) { btn.textContent = '⏳ Génération en cours...'; btn.disabled = true; }
 
     const today = new Date().toLocaleDateString('fr-FR', { day:'numeric', month:'long', year:'numeric' });
-    let prompt = `Tu es expert Product Management. Génère un PRD (Product Requirements Document) structuré et professionnel à partir des éléments suivants.\n\n`;
-    prompt += `DATE : ${today}\n`;
-    if (ctx) prompt += `\nCONTEXTE\n${ctx}\n`;
-    prompt += `\nRÈGLES DE GESTION (${selectedRg.length})\n`;
-    selectedRg.forEach((b, i) => { prompt += `\n${b.pinLabel || ('RG' + (i+1))} — ${b.text}`; });
-    prompt += `\n\nSTRUCTURE ATTENDUE DU PRD :\n1. Résumé de la feature\n2. Objectif\n3. Règles de gestion détaillées (reprendre chaque RG en la reformulant clairement)\n4. Critères d'acceptation (un par RG)\n5. Points de vigilance\n\nLe PRD doit être rédigé en français, clair, actionnable, prêt à être intégré dans des tickets Jira/Notion.`;
+    const TAB_LABELS = { tpe:'Télécollecte', ant:'Date antérieure', reg:'Régularisation' };
+
+    // Grouper par tab
+    const byTab = {};
+    allRg.forEach(b => {
+      const tab = b.tab || 'tpe';
+      if (!byTab[tab]) byTab[tab] = [];
+      byTab[tab].push(b);
+    });
+
+    let prompt = `Tu es expert Product Management senior. Génère un PRD (Product Requirements Document) complet, structuré et professionnel à partir des éléments suivants.\n\n`;
+    prompt += `━━━ CONTEXTE PRODUIT ━━━\n`;
+    prompt += `Projet : Odyssey — Club Med\n`;
+    prompt += `Feature : Télécollecte TPE — saisie et validation des remises en fin de journée\n`;
+    prompt += `Utilisateurs : GOs (Gentils Organisateurs) et équipes réception des villages Club Med\n`;
+    prompt += `Date : ${today}\n\n`;
+
+    prompt += `━━━ DESCRIPTION FONCTIONNELLE ━━━\n`;
+    prompt += `L'outil Odyssey permet aux équipes Club Med de gérer la télécollecte des TPE (terminaux de paiement) en fin de journée.\n`;
+    prompt += `Il existe 3 modes principaux :\n`;
+    prompt += `\n MODE STANDARD (non interfacé)\n`;
+    prompt += `Le GO saisit manuellement le montant télécollecté par mode de paiement (Visa, Amex, WeChat) pour chaque TPE.\n`;
+    prompt += `Un numéro de remise est obligatoire pour tout montant > 0.\n`;
+    prompt += `Le bouton "Valider la saisie" devient actif une fois tous les champs requis remplis.\n`;
+    prompt += `\n MODE INTERFACÉ\n`;
+    prompt += `Le système pré-remplit automatiquement le montant calculé (montant attendu selon le système).\n`;
+    prompt += `Le GO peut saisir un montant corrigé s'il y a un écart.\n`;
+    prompt += `Un numéro de remise est obligatoire dès qu'un montant corrigé est renseigné.\n`;
+    prompt += `\n MODE TÉLÉCOLLECTE SAISIE\n`;
+    prompt += `Activé après validation : affiche le montant de télécollecte saisi en lecture seule.\n`;
+    prompt += `Le GO peut ajouter un complément si nécessaire.\n`;
+    prompt += `C'est la vue finale post-validation.\n`;
+    prompt += `\n RÉGULARISATION\n`;
+    prompt += `Permet de régulariser un écart constaté sur une date antérieure.\n`;
+    prompt += `Le bouton est actif dès qu'un montant > 0 est saisi, bloqué si le montant dépasse l'écart.\n\n`;
+
+    if (ctx) prompt += `━━━ CONTEXTE ADDITIONNEL ━━━\n${ctx}\n\n`;
+
+    prompt += `━━━ RÈGLES DE GESTION COLLECTÉES (${allRg.length}) ━━━\n`;
+    Object.entries(byTab).forEach(([tab, rgs]) => {
+      prompt += `\n▶ ${TAB_LABELS[tab] || tab}\n`;
+      rgs.forEach((b, i) => {
+        prompt += `  ${b.pinLabel || ('RG' + (i+1))} — ${b.text}\n`;
+      });
+    });
+
+    prompt += `\n━━━ STRUCTURE ATTENDUE DU PRD ━━━\n`;
+    prompt += `Pour chaque section, sois clair, précis, actionnable. Public cible : PO, développeurs, QA, métier.\n\n`;
+    prompt += `1. RÉSUMÉ EXÉCUTIF (3-4 lignes max)\n`;
+    prompt += `2. OBJECTIF DE LA FEATURE\n`;
+    prompt += `3. RÈGLES DE GESTION PAR ÉCRAN\n`;
+    prompt += `   Pour chaque RG, structure ainsi :\n`;
+    prompt += `   ┌─────────────────────────────────\n`;
+    prompt += `   │ [ID] — [Titre court]\n`;
+    prompt += `   │ Écran : [nom du mode concerné]\n`;
+    prompt += `   │ Règle : [reformulation claire et précise]\n`;
+    prompt += `   │ Critère d'acceptation : [ce qui doit être vrai pour valider]\n`;
+    prompt += `   │ ⚠ Point de vigilance : [cas limite ou risque]\n`;
+    prompt += `   └─────────────────────────────────\n`;
+    prompt += `4. POINTS DE VIGILANCE GLOBAUX\n`;
+    prompt += `5. SYNTHÈSE (nombre de RG, écrans couverts, priorités)\n\n`;
+    prompt += `Rédige en français. Enrichis avec ta connaissance produit si pertinent. Format texte brut, pas de markdown.`;
 
     try {
       const prdId = 'prd-' + Date.now();
