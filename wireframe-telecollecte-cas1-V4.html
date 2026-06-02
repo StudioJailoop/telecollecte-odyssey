@@ -783,6 +783,11 @@
       ⚡ Claude
       <span id="cnt-claude" style="display:none;background:#D97706;color:white;border-radius:100px;font-size:10px;font-weight:700;padding:1px 6px;"></span>
     </button>
+    <button onclick="currentBriefTab === 'rg-panel' ? setBriefTab('retour') : setBriefTab('rg-panel')" id="btab-rg-panel"
+      style="display:flex;align-items:center;gap:6px;background:none;border:1.5px solid var(--grey-bd);border-radius:20px;padding:6px 16px;font-size:13px;font-weight:600;color:var(--grey-txt);cursor:pointer;font-family:inherit;white-space:nowrap;transition:all .15s;">
+      📋 Règles de gestion
+      <span id="rg-panel-count" style="display:none;background:#7C3AED;color:white;border-radius:100px;font-size:10px;font-weight:700;padding:1px 6px;"></span>
+    </button>
     <button onclick="currentBriefTab === 'team' ? setBriefTab('retour') : setBriefTab('team')" id="btab-team"
       style="display:flex;align-items:center;gap:6px;background:none;border:1.5px solid var(--grey-bd);border-radius:20px;padding:6px 16px;font-size:13px;font-weight:600;color:var(--grey-txt);cursor:pointer;font-family:inherit;white-space:nowrap;transition:all .15s;">
       💬 Commentaires équipe
@@ -837,6 +842,9 @@
 
   <!-- Liste commentaires équipe (cachée par défaut) -->
   <div id="team-comments-list-panel" style="display:none;flex:1;overflow-y:auto;padding:16px 24px;flex-direction:column;gap:8px;"></div>
+
+  <!-- Panel Règles de gestion (caché par défaut) -->
+  <div id="rg-panel-list" style="display:none;flex:1;overflow-y:auto;padding:16px 24px;flex-direction:column;gap:8px;"></div>
 
   <!-- Panneau Dernières modifs -->
   <div id="lastmodifs-panel" style="display:none;flex:1;overflow-y:auto;padding:16px 24px;flex-direction:column;gap:10px;"></div>
@@ -2086,6 +2094,10 @@
       if (cnt) { cnt.style.display = n > 0 ? 'inline-block' : 'none'; cnt.textContent = n; }
     });
     updateClaudeCount();
+    // Badge RG panel
+    const rgCount = briefs.filter(b => b.type === 'rg').length;
+    const rgBadge = document.getElementById('rg-panel-count');
+    if (rgBadge) { rgBadge.style.display = rgCount > 0 ? 'inline-block' : 'none'; rgBadge.textContent = rgCount; }
   }
 
   function renderClaudePanel() {
@@ -2200,12 +2212,13 @@
 
   function setBriefTab(tab) {
     currentBriefTab = tab;
-    // Styles pills ligne 1 (Claude + équipe)
-    ['claude','team','lastmodifs'].forEach(t => {
+    // Styles pills ligne 1 (Claude + RG panel + équipe)
+    const PILL_COLORS = { claude:'#D97706', 'rg-panel':'#7C3AED', team:'#D93025', lastmodifs:'#D93025' };
+    ['claude','rg-panel','team','lastmodifs'].forEach(t => {
       const btn = document.getElementById('btab-' + t);
       if (!btn) return;
       const isActive = t === tab;
-      const color = t === 'claude' ? '#D97706' : '#D93025'; // team + lastmodifs = rouge
+      const color = PILL_COLORS[t] || '#D93025';
       btn.style.background = isActive ? color + '18' : 'none';
       btn.style.borderColor = isActive ? color : 'var(--grey-bd)';
       btn.style.color = isActive ? color : 'var(--grey-txt)';
@@ -2221,9 +2234,9 @@
       btn.style.color = isActive ? color : 'var(--grey-txt)';
       btn.style.fontWeight = isActive ? '700' : '500';
     });
-    // Masquer la ligne des tabs catégories sur Claude et Commentaires équipe
+    // Masquer la ligne des tabs catégories sur Claude, RG panel et Commentaires équipe
     const line2 = getLine2El();
-    if (line2) line2.style.display = (['claude','team'].includes(tab)) ? 'none' : 'flex';
+    if (line2) line2.style.display = (['claude','team','rg-panel'].includes(tab)) ? 'none' : 'flex';
     // Afficher/masquer zone saisie
     document.getElementById('brief-input-zone').style.display = tab === 'team' ? 'none' : 'block';
     // Placeholder selon onglet
@@ -2231,11 +2244,12 @@
     const ta = document.getElementById('brief-text');
     if (ta) ta.placeholder = placeholders[tab] || '';
     // Afficher la bonne liste
-    document.getElementById('briefs-list').style.display = (['team','claude','lastmodifs'].includes(tab)) ? 'none' : 'flex';
+    document.getElementById('briefs-list').style.display = (['team','claude','lastmodifs','rg-panel'].includes(tab)) ? 'none' : 'flex';
     document.getElementById('team-comments-list-panel').style.display = tab === 'team' ? 'flex' : 'none';
+    document.getElementById('rg-panel-list').style.display = tab === 'rg-panel' ? 'flex' : 'none';
     document.getElementById('claude-panel').style.display = tab === 'claude' ? 'flex' : 'none';
     document.getElementById('lastmodifs-panel').style.display = tab === 'lastmodifs' ? 'flex' : 'none';
-    document.getElementById('brief-input-zone').style.display = (['team','claude','lastmodifs'].includes(tab) || archivesMode) ? 'none' : 'block';
+    document.getElementById('brief-input-zone').style.display = (['team','claude','lastmodifs','rg-panel'].includes(tab) || archivesMode) ? 'none' : 'block';
     // Footer : sur onglet Claude le bouton "Tout effacer" devient "Vider la sélection"
     const clearBtn = document.getElementById('footer-clear-btn');
     if (clearBtn) clearBtn.textContent = tab === 'claude' ? 'Vider la sélection' : 'Tout effacer';
@@ -2244,6 +2258,7 @@
     if (copyBtnTab) copyBtnTab.style.display = (tab === 'claude' && !archivesMode) ? 'block' : 'none';
     updateAllCounts(); // recalculer les badges à chaque changement d'onglet
     if (tab === 'team') loadTeamComments();
+    else if (tab === 'rg-panel') loadRgPanel();
     else if (tab === 'lastmodifs') renderLastModifs();
     else if (tab === 'claude') {
       renderClaudePanel();
@@ -2373,6 +2388,39 @@
         </div>
       </div>`;
     }).join('');
+  }
+
+  function loadRgPanel() {
+    const list = document.getElementById('rg-panel-list');
+    const count = document.getElementById('rg-panel-count');
+    if (!list) return;
+
+    const rgBriefs = briefs.filter(b => b.type === 'rg');
+
+    if (count) {
+      count.style.display = rgBriefs.length > 0 ? 'inline-block' : 'none';
+      count.textContent = rgBriefs.length;
+    }
+
+    if (rgBriefs.length === 0) {
+      list.innerHTML = '<div style="color:var(--grey-txt);font-size:14px;text-align:center;padding:32px 0;">Aucune règle de gestion</div>';
+      return;
+    }
+
+    const TAB_LABELS = { tpe:'Télécollecte', ant:'Date antérieure', reg:'Régularisation' };
+    list.innerHTML = rgBriefs.map(b => `
+      <div style="background:white;border:1px solid var(--grey-bd);border-radius:10px;padding:14px 16px;border-left:3px solid #7C3AED;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+          ${b.pinLabel ? `<span style="background:#7C3AED;color:white;border-radius:6px;padding:2px 8px;font-size:10px;font-weight:700;">${b.pinLabel}</span>` : ''}
+          <span style="font-size:11px;color:var(--grey-txt);">${b.author || '—'}</span>
+          <span style="font-size:11px;color:var(--grey-txt);">·</span>
+          <span style="font-size:11px;color:var(--grey-txt);">${TAB_LABELS[b.tab] || b.tab || 'Télécollecte'}</span>
+          <span style="font-size:11px;color:var(--grey-txt);">·</span>
+          <span style="font-size:11px;color:var(--grey-txt);">${b.date || ''}</span>
+        </div>
+        <div style="font-size:13px;color:var(--navy);line-height:1.5;">${b.text}</div>
+      </div>
+    `).join('');
   }
 
   // Initialiser le badge au chargement
