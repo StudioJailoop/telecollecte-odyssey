@@ -1317,6 +1317,12 @@
             </div>
           </div>
 
+          <!-- Message d'erreur dépassement -->
+          <div id="reg-over-error" style="display:none; padding:6px 16px; color:#BF2F17; font-size:13px; font-weight:500; display:flex; align-items:center; gap:6px;">
+            <svg viewBox="0 0 20 20" fill="#BF2F17" style="width:16px;height:16px;flex-shrink:0;"><path d="M10 2a8 8 0 1 0 0 16A8 8 0 0 0 10 2zm0 4a1 1 0 0 1 1 1v3a1 1 0 0 1-2 0V7a1 1 0 0 1 1-1zm0 7a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg>
+            Le montant saisi dépasse l'écart à régulariser
+          </div>
+
           <!-- Total saisi + Écart restant (calculés en temps réel) -->
           <div class="reg-divider"></div>
           <div class="reg-row reg-sum-row" style="align-items:center;">
@@ -3631,8 +3637,14 @@
     const btn = document.getElementById('btnv-reg');
     if (!btn) return;
     const allEmpty = [...mdpInputs].every(i => i.value.trim() === '');
+    const overEcart = sum > ecart + 0.005;
 
-    if (allEmpty || Math.abs(restant) >= 0.01) {
+    // Message d'erreur dépassement
+    const errEl = document.getElementById('reg-over-error');
+    if (errEl) errEl.style.display = overEcart ? 'flex' : 'none';
+
+    // Actif dès qu'un montant > 0 est saisi ET pas de dépassement
+    if (allEmpty || overEcart) {
       btn.className = 'btn-date-cta off';
     } else {
       btn.className = 'btn-date-cta';
