@@ -839,7 +839,25 @@
   <div id="team-comments-list-panel" style="display:none;flex:1;overflow-y:auto;padding:16px 24px;flex-direction:column;gap:8px;"></div>
 
   <!-- Panel Règles de gestion (caché par défaut) -->
-  <div id="rg-panel-list" style="display:none;flex:1;overflow-y:auto;padding:16px 24px;flex-direction:column;gap:8px;"></div>
+  <div id="rg-panel-list" style="display:none;flex:1;flex-direction:column;overflow:hidden;">
+    <!-- Sous-tabs RG / PRD -->
+    <div style="display:flex;gap:0;padding:0 24px;flex-shrink:0;border-bottom:1px solid var(--grey-bd);">
+      <button onclick="setRgTab('rg-list')" id="rg-subtab-list"
+        style="background:none;border:none;border-bottom:2.5px solid #7C3AED;padding:11px 16px;font-size:13px;font-weight:700;color:#7C3AED;cursor:pointer;font-family:inherit;white-space:nowrap;">
+        📋 Règles de gestion
+        <span id="rg-subtab-count" style="display:none;background:#7C3AED;color:white;border-radius:100px;font-size:10px;font-weight:700;padding:1px 6px;margin-left:4px;"></span>
+      </button>
+      <button onclick="setRgTab('rg-prd')" id="rg-subtab-prd"
+        style="background:none;border:none;border-bottom:2.5px solid transparent;padding:11px 16px;font-size:13px;font-weight:500;color:var(--grey-txt);cursor:pointer;font-family:inherit;white-space:nowrap;">
+        📄 PRD
+        <span id="rg-prd-count" style="display:none;background:#7C3AED;color:white;border-radius:100px;font-size:10px;font-weight:700;padding:1px 6px;margin-left:4px;"></span>
+      </button>
+    </div>
+    <!-- Liste RG -->
+    <div id="rg-list-content" style="flex:1;overflow-y:auto;padding:16px 24px;display:flex;flex-direction:column;gap:8px;"></div>
+    <!-- PRD -->
+    <div id="rg-prd-content" style="display:none;flex:1;overflow-y:auto;padding:16px 24px;flex-direction:column;gap:12px;"></div>
+  </div>
 
   <!-- Panneau Dernières modifs -->
   <div id="lastmodifs-panel" style="display:none;flex:1;overflow-y:auto;padding:16px 24px;flex-direction:column;gap:10px;"></div>
@@ -2385,37 +2403,155 @@
     }).join('');
   }
 
+  // ── RG Panel state ────────────────────────────────────────────────────
+  let rgSubTab = 'rg-list';
+  let rgSelection = new Set(JSON.parse(localStorage.getItem('wf_rg_selection') || '[]'));
+
+  function saveRgSelection() {
+    localStorage.setItem('wf_rg_selection', JSON.stringify([...rgSelection]));
+  }
+
+  function setRgTab(tab) {
+    rgSubTab = tab;
+    const listBtn = document.getElementById('rg-subtab-list');
+    const prdBtn  = document.getElementById('rg-subtab-prd');
+    const listEl  = document.getElementById('rg-list-content');
+    const prdEl   = document.getElementById('rg-prd-content');
+    if (listBtn) { listBtn.style.borderBottom = tab === 'rg-list' ? '2.5px solid #7C3AED' : '2.5px solid transparent'; listBtn.style.color = tab === 'rg-list' ? '#7C3AED' : 'var(--grey-txt)'; listBtn.style.fontWeight = tab === 'rg-list' ? '700' : '500'; }
+    if (prdBtn)  { prdBtn.style.borderBottom  = tab === 'rg-prd'  ? '2.5px solid #7C3AED' : '2.5px solid transparent'; prdBtn.style.color  = tab === 'rg-prd'  ? '#7C3AED' : 'var(--grey-txt)'; prdBtn.style.fontWeight = tab === 'rg-prd' ? '700' : '500'; }
+    if (listEl) listEl.style.display = tab === 'rg-list' ? 'flex' : 'none';
+    if (prdEl)  prdEl.style.display  = tab === 'rg-prd'  ? 'flex' : 'none';
+    if (tab === 'rg-list') renderRgList();
+    if (tab === 'rg-prd')  renderRgPrd();
+  }
+
   function loadRgPanel() {
-    const list = document.getElementById('rg-panel-list');
     const count = document.getElementById('rg-panel-count');
-    if (!list) return;
-
     const rgBriefs = briefs.filter(b => b.type === 'rg');
+    if (count) { count.style.display = rgBriefs.length > 0 ? 'inline-block' : 'none'; count.textContent = rgBriefs.length; }
+    setRgTab(rgSubTab);
+  }
 
-    if (count) {
-      count.style.display = rgBriefs.length > 0 ? 'inline-block' : 'none';
-      count.textContent = rgBriefs.length;
-    }
+  function renderRgList() {
+    const list = document.getElementById('rg-list-content');
+    if (!list) return;
+    const rgBriefs = briefs.filter(b => b.type === 'rg');
+    const TAB_LABELS = { tpe:'Télécollecte', ant:'Date antérieure', reg:'Régularisation' };
+    const TYPE_OPTS = ['retour','idee','question'];
+    const TYPE_LABELS = { retour:'💬 Retour', idee:'💡 Idée', question:'❓ Question' };
+
+    // Badge sous-tab
+    const sc = document.getElementById('rg-subtab-count');
+    if (sc) { sc.style.display = rgBriefs.length > 0 ? 'inline-block' : 'none'; sc.textContent = rgBriefs.length; }
+    // Badge PRD
+    const pc = document.getElementById('rg-prd-count');
+    if (pc) { pc.style.display = rgSelection.size > 0 ? 'inline-block' : 'none'; pc.textContent = rgSelection.size; }
 
     if (rgBriefs.length === 0) {
       list.innerHTML = '<div style="color:var(--grey-txt);font-size:14px;text-align:center;padding:32px 0;">Aucune règle de gestion</div>';
       return;
     }
 
-    const TAB_LABELS = { tpe:'Télécollecte', ant:'Date antérieure', reg:'Régularisation' };
-    list.innerHTML = rgBriefs.map(b => `
-      <div style="background:white;border:1px solid var(--grey-bd);border-radius:10px;padding:14px 16px;border-left:3px solid #7C3AED;">
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+    list.innerHTML = rgBriefs.map(b => {
+      const sel = rgSelection.has(String(b.id));
+      return `
+      <div id="rg-card-${b.id}" style="background:white;border:1.5px solid ${sel ? '#7C3AED' : 'var(--grey-bd)'};border-radius:10px;padding:14px 16px;border-left:3px solid #7C3AED;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap;">
           ${b.pinLabel ? `<span style="background:#7C3AED;color:white;border-radius:6px;padding:2px 8px;font-size:10px;font-weight:700;">${b.pinLabel}</span>` : ''}
-          <span style="font-size:11px;color:var(--grey-txt);">${b.author || '—'}</span>
-          <span style="font-size:11px;color:var(--grey-txt);">·</span>
-          <span style="font-size:11px;color:var(--grey-txt);">${TAB_LABELS[b.tab] || b.tab || 'Télécollecte'}</span>
-          <span style="font-size:11px;color:var(--grey-txt);">·</span>
-          <span style="font-size:11px;color:var(--grey-txt);">${b.date || ''}</span>
+          <span style="font-size:11px;color:var(--grey-txt);">${b.author || '—'} · ${TAB_LABELS[b.tab] || b.tab || ''} · ${b.date || ''}</span>
+          <span style="margin-left:auto;display:flex;align-items:center;gap:6px;">
+            <label style="display:flex;align-items:center;gap:5px;cursor:pointer;font-size:12px;font-weight:600;color:${sel ? '#7C3AED' : 'var(--grey-txt)'};">
+              <input type="checkbox" ${sel ? 'checked' : ''} onchange="toggleRgSelection(${b.id}, this.checked)" style="accent-color:#7C3AED;width:14px;height:14px;cursor:pointer;"/>
+              PRD
+            </label>
+          </span>
         </div>
-        <div style="font-size:13px;color:var(--navy);line-height:1.5;">${b.text}</div>
+        <!-- Texte éditable -->
+        <textarea id="rg-text-${b.id}" style="width:100%;font-size:13px;color:var(--navy);line-height:1.5;border:1px solid transparent;border-radius:6px;padding:4px;font-family:inherit;resize:vertical;background:transparent;outline:none;" onfocus="this.style.borderColor='var(--grey-bd)';this.style.background='#F8F9FB';" onblur="saveRgText(${b.id}, this.value);this.style.borderColor='transparent';this.style.background='transparent';">${b.text}</textarea>
+        <!-- Recatégoriser -->
+        <div style="display:flex;align-items:center;gap:6px;margin-top:8px;flex-wrap:wrap;">
+          <span style="font-size:11px;color:var(--grey-txt);">Déplacer vers :</span>
+          ${TYPE_OPTS.map(t => `<button onclick="recatRg(${b.id},'${t}')" style="font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;cursor:pointer;font-family:inherit;border:1.5px solid var(--grey-bd);background:none;color:var(--grey-txt);">${TYPE_LABELS[t]}</button>`).join('')}
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  function toggleRgSelection(id, checked) {
+    if (checked) rgSelection.add(String(id));
+    else rgSelection.delete(String(id));
+    saveRgSelection();
+    renderRgList();
+  }
+
+  function saveRgText(id, text) {
+    const b = briefs.find(b => String(b.id) === String(id));
+    if (b) { b.text = text; saveBriefs(); if (typeof fbSaveBriefOne === 'function') fbSaveBriefOne(b); }
+  }
+
+  function recatRg(id, newType) {
+    const b = briefs.find(b => String(b.id) === String(id));
+    if (!b) return;
+    b.type = newType;
+    rgSelection.delete(String(id));
+    saveRgSelection();
+    saveBriefs();
+    if (typeof fbSaveBriefOne === 'function') fbSaveBriefOne(b);
+    updateAllCounts();
+    renderRgList();
+  }
+
+  function renderRgPrd() {
+    const prd = document.getElementById('rg-prd-content');
+    if (!prd) return;
+    const selectedRg = briefs.filter(b => b.type === 'rg' && rgSelection.has(String(b.id)));
+    const contextKey = 'wf_rg_prd_context';
+    const savedCtx = localStorage.getItem(contextKey) || '';
+
+    // Badge PRD
+    const pc = document.getElementById('rg-prd-count');
+    if (pc) { pc.style.display = rgSelection.size > 0 ? 'inline-block' : 'none'; pc.textContent = rgSelection.size; }
+
+    prd.innerHTML = `
+      <div style="flex-shrink:0;">
+        <div style="font-size:13px;font-weight:600;color:var(--navy);margin-bottom:6px;">Contexte de la feature</div>
+        <textarea id="rg-prd-context" placeholder="Décris le contexte de la feature…" style="width:100%;height:80px;border:1px solid var(--grey-bd);border-radius:8px;padding:10px;font-size:13px;font-family:inherit;resize:none;outline:none;color:var(--navy);" onblur="localStorage.setItem('${contextKey}', this.value)">${savedCtx}</textarea>
       </div>
-    `).join('');
+
+      <div style="flex-shrink:0;background:#F8F9FB;border:1px solid var(--grey-bd);border-radius:10px;padding:16px;">
+        <div style="font-size:12px;font-weight:600;color:var(--grey-txt);text-transform:uppercase;letter-spacing:.04em;margin-bottom:10px;">Règles de gestion sélectionnées (${selectedRg.length})</div>
+        ${selectedRg.length === 0
+          ? '<div style="font-size:13px;color:var(--grey-txt);font-style:italic;">Aucune RG sélectionnée — cochez des RG dans l\'onglet "Règles de gestion"</div>'
+          : selectedRg.map((b, i) => `
+            <div style="display:flex;gap:10px;margin-bottom:8px;align-items:flex-start;">
+              <span style="background:#7C3AED;color:white;border-radius:6px;padding:2px 8px;font-size:10px;font-weight:700;flex-shrink:0;margin-top:2px;">${b.pinLabel || ('RG' + (i+1))}</span>
+              <span style="font-size:13px;color:var(--navy);line-height:1.5;">${b.text}</span>
+            </div>`).join('')
+        }
+      </div>
+
+      <div style="flex-shrink:0;display:flex;justify-content:flex-end;">
+        <button onclick="copyPrd()" style="background:var(--navy);color:white;border:none;border-radius:8px;padding:10px 24px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;">📋 Copier le PRD</button>
+      </div>`;
+  }
+
+  function copyPrd() {
+    const ctx = document.getElementById('rg-prd-context')?.value?.trim() || '';
+    const selectedRg = briefs.filter(b => b.type === 'rg' && rgSelection.has(String(b.id)));
+    const today = new Date().toLocaleDateString('fr-FR', { day:'numeric', month:'long', year:'numeric' });
+    let txt = `PRD — Règles de gestion — ${today}\n`;
+    txt += `${'─'.repeat(50)}\n\n`;
+    if (ctx) txt += `CONTEXTE\n${ctx}\n\n`;
+    txt += `RÈGLES DE GESTION (${selectedRg.length})\n\n`;
+    selectedRg.forEach((b, i) => {
+      txt += `${b.pinLabel || ('RG' + (i+1))} — ${b.text}\n\n`;
+    });
+    txt += `${'─'.repeat(50)}\n`;
+    txt += `Ces règles de gestion doivent être intégrées dans les critères d'acceptation des tickets concernés.`;
+    navigator.clipboard.writeText(txt).then(() => {
+      const btn = document.querySelector('[onclick="copyPrd()"]');
+      if (btn) { btn.textContent = '✓ Copié !'; setTimeout(() => btn.textContent = '📋 Copier le PRD', 2000); }
+    });
   }
 
   // Initialiser le badge au chargement
