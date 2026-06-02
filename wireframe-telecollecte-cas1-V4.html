@@ -3639,9 +3639,15 @@
     const allEmpty = [...mdpInputs].every(i => i.value.trim() === '');
     const overEcart = sum > ecart + 0.005;
 
-    // Message d'erreur dépassement
+    // Champs en rouge si dépassement, normal sinon
+    mdpInputs.forEach(i => {
+      i.style.borderColor = overEcart && i.value.trim() !== '' ? '#BF2F17' : '';
+      i.style.color = overEcart && i.value.trim() !== '' ? '#BF2F17' : '';
+    });
+
+    // Masquer le message global — l'erreur est portée par les champs
     const errEl = document.getElementById('reg-over-error');
-    if (errEl) errEl.style.display = overEcart ? 'flex' : 'none';
+    if (errEl) errEl.style.display = 'none';
 
     // Actif dès qu'un montant > 0 est saisi ET pas de dépassement
     if (allEmpty || overEcart) {
