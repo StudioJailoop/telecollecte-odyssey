@@ -2530,27 +2530,72 @@
         }
       </div>
 
-      <div style="flex-shrink:0;display:flex;justify-content:flex-end;">
-        <button onclick="copyPrd()" style="background:var(--navy);color:white;border:none;border-radius:8px;padding:10px 24px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;">📋 Copier le PRD</button>
+      <div style="flex-shrink:0;display:flex;justify-content:flex-end;gap:10px;">
+        <button id="prd-generate-btn" onclick="generatePrd()" style="background:var(--yellow);color:#000;border:none;border-radius:8px;padding:10px 24px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;">⚡ Générer un PRD</button>
+      </div>
+
+      <div id="prd-result-wrap" style="display:none;flex-direction:column;gap:8px;flex-shrink:0;">
+        <div style="font-size:13px;font-weight:600;color:var(--navy);">PRD généré</div>
+        <textarea id="prd-result-text" style="width:100%;height:220px;border:1px solid var(--grey-bd);border-radius:8px;padding:12px;font-size:13px;font-family:inherit;resize:vertical;outline:none;color:var(--navy);line-height:1.6;" readonly></textarea>
+        <div style="display:flex;justify-content:flex-end;">
+          <button onclick="copyPrdResult()" style="background:var(--navy);color:white;border:none;border-radius:8px;padding:8px 20px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;">📋 Copier</button>
+        </div>
       </div>`;
   }
 
-  function copyPrd() {
+  async function generatePrd() {
     const ctx = document.getElementById('rg-prd-context')?.value?.trim() || '';
     const selectedRg = briefs.filter(b => b.type === 'rg' && rgSelection.has(String(b.id)));
+    if (selectedRg.length === 0) { alert('Sélectionne au moins une règle de gestion.'); return; }
+
+    const btn = document.getElementById('prd-generate-btn');
+    if (btn) { btn.textContent = '⏳ Génération en cours...'; btn.disabled = true; }
+
     const today = new Date().toLocaleDateString('fr-FR', { day:'numeric', month:'long', year:'numeric' });
-    let txt = `PRD — Règles de gestion — ${today}\n`;
-    txt += `${'─'.repeat(50)}\n\n`;
-    if (ctx) txt += `CONTEXTE\n${ctx}\n\n`;
-    txt += `RÈGLES DE GESTION (${selectedRg.length})\n\n`;
-    selectedRg.forEach((b, i) => {
-      txt += `${b.pinLabel || ('RG' + (i+1))} — ${b.text}\n\n`;
-    });
-    txt += `${'─'.repeat(50)}\n`;
-    txt += `Ces règles de gestion doivent être intégrées dans les critères d'acceptation des tickets concernés.`;
-    navigator.clipboard.writeText(txt).then(() => {
-      const btn = document.querySelector('[onclick="copyPrd()"]');
-      if (btn) { btn.textContent = '✓ Copié !'; setTimeout(() => btn.textContent = '📋 Copier le PRD', 2000); }
+    let prompt = `Tu es expert Product Management. Génère un PRD (Product Requirements Document) structuré et professionnel à partir des éléments suivants.\n\n`;
+    prompt += `DATE : ${today}\n`;
+    if (ctx) prompt += `\nCONTEXTE\n${ctx}\n`;
+    prompt += `\nRÈGLES DE GESTION (${selectedRg.length})\n`;
+    selectedRg.forEach((b, i) => { prompt += `\n${b.pinLabel || ('RG' + (i+1))} — ${b.text}`; });
+    prompt += `\n\nSTRUCTURE ATTENDUE DU PRD :\n1. Résumé de la feature\n2. Objectif\n3. Règles de gestion détaillées (reprendre chaque RG en la reformulant clairement)\n4. Critères d'acceptation (un par RG)\n5. Points de vigilance\n\nLe PRD doit être rédigé en français, clair, actionnable, prêt à être intégré dans des tickets Jira/Notion.`;
+
+    try {
+      const prdId = 'prd-' + Date.now();
+      await fetch('http://localhost:8765/rewrite-request', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ text: prompt, id: prdId })
+      });
+
+      // Polling résultat
+      const poll = setInterval(async () => {
+        try {
+          const res = await fetch('http://localhost:8765/rewrite-result');
+          if (res.status === 200) {
+            const data = await res.json();
+            if (data.result && data.id === prdId) {
+              clearInterval(poll);
+              const wrap = document.getElementById('prd-result-wrap');
+              const ta = document.getElementById('prd-result-text');
+              if (ta) ta.value = data.result;
+              if (wrap) wrap.style.display = 'flex';
+              if (btn) { btn.textContent = '⚡ Générer un PRD'; btn.disabled = false; }
+            }
+          }
+        } catch(e) { clearInterval(poll); if (btn) { btn.textContent = '⚡ Générer un PRD'; btn.disabled = false; } }
+      }, 2000);
+    } catch(e) {
+      if (btn) { btn.textContent = '⚡ Générer un PRD'; btn.disabled = false; }
+      alert('Erreur : serveur local non disponible.');
+    }
+  }
+
+  function copyPrdResult() {
+    const ta = document.getElementById('prd-result-text');
+    if (!ta || !ta.value) return;
+    navigator.clipboard.writeText(ta.value).then(() => {
+      const btn = document.querySelector('[onclick="copyPrdResult()"]');
+      if (btn) { btn.textContent = '✓ Copié !'; setTimeout(() => btn.textContent = '📋 Copier', 2000); }
     });
   }
 
