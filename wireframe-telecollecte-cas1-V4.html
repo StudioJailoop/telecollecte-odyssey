@@ -3670,6 +3670,7 @@
     const today = new Date().toLocaleDateString('fr-FR', { day:'numeric', month:'long', year:'numeric' });
     document.getElementById('tv-date').textContent = today;
     showToaster();
+    setS(true);
   }
 
   function showToaster() {
