@@ -991,7 +991,7 @@
           <!-- Ligne 2 : KPI + badge + bouton -->
           <div id="proposal-a" style="display:block; margin-top:20px; padding-top:16px; border-top:1px solid var(--grey-bd);">
             <div style="display:flex; align-items:center; gap:20px; flex-wrap:wrap;">
-              <div style="display:flex;flex-direction:column;gap:2px;">
+              <div id="kpi-attendu-wrap" style="display:flex;flex-direction:column;gap:2px;">
                 <span style="font-size:11px;font-weight:700;color:var(--grey-txt);text-transform:uppercase;letter-spacing:.05em;">Montant attendu</span>
                 <span id="kpi-attendu-val" style="font-size:14px;font-weight:600;color:var(--navy);">1 250,00 €</span>
               </div>
@@ -3439,6 +3439,22 @@
       const h = document.querySelector('#tpe-anchor-' + n + ' .t-head');
       if (h) { h.className = 't-head ' + gc; h.innerHTML = hh; }
     });
+    // Affichage KPI selon mode
+    const ids_masquer_si_non_iface = ['kpi-attendu-wrap','kpi-sep1','kpi-sep2','kpi-ecart'];
+    ids_masquer_si_non_iface.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.style.display = i ? '' : 'none';
+    });
+    // Badges masqués en mode non-interfacé
+    ['badge-no-ecart','badge-opt-a','badge-opt-b','badge-opt-c'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el && !i) el.style.display = 'none';
+    });
+    // KPI Montant saisi : reset à 0 en non-interfacé, dynamique en interfacé
+    if (!i) {
+      const kvS = document.getElementById('kpi-saisi-val');
+      if (kvS) kvS.textContent = '0,00 €';
+    }
     // Initialiser les KPI dynamiques dès le switch
     setTimeout(updateEcartBadge, 50);
   }
@@ -4253,6 +4269,8 @@
   })();
   // Restaurer l'état du toggle pins et afficher les pins au démarrage
   document.getElementById('sw-comments').checked = commentMode;
+  // Appliquer l'état KPI initial selon le mode (non-interfacé par défaut)
+  setV(document.getElementById('sw-iface')?.checked || false);
   refreshPins();
   renderComments();
   if (typeof updateArchivesCount === "function") updateArchivesCount();
@@ -4322,6 +4340,29 @@
     if (badgeC && hasEcart) badgeC.style.display = 'flex';
   }
 
+  function updateNonIfaceSaisi() {
+    // Calcule le Montant saisi en mode non-interfacé = somme des champs montant visibles (rm)
+    const ifaceOn = document.getElementById('sw-iface')?.checked;
+    if (ifaceOn) return;
+    const fmt = n => n.toLocaleString('fr-FR', { minimumFractionDigits:2, maximumFractionDigits:2 });
+    const parseV = s => parseFloat((s||'').replace(/\s/g,'').replace(',','.')) || 0;
+    let sum = 0;
+    ['1','2'].forEach(n => {
+      const rm = document.getElementById('rm'+n);
+      if (!rm || rm.style.display === 'none') return;
+      rm.querySelectorAll('.inp:not(.remise-inp):not(.plain)').forEach(inp => { sum += parseV(inp.value); });
+    });
+    ['3','4','5'].forEach(n => {
+      const anchor = document.getElementById('tpe-anchor-' + n);
+      if (!anchor) return;
+      const manual = anchor.querySelector('.rows-manual');
+      if (!manual || manual.style.display === 'none') return;
+      manual.querySelectorAll('.inp:not(.remise-inp):not(.plain)').forEach(inp => { sum += parseV(inp.value); });
+    });
+    const kvS = document.getElementById('kpi-saisi-val');
+    if (kvS) kvS.textContent = fmt(sum) + ' €';
+  }
+
   function checkAll() {
     // ── Télécollecte — uniquement les rows visibles ──
     let tpeOk = true;
@@ -4379,6 +4420,7 @@
       checkAll();
       checkReg();
       updateEcartBadge();
+      updateNonIfaceSaisi();
     }
   });
 
