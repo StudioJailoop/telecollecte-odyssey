@@ -1398,32 +1398,24 @@
 </div>
 
 <!-- Panel wireframe -->
-<!-- ══ BARRE ACTIONS (au-dessus du wf-panel, visible tous les intervenants) ══ -->
-<div id="action-toolbar" style="position:fixed;bottom:0;right:0;width:auto;padding:10px 14px;display:flex;align-items:center;gap:8px;z-index:290;background:rgba(15,22,41,0.95);backdrop-filter:blur(8px);border-radius:12px 0 0 0;border-top:1px solid rgba(255,255,255,0.08);border-left:1px solid rgba(255,255,255,0.08);">
-  <!-- ← Dashboard -->
-  <button onclick="goToDashboard()" title="Retour Dashboard"
-    style="display:flex;align-items:center;gap:5px;background:none;border:1px solid rgba(255,255,255,0.15);border-radius:7px;padding:5px 10px;font-size:11px;font-weight:600;color:rgba(255,255,255,0.6);cursor:pointer;font-family:inherit;white-space:nowrap;"
-    onmouseover="this.style.background='rgba(255,255,255,0.08)';this.style.color='white'" onmouseout="this.style.background='none';this.style.color='rgba(255,255,255,0.6)'">
+<!-- Overlay wf-panel -->
+<div id="wf-panel-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:198;" onclick="togglePanel()"></div>
+
+<!-- Barre actions — visible quand wf-panel ouvert -->
+<div id="wf-action-toolbar" style="display:none;position:fixed;right:0;z-index:200;background:rgba(15,22,41,0.97);backdrop-filter:blur(8px);padding:8px 14px;display:none;align-items:center;gap:8px;border-radius:10px 10px 0 0;border:1px solid rgba(255,255,255,0.08);border-bottom:none;">
+  <button onclick="goToDashboard()" style="display:flex;align-items:center;gap:5px;background:none;border:1px solid rgba(255,255,255,0.15);border-radius:7px;padding:5px 10px;font-size:11px;font-weight:600;color:rgba(255,255,255,0.6);cursor:pointer;font-family:inherit;white-space:nowrap;" onmouseover="this.style.background='rgba(255,255,255,0.08)';this.style.color='white'" onmouseout="this.style.background='none';this.style.color='rgba(255,255,255,0.6)'">
     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
     Dashboard
   </button>
-  <!-- 💬 Commentaires -->
-  <button onclick="openBriefs()" title="Ouvrir l'espace commentaires"
-    style="display:flex;align-items:center;gap:5px;background:none;border:1px solid rgba(255,255,255,0.15);border-radius:7px;padding:5px 10px;font-size:11px;font-weight:600;color:rgba(255,255,255,0.6);cursor:pointer;font-family:inherit;white-space:nowrap;"
-    onmouseover="this.style.background='rgba(255,255,255,0.08)';this.style.color='white'" onmouseout="this.style.background='none';this.style.color='rgba(255,255,255,0.6)'">
+  <button onclick="openBriefs()" style="display:flex;align-items:center;gap:5px;background:none;border:1px solid rgba(255,255,255,0.15);border-radius:7px;padding:5px 10px;font-size:11px;font-weight:600;color:rgba(255,255,255,0.6);cursor:pointer;font-family:inherit;white-space:nowrap;" onmouseover="this.style.background='rgba(255,255,255,0.08)';this.style.color='white'" onmouseout="this.style.background='none';this.style.color='rgba(255,255,255,0.6)'">
     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
     Commentaires
   </button>
-  <!-- 👁 Pings toggle -->
-  <button onclick="togglePingsFromToolbar(this)" id="toolbar-pings-btn" title="Afficher / masquer les pings"
-    style="display:flex;align-items:center;gap:5px;background:none;border:1px solid rgba(255,255,255,0.15);border-radius:7px;padding:5px 10px;font-size:11px;font-weight:600;color:rgba(255,255,255,0.6);cursor:pointer;font-family:inherit;white-space:nowrap;">
+  <button onclick="togglePingsFromToolbar(this)" id="toolbar-pings-btn" style="display:flex;align-items:center;gap:5px;background:none;border:1px solid rgba(255,255,255,0.15);border-radius:7px;padding:5px 10px;font-size:11px;font-weight:600;color:rgba(255,255,255,0.6);cursor:pointer;font-family:inherit;white-space:nowrap;">
     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
     Pings
   </button>
-  <!-- 📘 Documentation -->
-  <button onclick="openDocDrawer()" title="Documentation"
-    style="display:flex;align-items:center;gap:5px;background:rgba(124,58,237,0.2);border:1px solid rgba(124,58,237,0.4);border-radius:7px;padding:5px 10px;font-size:11px;font-weight:600;color:#C4B5FD;cursor:pointer;font-family:inherit;white-space:nowrap;"
-    onmouseover="this.style.background='rgba(124,58,237,0.35)'" onmouseout="this.style.background='rgba(124,58,237,0.2)'">
+  <button onclick="openDocDrawer()" style="display:flex;align-items:center;gap:5px;background:rgba(124,58,237,0.2);border:1px solid rgba(124,58,237,0.4);border-radius:7px;padding:5px 10px;font-size:11px;font-weight:600;color:#C4B5FD;cursor:pointer;font-family:inherit;white-space:nowrap;" onmouseover="this.style.background='rgba(124,58,237,0.35)'" onmouseout="this.style.background='rgba(124,58,237,0.2)'">
     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
     Documentation
   </button>
@@ -3720,7 +3712,27 @@
   }
 
   function togglePanel() {
-    document.getElementById('wf-panel').classList.toggle('collapsed');
+    const panel = document.getElementById('wf-panel');
+    const overlay = document.getElementById('wf-panel-overlay');
+    const toolbar = document.getElementById('wf-action-toolbar');
+    panel.classList.toggle('collapsed');
+    const isOpen = !panel.classList.contains('collapsed');
+    // Overlay
+    if (overlay) overlay.style.display = isOpen ? 'block' : 'none';
+    // Barre actions — positionnée dynamiquement juste au-dessus du panel
+    if (toolbar) {
+      if (isOpen) {
+        toolbar.style.display = 'flex';
+        // Aligner à droite, juste au-dessus du panel
+        const panelRect = panel.getBoundingClientRect();
+        const toolbarHeight = 38;
+        toolbar.style.bottom = (window.innerHeight - panelRect.top + 2) + 'px';
+        toolbar.style.right = '0px';
+        updatePingsToolbarBtn();
+      } else {
+        toolbar.style.display = 'none';
+      }
+    }
   }
 
   // ══ Système de commentaires ══════════════════════════════════
