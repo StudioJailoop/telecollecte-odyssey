@@ -3484,7 +3484,7 @@
       if (kvS) kvS.textContent = '0,00 €';
     }
     // Initialiser les KPI dynamiques dès le switch
-    setTimeout(updateEcartBadge, 50);
+    setTimeout(updateKPI, 50);
   }
   function setB(checked) {
     const ko = checked;
@@ -4421,114 +4421,75 @@
   //         si remise remplie → rouge effacé, bouton réactif
   //         si montant effacé → reset remise, bouton réactif
 
-  function updateEcartBadge() {
-    const ifaceOn = document.getElementById('sw-iface')?.checked;
-    const badgeNoEcart = document.getElementById('badge-no-ecart');
-    if (!badgeNoEcart) return;
-
-    if (!ifaceOn) {
-      badgeNoEcart.style.display = 'none';
-      return;
-    }
-
-    const fmt = n => n.toLocaleString('fr-FR', { minimumFractionDigits:2, maximumFractionDigits:2 });
+  // ── Fonction unique de mise à jour des KPI ──────────────────────────────
+  // Trois cas exclusifs, aucun chevauchement possible :
+  //   1. MODE SAISIE  : attendu = _frozenAttendu (figé), saisi = attendu + compléments, écart = compléments
+  //   2. MODE INTERFACÉ : attendu = ∑ c-amt ri/rows-iface, saisi = attendu + corrections, écart = corrections
+  //   3. MODE STANDARD : seul Montant saisi affiché = ∑ saisies manuelles
+  function updateKPI() {
+    const fmt    = n => n.toLocaleString('fr-FR', { minimumFractionDigits:2, maximumFractionDigits:2 });
     const parseV = s => parseFloat((s||'').replace(/\s/g,'').replace('€','').replace(',','.')) || 0;
-
-    // Montant attendu = somme de tous les c-amt visibles (ri1, ri2, rows-iface 3-5)
-    let attendu = 0;
-    let corrections = 0;
-    ['1','2'].forEach(n => {
-      const riEl = document.getElementById('ri'+n);
-      if (!riEl || riEl.style.display === 'none') return;
-      riEl.querySelectorAll('.t-row').forEach(row => {
-        const amtSpan = row.querySelector('.c-amt');
-        const corrInp = row.querySelector('.inp:not(.remise-inp):not(.plain)');
-        if (amtSpan) attendu += parseV(amtSpan.textContent);
-        if (corrInp) corrections += parseV(corrInp.value);
-      });
-    });
-    ['3','4','5'].forEach(n => {
-      const anchor = document.getElementById('tpe-anchor-' + n);
-      if (!anchor) return;
-      const ifaceEl = anchor.querySelector('.rows-iface');
-      if (!ifaceEl || ifaceEl.style.display === 'none') return;
-      ifaceEl.querySelectorAll('.t-row').forEach(row => {
-        const amtSpan = row.querySelector('.c-amt');
-        const corrInp = row.querySelector('.inp:not(.remise-inp):not(.plain)');
-        if (amtSpan) attendu += parseV(amtSpan.textContent);
-        if (corrInp) corrections += parseV(corrInp.value);
-      });
-    });
-
-    // Montant saisi = attendu + corrections
-    const saisi = attendu + corrections;
-    const ecart = corrections; // = saisi - attendu
-
-    // Si mode saisie actif : montant attendu figé, corrections = compléments saisis
-    if (_frozenAttendu) {
-      const parseV2 = s => parseFloat((s||'').replace(/\s/g,'').replace('€','').replace(',','.')) || 0;
-      attendu = parseV2(_frozenAttendu);
-      // Recalculer corrections depuis les inp-complement (mode saisie)
-      corrections = 0;
-      document.querySelectorAll('.inp-complement').forEach(inp => {
-        corrections += parseV2(inp.value);
-      });
-    }
-
-    // Mettre à jour les KPI
     const kvA = document.getElementById('kpi-attendu-val');
     const kvS = document.getElementById('kpi-saisi-val');
     const kvE = document.getElementById('kpi-ecart-val');
-    if (kvA) kvA.textContent = fmt(attendu) + ' €';
-    if (kvS) kvS.textContent = fmt(saisi) + ' €';
-    if (kvE) {
-      kvE.textContent = (ecart < -0.005 ? '-' : '') + fmt(Math.abs(ecart)) + ' €';
-      kvE.style.color = Math.abs(ecart) < 0.005 ? '#088A20' : '#BF2F17';
-    }
-
-    // Badge vert si écart = 0, rouge sinon
-    const hasEcart = Math.abs(ecart) >= 0.005;
-    badgeNoEcart.style.display = !hasEcart ? 'flex' : 'none';
-    ['badge-opt-a','badge-opt-b','badge-opt-c'].forEach(id => {
-      const el = document.getElementById(id);
-      if (!el) return;
-      if (!hasEcart) el.style.display = 'none';
-    });
-    // Afficher badge-opt-c si écart détecté
-    const badgeC = document.getElementById('badge-opt-c');
-    if (badgeC && hasEcart) badgeC.style.display = 'flex';
-
-    // Synchroniser le pill sticky avec l'état réel
-    const pill = document.getElementById('proposal-a-pill');
-    if (pill) {
-      if (hasEcart) {
-        // Mettre à jour le contenu avec les moyens de paiement en écart
-        const mdpEnEcart = [];
-        ['1','2'].forEach(n => {
-          const riEl = document.getElementById('ri'+n);
-          if (!riEl || riEl.style.display === 'none') return;
-          riEl.querySelectorAll('.t-row').forEach(row => {
-            const corrInp = row.querySelector('.inp:not(.remise-inp):not(.plain)');
-            if (corrInp && parseV(corrInp.value) !== 0) {
-              const mdp = row.querySelector('.c-mdp')?.textContent;
-              if (mdp && !mdpEnEcart.includes(mdp)) mdpEnEcart.push(mdp);
-            }
-          });
-        });
-        const ecartSign = ecart < -0.005 ? '-' : '+';
-        pill.innerHTML = `<span style="width:7px;height:7px;border-radius:50%;background:#BF2F17;flex-shrink:0;"></span>Écart : ${ecartSign}${fmt(Math.abs(ecart))} €${mdpEnEcart.length ? ' · <span style="color:var(--navy);margin-left:2px;">' + mdpEnEcart.join(' · ') + '</span>' : ''}`;
-      }
-      // Visibilité gérée par l'IntersectionObserver — pas toucher ici
-    }
-  }
-
-  function updateNonIfaceSaisi() {
-    // Calcule le Montant saisi en mode non-interfacé = somme des champs montant visibles (rm)
+    const badgeNoEcart = document.getElementById('badge-no-ecart');
     const ifaceOn = document.getElementById('sw-iface')?.checked;
-    if (ifaceOn) return; // mode interfacé ou saisie : géré par updateEcartBadge
-    if (saisieMode) return; // mode saisie : géré par updateEcartBadge
-    const fmt = n => n.toLocaleString('fr-FR', { minimumFractionDigits:2, maximumFractionDigits:2 });
-    const parseV = s => parseFloat((s||'').replace(/\s/g,'').replace(',','.')) || 0;
+
+    // ── CAS 1 : MODE SAISIE (post-validation) ──
+    if (saisieMode && _frozenAttendu !== null) {
+      const attendu   = parseV(_frozenAttendu);
+      let complement  = 0;
+      document.querySelectorAll('.inp-complement').forEach(inp => { complement += parseV(inp.value); });
+      const saisi = attendu + complement;
+      const ecart = complement;
+      if (kvA) kvA.textContent = fmt(attendu) + ' €';
+      if (kvS) kvS.textContent = fmt(saisi)   + ' €';
+      if (kvE) {
+        kvE.textContent = (ecart < -0.005 ? '-' : '') + fmt(Math.abs(ecart)) + ' €';
+        kvE.style.color = Math.abs(ecart) < 0.005 ? '#088A20' : '#BF2F17';
+      }
+      _updateBadges(ecart, fmt);
+      return;
+    }
+
+    // ── CAS 2 : MODE INTERFACÉ ──
+    if (ifaceOn) {
+      let attendu = 0, corrections = 0;
+      ['1','2'].forEach(n => {
+        const riEl = document.getElementById('ri'+n);
+        if (!riEl || riEl.style.display === 'none') return;
+        riEl.querySelectorAll('.t-row').forEach(row => {
+          const amt  = row.querySelector('.c-amt');
+          const corr = row.querySelector('.inp:not(.remise-inp):not(.plain)');
+          if (amt)  attendu    += parseV(amt.textContent);
+          if (corr) corrections += parseV(corr.value);
+        });
+      });
+      ['3','4','5'].forEach(n => {
+        const anchor  = document.getElementById('tpe-anchor-' + n);
+        if (!anchor) return;
+        const ifaceEl = anchor.querySelector('.rows-iface');
+        if (!ifaceEl || ifaceEl.style.display === 'none') return;
+        ifaceEl.querySelectorAll('.t-row').forEach(row => {
+          const amt  = row.querySelector('.c-amt');
+          const corr = row.querySelector('.inp:not(.remise-inp):not(.plain)');
+          if (amt)  attendu    += parseV(amt.textContent);
+          if (corr) corrections += parseV(corr.value);
+        });
+      });
+      const saisi = attendu + corrections;
+      const ecart = corrections;
+      if (kvA) kvA.textContent = fmt(attendu) + ' €';
+      if (kvS) kvS.textContent = fmt(saisi)   + ' €';
+      if (kvE) {
+        kvE.textContent = (ecart < -0.005 ? '-' : '') + fmt(Math.abs(ecart)) + ' €';
+        kvE.style.color = Math.abs(ecart) < 0.005 ? '#088A20' : '#BF2F17';
+      }
+      _updateBadges(ecart, fmt);
+      return;
+    }
+
+    // ── CAS 3 : MODE STANDARD (non-interfacé) ──
     let sum = 0;
     ['1','2'].forEach(n => {
       const rm = document.getElementById('rm'+n);
@@ -4542,9 +4503,33 @@
       if (!manual || manual.style.display === 'none') return;
       manual.querySelectorAll('.inp:not(.remise-inp):not(.plain)').forEach(inp => { sum += parseV(inp.value); });
     });
-    const kvS = document.getElementById('kpi-saisi-val');
     if (kvS) kvS.textContent = fmt(sum) + ' €';
+    if (badgeNoEcart) badgeNoEcart.style.display = 'none';
   }
+
+  function _updateBadges(ecart, fmt) {
+    const hasEcart = Math.abs(ecart) >= 0.005;
+    const badgeNoEcart = document.getElementById('badge-no-ecart');
+    if (badgeNoEcart) badgeNoEcart.style.display = !hasEcart ? 'flex' : 'none';
+    ['badge-opt-a','badge-opt-b','badge-opt-c'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.style.display = 'none';
+    });
+    const badgeC = document.getElementById('badge-opt-c');
+    if (badgeC && hasEcart) {
+      badgeC.style.display = 'flex';
+      badgeC.innerHTML = `<span style="width:8px;height:8px;border-radius:50%;background:#BF2F17;flex-shrink:0;"></span>Écart détecté`;
+    }
+    const pill = document.getElementById('proposal-a-pill');
+    if (pill) {
+      const ifaceOn = document.getElementById('sw-iface')?.checked;
+      pill.style.display = (hasEcart && ifaceOn) ? 'flex' : 'none';
+    }
+  }
+
+  // Alias pour la compatibilité des appels existants
+  const updateEcartBadge    = updateKPI;
+  const updateNonIfaceSaisi = updateKPI;
 
   function checkAll() {
     // ── Télécollecte — uniquement les rows visibles ──
@@ -4602,8 +4587,7 @@
     if (e.target.tagName === 'INPUT') {
       checkAll();
       checkReg();
-      updateEcartBadge();
-      updateNonIfaceSaisi();
+      updateKPI();
     }
   });
 
