@@ -3534,21 +3534,25 @@
       }
     });
 
-    // TPE 3-5 : basculer rows-manual ↔ rows-saisie
+    // TPE 3-5 : basculer rows-manual / rows-iface ↔ rows-saisie
     ['3','4','5'].forEach(n => {
       const anchor = document.getElementById('tpe-anchor-' + n);
       if (!anchor) return;
       const manual = anchor.querySelector('.rows-manual');
+      const iface  = anchor.querySelector('.rows-iface');
       const saisie = anchor.querySelector('.rows-saisie');
       const h = anchor.querySelector('.t-head');
+      const ifaceOn = document.getElementById('sw-iface')?.checked;
       if (checked) {
         if (manual) manual.style.display = 'none';
+        if (iface)  iface.style.display  = 'none';
         if (saisie) saisie.style.display = 'block';
         if (h) { h.className = 't-head ' + gc; h.innerHTML = hSaisie; }
       } else {
-        if (manual) manual.style.display = 'block';
+        if (manual) manual.style.display = ifaceOn ? 'none' : 'block';
+        if (iface)  iface.style.display  = ifaceOn ? 'block' : 'none';
         if (saisie) saisie.style.display = 'none';
-        if (h) { h.className = 't-head gm'; h.innerHTML = hNormal; }
+        if (h) { h.className = 't-head ' + (ifaceOn ? 'gi' : 'gm'); h.innerHTML = hNormal; }
       }
     });
 
@@ -4460,10 +4464,15 @@
     const saisi = attendu + corrections;
     const ecart = corrections; // = saisi - attendu
 
-    // Si mode saisie actif, utiliser le montant attendu figé
+    // Si mode saisie actif : montant attendu figé, corrections = compléments saisis
     if (_frozenAttendu) {
       const parseV2 = s => parseFloat((s||'').replace(/\s/g,'').replace('€','').replace(',','.')) || 0;
       attendu = parseV2(_frozenAttendu);
+      // Recalculer corrections depuis les inp-complement (mode saisie)
+      corrections = 0;
+      document.querySelectorAll('.inp-complement').forEach(inp => {
+        corrections += parseV2(inp.value);
+      });
     }
 
     // Mettre à jour les KPI
@@ -4516,7 +4525,8 @@
   function updateNonIfaceSaisi() {
     // Calcule le Montant saisi en mode non-interfacé = somme des champs montant visibles (rm)
     const ifaceOn = document.getElementById('sw-iface')?.checked;
-    if (ifaceOn) return;
+    if (ifaceOn) return; // mode interfacé ou saisie : géré par updateEcartBadge
+    if (saisieMode) return; // mode saisie : géré par updateEcartBadge
     const fmt = n => n.toLocaleString('fr-FR', { minimumFractionDigits:2, maximumFractionDigits:2 });
     const parseV = s => parseFloat((s||'').replace(/\s/g,'').replace(',','.')) || 0;
     let sum = 0;
