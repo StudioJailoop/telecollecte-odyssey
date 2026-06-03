@@ -993,12 +993,12 @@
           <div id="proposal-a" style="display:block; margin-top:20px; padding-top:16px; border-top:1px solid var(--grey-bd);">
             <div style="display:flex; align-items:center; gap:20px; flex-wrap:wrap;">
               <div id="kpi-attendu-wrap" style="display:flex;flex-direction:column;gap:4px;flex-shrink:0;">
-                <span style="font-size:11px;font-weight:700;color:var(--grey-txt);text-transform:uppercase;letter-spacing:.05em;display:block;">Montant attendu</span>
+                <span id="kpi-attendu-label" style="font-size:11px;font-weight:700;color:var(--grey-txt);text-transform:uppercase;letter-spacing:.05em;display:block;">Montant attendu</span>
                 <span id="kpi-attendu-val" style="font-size:20px;font-weight:700;color:var(--navy);display:block;">1 250,00 €</span>
               </div>
               <div id="kpi-sep1" style="width:1px;height:36px;background:var(--grey-bd);flex-shrink:0;align-self:center;"></div>
               <div id="kpi-saisi" style="display:flex;flex-direction:column;gap:4px;flex-shrink:0;">
-                <span style="font-size:11px;font-weight:700;color:var(--grey-txt);text-transform:uppercase;letter-spacing:.05em;display:block;">Montant saisi</span>
+                <span id="kpi-saisi-label" style="font-size:11px;font-weight:700;color:var(--grey-txt);text-transform:uppercase;letter-spacing:.05em;display:block;">Montant saisi</span>
                 <span id="kpi-saisi-val" style="font-size:20px;font-weight:700;color:var(--navy);display:block;">1 250,00 €</span>
               </div>
               <div id="kpi-sep2" style="width:1px;height:36px;background:var(--grey-bd);flex-shrink:0;align-self:center;"></div>
@@ -3502,9 +3502,11 @@
   function setS(checked) {
     saisieMode = checked;
     if (checked) {
-      // Figer le Montant attendu au moment où on passe en mode saisie
-      const kvA = document.getElementById('kpi-attendu-val');
-      if (kvA) _frozenAttendu = kvA.textContent;
+      // Ne figer que si pas déjà défini par confirmValidation (non-interfacé)
+      if (_frozenAttendu === null) {
+        const kvA = document.getElementById('kpi-attendu-val');
+        if (kvA) _frozenAttendu = kvA.textContent;
+      }
     } else {
       _frozenAttendu = null;
     }
@@ -3565,6 +3567,13 @@
     } else {
       if (btnv)  { btnv.textContent  = 'Valider la saisie';   btnv.className  = 'btn-date-cta'; }
       if (btnvS) { btnvS.textContent = 'Valider la saisie';   btnvS.className = 'btn-date-cta'; }
+    }
+    // Restaurer les labels KPI si on sort du mode saisie
+    if (!checked) {
+      const labelA = document.getElementById('kpi-attendu-label');
+      const labelS = document.getElementById('kpi-saisi-label');
+      if (labelA) labelA.textContent = 'Montant attendu';
+      if (labelS) labelS.textContent = 'Montant saisi';
     }
     checkAll();
   }
@@ -4676,7 +4685,61 @@
     const today = new Date().toLocaleDateString('fr-FR', { day:'numeric', month:'long', year:'numeric' });
     document.getElementById('tv-date').textContent = today;
     showToaster();
+
+    const ifaceOn = document.getElementById('sw-iface')?.checked;
+    const parseV  = s => parseFloat((s||'').replace(/\s/g,'').replace('€','').replace(',','.')) || 0;
+
+    if (!ifaceOn) {
+      // Mode non-interfacé : capturer les montants saisis et les injecter dans rows-saisie
+      let totalSaisi = 0;
+
+      // TPE 1 & 2 : lire rm, injecter dans c-amt de rs
+      ['1','2'].forEach(n => {
+        const rm = document.getElementById('rm'+n);
+        const rs = document.getElementById('rs'+n);
+        if (!rm || !rs) return;
+        const rmRows = rm.querySelectorAll('.t-row');
+        const rsRows = rs.querySelectorAll('.t-row');
+        rmRows.forEach((row, i) => {
+          const amtInp = row.querySelector('.inp:not(.remise-inp):not(.plain)');
+          const rsAmt  = rsRows[i]?.querySelector('.c-amt');
+          const val = amtInp ? parseV(amtInp.value) : 0;
+          totalSaisi += val;
+          if (rsAmt) rsAmt.textContent = val.toLocaleString('fr-FR', {minimumFractionDigits:2}) + ' €';
+        });
+      });
+
+      // TPE 3-5 : lire rows-manual, injecter dans rows-saisie
+      ['3','4','5'].forEach(n => {
+        const anchor = document.getElementById('tpe-anchor-' + n);
+        if (!anchor) return;
+        const manual = anchor.querySelector('.rows-manual');
+        const saisie = anchor.querySelector('.rows-saisie');
+        if (!manual || !saisie) return;
+        const mRows = manual.querySelectorAll('.t-row');
+        const sRows = saisie.querySelectorAll('.t-row');
+        mRows.forEach((row, i) => {
+          const amtInp = row.querySelector('.inp:not(.remise-inp):not(.plain)');
+          const sAmt   = sRows[i]?.querySelector('.c-amt');
+          const val = amtInp ? parseV(amtInp.value) : 0;
+          totalSaisi += val;
+          if (sAmt) sAmt.textContent = val.toLocaleString('fr-FR', {minimumFractionDigits:2}) + ' €';
+        });
+      });
+
+      // Changer les labels KPI
+      const labelA = document.getElementById('kpi-attendu-label');
+      const labelS = document.getElementById('kpi-saisi-label');
+      if (labelA) labelA.textContent = 'Télécollecte saisie';
+      if (labelS) labelS.textContent = 'Montant saisi';
+
+      // Figer le total télécollecte saisie comme référence
+      _frozenAttendu = totalSaisi.toLocaleString('fr-FR', {minimumFractionDigits:2}) + ' €';
+    }
+
     setS(true);
+    // Forcer la mise à jour des KPI immédiatement après passage en mode saisie
+    setTimeout(updateKPI, 50);
   }
 
   function showToaster() {
