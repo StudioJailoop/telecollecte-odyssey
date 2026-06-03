@@ -1464,6 +1464,36 @@
   </select>
 
   </div><!-- /panel-body -->
+
+  <!-- Documentation -->
+  <div style="padding:12px 16px;border-top:1px solid var(--grey-bd);">
+    <div class="panel-title" style="margin-bottom:10px;">Documentation</div>
+    <div style="display:flex;flex-direction:column;gap:2px;">
+      <button onclick="openDocDrawer()"
+        style="display:flex;align-items:center;justify-content:space-between;background:none;border:none;border-radius:8px;padding:8px 10px;cursor:pointer;font-family:inherit;width:100%;text-align:left;transition:background .12s;"
+        onmouseover="this.style.background='#F3F4F6'" onmouseout="this.style.background='none'">
+        <span style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:500;color:var(--navy);">
+          <span style="font-size:15px;">📘</span> Règles de gestion
+        </span>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--grey-txt)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+      </button>
+    </div>
+  </div>
+
+</div>
+
+<!-- ══ DRAWER DOCUMENTATION (full-screen) ══ -->
+<div id="doc-drawer" style="display:none;position:fixed;inset:0;background:var(--white);z-index:2200;flex-direction:column;">
+  <div style="background:#0F1629;padding:14px 28px;display:flex;align-items:center;gap:16px;flex-shrink:0;">
+    <button onclick="closeDocDrawer()"
+      style="display:flex;align-items:center;gap:6px;background:none;border:1px solid rgba(255,255,255,0.2);border-radius:8px;padding:6px 14px;font-size:13px;font-weight:600;color:rgba(255,255,255,0.7);cursor:pointer;font-family:inherit;"
+      onmouseover="this.style.borderColor='rgba(255,255,255,0.5)';this.style.color='white'" onmouseout="this.style.borderColor='rgba(255,255,255,0.2)';this.style.color='rgba(255,255,255,0.7)'">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+      Retour
+    </button>
+    <div style="color:#C4B5FD;font-size:15px;font-weight:700;">📘 Règles de gestion — Télécollecte TPE</div>
+  </div>
+  <div id="doc-drawer-content" style="flex:1;overflow-y:auto;padding:32px 40px;max-width:960px;margin:0 auto;width:100%;"></div>
 </div>
 
 <!-- Popover nouveau commentaire -->
@@ -3670,6 +3700,68 @@
     document.getElementById('sw-comments').checked = on;
     document.body.style.cursor = on ? 'crosshair' : '';
     refreshPins();
+  }
+
+  function openDocDrawer() {
+    const drawer = document.getElementById('doc-drawer');
+    const content = document.getElementById('doc-drawer-content');
+    if (!drawer || !content) return;
+
+    const rgBlocks = JSON.parse(localStorage.getItem('wf_rg_blocks') || '[]');
+
+    if (rgBlocks.length === 0) {
+      content.innerHTML = `
+        <div style="text-align:center;padding:60px 0;color:var(--grey-txt);">
+          <div style="font-size:32px;margin-bottom:16px;">📘</div>
+          <div style="font-size:16px;font-weight:600;color:var(--navy);margin-bottom:8px;">Aucune règle de gestion documentée</div>
+          <div style="font-size:14px;">Crée des blocs RG depuis le panel <strong>📘 Contexte → Documentation</strong></div>
+        </div>`;
+    } else {
+      const TAB_COLORS = { 'Télécollecte':'#E8F4FD', 'Date antérieure':'#FEF3C7', 'Régularisation':'#F0FDF4' };
+      const TAB_TEXT   = { 'Télécollecte':'#0057A8', 'Date antérieure':'#92400E', 'Régularisation':'#1A6B31' };
+      const MODE_COLORS = { 'Interfacé':'#EDE9FE', 'Non interfacé':'#F3F4F6', 'Tous modes':'#F3F4F6' };
+      const MODE_TEXT   = { 'Interfacé':'#5B21B6', 'Non interfacé':'#374151', 'Tous modes':'#374151' };
+
+      // Grouper par tab
+      const grouped = {};
+      rgBlocks.forEach(b => {
+        const t = b.tab || 'Télécollecte';
+        if (!grouped[t]) grouped[t] = [];
+        grouped[t].push(b);
+      });
+
+      content.innerHTML = `
+        <div style="margin-bottom:32px;">
+          <h1 style="font-size:22px;font-weight:800;color:var(--navy);margin:0 0 6px;">Règles de gestion</h1>
+          <p style="font-size:14px;color:var(--grey-txt);margin:0;">${rgBlocks.length} règle${rgBlocks.length > 1 ? 's' : ''} documentée${rgBlocks.length > 1 ? 's' : ''} · Télécollecte TPE</p>
+        </div>
+        ${Object.entries(grouped).map(([tab, rgs]) => `
+          <div style="margin-bottom:36px;">
+            <div style="font-size:11px;font-weight:700;color:var(--grey-txt);text-transform:uppercase;letter-spacing:.08em;margin-bottom:14px;padding-bottom:8px;border-bottom:2px solid var(--grey-bd);">${tab}</div>
+            <div style="display:flex;flex-direction:column;gap:16px;">
+              ${rgs.map(b => `
+                <div style="border:1px solid var(--grey-bd);border-radius:12px;padding:20px 24px;border-left:4px solid #7C3AED;">
+                  <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;">
+                    <span style="background:${TAB_COLORS[b.tab]||'#F3F4F6'};color:${TAB_TEXT[b.tab]||'#374151'};border-radius:6px;padding:2px 10px;font-size:11px;font-weight:700;">${b.tab}</span>
+                    <span style="background:${MODE_COLORS[b.mode]||'#F3F4F6'};color:${MODE_TEXT[b.mode]||'#374151'};border-radius:6px;padding:2px 10px;font-size:11px;font-weight:600;">${b.mode}</span>
+                  </div>
+                  <h3 style="font-size:16px;font-weight:700;color:var(--navy);margin:0 0 16px;">${b.titre}</h3>
+                  ${b.regle ? `<div style="margin-bottom:14px;"><div style="font-size:11px;font-weight:700;color:var(--grey-txt);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;">Règle</div><div style="font-size:14px;color:var(--navy);line-height:1.7;white-space:pre-wrap;">${b.regle}</div></div>` : ''}
+                  ${b.comportement ? `<div style="margin-bottom:14px;background:#F8F9FB;border-radius:8px;padding:14px 16px;"><div style="font-size:11px;font-weight:700;color:var(--grey-txt);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;">Comportement attendu</div><div style="font-size:14px;color:var(--navy);line-height:1.7;white-space:pre-wrap;">${b.comportement}</div></div>` : ''}
+                  ${b.critere ? `<div><div style="font-size:11px;font-weight:700;color:#088A20;text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;">✓ Critère de validation</div><div style="font-size:14px;color:var(--navy);line-height:1.7;white-space:pre-wrap;">${b.critere}</div></div>` : ''}
+                </div>`).join('')}
+            </div>
+          </div>`).join('')}`;
+    }
+
+    drawer.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeDocDrawer() {
+    const drawer = document.getElementById('doc-drawer');
+    if (drawer) drawer.style.display = 'none';
+    document.body.style.overflow = '';
   }
 
   function isPinArchived(commentId) {
