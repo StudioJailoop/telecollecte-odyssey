@@ -3712,12 +3712,35 @@
     refreshPins();
   }
 
+  function copyRgBlock(idx) {
+    const rgBlocks = JSON.parse(localStorage.getItem('wf_rg_blocks') || '[]');
+    const b = rgBlocks[idx];
+    if (!b) return;
+    const id = String(idx + 1).padStart(2, '0');
+    let txt = `RG-${id} — ${b.titre}\n`;
+    txt += `Écran : ${b.tab} · Mode : ${b.mode}\n`;
+    txt += `${'─'.repeat(48)}\n`;
+    if (b.regle)        txt += `\nRÈGLE\n${b.regle}\n`;
+    if (b.comportement) txt += `\nCOMPORTEMENT ATTENDU\n${b.comportement}\n`;
+    if (b.critere)      txt += `\nCRITÈRE DE VALIDATION\n${b.critere}\n`;
+    navigator.clipboard.writeText(txt).then(() => {
+      const btn = document.getElementById('copy-rg-btn-' + idx);
+      if (btn) { btn.textContent = '✓ Copié'; setTimeout(() => btn.textContent = '📋 Copier pour Jira', 2000); }
+    });
+  }
+
   function openDocDrawer() {
     const drawer = document.getElementById('doc-drawer');
     const content = document.getElementById('doc-drawer-content');
     if (!drawer || !content) return;
 
     const rgBlocks = JSON.parse(localStorage.getItem('wf_rg_blocks') || '[]');
+    const today = new Date().toLocaleDateString('fr-FR', { day:'numeric', month:'long', year:'numeric' });
+
+    const TAB_COLORS = { 'Télécollecte':'#E8F4FD', 'Date antérieure':'#FEF3C7', 'Régularisation':'#F0FDF4' };
+    const TAB_TEXT   = { 'Télécollecte':'#0057A8', 'Date antérieure':'#92400E', 'Régularisation':'#1A6B31' };
+    const MODE_COLORS = { 'Interfacé':'#EDE9FE', 'Non interfacé':'#F3F4F6', 'Tous modes':'#F3F4F6' };
+    const MODE_TEXT   = { 'Interfacé':'#5B21B6', 'Non interfacé':'#374151', 'Tous modes':'#374151' };
 
     if (rgBlocks.length === 0) {
       content.innerHTML = `
@@ -3727,39 +3750,79 @@
           <div style="font-size:14px;">Crée des blocs RG depuis le panel <strong>📘 Contexte → Documentation</strong></div>
         </div>`;
     } else {
-      const TAB_COLORS = { 'Télécollecte':'#E8F4FD', 'Date antérieure':'#FEF3C7', 'Régularisation':'#F0FDF4' };
-      const TAB_TEXT   = { 'Télécollecte':'#0057A8', 'Date antérieure':'#92400E', 'Régularisation':'#1A6B31' };
-      const MODE_COLORS = { 'Interfacé':'#EDE9FE', 'Non interfacé':'#F3F4F6', 'Tous modes':'#F3F4F6' };
-      const MODE_TEXT   = { 'Interfacé':'#5B21B6', 'Non interfacé':'#374151', 'Tous modes':'#374151' };
-
-      // Grouper par tab
+      // Grouper par tab en conservant l'index global pour la numérotation
       const grouped = {};
-      rgBlocks.forEach(b => {
+      rgBlocks.forEach((b, i) => {
         const t = b.tab || 'Télécollecte';
         if (!grouped[t]) grouped[t] = [];
-        grouped[t].push(b);
+        grouped[t].push({ ...b, _globalIdx: i });
       });
 
       content.innerHTML = `
-        <div style="margin-bottom:32px;">
-          <h1 style="font-size:22px;font-weight:800;color:var(--navy);margin:0 0 6px;">Règles de gestion</h1>
-          <p style="font-size:14px;color:var(--grey-txt);margin:0;">${rgBlocks.length} règle${rgBlocks.length > 1 ? 's' : ''} documentée${rgBlocks.length > 1 ? 's' : ''} · Télécollecte TPE</p>
+        <!-- Intro -->
+        <div style="margin-bottom:40px;padding-bottom:28px;border-bottom:2px solid var(--grey-bd);">
+          <div style="font-size:12px;font-weight:700;color:var(--grey-txt);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;">Documentation fonctionnelle · ${today}</div>
+          <h1 style="font-size:26px;font-weight:800;color:var(--navy);margin:0 0 14px;line-height:1.2;">Télécollecte TPE — Règles de gestion</h1>
+          <p style="font-size:15px;color:#374151;line-height:1.7;margin:0 0 10px;">
+            Ce document recense les règles de gestion de l'écran Télécollecte TPE de l'outil Odyssey (Club Med).
+            Il est destiné aux Product Owners, développeurs, QA et équipes métier pour comprendre le comportement attendu de l'interface.
+          </p>
+          <p style="font-size:14px;color:var(--grey-txt);margin:0;">
+            L'écran permet aux GOs et équipes réception des villages Club Med de saisir, valider et régulariser les remises TPE en fin de journée comptable.
+            Deux modes coexistent selon la configuration du village : <strong>Interfacé</strong> (montants remontés automatiquement des TPE) et <strong>Non interfacé</strong> (saisie manuelle).
+          </p>
+          <div style="margin-top:16px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+            <span style="background:#F0FDF4;color:#1A6B31;border-radius:20px;padding:4px 12px;font-size:12px;font-weight:600;">● ${rgBlocks.length} règle${rgBlocks.length > 1 ? 's' : ''} documentée${rgBlocks.length > 1 ? 's' : ''}</span>
+            <span style="background:#F3F4F6;color:#374151;border-radius:20px;padding:4px 12px;font-size:12px;font-weight:600;">📍 ${Object.keys(grouped).length} écran${Object.keys(grouped).length > 1 ? 's' : ''} couvert${Object.keys(grouped).length > 1 ? 's' : ''}</span>
+          </div>
         </div>
+
+        <!-- Règles groupées par écran -->
         ${Object.entries(grouped).map(([tab, rgs]) => `
-          <div style="margin-bottom:36px;">
-            <div style="font-size:11px;font-weight:700;color:var(--grey-txt);text-transform:uppercase;letter-spacing:.08em;margin-bottom:14px;padding-bottom:8px;border-bottom:2px solid var(--grey-bd);">${tab}</div>
-            <div style="display:flex;flex-direction:column;gap:16px;">
-              ${rgs.map(b => `
-                <div style="border:1px solid var(--grey-bd);border-radius:12px;padding:20px 24px;border-left:4px solid #7C3AED;">
-                  <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;">
-                    <span style="background:${TAB_COLORS[b.tab]||'#F3F4F6'};color:${TAB_TEXT[b.tab]||'#374151'};border-radius:6px;padding:2px 10px;font-size:11px;font-weight:700;">${b.tab}</span>
-                    <span style="background:${MODE_COLORS[b.mode]||'#F3F4F6'};color:${MODE_TEXT[b.mode]||'#374151'};border-radius:6px;padding:2px 10px;font-size:11px;font-weight:600;">${b.mode}</span>
+          <div style="margin-bottom:48px;">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px;">
+              <span style="background:${TAB_COLORS[tab]||'#F3F4F6'};color:${TAB_TEXT[tab]||'#374151'};border-radius:8px;padding:4px 14px;font-size:12px;font-weight:700;">${tab}</span>
+              <div style="flex:1;height:1px;background:var(--grey-bd);"></div>
+              <span style="font-size:11px;color:var(--grey-txt);">${rgs.length} règle${rgs.length > 1 ? 's' : ''}</span>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:20px;">
+              ${rgs.map(b => {
+                const id = String(b._globalIdx + 1).padStart(2, '0');
+                return `
+                <div style="border:1px solid var(--grey-bd);border-radius:14px;overflow:hidden;">
+                  <!-- Header bloc -->
+                  <div style="padding:16px 24px;border-bottom:1px solid var(--grey-bd);display:flex;align-items:flex-start;justify-content:space-between;gap:12px;background:#FAFAFA;">
+                    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+                      <span style="background:#7C3AED;color:white;border-radius:8px;padding:3px 10px;font-size:12px;font-weight:800;letter-spacing:.04em;">RG-${id}</span>
+                      <span style="background:${MODE_COLORS[b.mode]||'#F3F4F6'};color:${MODE_TEXT[b.mode]||'#374151'};border-radius:6px;padding:2px 10px;font-size:11px;font-weight:600;">${b.mode}</span>
+                      <h3 style="font-size:15px;font-weight:700;color:var(--navy);margin:0;">${b.titre}</h3>
+                    </div>
+                    <button id="copy-rg-btn-${b._globalIdx}" onclick="copyRgBlock(${b._globalIdx})"
+                      style="background:none;border:1.5px solid var(--grey-bd);border-radius:8px;padding:5px 12px;font-size:11px;font-weight:600;color:var(--grey-txt);cursor:pointer;font-family:inherit;white-space:nowrap;flex-shrink:0;"
+                      onmouseover="this.style.borderColor='var(--navy)';this.style.color='var(--navy)'" onmouseout="this.style.borderColor='var(--grey-bd)';this.style.color='var(--grey-txt)'">
+                      📋 Copier pour Jira
+                    </button>
                   </div>
-                  <h3 style="font-size:16px;font-weight:700;color:var(--navy);margin:0 0 16px;">${b.titre}</h3>
-                  ${b.regle ? `<div style="margin-bottom:14px;"><div style="font-size:11px;font-weight:700;color:var(--grey-txt);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;">Règle</div><div style="font-size:14px;color:var(--navy);line-height:1.7;white-space:pre-wrap;">${b.regle}</div></div>` : ''}
-                  ${b.comportement ? `<div style="margin-bottom:14px;background:#F8F9FB;border-radius:8px;padding:14px 16px;"><div style="font-size:11px;font-weight:700;color:var(--grey-txt);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;">Comportement attendu</div><div style="font-size:14px;color:var(--navy);line-height:1.7;white-space:pre-wrap;">${b.comportement}</div></div>` : ''}
-                  ${b.critere ? `<div><div style="font-size:11px;font-weight:700;color:#088A20;text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;">✓ Critère de validation</div><div style="font-size:14px;color:var(--navy);line-height:1.7;white-space:pre-wrap;">${b.critere}</div></div>` : ''}
-                </div>`).join('')}
+                  <!-- Corps -->
+                  <div style="padding:20px 24px;display:flex;flex-direction:column;gap:16px;">
+                    ${b.regle ? `
+                    <div>
+                      <div style="font-size:10px;font-weight:700;color:var(--grey-txt);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;">Règle</div>
+                      <div style="font-size:14px;color:var(--navy);line-height:1.7;white-space:pre-wrap;">${b.regle}</div>
+                    </div>` : ''}
+                    ${b.comportement ? `
+                    <div style="background:#F8F9FB;border-radius:10px;padding:16px;">
+                      <div style="font-size:10px;font-weight:700;color:var(--grey-txt);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;">Comportement attendu</div>
+                      <div style="font-size:14px;color:var(--navy);line-height:1.8;white-space:pre-wrap;">${b.comportement}</div>
+                    </div>` : ''}
+                    ${b.critere ? `
+                    <div style="border-left:3px solid #088A20;padding-left:14px;">
+                      <div style="font-size:10px;font-weight:700;color:#088A20;text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;">✓ Critère de validation</div>
+                      <div style="font-size:14px;color:var(--navy);line-height:1.7;white-space:pre-wrap;">${b.critere}</div>
+                    </div>` : ''}
+                  </div>
+                </div>`;
+              }).join('')}
             </div>
           </div>`).join('')}`;
     }
