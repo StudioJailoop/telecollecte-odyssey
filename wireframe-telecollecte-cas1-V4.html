@@ -1431,15 +1431,6 @@
     </label>
   </div>
 
-  <!-- Valider la saisie -->
-  <div class="switch-row">
-    <span>Valider la saisie</span>
-    <label class="switch">
-      <input type="checkbox" id="sw-validate" onchange="setValidateMode(this.checked)">
-      <span class="track"></span>
-    </label>
-  </div>
-
   <hr>
 
   <!-- En cours -->
@@ -3571,10 +3562,6 @@
     } else {
       if (btnv)  { btnv.textContent  = 'Valider la saisie';   btnv.className  = 'btn-date-cta'; }
       if (btnvS) { btnvS.textContent = 'Valider la saisie';   btnvS.className = 'btn-date-cta'; }
-      // Repasser sw-validate à OFF pour pouvoir refaire le parcours
-      const swValidate = document.getElementById('sw-validate');
-      if (swValidate) swValidate.checked = false;
-      setValidateMode(false);
     }
     checkAll();
   }
@@ -4658,43 +4645,6 @@
   renderVersionPanel();
 
   // ── Modale validation ────────────────────────────────────────────────
-  let validateMode = false;
-
-  // Données exemple injectées quand validateMode ON
-  const SAMPLE_DATA = [
-    { tpe:'1', rows:'rm1', fields:[{amt:'125,00', remise:'652356233652'},{amt:'45,00', remise:'652356233653'},{amt:'', remise:''}] },
-    { tpe:'2', rows:'rm2', fields:[{amt:'80,00',  remise:'652356233659'},{amt:'45,00', remise:'652356233660'},{amt:'', remise:''}] },
-    { tpe:'3', rows:null,  manual:true, fields:[{amt:'55,00', remise:'652356233661'},{amt:'30,00', remise:'652356233662'},{amt:'', remise:''}] },
-    { tpe:'4', rows:null,  manual:true, fields:[{amt:'80,00', remise:'652356233663'},{amt:'15,00', remise:'652356233664'},{amt:'', remise:''}] },
-    { tpe:'5', rows:null,  manual:true, fields:[{amt:'40,00', remise:'652356233665'},{amt:'20,00', remise:'652356233666'},{amt:'', remise:''}] },
-  ];
-
-  function injectSampleData(on) {
-    SAMPLE_DATA.forEach(tpe => {
-      let container;
-      if (tpe.rows) {
-        container = document.getElementById(tpe.rows);
-      } else {
-        const anchor = document.getElementById('tpe-anchor-' + tpe.tpe);
-        container = anchor ? anchor.querySelector('.rows-manual') : null;
-      }
-      if (!container) return;
-      const rows = container.querySelectorAll('.t-row');
-      rows.forEach((row, i) => {
-        const d = tpe.fields[i];
-        if (!d) return;
-        const amtInp = row.querySelector('.inp:not(.remise-inp):not(.inp-complement):not(.plain)');
-        const remInp = row.querySelector('.remise-inp');
-        if (amtInp) amtInp.value = on ? d.amt : '';
-        if (remInp) remInp.value = on ? d.remise : '';
-      });
-    });
-  }
-
-  function setValidateMode(on) {
-    validateMode = on;
-    injectSampleData(on);
-  }
 
   // Injecter la date du jour dans le bloc-date au chargement
   (function() {
@@ -4707,7 +4657,6 @@
   })();
 
   function openValidationModal() {
-    if (!validateMode) return;
     const today = new Date().toLocaleDateString('fr-FR', { day:'numeric', month:'long', year:'numeric' });
     document.getElementById('mv-date-1').textContent = today;
     document.getElementById('modal-validation-overlay').classList.add('visible');
@@ -4745,10 +4694,10 @@
 
   // Brancher btnv sur la modale si validateMode
   document.getElementById('btnv').addEventListener('click', () => {
-    if (validateMode) openValidationModal();
+    openValidationModal();
   });
   document.getElementById('btnv-sticky').addEventListener('click', () => {
-    if (validateMode) openValidationModal();
+    openValidationModal();
   });
 </script>
 
