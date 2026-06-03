@@ -3507,8 +3507,16 @@
   }
 
   let saisieMode = false;
+  let _frozenAttendu = null; // KPI Montant attendu figé au moment de la validation
   function setS(checked) {
     saisieMode = checked;
+    if (checked) {
+      // Figer le Montant attendu au moment où on passe en mode saisie
+      const kvA = document.getElementById('kpi-attendu-val');
+      if (kvA) _frozenAttendu = kvA.textContent;
+    } else {
+      _frozenAttendu = null;
+    }
     const gc = 'gs';
     const hSaisie = '<span>Mode de paiement</span><span>Emplacement</span><span>Télécollecte saisie</span><span>Complément</span><span>N° Remise</span>';
     const hNormal = document.getElementById('sw-iface')?.checked
@@ -4460,6 +4468,12 @@
     // Montant saisi = attendu + corrections
     const saisi = attendu + corrections;
     const ecart = corrections; // = saisi - attendu
+
+    // Si mode saisie actif, utiliser le montant attendu figé
+    if (_frozenAttendu) {
+      const parseV2 = s => parseFloat((s||'').replace(/\s/g,'').replace('€','').replace(',','.')) || 0;
+      attendu = parseV2(_frozenAttendu);
+    }
 
     // Mettre à jour les KPI
     const kvA = document.getElementById('kpi-attendu-val');
