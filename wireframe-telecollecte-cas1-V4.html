@@ -1401,33 +1401,41 @@
 <!-- Overlay wf-panel -->
 <div id="wf-panel-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:198;" onclick="togglePanel()"></div>
 
-<!-- Barre actions — visible quand wf-panel ouvert -->
-<div id="wf-action-toolbar" style="display:none;position:fixed;right:0;z-index:200;background:rgba(15,22,41,0.97);backdrop-filter:blur(8px);padding:8px 14px;display:none;align-items:center;gap:8px;border-radius:10px 10px 0 0;border:1px solid rgba(255,255,255,0.08);border-bottom:none;">
-  <button onclick="goToDashboard()" style="display:flex;align-items:center;gap:5px;background:none;border:1px solid rgba(255,255,255,0.15);border-radius:7px;padding:5px 10px;font-size:11px;font-weight:600;color:rgba(255,255,255,0.6);cursor:pointer;font-family:inherit;white-space:nowrap;" onmouseover="this.style.background='rgba(255,255,255,0.08)';this.style.color='white'" onmouseout="this.style.background='none';this.style.color='rgba(255,255,255,0.6)'">
-    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-    Dashboard
-  </button>
-  <button onclick="openBriefs()" style="display:flex;align-items:center;gap:5px;background:none;border:1px solid rgba(255,255,255,0.15);border-radius:7px;padding:5px 10px;font-size:11px;font-weight:600;color:rgba(255,255,255,0.6);cursor:pointer;font-family:inherit;white-space:nowrap;" onmouseover="this.style.background='rgba(255,255,255,0.08)';this.style.color='white'" onmouseout="this.style.background='none';this.style.color='rgba(255,255,255,0.6)'">
-    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-    Commentaires
-  </button>
-  <button onclick="togglePingsFromToolbar(this)" id="toolbar-pings-btn" style="display:flex;align-items:center;gap:5px;background:none;border:1px solid rgba(255,255,255,0.15);border-radius:7px;padding:5px 10px;font-size:11px;font-weight:600;color:rgba(255,255,255,0.6);cursor:pointer;font-family:inherit;white-space:nowrap;">
-    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-    Pings
-  </button>
-  <button onclick="openDocDrawer()" style="display:flex;align-items:center;gap:5px;background:rgba(124,58,237,0.2);border:1px solid rgba(124,58,237,0.4);border-radius:7px;padding:5px 10px;font-size:11px;font-weight:600;color:#C4B5FD;cursor:pointer;font-family:inherit;white-space:nowrap;" onmouseover="this.style.background='rgba(124,58,237,0.35)'" onmouseout="this.style.background='rgba(124,58,237,0.2)'">
-    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-    Documentation
-  </button>
-</div>
 
 <div class="wf-panel" id="wf-panel">
 
   <button id="btn-panel-open" onclick="togglePanel()" title="Ouvrir">+</button>
 
-  <div class="panel-header" style="display:flex;align-items:center;justify-content:space-between;">
-    <span class="panel-title">Règles de gestion</span>
-    <button onclick="togglePanel()" style="background:none;border:none;cursor:pointer;font-size:16px;color:var(--grey-txt);line-height:1;" title="Réduire">−</button>
+  <div class="panel-header" style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 14px;">
+    <!-- Boutons ronds actions -->
+    <div style="display:flex;align-items:center;gap:8px;">
+      <!-- ← Dashboard -->
+      <button onclick="goToDashboard()" title="Retour Dashboard"
+        style="width:36px;height:36px;border-radius:50%;background:#E5E7EB;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;"
+        onmouseover="this.style.background='#D1D5DB'" onmouseout="this.style.background='#E5E7EB'">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1E2643" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+      </button>
+      <!-- 💬 Commentaires -->
+      <button onclick="openBriefs()" title="Commentaires"
+        style="width:36px;height:36px;border-radius:50%;background:#F5BE00;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;"
+        onmouseover="this.style.background='#e0ab00'" onmouseout="this.style.background='#F5BE00'">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1E2643" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      </button>
+      <!-- 👁 Pings toggle -->
+      <button onclick="togglePingsFromToolbar(this)" id="toolbar-pings-btn" title="Afficher / masquer les pings"
+        style="width:36px;height:36px;border-radius:50%;background:#374151;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;"
+        onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+      </button>
+      <!-- 📘 Documentation -->
+      <button onclick="openDocDrawer()" title="Documentation"
+        style="width:36px;height:36px;border-radius:50%;background:#7C3AED;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;"
+        onmouseover="this.style.background='#6D28D9'" onmouseout="this.style.background='#7C3AED'">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+      </button>
+    </div>
+    <!-- − Réduire -->
+    <button onclick="togglePanel()" style="background:none;border:none;cursor:pointer;font-size:18px;color:var(--grey-txt);line-height:1;padding:4px;" title="Réduire">−</button>
   </div>
 
   <div class="panel-body">
@@ -1715,15 +1723,9 @@
   function updatePingsToolbarBtn() {
     const btn = document.getElementById('toolbar-pings-btn');
     if (!btn) return;
-    if (commentMode) {
-      btn.style.background = 'rgba(245,190,0,0.2)';
-      btn.style.borderColor = 'rgba(245,190,0,0.5)';
-      btn.style.color = '#F5BE00';
-    } else {
-      btn.style.background = 'none';
-      btn.style.borderColor = 'rgba(255,255,255,0.15)';
-      btn.style.color = 'rgba(255,255,255,0.6)';
-    }
+    btn.style.background = commentMode ? '#F5BE00' : '#374151';
+    const svg = btn.querySelector('svg');
+    if (svg) { svg.setAttribute('stroke', commentMode ? '#1E2643' : 'white'); }
   }
 
   function openDocDrawer() {
@@ -3714,25 +3716,10 @@
   function togglePanel() {
     const panel = document.getElementById('wf-panel');
     const overlay = document.getElementById('wf-panel-overlay');
-    const toolbar = document.getElementById('wf-action-toolbar');
     panel.classList.toggle('collapsed');
     const isOpen = !panel.classList.contains('collapsed');
-    // Overlay
     if (overlay) overlay.style.display = isOpen ? 'block' : 'none';
-    // Barre actions — positionnée dynamiquement juste au-dessus du panel
-    if (toolbar) {
-      if (isOpen) {
-        toolbar.style.display = 'flex';
-        // Aligner à droite, juste au-dessus du panel
-        const panelRect = panel.getBoundingClientRect();
-        const toolbarHeight = 38;
-        toolbar.style.bottom = (window.innerHeight - panelRect.top + 2) + 'px';
-        toolbar.style.right = '0px';
-        updatePingsToolbarBtn();
-      } else {
-        toolbar.style.display = 'none';
-      }
-    }
+    if (isOpen) updatePingsToolbarBtn();
   }
 
   // ══ Système de commentaires ══════════════════════════════════
