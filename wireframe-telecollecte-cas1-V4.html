@@ -1013,6 +1013,12 @@
               <div style="margin-left:auto;display:flex;align-items:center;gap:48px;flex-shrink:0;">
               <div id="kpi-badge-group" style="display:flex;align-items:center;gap:48px;flex-shrink:0;">
 
+                <!-- Badge Aucun écart (vert, mode interfacé sans écart) -->
+                <div id="badge-no-ecart" style="display:none;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:5px 14px;border-radius:20px;background:#E6F4EA;color:#1A6B31;border:1px solid #22863A;">
+                  <span style="width:8px;height:8px;border-radius:50%;background:#1A6B31;flex-shrink:0;"></span>
+                  Aucun écart
+                </div>
+
                 <!-- Badge Opt_A : pill seule (archivée) -->
                 <div id="badge-opt-a" style="display:none;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:4px 12px;border-radius:20px;background:#FEF2F2;color:#BF2F17;">
                   <span style="width:8px;height:8px;border-radius:50%;background:#BF2F17;flex-shrink:0;"></span>
@@ -3295,12 +3301,25 @@
       const h = document.getElementById('h'+n);
       h.className = 't-head ' + gc; h.innerHTML = hh;
       document.getElementById('rm'+n).style.display = i ? 'none' : 'block';
-      document.getElementById('ri'+n).style.display = i ? 'block' : 'none';
+      const riEl = document.getElementById('ri'+n);
+      riEl.style.display = i ? 'block' : 'none';
+      // Pré-remplir montant corrigé = montant calculé à l'activation
+      if (i) {
+        riEl.querySelectorAll('.t-row').forEach(row => {
+          const amtSpan = row.querySelector('.c-amt');
+          const corrInp = row.querySelector('.inp:not(.remise-inp):not(.plain)');
+          if (amtSpan && corrInp && corrInp.value === '') {
+            const val = amtSpan.textContent.replace(/\s/g,'').replace('€','').trim();
+            if (val && val !== '0,00') corrInp.value = val;
+          }
+        });
+      }
     });
     ['3','4','5'].forEach(n => {
       const h = document.querySelector('#tpe-anchor-' + n + ' .t-head');
       if (h) { h.className = 't-head ' + gc; h.innerHTML = hh; }
     });
+    updateEcartBadge();
   }
   function setB(checked) {
     const ko = checked;
@@ -4065,6 +4084,41 @@
   //         si remise remplie → rouge effacé, bouton réactif
   //         si montant effacé → reset remise, bouton réactif
 
+  function updateEcartBadge() {
+    const ifaceOn = document.getElementById('sw-iface')?.checked;
+    const badgeNoEcart = document.getElementById('badge-no-ecart');
+    const badgeGroup = document.getElementById('kpi-badge-group');
+    if (!badgeNoEcart) return;
+
+    if (!ifaceOn) {
+      badgeNoEcart.style.display = 'none';
+      return;
+    }
+
+    // Comparer montant calculé vs montant corrigé sur toutes les lignes ri visibles
+    let hasEcart = false;
+    ['1','2'].forEach(n => {
+      const riEl = document.getElementById('ri'+n);
+      if (!riEl || riEl.style.display === 'none') return;
+      riEl.querySelectorAll('.t-row').forEach(row => {
+        const amtSpan = row.querySelector('.c-amt');
+        const corrInp = row.querySelector('.inp:not(.remise-inp):not(.plain)');
+        if (!amtSpan || !corrInp) return;
+        const calc = parseFloat(amtSpan.textContent.replace(/\s/g,'').replace('€','').replace(',','.')) || 0;
+        const corr = parseFloat(corrInp.value.replace(/\s/g,'').replace(',','.')) || 0;
+        if (Math.abs(calc - corr) > 0.005) hasEcart = true;
+      });
+    });
+
+    // Afficher badge vert OU laisser badge rouge selon écart
+    badgeNoEcart.style.display = (!hasEcart) ? 'flex' : 'none';
+    // Masquer badge rouge si aucun écart
+    ['badge-opt-a','badge-opt-b','badge-opt-c'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el && !hasEcart) el.style.display = 'none';
+    });
+  }
+
   function checkAll() {
     // ── Télécollecte — uniquement les rows visibles ──
     let tpeOk = true;
@@ -4121,6 +4175,7 @@
     if (e.target.tagName === 'INPUT') {
       checkAll();
       checkReg();
+      updateEcartBadge();
     }
   });
 
