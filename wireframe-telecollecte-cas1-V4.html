@@ -515,6 +515,7 @@
     /* Panel wireframe */
     .wf-panel.collapsed > .panel-body { display: none; }
     .wf-panel.collapsed > .panel-header { display: none !important; }
+    .wf-panel.collapsed > #panel-doc-section { display: none; }
     .wf-panel.collapsed { min-width: 0; padding: 6px; border: none; background: none; box-shadow: none; }
     .wf-panel.collapsed > #btn-panel-open { display: flex !important; }
     #btn-panel-open { display: none; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 50%; background: var(--white); border: 2px solid var(--navy); cursor: pointer; font-size: 18px; font-weight: 700; color: var(--navy); box-shadow: 0 2px 8px rgba(0,0,0,.15); }
@@ -1461,7 +1462,7 @@
   </div><!-- /panel-body -->
 
   <!-- Documentation -->
-  <div style="padding:12px 16px;border-top:1px solid var(--grey-bd);">
+  <div id="panel-doc-section" style="padding:12px 16px;border-top:1px solid var(--grey-bd);">
     <div class="panel-title" style="margin-bottom:10px;">Documentation</div>
     <div style="display:flex;flex-direction:column;gap:2px;">
       <button onclick="openDocDrawer()"
