@@ -757,67 +757,17 @@
   </div>
 </div>
 
-<!-- ══ DRAWER DOCUMENTATION (full-width) ══ -->
-<div id="doc-drawer" style="display:none;position:fixed;top:0;right:0;width:100vw;height:100vh;background:var(--white);z-index:2100;flex-direction:column;">
-  <!-- Header doc drawer -->
-  <div style="background:#0F1629;padding:12px 28px;display:flex;align-items:center;gap:16px;flex-shrink:0;">
-    <button onclick="closeDocDrawer()"
-      style="display:flex;align-items:center;gap:6px;background:none;border:1px solid rgba(255,255,255,0.2);border-radius:8px;padding:6px 14px;font-size:13px;font-weight:600;color:rgba(255,255,255,0.7);cursor:pointer;font-family:inherit;"
-      onmouseover="this.style.color='white';this.style.borderColor='rgba(255,255,255,0.5)'" onmouseout="this.style.color='rgba(255,255,255,0.7)';this.style.borderColor='rgba(255,255,255,0.2)'">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
-      Retour
-    </button>
-    <div style="color:#C4B5FD;font-size:15px;font-weight:700;">📘 Documentation — Télécollecte TPE</div>
-  </div>
-  <!-- Contenu : réutilise le rendu de l'onglet Contexte -->
-  <div id="doc-drawer-content" style="flex:1;overflow-y:auto;padding:28px 40px;display:flex;flex-direction:column;gap:20px;max-width:1100px;margin:0 auto;width:100%;"></div>
-</div>
-
 <!-- ══ PANNEAU RETOURS PO ══ -->
 <div id="briefs-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:2000;" onclick="closeBriefs()"></div>
 <div id="briefs-panel" style="display:none;position:fixed;top:0;right:0;width:820px;height:100vh;background:var(--white);z-index:2001;flex-direction:column;box-shadow:-8px 0 32px rgba(0,0,0,0.2);">
 
-  <!-- Barre Designer -->
-  <div id="designer-toolbar" style="background:#0F1629;padding:10px 20px;display:flex;align-items:center;gap:8px;flex-shrink:0;border-bottom:1px solid rgba(255,255,255,0.08);">
-    <!-- ← Dashboard -->
-    <button onclick="goToDashboard()" title="Retour Dashboard"
-      style="display:flex;align-items:center;gap:6px;background:none;border:1px solid rgba(255,255,255,0.15);border-radius:8px;padding:6px 12px;font-size:12px;font-weight:600;color:rgba(255,255,255,0.6);cursor:pointer;font-family:inherit;transition:all .15s;white-space:nowrap;"
-      onmouseover="this.style.background='rgba(255,255,255,0.08)';this.style.color='white'" onmouseout="this.style.background='none';this.style.color='rgba(255,255,255,0.6)'">
-      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
-      Dashboard
-    </button>
-    <!-- 💬 Commentaires -->
-    <button onclick="closeBriefs(); openBriefs();" title="Commentaires équipe" id="toolbar-comments-btn"
-      style="display:flex;align-items:center;gap:6px;background:none;border:1px solid rgba(255,255,255,0.15);border-radius:8px;padding:6px 12px;font-size:12px;font-weight:600;color:rgba(255,255,255,0.6);cursor:pointer;font-family:inherit;transition:all .15s;white-space:nowrap;"
-      onmouseover="this.style.background='rgba(255,255,255,0.08)';this.style.color='white'" onmouseout="this.style.background='none';this.style.color='rgba(255,255,255,0.6)'">
-      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-      Commentaires
-    </button>
-    <!-- 👁 Pings toggle -->
-    <button onclick="togglePingsFromToolbar(this)" id="toolbar-pings-btn"
-      style="display:flex;align-items:center;gap:6px;background:none;border:1px solid rgba(255,255,255,0.15);border-radius:8px;padding:6px 12px;font-size:12px;font-weight:600;color:rgba(255,255,255,0.6);cursor:pointer;font-family:inherit;transition:all .15s;white-space:nowrap;">
-      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-      Pings
-    </button>
-    <!-- Spacer -->
-    <div style="flex:1;"></div>
-    <!-- 📘 Documentation -->
-    <button onclick="openDocDrawer()" title="Documentation"
-      style="display:flex;align-items:center;gap:6px;background:rgba(124,58,237,0.2);border:1px solid rgba(124,58,237,0.4);border-radius:8px;padding:6px 12px;font-size:12px;font-weight:600;color:#C4B5FD;cursor:pointer;font-family:inherit;transition:all .15s;white-space:nowrap;"
-      onmouseover="this.style.background='rgba(124,58,237,0.35)'" onmouseout="this.style.background='rgba(124,58,237,0.2)'">
-      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-      Documentation
-    </button>
-    <!-- × Fermer -->
-    <button onclick="closeBriefs()" style="background:none;border:none;color:rgba(255,255,255,0.4);font-size:20px;cursor:pointer;line-height:1;padding:4px 6px;margin-left:4px;" onmouseover="this.style.color='white'" onmouseout="this.style.color='rgba(255,255,255,0.4)'">×</button>
-  </div>
-
   <!-- Header -->
-  <div style="background:var(--navy);padding:16px 24px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;">
+  <div style="background:var(--navy);padding:20px 24px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;">
     <div>
-      <div style="color:var(--yellow);font-size:16px;font-weight:700;">Espace Designer</div>
-      <div style="color:rgba(255,255,255,0.5);font-size:12px;margin-top:2px;">Retours · Règles de gestion · Claude</div>
+      <div style="color:var(--yellow);font-size:18px;font-weight:700;">Retours PO</div>
+      <div style="color:rgba(255,255,255,0.5);font-size:12px;margin-top:2px;">Notez les retours — copiez pour Claude</div>
     </div>
+    <button onclick="closeBriefs()" style="background:none;border:none;color:rgba(255,255,255,0.6);font-size:22px;cursor:pointer;line-height:1;">×</button>
   </div>
 
   <!-- Ligne 1 : pills Claude + Commentaires équipe -->
@@ -1705,92 +1655,14 @@
     }
     document.getElementById('briefs-overlay').style.display = 'block';
     document.getElementById('briefs-panel').style.display = 'flex';
-    document.body.style.overflow = 'hidden';
     setBriefTab(currentBriefTab);
     renderBriefs();
     updateAllCounts();
-    updatePingsToolbarBtn();
     document.body.style.cursor = '';
   }
-  function goToDashboard() {
-    window.location.href = 'http://localhost:8765/Loopcraft/studio.html?go=dashboard';
-  }
-
-  function togglePingsFromToolbar(btn) {
-    const newState = !commentMode;
-    setCmtMode(newState);
-    // Sync visuel du bouton toolbar
-    updatePingsToolbarBtn();
-  }
-
-  function updatePingsToolbarBtn() {
-    const btn = document.getElementById('toolbar-pings-btn');
-    if (!btn) return;
-    if (commentMode) {
-      btn.style.background = 'rgba(245,190,0,0.2)';
-      btn.style.borderColor = 'rgba(245,190,0,0.5)';
-      btn.style.color = '#F5BE00';
-    } else {
-      btn.style.background = 'none';
-      btn.style.borderColor = 'rgba(255,255,255,0.15)';
-      btn.style.color = 'rgba(255,255,255,0.6)';
-    }
-  }
-
-  function openDocDrawer() {
-    const drawer = document.getElementById('doc-drawer');
-    const content = document.getElementById('doc-drawer-content');
-    if (!drawer || !content) return;
-    // Injecter le contenu de la doc + blocs RG
-    const DOC_KEY = 'wf_documentation';
-    const RG_BLOCKS_KEY = 'wf_rg_blocks';
-    const doc = localStorage.getItem(DOC_KEY) || '';
-    const rgBlocks = JSON.parse(localStorage.getItem(RG_BLOCKS_KEY) || '[]');
-
-    const blocksHTML = rgBlocks.length === 0 ? '' : rgBlocks.map(b => `
-      <div style="background:#F8F9FB;border:1px solid var(--grey-bd);border-radius:10px;padding:16px 20px;border-left:3px solid #7C3AED;">
-        <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;">
-          <span style="background:#7C3AED;color:white;border-radius:6px;padding:2px 10px;font-size:11px;font-weight:700;">RG</span>
-          <span style="background:#E8F4FD;color:#0057A8;border-radius:6px;padding:2px 10px;font-size:11px;font-weight:600;">${b.tab}</span>
-          <span style="background:#F0FDF4;color:#1A6B31;border-radius:6px;padding:2px 10px;font-size:11px;font-weight:600;">${b.mode}</span>
-        </div>
-        <div style="font-size:15px;font-weight:700;color:var(--navy);margin-bottom:12px;">${b.titre}</div>
-        <div style="font-size:12px;color:var(--grey-txt);font-weight:600;text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px;">Règle</div>
-        <div style="font-size:14px;color:var(--navy);line-height:1.6;margin-bottom:12px;white-space:pre-wrap;">${b.regle}</div>
-        <div style="font-size:12px;color:var(--grey-txt);font-weight:600;text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px;">Comportement attendu</div>
-        <div style="font-size:14px;color:var(--navy);line-height:1.6;margin-bottom:12px;white-space:pre-wrap;">${b.comportement}</div>
-        <div style="font-size:12px;color:var(--grey-txt);font-weight:600;text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px;">Critère de validation</div>
-        <div style="font-size:14px;color:var(--navy);line-height:1.6;white-space:pre-wrap;">${b.critere}</div>
-      </div>`).join('');
-
-    content.innerHTML = `
-      ${doc ? `
-      <div>
-        <div style="font-size:18px;font-weight:700;color:var(--navy);margin-bottom:16px;">Documentation fonctionnelle</div>
-        <pre style="font-size:14px;color:var(--navy);line-height:1.8;white-space:pre-wrap;font-family:inherit;background:#F8F9FB;border:1px solid var(--grey-bd);border-radius:10px;padding:24px;">${doc}</pre>
-      </div>` : ''}
-      ${rgBlocks.length > 0 ? `
-      <div>
-        <div style="font-size:18px;font-weight:700;color:var(--navy);margin-bottom:16px;">Blocs Règles de gestion (${rgBlocks.length})</div>
-        <div style="display:flex;flex-direction:column;gap:12px;">${blocksHTML}</div>
-      </div>` : ''}
-      ${!doc && rgBlocks.length === 0 ? '<div style="color:var(--grey-txt);font-style:italic;font-size:14px;text-align:center;padding:60px 0;">Aucune documentation — ouvre l\'onglet 📘 Contexte pour en générer une.</div>' : ''}
-    `;
-
-    drawer.style.display = 'flex';
-    document.body.style.overflow = 'hidden';
-  }
-
-  function closeDocDrawer() {
-    const drawer = document.getElementById('doc-drawer');
-    if (drawer) drawer.style.display = 'none';
-    document.body.style.overflow = '';
-  }
-
   function closeBriefs() {
     document.getElementById('briefs-overlay').style.display = 'none';
     document.getElementById('briefs-panel').style.display = 'none';
-    document.body.style.overflow = '';
     currentBriefTab = 'retour';
     if (archivesMode) {
       const sw = document.getElementById('sw-archives');
