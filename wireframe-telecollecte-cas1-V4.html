@@ -785,7 +785,7 @@
     </button>
     <button onclick="currentBriefTab === 'rg-panel' ? setBriefTab('retour') : setBriefTab('rg-panel')" id="btab-rg-panel"
       style="display:flex;align-items:center;gap:6px;background:none;border:1.5px solid var(--grey-bd);border-radius:20px;padding:6px 16px;font-size:13px;font-weight:600;color:var(--grey-txt);cursor:pointer;font-family:inherit;white-space:nowrap;transition:all .15s;">
-      📋 Règles de gestion
+      📘 Contexte
       <span id="rg-panel-count" style="display:none;background:#7C3AED;color:white;border-radius:100px;font-size:10px;font-weight:700;padding:1px 6px;"></span>
     </button>
     <button onclick="currentBriefTab === 'team' ? setBriefTab('retour') : setBriefTab('team')" id="btab-team"
@@ -840,12 +840,16 @@
 
   <!-- Panel Règles de gestion (caché par défaut) -->
   <div id="rg-panel-list" style="display:none;flex:1;flex-direction:column;overflow:hidden;">
-    <!-- Sous-tabs RG / PRD -->
+    <!-- Sous-tabs RG / Documentation / PRD -->
     <div style="display:flex;gap:0;padding:0 24px;flex-shrink:0;border-bottom:1px solid var(--grey-bd);">
       <button onclick="setRgTab('rg-list')" id="rg-subtab-list"
         style="background:none;border:none;border-bottom:2.5px solid #7C3AED;padding:11px 16px;font-size:13px;font-weight:700;color:#7C3AED;cursor:pointer;font-family:inherit;white-space:nowrap;">
         📋 Règles de gestion
         <span id="rg-subtab-count" style="display:none;background:#7C3AED;color:white;border-radius:100px;font-size:10px;font-weight:700;padding:1px 6px;margin-left:4px;"></span>
+      </button>
+      <button onclick="setRgTab('rg-doc')" id="rg-subtab-doc"
+        style="background:none;border:none;border-bottom:2.5px solid transparent;padding:11px 16px;font-size:13px;font-weight:500;color:var(--grey-txt);cursor:pointer;font-family:inherit;white-space:nowrap;">
+        📄 Documentation
       </button>
       <button onclick="setRgTab('rg-prd')" id="rg-subtab-prd"
         style="background:none;border:none;border-bottom:2.5px solid transparent;padding:11px 16px;font-size:13px;font-weight:500;color:var(--grey-txt);cursor:pointer;font-family:inherit;white-space:nowrap;">
@@ -855,6 +859,8 @@
     </div>
     <!-- Liste RG -->
     <div id="rg-list-content" style="flex:1;overflow-y:auto;padding:16px 24px;display:flex;flex-direction:column;gap:8px;"></div>
+    <!-- Documentation -->
+    <div id="rg-doc-content" style="display:none;flex:1;overflow-y:auto;padding:16px 24px;flex-direction:column;gap:12px;"></div>
     <!-- PRD -->
     <div id="rg-prd-content" style="display:none;flex:1;overflow-y:auto;padding:16px 24px;flex-direction:column;gap:12px;"></div>
   </div>
@@ -2413,15 +2419,16 @@
 
   function setRgTab(tab) {
     rgSubTab = tab;
-    const listBtn = document.getElementById('rg-subtab-list');
-    const prdBtn  = document.getElementById('rg-subtab-prd');
-    const listEl  = document.getElementById('rg-list-content');
-    const prdEl   = document.getElementById('rg-prd-content');
-    if (listBtn) { listBtn.style.borderBottom = tab === 'rg-list' ? '2.5px solid #7C3AED' : '2.5px solid transparent'; listBtn.style.color = tab === 'rg-list' ? '#7C3AED' : 'var(--grey-txt)'; listBtn.style.fontWeight = tab === 'rg-list' ? '700' : '500'; }
-    if (prdBtn)  { prdBtn.style.borderBottom  = tab === 'rg-prd'  ? '2.5px solid #7C3AED' : '2.5px solid transparent'; prdBtn.style.color  = tab === 'rg-prd'  ? '#7C3AED' : 'var(--grey-txt)'; prdBtn.style.fontWeight = tab === 'rg-prd' ? '700' : '500'; }
-    if (listEl) listEl.style.display = tab === 'rg-list' ? 'flex' : 'none';
-    if (prdEl)  prdEl.style.display  = tab === 'rg-prd'  ? 'flex' : 'none';
+    const tabs = ['rg-list', 'rg-doc', 'rg-prd'];
+    tabs.forEach(t => {
+      const suffix = t === 'rg-list' ? 'list' : t === 'rg-doc' ? 'doc' : 'prd';
+      const btn = document.getElementById('rg-subtab-' + suffix);
+      const el  = document.getElementById(t + '-content');
+      if (btn) { btn.style.borderBottom = t === tab ? '2.5px solid #7C3AED' : '2.5px solid transparent'; btn.style.color = t === tab ? '#7C3AED' : 'var(--grey-txt)'; btn.style.fontWeight = t === tab ? '700' : '500'; }
+      if (el)  el.style.display = t === tab ? 'flex' : 'none';
+    });
     if (tab === 'rg-list') renderRgList();
+    if (tab === 'rg-doc')  renderRgDoc();
     if (tab === 'rg-prd')  renderRgPrd();
   }
 
@@ -2594,6 +2601,138 @@
     if (typeof fbSaveBriefOne === 'function') fbSaveBriefOne(b);
     updateAllCounts();
     renderRgList();
+  }
+
+  function renderRgDoc() {
+    const el = document.getElementById('rg-doc-content');
+    if (!el) return;
+    const DOC_KEY = 'wf_documentation';
+    const DOC_DATE_KEY = 'wf_documentation_date';
+    const saved = localStorage.getItem(DOC_KEY) || '';
+    const savedDate = localStorage.getItem(DOC_DATE_KEY) || '';
+
+    el.innerHTML = `
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-shrink:0;gap:12px;">
+        <div>
+          <div style="font-size:14px;font-weight:700;color:var(--navy);">Documentation fonctionnelle</div>
+          ${savedDate ? `<div style="font-size:11px;color:var(--grey-txt);margin-top:2px;">Dernière génération : ${savedDate}</div>` : '<div style="font-size:11px;color:var(--grey-txt);margin-top:2px;">Aucune documentation générée</div>'}
+        </div>
+        <button id="doc-generate-btn" onclick="generateDoc()" style="background:var(--yellow);color:#000;border:none;border-radius:8px;padding:8px 18px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;flex-shrink:0;">⚡ Générer la documentation</button>
+      </div>
+
+      <textarea id="doc-text" style="flex:1;min-height:400px;border:1px solid var(--grey-bd);border-radius:8px;padding:14px;font-size:13px;font-family:inherit;resize:none;outline:none;color:var(--navy);line-height:1.7;" placeholder="Cliquez sur Générer pour produire la documentation fonctionnelle de ce wireframe…">${saved}</textarea>
+
+      <div style="display:flex;justify-content:flex-end;flex-shrink:0;">
+        <button onclick="copyDoc()" style="background:var(--navy);color:white;border:none;border-radius:8px;padding:8px 18px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;">📋 Copier</button>
+      </div>`;
+
+    // Auto-save à chaque frappe
+    setTimeout(() => {
+      const ta = document.getElementById('doc-text');
+      if (ta) ta.addEventListener('input', () => localStorage.setItem(DOC_KEY, ta.value));
+    }, 100);
+  }
+
+  async function generateDoc() {
+    const btn = document.getElementById('doc-generate-btn');
+    if (btn) { btn.textContent = '⏳ Génération en cours...'; btn.disabled = true; }
+
+    const allRg = briefs.filter(b => b.type === 'rg');
+    const allComments = JSON.parse(localStorage.getItem('wf_comments_telecollecte') || '[]');
+    const TAB_LABELS = { tpe:'Télécollecte', ant:'Date antérieure', reg:'Régularisation' };
+    const today = new Date().toLocaleDateString('fr-FR', { day:'numeric', month:'long', year:'numeric' });
+
+    // Grouper les RG par tab
+    const rgByTab = {};
+    allRg.forEach(b => {
+      const t = b.tab || 'tpe';
+      if (!rgByTab[t]) rgByTab[t] = [];
+      rgByTab[t].push(b);
+    });
+
+    // Résumé commentaires (textes sans doublons)
+    const cmtTexts = [...new Set(allComments.map(c => c.text).filter(Boolean))].slice(0, 20);
+
+    let prompt = `Tu es expert Product Management senior et technical writer. Génère une documentation fonctionnelle complète et claire pour ce wireframe.\n\n`;
+    prompt += `━━━ CONTEXTE PRODUIT ━━━\n`;
+    prompt += `Projet : Odyssey — Club Med\n`;
+    prompt += `Feature : Télécollecte TPE — saisie et validation des remises en fin de journée\n`;
+    prompt += `Utilisateurs : GOs (Gentils Organisateurs) et équipes réception des villages Club Med\n`;
+    prompt += `Date : ${today}\n\n`;
+
+    prompt += `━━━ FONCTIONNEMENT CONNU ━━━\n`;
+    prompt += `3 modes opératoires coexistent selon la configuration du TPE :\n`;
+    prompt += `• MODE STANDARD : saisie manuelle du montant + numéro de remise obligatoire si montant > 0\n`;
+    prompt += `• MODE INTERFACÉ : montant calculé pré-rempli par le système, GO peut saisir un montant corrigé + remise obligatoire si correction\n`;
+    prompt += `• MODE TÉLÉCOLLECTE SAISIE : vue post-validation, montants en lecture seule, complément possible\n`;
+    prompt += `• RÉGULARISATION : corrige un écart sur date antérieure, accès Financial Manager uniquement, montant partiel autorisé, dépassement bloqué\n`;
+    prompt += `• DATE ANTÉRIEURE : permet de modifier une saisie d'un jour passé, numéro de remise unique obligatoire\n\n`;
+
+    if (allRg.length > 0) {
+      prompt += `━━━ RÈGLES DE GESTION IDENTIFIÉES (${allRg.length}) ━━━\n`;
+      Object.entries(rgByTab).forEach(([tab, rgs]) => {
+        prompt += `\n▶ ${TAB_LABELS[tab] || tab}\n`;
+        rgs.forEach(b => { prompt += `  ${b.pinLabel || 'RG'} — ${b.text}\n`; });
+      });
+      prompt += '\n';
+    }
+
+    if (cmtTexts.length > 0) {
+      prompt += `━━━ RETOURS ET DÉCISIONS IDENTIFIÉS ━━━\n`;
+      cmtTexts.forEach((t, i) => { prompt += `${i+1}. ${t}\n`; });
+      prompt += '\n';
+    }
+
+    prompt += `━━━ STRUCTURE ATTENDUE ━━━\n`;
+    prompt += `Produis une documentation lisible par n'importe quel intervenant (PO, dev, QA, métier, nouveau collaborateur). Chaque section doit être autonome.\n\n`;
+    prompt += `1. OBJECTIF DE L'ÉCRAN\n   Pourquoi cet écran existe, quel problème il résout, qui l'utilise.\n\n`;
+    prompt += `2. PRÉSENTATION DES SECTIONS\n   Décrire chaque partie de l'interface et son rôle.\n\n`;
+    prompt += `3. PARCOURS UTILISATEUR\n   Étape par étape, par mode (standard / interfacé / saisie). Inclure les cas nominaux et alternatifs.\n\n`;
+    prompt += `4. CONCEPTS MÉTIER\n   Définir clairement : date comptable, remise, télécollecte, écart, régularisation, TPE, GO.\n\n`;
+    prompt += `5. RÈGLES MÉTIER IMPORTANTES\n   Synthèse des règles critiques à retenir — sans dupliquer le tab Règles de gestion.\n\n`;
+    prompt += `6. CAS PARTICULIERS\n   Montants négatifs, clôture automatique, droits FM, saisie partielle...\n\n`;
+    prompt += `7. COMPORTEMENT ATTENDU\n   Ce qui doit toujours être vrai. Ce qui ne doit jamais arriver.\n\n`;
+    prompt += `8. VOCABULAIRE\n   Glossaire des termes spécifiques Club Med / Odyssey.\n\n`;
+    prompt += `Format texte brut, sans markdown. Sois précis, exhaustif, accessible.`;
+
+    try {
+      const docId = 'doc-' + Date.now();
+      await fetch('http://localhost:8765/rewrite-request', {
+        method: 'POST', headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ text: prompt, id: docId })
+      });
+
+      const poll = setInterval(async () => {
+        try {
+          const res = await fetch('http://localhost:8765/rewrite-result');
+          if (res.status === 200) {
+            const data = await res.json();
+            if (data.result && data.id === docId) {
+              clearInterval(poll);
+              const ta = document.getElementById('doc-text');
+              if (ta) { ta.value = data.result; localStorage.setItem('wf_documentation', data.result); }
+              const dateStr = new Date().toLocaleDateString('fr-FR', { day:'numeric', month:'long', year:'numeric', hour:'2-digit', minute:'2-digit' });
+              localStorage.setItem('wf_documentation_date', dateStr);
+              if (btn) { btn.textContent = '⚡ Générer la documentation'; btn.disabled = false; }
+              // Refresh pour mettre à jour la date affichée
+              renderRgDoc();
+            }
+          }
+        } catch(e) { clearInterval(poll); if (btn) { btn.textContent = '⚡ Générer la documentation'; btn.disabled = false; } }
+      }, 2000);
+    } catch(e) {
+      if (btn) { btn.textContent = '⚡ Générer la documentation'; btn.disabled = false; }
+      alert('Erreur : serveur local non disponible.');
+    }
+  }
+
+  function copyDoc() {
+    const ta = document.getElementById('doc-text');
+    if (!ta || !ta.value) return;
+    navigator.clipboard.writeText(ta.value).then(() => {
+      const btn = document.querySelector('[onclick="copyDoc()"]');
+      if (btn) { btn.textContent = '✓ Copié !'; setTimeout(() => btn.textContent = '📋 Copier', 2000); }
+    });
   }
 
   function renderRgPrd() {
