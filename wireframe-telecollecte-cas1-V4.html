@@ -823,7 +823,7 @@
   </div>
 
   <!-- Zone saisie (masquée sur onglet équipe) -->
-  <div id="brief-input-zone" style="padding:16px 24px;border-bottom:1px solid var(--grey-bd);flex-shrink:0;">
+  <div id="brief-input-zone" style="display:none;padding:16px 24px;border-bottom:1px solid var(--grey-bd);flex-shrink:0;">
     <textarea id="brief-text" placeholder="Décris le retour..." style="width:100%;height:80px;border:1px solid var(--grey-bd);border-radius:8px;padding:10px;font-size:14px;font-family:inherit;resize:none;outline:none;color:var(--navy);"></textarea>
     <div style="display:flex;justify-content:flex-end;margin-top:8px;">
       <button onclick="addBrief()" style="background:var(--navy);color:var(--white);border:none;border-radius:8px;padding:8px 20px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;">Ajouter</button>
@@ -2251,7 +2251,7 @@
     const line2 = getLine2El();
     if (line2) line2.style.display = (['claude','team','rg-panel'].includes(tab)) ? 'none' : 'flex';
     // Afficher/masquer zone saisie
-    document.getElementById('brief-input-zone').style.display = tab === 'team' ? 'none' : 'block';
+    document.getElementById('brief-input-zone').style.display = 'none';
     // Placeholder selon onglet
     const placeholders = { retour:'Décris le retour...', idee:'Décris l\'idée...', rg:'Décris la règle de gestion...' };
     const ta = document.getElementById('brief-text');
@@ -2262,7 +2262,7 @@
     document.getElementById('rg-panel-list').style.display = tab === 'rg-panel' ? 'flex' : 'none';
     document.getElementById('claude-panel').style.display = tab === 'claude' ? 'flex' : 'none';
     document.getElementById('lastmodifs-panel').style.display = tab === 'lastmodifs' ? 'flex' : 'none';
-    document.getElementById('brief-input-zone').style.display = (['team','claude','lastmodifs','rg-panel'].includes(tab) || archivesMode) ? 'none' : 'block';
+    document.getElementById('brief-input-zone').style.display = 'none';
     // Footer : sur onglet Claude le bouton "Tout effacer" devient "Vider la sélection"
     const clearBtn = document.getElementById('footer-clear-btn');
     if (clearBtn) clearBtn.textContent = tab === 'claude' ? 'Vider la sélection' : 'Tout effacer';
