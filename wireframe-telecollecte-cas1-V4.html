@@ -4437,8 +4437,8 @@
 
     // ── CAS 1 : MODE SAISIE (post-validation) ──
     if (saisieMode && _frozenAttendu !== null) {
-      const attendu   = parseV(_frozenAttendu);
-      let complement  = 0;
+      const attendu  = parseV(_frozenAttendu);
+      let complement = 0;
       document.querySelectorAll('.inp-complement').forEach(inp => { complement += parseV(inp.value); });
       const saisi = attendu + complement;
       const ecart = complement;
@@ -4446,9 +4446,15 @@
       if (kvS) kvS.textContent = fmt(saisi)   + ' €';
       if (kvE) {
         kvE.textContent = (ecart < -0.005 ? '-' : '') + fmt(Math.abs(ecart)) + ' €';
-        kvE.style.color = Math.abs(ecart) < 0.005 ? '#088A20' : '#BF2F17';
+        kvE.style.color = '#088A20'; // en mode saisie le complément est toujours normal
       }
-      _updateBadges(ecart, fmt);
+      // En mode saisie : masquer tous les badges d'écart et la pill sticky
+      ['badge-no-ecart','badge-opt-a','badge-opt-b','badge-opt-c'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.style.display = 'none';
+      });
+      const pill = document.getElementById('proposal-a-pill');
+      if (pill) pill.style.display = 'none';
       return;
     }
 
