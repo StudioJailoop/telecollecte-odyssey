@@ -2654,6 +2654,18 @@
         critere: 'Sans correction : Montant saisi = Montant attendu, Écart = 0 €\nAvec correction : Écart = somme exacte des corrections\nN° de remise obligatoire pour toute ligne avec montant attendu ≠ 0'
       }]));
     }
+    // Injecter le bloc non-interfacé s'il est absent
+    const _existingBlocks = JSON.parse(localStorage.getItem(RG_BLOCKS_KEY) || '[]');
+    if (!_existingBlocks.find(b => b.titre && b.titre.includes('non interfacé'))) {
+      _existingBlocks.push({
+        titre: 'Logique des montants en mode non interfacé',
+        tab: 'Télécollecte', mode: 'Non interfacé',
+        regle: 'En mode non interfacé, le village n\'est pas connecté au système central. Les TPE ne remontent aucune donnée automatiquement. Le système ne connaît pas les montants encaissés, ni le montant attendu, ni l\'écart potentiel.\n\nLa seule information disponible est celle que le GO saisit lui-même, manuellement, par mode de paiement et par TPE.',
+        comportement: '• Montant attendu  = masqué (information non disponible)\n• Montant saisi    = somme des montants renseignés manuellement dans le tableau\n• Écart            = masqué (impossible à calculer sans montant attendu)\n• Badges d\'écart  = masqués (aucune référence système)\n• À l\'ouverture   : Montant saisi = 0 € tant qu\'aucune saisie n\'a été effectuée\n• En temps réel   : Montant saisi se met à jour à chaque saisie dans le tableau',
+        critere: 'Tout montant > 0 € dans le tableau doit avoir un numéro de remise associé\nMontant = 0 € → numéro de remise facultatif\nLe bouton Valider la saisie n\'est actif que si tous les montants > 0 ont leur numéro de remise\nL\'interface affiche uniquement le Montant saisi — les KPI Montant attendu et Écart sont masqués'
+      });
+      localStorage.setItem(RG_BLOCKS_KEY, JSON.stringify(_existingBlocks));
+    }
     const rgBlocks = JSON.parse(localStorage.getItem(RG_BLOCKS_KEY) || '[]');
 
     const TABS_OPTS = ['Télécollecte','Date antérieure','Régularisation'];
