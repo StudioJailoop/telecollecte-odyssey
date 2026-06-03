@@ -3371,9 +3371,14 @@
     const hidden = !entry.isIntersecting;
     btnvSticky.style.display = hidden ? 'flex' : 'none';
     btnvSticky.className = btnvMain.className;
-    // Pill : visible seulement si sticky ET Prop_A ou Prop_Abis active
+    // Pill sticky : visible seulement si sticky ET écart réel détecté en mode interfacé
     const pill = document.getElementById('proposal-a-pill');
-    if (pill) pill.style.display = hidden ? 'flex' : 'none';
+    if (pill) {
+      const ifaceOn = document.getElementById('sw-iface')?.checked;
+      const badgeC = document.getElementById('badge-opt-c');
+      const hasEcart = badgeC && badgeC.style.display !== 'none';
+      pill.style.display = (hidden && ifaceOn && hasEcart) ? 'flex' : 'none';
+    }
   }, { root: scrollRoot, threshold: 0 }).observe(blocDateTpe);
 
   const observer = new IntersectionObserver(([entry]) => {
@@ -4338,6 +4343,29 @@
     // Afficher badge-opt-c si écart détecté
     const badgeC = document.getElementById('badge-opt-c');
     if (badgeC && hasEcart) badgeC.style.display = 'flex';
+
+    // Synchroniser le pill sticky avec l'état réel
+    const pill = document.getElementById('proposal-a-pill');
+    if (pill) {
+      if (hasEcart) {
+        // Mettre à jour le contenu avec les moyens de paiement en écart
+        const mdpEnEcart = [];
+        ['1','2'].forEach(n => {
+          const riEl = document.getElementById('ri'+n);
+          if (!riEl || riEl.style.display === 'none') return;
+          riEl.querySelectorAll('.t-row').forEach(row => {
+            const corrInp = row.querySelector('.inp:not(.remise-inp):not(.plain)');
+            if (corrInp && parseV(corrInp.value) !== 0) {
+              const mdp = row.querySelector('.c-mdp')?.textContent;
+              if (mdp && !mdpEnEcart.includes(mdp)) mdpEnEcart.push(mdp);
+            }
+          });
+        });
+        const ecartSign = ecart < -0.005 ? '-' : '+';
+        pill.innerHTML = `<span style="width:7px;height:7px;border-radius:50%;background:#BF2F17;flex-shrink:0;"></span>Écart : ${ecartSign}${fmt(Math.abs(ecart))} €${mdpEnEcart.length ? ' · <span style="color:var(--navy);margin-left:2px;">' + mdpEnEcart.join(' · ') + '</span>' : ''}`;
+      }
+      // Visibilité gérée par l'IntersectionObserver — pas toucher ici
+    }
   }
 
   function updateNonIfaceSaisi() {
