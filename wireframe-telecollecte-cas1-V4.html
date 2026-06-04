@@ -467,6 +467,13 @@
       border: 1px solid var(--grey-bd);
     }
     .g-ant-main { grid-template-columns: 110px 110px 1fr 130px 150px; }
+    /* Centrage colonne N° Remise (5e col) tableau principal */
+    .g-ant-main span:last-child { text-align: center; }
+    /* Centrage colonne N° Remise bloc régularisation (2e col) */
+    .g-ant-regul span:last-child { text-align: center; }
+    .ant-remise-opt.opt-b { justify-content: center; }
+    .regul-row .ant-remise-opt.opt-b > span { display: block; text-align: center; width: 100%; }
+    .regul-row .ant-remise-opt.opt-b .iw { justify-content: center; }
 
     /* Partie droite : bloc régularisation */
     .ant-regul-wrap {
