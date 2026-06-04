@@ -467,13 +467,10 @@
       border: 1px solid var(--grey-bd);
     }
     .g-ant-main { grid-template-columns: 110px 110px 1fr 130px 150px; }
-    /* Centrage colonne N° Remise (5e col) tableau principal */
     .g-ant-main span:last-child { text-align: center; }
-    /* Centrage colonne N° Remise bloc régularisation (2e col) */
     .g-ant-regul span:last-child { text-align: center; }
-    .ant-remise-opt.opt-b { justify-content: center; }
-    .regul-row .ant-remise-opt.opt-b > span { display: block; text-align: center; width: 100%; }
-    .regul-row .ant-remise-opt.opt-b .iw { justify-content: center; }
+    .regul-row .ant-remise-opt > span { display: block; text-align: center; width: 100%; }
+    .regul-row .ant-remise-opt .iw { justify-content: center; }
 
     /* Partie droite : bloc régularisation */
     .ant-regul-wrap {
@@ -516,9 +513,6 @@
       background: var(--white);
     }
     .regul-row:last-child { border-bottom: none; }
-
-    /* Option B validée — affichage texte n° remise en Date antérieure */
-    .ant-remise-opt { display: flex; flex-direction: column; gap: 2px; }
 
     /* Footer */
 
@@ -1235,57 +1229,9 @@
             <!-- Bloc Régularisation TPE 1 -->
             <div class="ant-regul-wrap">
               <div class="t-head g-ant-regul"><span>Régularisation montant</span><span>N° Remise</span></div>
-
-              <!-- Visa — remise existante 652356233659 -->
-              <div class="regul-row">
-                <input class="inp-regul" type="text" placeholder="0,00 €"/>
-                <!-- Option A : input read-only grisé -->
-                <div class="ant-remise-opt opt-a">
-                  <input class="inp-regul" type="text" value="652356233659" readonly style="background:#F3F4F6;color:#6B7280;cursor:default;border-color:#E5E7EB;"/>
-                </div>
-                <!-- Option B : texte informatif, pas de champ -->
-                <div class="ant-remise-opt">
-                  <span style="font-size:13px;font-weight:600;color:var(--navy);">652356233659</span>
-                  
-                </div>
-                <!-- Option C : fond teinté + label contextuel -->
-                <div class="ant-remise-opt opt-c">
-                  <input class="inp-regul" type="text" value="652356233659" readonly style="background:#EFF6FF;color:#1E40AF;border-color:#BFDBFE;cursor:default;"/>
-                  <span style="font-size:11px;color:#3B82F6;">Complète la remise</span>
-                </div>
-              </div>
-
-              <!-- Amex — remise existante 652356233659 -->
-              <div class="regul-row">
-                <input class="inp-regul" type="text" placeholder="0,00 €"/>
-                <div class="ant-remise-opt opt-a">
-                  <input class="inp-regul" type="text" value="652356233659" readonly style="background:#F3F4F6;color:#6B7280;cursor:default;border-color:#E5E7EB;"/>
-                </div>
-                <div class="ant-remise-opt">
-                  <span style="font-size:13px;font-weight:600;color:var(--navy);">652356233659</span>
-                  
-                </div>
-                <div class="ant-remise-opt opt-c">
-                  <input class="inp-regul" type="text" value="652356233659" readonly style="background:#EFF6FF;color:#1E40AF;border-color:#BFDBFE;cursor:default;"/>
-                  <span style="font-size:11px;color:#3B82F6;">Complète la remise</span>
-                </div>
-              </div>
-
-              <!-- WeChat — pas de remise -->
-              <div class="regul-row">
-                <input class="inp-regul" type="text" placeholder="0,00 €"/>
-                <div class="ant-remise-opt opt-a">
-                  <div class="iw"><input class="inp-regul" type="text" placeholder="N° requis"/><span class="field-error-msg remise-err"><svg viewBox="0 0 20 20" fill="#BF2F17"><path d="M10 2a8 8 0 1 0 0 16A8 8 0 0 0 10 2zm0 4a1 1 0 0 1 1 1v3a1 1 0 0 1-2 0V7a1 1 0 0 1 1-1zm0 7a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg>N° de remise obligatoire</span></div>
-                </div>
-                <div class="ant-remise-opt">
-                  <div class="iw"><input class="inp-regul" type="text" placeholder=""/><span class="field-error-msg remise-err"><svg viewBox="0 0 20 20" fill="#BF2F17"><path d="M10 2a8 8 0 1 0 0 16A8 8 0 0 0 10 2zm0 4a1 1 0 0 1 1 1v3a1 1 0 0 1-2 0V7a1 1 0 0 1 1-1zm0 7a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg>N° de remise obligatoire</span></div>
-                  
-                </div>
-                <div class="ant-remise-opt opt-c">
-                  <div class="iw"><input class="inp-regul" type="text" placeholder="N° requis" style="border-color:#FCD34D;"/><span class="field-error-msg remise-err"><svg viewBox="0 0 20 20" fill="#BF2F17"><path d="M10 2a8 8 0 1 0 0 16A8 8 0 0 0 10 2zm0 4a1 1 0 0 1 1 1v3a1 1 0 0 1-2 0V7a1 1 0 0 1 1-1zm0 7a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg>N° de remise obligatoire</span></div>
-                  
-                </div>
-              </div>
+              <div class="regul-row"><input class="inp-regul" type="text" placeholder="0,00 €"/><div class="ant-remise-opt"><span style="font-size:13px;font-weight:600;color:var(--navy);">652356233659</span></div></div>
+              <div class="regul-row"><input class="inp-regul" type="text" placeholder="0,00 €"/><div class="ant-remise-opt"><span style="font-size:13px;font-weight:600;color:var(--navy);">652356233659</span></div></div>
+              <div class="regul-row"><input class="inp-regul" type="text" placeholder="0,00 €"/><div class="ant-remise-opt"><div class="iw"><input class="inp-regul" type="text" placeholder=""/><span class="field-error-msg remise-err"><svg viewBox="0 0 20 20" fill="#BF2F17"><path d="M10 2a8 8 0 1 0 0 16A8 8 0 0 0 10 2zm0 4a1 1 0 0 1 1 1v3a1 1 0 0 1-2 0V7a1 1 0 0 1 1-1zm0 7a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg>N° de remise obligatoire</span></div></div></div>
             </div>
           </div>
         </div>
@@ -1299,23 +1245,10 @@
               <div class="t-row g-ant-main"><span class="c-ro">04/05/2026</span><span class="c-mdp">Visa</span><span class="c-loc">434 – Poste N°3 Réception</span><span class="c-ro">0,00 €</span><span class="c-ro">—</span></div>
               <div class="t-row g-ant-main"><span class="c-ro">04/05/2026</span><span class="c-mdp">Amex</span><span class="c-loc">434 – Poste N°3 Réception</span><span class="c-ro">45,00 €</span><span class="c-ro">652356233659</span></div>
             </div>
-            <!-- Bloc Régularisation TPE 2 -->
             <div class="ant-regul-wrap">
               <div class="t-head g-ant-regul"><span>Régularisation montant</span><span>N° Remise</span></div>
-
-              <!-- Visa — pas de remise (0,00 €) -->
-              <div class="regul-row">
-                <input class="inp-regul" type="text" placeholder="0,00 €"/>
-</div>
-                <div class="ant-remise-opt"><div class="iw"><input class="inp-regul" type="text" placeholder=""/><span class="field-error-msg remise-err"><svg viewBox="0 0 20 20" fill="#BF2F17"><path d="M10 2a8 8 0 1 0 0 16A8 8 0 0 0 10 2zm0 4a1 1 0 0 1 1 1v3a1 1 0 0 1-2 0V7a1 1 0 0 1 1-1zm0 7a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg>N° de remise obligatoire</span></div></div>
-</div>
-              </div>
-
-              <!-- Amex — remise existante 652356233659 -->
-              <div class="regul-row">
-                <input class="inp-regul" type="text" placeholder="0,00 €"/>
-                <div class="ant-remise-opt"><span style="font-size:13px;font-weight:600;color:var(--navy);">652356233659</span></div>
-              </div>
+              <div class="regul-row"><input class="inp-regul" type="text" placeholder="0,00 €"/><div class="ant-remise-opt"><div class="iw"><input class="inp-regul" type="text" placeholder=""/><span class="field-error-msg remise-err"><svg viewBox="0 0 20 20" fill="#BF2F17"><path d="M10 2a8 8 0 1 0 0 16A8 8 0 0 0 10 2zm0 4a1 1 0 0 1 1 1v3a1 1 0 0 1-2 0V7a1 1 0 0 1 1-1zm0 7a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg>N° de remise obligatoire</span></div></div></div>
+              <div class="regul-row"><input class="inp-regul" type="text" placeholder="0,00 €"/><div class="ant-remise-opt"><span style="font-size:13px;font-weight:600;color:var(--navy);">652356233659</span></div></div>
             </div>
           </div>
         </div>
@@ -1329,17 +1262,10 @@
               <div class="t-row g-ant-main"><span class="c-ro">04/05/2026</span><span class="c-mdp">Visa</span><span class="c-loc">434 – Poste N°1 Spa</span><span class="c-ro">55,00 €</span><span class="c-ro">652356233659</span></div>
               <div class="t-row g-ant-main"><span class="c-ro">04/05/2026</span><span class="c-mdp">Amex</span><span class="c-loc">434 – Poste N°1 Spa</span><span class="c-ro">30,00 €</span><span class="c-ro">652356233659</span></div>
             </div>
-            <!-- Bloc Régularisation TPE 3 -->
             <div class="ant-regul-wrap">
               <div class="t-head g-ant-regul"><span>Régularisation montant</span><span>N° Remise</span></div>
-              <div class="regul-row">
-                <input class="inp-regul" type="text" placeholder="0,00 €"/>
-                <div class="ant-remise-opt"><span style="font-size:13px;font-weight:600;color:var(--navy);">652356233659</span></div>
-              </div>
-              <div class="regul-row">
-                <input class="inp-regul" type="text" placeholder="0,00 €"/>
-                <div class="ant-remise-opt"><span style="font-size:13px;font-weight:600;color:var(--navy);">652356233659</span></div>
-              </div>
+              <div class="regul-row"><input class="inp-regul" type="text" placeholder="0,00 €"/><div class="ant-remise-opt"><span style="font-size:13px;font-weight:600;color:var(--navy);">652356233659</span></div></div>
+              <div class="regul-row"><input class="inp-regul" type="text" placeholder="0,00 €"/><div class="ant-remise-opt"><span style="font-size:13px;font-weight:600;color:var(--navy);">652356233659</span></div></div>
             </div>
           </div>
         </div>
@@ -1353,17 +1279,10 @@
               <div class="t-row g-ant-main"><span class="c-ro">04/05/2026</span><span class="c-mdp">Visa</span><span class="c-loc">434 – Poste N°2 Restaurant</span><span class="c-ro">80,00 €</span><span class="c-ro">652356233659</span></div>
               <div class="t-row g-ant-main"><span class="c-ro">04/05/2026</span><span class="c-mdp">Amex</span><span class="c-loc">434 – Poste N°2 Restaurant</span><span class="c-ro">15,00 €</span><span class="c-ro">652356233659</span></div>
             </div>
-            <!-- Bloc Régularisation TPE 4 -->
             <div class="ant-regul-wrap">
               <div class="t-head g-ant-regul"><span>Régularisation montant</span><span>N° Remise</span></div>
-              <div class="regul-row">
-                <input class="inp-regul" type="text" placeholder="0,00 €"/>
-                <div class="ant-remise-opt"><span style="font-size:13px;font-weight:600;color:var(--navy);">652356233659</span></div>
-              </div>
-              <div class="regul-row">
-                <input class="inp-regul" type="text" placeholder="0,00 €"/>
-                <div class="ant-remise-opt"><span style="font-size:13px;font-weight:600;color:var(--navy);">652356233659</span></div>
-              </div>
+              <div class="regul-row"><input class="inp-regul" type="text" placeholder="0,00 €"/><div class="ant-remise-opt"><span style="font-size:13px;font-weight:600;color:var(--navy);">652356233659</span></div></div>
+              <div class="regul-row"><input class="inp-regul" type="text" placeholder="0,00 €"/><div class="ant-remise-opt"><span style="font-size:13px;font-weight:600;color:var(--navy);">652356233659</span></div></div>
             </div>
           </div>
         </div>
@@ -1377,17 +1296,10 @@
               <div class="t-row g-ant-main"><span class="c-ro">04/05/2026</span><span class="c-mdp">Visa</span><span class="c-loc">434 – Poste N°1 Boutique</span><span class="c-ro">40,00 €</span><span class="c-ro">652356233659</span></div>
               <div class="t-row g-ant-main"><span class="c-ro">04/05/2026</span><span class="c-mdp">Amex</span><span class="c-loc">434 – Poste N°1 Boutique</span><span class="c-ro">20,00 €</span><span class="c-ro">652356233659</span></div>
             </div>
-            <!-- Bloc Régularisation TPE 5 -->
             <div class="ant-regul-wrap">
               <div class="t-head g-ant-regul"><span>Régularisation montant</span><span>N° Remise</span></div>
-              <div class="regul-row">
-                <input class="inp-regul" type="text" placeholder="0,00 €"/>
-                <div class="ant-remise-opt"><span style="font-size:13px;font-weight:600;color:var(--navy);">652356233659</span></div>
-              </div>
-              <div class="regul-row">
-                <input class="inp-regul" type="text" placeholder="0,00 €"/>
-                <div class="ant-remise-opt"><span style="font-size:13px;font-weight:600;color:var(--navy);">652356233659</span></div>
-              </div>
+              <div class="regul-row"><input class="inp-regul" type="text" placeholder="0,00 €"/><div class="ant-remise-opt"><span style="font-size:13px;font-weight:600;color:var(--navy);">652356233659</span></div></div>
+              <div class="regul-row"><input class="inp-regul" type="text" placeholder="0,00 €"/><div class="ant-remise-opt"><span style="font-size:13px;font-weight:600;color:var(--navy);">652356233659</span></div></div>
             </div>
           </div>
         </div>
@@ -1529,7 +1441,6 @@
   <!-- Propositions -->
   <div class="panel-title">Propositions</div>
   <div id="version-list"></div>
-
 
   <hr>
 
@@ -3759,15 +3670,13 @@
     document.getElementById('wf-panel').classList.toggle('collapsed');
   }
 
-  // ── Validation date antérieure (doit être < aujourd'hui) ─────────────────
   function checkAntDate() {
     const input = document.getElementById('ant-date-input');
     const err   = document.getElementById('ant-date-error');
     const btnA  = document.getElementById('btnv-ant');
     const btnAS = document.getElementById('btnv-ant-sticky');
     if (!input) return;
-
-    const raw = input.value.replace(/\s/g,''); // "YYYY/MM/DD"
+    const raw = input.value.replace(/\s/g,'');
     const parts = raw.split('/');
     let valid = false;
     if (parts.length === 3) {
@@ -3775,8 +3684,7 @@
       const today = new Date(); today.setHours(0,0,0,0);
       valid = !isNaN(d.getTime()) && d < today;
     }
-
-    if (err) err.style.display = valid || raw === '' ? 'none' : 'inline';
+    if (err) err.style.display = (valid || raw === '') ? 'none' : 'inline';
     if (input) input.style.borderColor = (!valid && raw !== '') ? '#BF2F17' : '';
     const cls = valid ? 'btn-date-cta' : 'btn-date-cta off';
     if (btnA)  btnA.className  = cls;
@@ -4775,7 +4683,6 @@
 
   // ── Init versions ─────────────────────────────────────────────────────
   renderVersionPanel();
-
   checkAntDate();
 
   // ── Modale validation ────────────────────────────────────────────────
