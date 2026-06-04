@@ -517,24 +517,8 @@
     }
     .regul-row:last-child { border-bottom: none; }
 
-    /* ── Comparaison UX — Options régularisation n° remise (Date antérieure) ── */
-    .ant-remise-opt { display: none !important; flex-direction: column; gap: 2px; }
-    #view-ant.ant-opt-a-active .ant-remise-opt.opt-a { display: flex !important; }
-    #view-ant.ant-opt-b-active .ant-remise-opt.opt-b { display: flex !important; }
-    #view-ant.ant-opt-c-active .ant-remise-opt.opt-c { display: flex !important; }
-    /* Boutons options régularisation dans le panel */
-    .ant-opt-btn {
-      display: block; width: 100%;
-      padding: 7px 10px; border-radius: 8px;
-      border: 1.5px solid var(--grey-bd); background: white;
-      font-size: 12px; font-weight: 600; color: var(--navy);
-      cursor: pointer; text-align: left; font-family: inherit;
-      transition: background .12s, border-color .12s;
-    }
-    .ant-opt-btn.active  { background: #F0F1F8; border-color: var(--navy); }
-    .ant-opt-btn:hover:not(.active) { background: #F9FAFB; }
-    #panel-ant-opts { display: none; }
-    #panel-ant-opts.visible { display: flex; flex-direction: column; gap: 6px; }
+    /* Option B validée — affichage texte n° remise en Date antérieure */
+    .ant-remise-opt { display: flex; flex-direction: column; gap: 2px; }
 
     /* Footer */
 
@@ -1260,7 +1244,7 @@
                   <input class="inp-regul" type="text" value="652356233659" readonly style="background:#F3F4F6;color:#6B7280;cursor:default;border-color:#E5E7EB;"/>
                 </div>
                 <!-- Option B : texte informatif, pas de champ -->
-                <div class="ant-remise-opt opt-b">
+                <div class="ant-remise-opt">
                   <span style="font-size:13px;font-weight:600;color:var(--navy);">652356233659</span>
                   
                 </div>
@@ -1277,7 +1261,7 @@
                 <div class="ant-remise-opt opt-a">
                   <input class="inp-regul" type="text" value="652356233659" readonly style="background:#F3F4F6;color:#6B7280;cursor:default;border-color:#E5E7EB;"/>
                 </div>
-                <div class="ant-remise-opt opt-b">
+                <div class="ant-remise-opt">
                   <span style="font-size:13px;font-weight:600;color:var(--navy);">652356233659</span>
                   
                 </div>
@@ -1293,7 +1277,7 @@
                 <div class="ant-remise-opt opt-a">
                   <div class="iw"><input class="inp-regul" type="text" placeholder="N° requis"/><span class="field-error-msg remise-err"><svg viewBox="0 0 20 20" fill="#BF2F17"><path d="M10 2a8 8 0 1 0 0 16A8 8 0 0 0 10 2zm0 4a1 1 0 0 1 1 1v3a1 1 0 0 1-2 0V7a1 1 0 0 1 1-1zm0 7a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg>N° de remise obligatoire</span></div>
                 </div>
-                <div class="ant-remise-opt opt-b">
+                <div class="ant-remise-opt">
                   <div class="iw"><input class="inp-regul" type="text" placeholder=""/><span class="field-error-msg remise-err"><svg viewBox="0 0 20 20" fill="#BF2F17"><path d="M10 2a8 8 0 1 0 0 16A8 8 0 0 0 10 2zm0 4a1 1 0 0 1 1 1v3a1 1 0 0 1-2 0V7a1 1 0 0 1 1-1zm0 7a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg>N° de remise obligatoire</span></div>
                   
                 </div>
@@ -1322,17 +1306,15 @@
               <!-- Visa — pas de remise (0,00 €) -->
               <div class="regul-row">
                 <input class="inp-regul" type="text" placeholder="0,00 €"/>
-                <div class="ant-remise-opt opt-a"><div class="iw"><input class="inp-regul" type="text" placeholder="N° requis"/><span class="field-error-msg remise-err"><svg viewBox="0 0 20 20" fill="#BF2F17"><path d="M10 2a8 8 0 1 0 0 16A8 8 0 0 0 10 2zm0 4a1 1 0 0 1 1 1v3a1 1 0 0 1-2 0V7a1 1 0 0 1 1-1zm0 7a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg>N° de remise obligatoire</span></div></div>
-                <div class="ant-remise-opt opt-b"><div class="iw"><input class="inp-regul" type="text" placeholder=""/><span class="field-error-msg remise-err"><svg viewBox="0 0 20 20" fill="#BF2F17"><path d="M10 2a8 8 0 1 0 0 16A8 8 0 0 0 10 2zm0 4a1 1 0 0 1 1 1v3a1 1 0 0 1-2 0V7a1 1 0 0 1 1-1zm0 7a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg>N° de remise obligatoire</span></div></div>
-                <div class="ant-remise-opt opt-c"><div class="iw"><input class="inp-regul" type="text" placeholder="N° requis" style="border-color:#FCD34D;"/><span class="field-error-msg remise-err"><svg viewBox="0 0 20 20" fill="#BF2F17"><path d="M10 2a8 8 0 1 0 0 16A8 8 0 0 0 10 2zm0 4a1 1 0 0 1 1 1v3a1 1 0 0 1-2 0V7a1 1 0 0 1 1-1zm0 7a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg>N° de remise obligatoire</span></div></div>
+</div>
+                <div class="ant-remise-opt"><div class="iw"><input class="inp-regul" type="text" placeholder=""/><span class="field-error-msg remise-err"><svg viewBox="0 0 20 20" fill="#BF2F17"><path d="M10 2a8 8 0 1 0 0 16A8 8 0 0 0 10 2zm0 4a1 1 0 0 1 1 1v3a1 1 0 0 1-2 0V7a1 1 0 0 1 1-1zm0 7a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg>N° de remise obligatoire</span></div></div>
+</div>
               </div>
 
               <!-- Amex — remise existante 652356233659 -->
               <div class="regul-row">
                 <input class="inp-regul" type="text" placeholder="0,00 €"/>
-                <div class="ant-remise-opt opt-a"><input class="inp-regul" type="text" value="652356233659" readonly style="background:#F3F4F6;color:#6B7280;cursor:default;border-color:#E5E7EB;"/></div>
-                <div class="ant-remise-opt opt-b"><span style="font-size:13px;font-weight:600;color:var(--navy);">652356233659</span></div>
-                <div class="ant-remise-opt opt-c"><input class="inp-regul" type="text" value="652356233659" readonly style="background:#EFF6FF;color:#1E40AF;border-color:#BFDBFE;cursor:default;"/><span style="font-size:11px;color:#3B82F6;">Complète la remise</span></div>
+                <div class="ant-remise-opt"><span style="font-size:13px;font-weight:600;color:var(--navy);">652356233659</span></div>
               </div>
             </div>
           </div>
@@ -1352,15 +1334,11 @@
               <div class="t-head g-ant-regul"><span>Régularisation montant</span><span>N° Remise</span></div>
               <div class="regul-row">
                 <input class="inp-regul" type="text" placeholder="0,00 €"/>
-                <div class="ant-remise-opt opt-a"><input class="inp-regul" type="text" value="652356233659" readonly style="background:#F3F4F6;color:#6B7280;cursor:default;border-color:#E5E7EB;"/></div>
-                <div class="ant-remise-opt opt-b"><span style="font-size:13px;font-weight:600;color:var(--navy);">652356233659</span></div>
-                <div class="ant-remise-opt opt-c"><input class="inp-regul" type="text" value="652356233659" readonly style="background:#EFF6FF;color:#1E40AF;border-color:#BFDBFE;cursor:default;"/><span style="font-size:11px;color:#3B82F6;">Complète la remise</span></div>
+                <div class="ant-remise-opt"><span style="font-size:13px;font-weight:600;color:var(--navy);">652356233659</span></div>
               </div>
               <div class="regul-row">
                 <input class="inp-regul" type="text" placeholder="0,00 €"/>
-                <div class="ant-remise-opt opt-a"><input class="inp-regul" type="text" value="652356233659" readonly style="background:#F3F4F6;color:#6B7280;cursor:default;border-color:#E5E7EB;"/></div>
-                <div class="ant-remise-opt opt-b"><span style="font-size:13px;font-weight:600;color:var(--navy);">652356233659</span></div>
-                <div class="ant-remise-opt opt-c"><input class="inp-regul" type="text" value="652356233659" readonly style="background:#EFF6FF;color:#1E40AF;border-color:#BFDBFE;cursor:default;"/><span style="font-size:11px;color:#3B82F6;">Complète la remise</span></div>
+                <div class="ant-remise-opt"><span style="font-size:13px;font-weight:600;color:var(--navy);">652356233659</span></div>
               </div>
             </div>
           </div>
@@ -1380,15 +1358,11 @@
               <div class="t-head g-ant-regul"><span>Régularisation montant</span><span>N° Remise</span></div>
               <div class="regul-row">
                 <input class="inp-regul" type="text" placeholder="0,00 €"/>
-                <div class="ant-remise-opt opt-a"><input class="inp-regul" type="text" value="652356233659" readonly style="background:#F3F4F6;color:#6B7280;cursor:default;border-color:#E5E7EB;"/></div>
-                <div class="ant-remise-opt opt-b"><span style="font-size:13px;font-weight:600;color:var(--navy);">652356233659</span></div>
-                <div class="ant-remise-opt opt-c"><input class="inp-regul" type="text" value="652356233659" readonly style="background:#EFF6FF;color:#1E40AF;border-color:#BFDBFE;cursor:default;"/><span style="font-size:11px;color:#3B82F6;">Complète la remise</span></div>
+                <div class="ant-remise-opt"><span style="font-size:13px;font-weight:600;color:var(--navy);">652356233659</span></div>
               </div>
               <div class="regul-row">
                 <input class="inp-regul" type="text" placeholder="0,00 €"/>
-                <div class="ant-remise-opt opt-a"><input class="inp-regul" type="text" value="652356233659" readonly style="background:#F3F4F6;color:#6B7280;cursor:default;border-color:#E5E7EB;"/></div>
-                <div class="ant-remise-opt opt-b"><span style="font-size:13px;font-weight:600;color:var(--navy);">652356233659</span></div>
-                <div class="ant-remise-opt opt-c"><input class="inp-regul" type="text" value="652356233659" readonly style="background:#EFF6FF;color:#1E40AF;border-color:#BFDBFE;cursor:default;"/><span style="font-size:11px;color:#3B82F6;">Complète la remise</span></div>
+                <div class="ant-remise-opt"><span style="font-size:13px;font-weight:600;color:var(--navy);">652356233659</span></div>
               </div>
             </div>
           </div>
@@ -1408,15 +1382,11 @@
               <div class="t-head g-ant-regul"><span>Régularisation montant</span><span>N° Remise</span></div>
               <div class="regul-row">
                 <input class="inp-regul" type="text" placeholder="0,00 €"/>
-                <div class="ant-remise-opt opt-a"><input class="inp-regul" type="text" value="652356233659" readonly style="background:#F3F4F6;color:#6B7280;cursor:default;border-color:#E5E7EB;"/></div>
-                <div class="ant-remise-opt opt-b"><span style="font-size:13px;font-weight:600;color:var(--navy);">652356233659</span></div>
-                <div class="ant-remise-opt opt-c"><input class="inp-regul" type="text" value="652356233659" readonly style="background:#EFF6FF;color:#1E40AF;border-color:#BFDBFE;cursor:default;"/><span style="font-size:11px;color:#3B82F6;">Complète la remise</span></div>
+                <div class="ant-remise-opt"><span style="font-size:13px;font-weight:600;color:var(--navy);">652356233659</span></div>
               </div>
               <div class="regul-row">
                 <input class="inp-regul" type="text" placeholder="0,00 €"/>
-                <div class="ant-remise-opt opt-a"><input class="inp-regul" type="text" value="652356233659" readonly style="background:#F3F4F6;color:#6B7280;cursor:default;border-color:#E5E7EB;"/></div>
-                <div class="ant-remise-opt opt-b"><span style="font-size:13px;font-weight:600;color:var(--navy);">652356233659</span></div>
-                <div class="ant-remise-opt opt-c"><input class="inp-regul" type="text" value="652356233659" readonly style="background:#EFF6FF;color:#1E40AF;border-color:#BFDBFE;cursor:default;"/><span style="font-size:11px;color:#3B82F6;">Complète la remise</span></div>
+                <div class="ant-remise-opt"><span style="font-size:13px;font-weight:600;color:var(--navy);">652356233659</span></div>
               </div>
             </div>
           </div>
@@ -1560,13 +1530,6 @@
   <div class="panel-title">Propositions</div>
   <div id="version-list"></div>
 
-  <!-- Options régularisation n° remise — visibles uniquement sur Date antérieure -->
-  <div id="panel-ant-opts">
-    <div style="font-size:11px;color:var(--grey-txt);margin-bottom:2px;text-transform:uppercase;letter-spacing:.05em;font-weight:700;">N° remise</div>
-    <button class="ant-opt-btn" id="ant-btn-a" onclick="setAntOpt('a')">Option A — Read-only</button>
-    <button class="ant-opt-btn active" id="ant-btn-b" onclick="setAntOpt('b')">Option B — Texte ★</button>
-    <button class="ant-opt-btn" id="ant-btn-c" onclick="setAntOpt('c')">Option C — Contextuel</button>
-  </div>
 
   <hr>
 
@@ -3500,8 +3463,6 @@
     document.getElementById('view-reg').style.display = id === 'reg' ? 'block' : 'none';
     const antBar = document.getElementById('tpe-tabs-bar-ant');
     if (antBar) antBar.style.display = id === 'ant' ? 'flex' : 'none';
-    const antOpts = document.getElementById('panel-ant-opts');
-    if (antOpts) antOpts.classList.toggle('visible', id === 'ant');
     closeThread();
     refreshPins();
   }
@@ -3820,17 +3781,6 @@
     const cls = valid ? 'btn-date-cta' : 'btn-date-cta off';
     if (btnA)  btnA.className  = cls;
     if (btnAS && btnAS.style.display !== 'none') btnAS.className = cls;
-  }
-
-  // ── Comparaison options régularisation — Date antérieure ────────────────
-  function setAntOpt(opt) {
-    const view = document.getElementById('view-ant');
-    view.classList.remove('ant-opt-a-active','ant-opt-b-active','ant-opt-c-active');
-    view.classList.add('ant-opt-' + opt + '-active');
-    ['a','b','c'].forEach(o => {
-      const btn = document.getElementById('ant-btn-' + o);
-      if (btn) btn.classList.toggle('active', o === opt);
-    });
   }
 
   // ══ Système de commentaires ══════════════════════════════════
@@ -4826,8 +4776,6 @@
   // ── Init versions ─────────────────────────────────────────────────────
   renderVersionPanel();
 
-  // ── Init comparaison options régularisation (Option B par défaut) ─────
-  setAntOpt('b');
   checkAntDate();
 
   // ── Modale validation ────────────────────────────────────────────────
