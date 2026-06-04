@@ -3447,7 +3447,7 @@
     // Ne réagir que si on est sur l'onglet Télécollecte
     if (currentTab !== 'tpe') return;
     const hidden = !entry.isIntersecting;
-    btnvSticky.style.display = hidden ? 'flex' : 'none';
+    btnvSticky.style.display = (hidden && tpeBar.classList.contains('is-stuck')) ? 'flex' : 'none';
     btnvSticky.className = btnvMain.className;
     // Pill sticky : visible seulement si sticky ET écart réel détecté en mode interfacé
     const pill = document.getElementById('proposal-a-pill');
@@ -3477,7 +3477,7 @@
   new IntersectionObserver(([entry]) => {
     if (currentTab !== 'ant') return;
     const hidden = !entry.isIntersecting;
-    btnvAntSticky.style.display = hidden ? 'flex' : 'none';
+    btnvAntSticky.style.display = (hidden && tpeBarAnt.classList.contains('is-stuck')) ? 'flex' : 'none';
     btnvAntSticky.className = btnvAnt.className;
     // Pill écart sticky Date antérieure
     const pill = document.getElementById('ant-pill');
