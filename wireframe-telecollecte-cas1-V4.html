@@ -4771,7 +4771,7 @@
       // Mode non-interfacé : capturer les montants saisis et les injecter dans rows-saisie
       let totalSaisi = 0;
 
-      // TPE 1 & 2 : lire rm, injecter dans c-amt de rs
+      // TPE 1 & 2 : lire rm, injecter montant ET n° remise dans rs
       ['1','2'].forEach(n => {
         const rm = document.getElementById('rm'+n);
         const rs = document.getElementById('rs'+n);
@@ -4779,15 +4779,24 @@
         const rmRows = rm.querySelectorAll('.t-row');
         const rsRows = rs.querySelectorAll('.t-row');
         rmRows.forEach((row, i) => {
-          const amtInp = row.querySelector('.inp:not(.remise-inp):not(.plain)');
-          const rsAmt  = rsRows[i]?.querySelector('.c-amt');
+          const amtInp    = row.querySelector('.inp:not(.remise-inp):not(.plain)');
+          const remiseInp = row.querySelector('.remise-inp');
+          const rsRow     = rsRows[i];
+          const rsAmt     = rsRow?.querySelector('.c-amt');
+          const rsRemise  = rsRow?.querySelector('input.inp.plain');
+
           const val = amtInp ? parseV(amtInp.value) : 0;
           totalSaisi += val;
           if (rsAmt) rsAmt.textContent = val.toLocaleString('fr-FR', {minimumFractionDigits:2}) + ' €';
+
+          // Copier le n° de remise saisi — vide si montant = 0
+          if (rsRemise) {
+            rsRemise.value = (val > 0 && remiseInp) ? remiseInp.value.trim() : '';
+          }
         });
       });
 
-      // TPE 3-5 : lire rows-manual, injecter dans rows-saisie
+      // TPE 3-5 : lire rows-manual, injecter montant ET n° remise dans rows-saisie
       ['3','4','5'].forEach(n => {
         const anchor = document.getElementById('tpe-anchor-' + n);
         if (!anchor) return;
@@ -4797,11 +4806,20 @@
         const mRows = manual.querySelectorAll('.t-row');
         const sRows = saisie.querySelectorAll('.t-row');
         mRows.forEach((row, i) => {
-          const amtInp = row.querySelector('.inp:not(.remise-inp):not(.plain)');
-          const sAmt   = sRows[i]?.querySelector('.c-amt');
+          const amtInp    = row.querySelector('.inp:not(.remise-inp):not(.plain)');
+          const remiseInp = row.querySelector('.remise-inp');
+          const sRow      = sRows[i];
+          const sAmt      = sRow?.querySelector('.c-amt');
+          // Dans rows-saisie le n° remise est soit un input.plain disabled, soit un .remise-inp (si 0€)
+          const sRemise   = sRow?.querySelector('input.inp.plain') || sRow?.querySelector('.remise-inp');
+
           const val = amtInp ? parseV(amtInp.value) : 0;
           totalSaisi += val;
           if (sAmt) sAmt.textContent = val.toLocaleString('fr-FR', {minimumFractionDigits:2}) + ' €';
+
+          if (sRemise) {
+            sRemise.value = (val > 0 && remiseInp) ? remiseInp.value.trim() : '';
+          }
         });
       });
 
