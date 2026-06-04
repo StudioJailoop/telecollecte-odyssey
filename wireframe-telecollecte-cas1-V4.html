@@ -3401,6 +3401,17 @@
     document.getElementById('view-reg').style.display = id === 'reg' ? 'block' : 'none';
     const antBar = document.getElementById('tpe-tabs-bar-ant');
     if (antBar) antBar.style.display = id === 'ant' ? 'flex' : 'none';
+    // Masquer les éléments sticky qui appartiennent à un autre onglet
+    if (id !== 'tpe') {
+      const pill = document.getElementById('proposal-a-pill');
+      if (pill) pill.style.display = 'none';
+      const btnvS = document.getElementById('btnv-sticky');
+      if (btnvS) btnvS.style.display = 'none';
+    }
+    if (id !== 'ant') {
+      const btnvAS = document.getElementById('btnv-ant-sticky');
+      if (btnvAS) btnvAS.style.display = 'none';
+    }
     closeThread();
     refreshPins();
   }
@@ -3417,6 +3428,8 @@
   const btnvSticky = document.getElementById('btnv-sticky');
   const btnvMain = document.getElementById('btnv');
   new IntersectionObserver(([entry]) => {
+    // Ne réagir que si on est sur l'onglet Télécollecte
+    if (currentTab !== 'tpe') return;
     const hidden = !entry.isIntersecting;
     btnvSticky.style.display = hidden ? 'flex' : 'none';
     btnvSticky.className = btnvMain.className;
@@ -3446,6 +3459,7 @@
   const btnvAntSticky = document.getElementById('btnv-ant-sticky');
   const btnvAnt = document.getElementById('btnv-ant');
   new IntersectionObserver(([entry]) => {
+    if (currentTab !== 'ant') return;
     const hidden = !entry.isIntersecting;
     btnvAntSticky.style.display = hidden ? 'flex' : 'none';
     btnvAntSticky.className = btnvAnt.className;
