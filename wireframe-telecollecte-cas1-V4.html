@@ -1189,19 +1189,42 @@
       <div id="view-ant" style="display:none;">
 
         <!-- Bloc date — même composant DS -->
-        <div class="bloc-date" style="justify-content:space-between;">
-          <div style="display:flex; align-items:center; gap:12px;">
-            <span class="date-label">Please enter an accounting date to proceed with the telecollection</span>
-            <div class="tf-field">
-              <svg viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="3" y="4" width="18" height="18" rx="2"/>
-                <path d="M16 2v4M8 2v4M3 10h18"/>
-              </svg>
-              <input type="text" id="ant-date-input" value="2026 / 05 / 04" placeholder="YYYY / MM / DD" size="14" oninput="checkAntDate()" />
-              <span id="ant-date-error" style="display:none;font-size:12px;color:#BF2F17;margin-left:8px;font-weight:600;">Date doit être antérieure à aujourd'hui</span>
+        <div class="bloc-date" style="display:block; padding:20px 24px;">
+
+          <!-- Ligne 1 : date + bouton -->
+          <div style="display:flex; align-items:center; justify-content:space-between;">
+            <div style="display:flex; align-items:center; gap:12px;">
+              <span class="date-label">Please enter an accounting date to proceed with the telecollection</span>
+              <div class="tf-field">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="4" width="18" height="18" rx="2"/>
+                  <path d="M16 2v4M8 2v4M3 10h18"/>
+                </svg>
+                <input type="text" id="ant-date-input" value="2026 / 05 / 04" placeholder="YYYY / MM / DD" size="14" oninput="checkAntDate()" />
+                <span id="ant-date-error" style="display:none;font-size:12px;color:#BF2F17;margin-left:8px;font-weight:600;">Date doit être antérieure à aujourd'hui</span>
+              </div>
+            </div>
+            <button class="btn-date-cta" id="btnv-ant">Valider la saisie</button>
+          </div>
+
+          <!-- Ligne 2 : KPI post-clôture -->
+          <div style="margin-top:20px; padding-top:16px; border-top:1px solid var(--grey-bd); display:flex; align-items:center; gap:20px; flex-wrap:wrap;">
+            <div style="display:flex;flex-direction:column;gap:4px;flex-shrink:0;">
+              <span style="font-size:11px;font-weight:700;color:var(--grey-txt);text-transform:uppercase;letter-spacing:.05em;">Télécollecte saisie</span>
+              <span style="font-size:20px;font-weight:700;color:var(--navy);">145,00 €</span>
+            </div>
+            <div style="width:1px;height:36px;background:var(--grey-bd);flex-shrink:0;align-self:center;"></div>
+            <div style="display:flex;flex-direction:column;gap:4px;flex-shrink:0;">
+              <span style="font-size:11px;font-weight:700;color:var(--grey-txt);text-transform:uppercase;letter-spacing:.05em;">Montant attendu</span>
+              <span style="font-size:20px;font-weight:700;color:var(--navy);">150,00 €</span>
+            </div>
+            <div style="width:1px;height:36px;background:var(--grey-bd);flex-shrink:0;align-self:center;"></div>
+            <div style="display:flex;flex-direction:column;gap:4px;flex-shrink:0;">
+              <span style="font-size:11px;font-weight:700;color:var(--grey-txt);text-transform:uppercase;letter-spacing:.05em;">Écart</span>
+              <span style="font-size:20px;font-weight:700;color:#BF2F17;">-5,00 €</span>
             </div>
           </div>
-          <button class="btn-date-cta" id="btnv-ant">Valider la saisie</button>
+
         </div>
 
         <!-- Tabs TPE tertiary sticky -->
