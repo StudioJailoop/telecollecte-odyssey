@@ -241,9 +241,9 @@
     <div class="portal-sub">Saisie des télécollectes TPE · Club Med Odyssey</div>
     <div class="cards-grid">
       <a class="wf-card" id="wf-link" href="#" target="_blank" onclick="openWireframe(event)">
-        <div class="card-tag">V3 — En cours</div>
+        <div class="card-tag">V4.21 — En cours</div>
         <div class="card-title">Saisie des télécollectes</div>
-        <div class="card-desc">Version de travail courante — Jour J, Date antérieure, Régularisation</div>
+        <div class="card-desc">Télécollecte · Date antérieure · Régularisation — Commentaires & Règles de gestion disponibles</div>
         <div class="card-arrow">→</div>
       </a>
     </div>
@@ -295,7 +295,7 @@
     e.preventDefault();
     const user = JSON.parse(sessionStorage.getItem('wf_user') || '{}');
     const name = encodeURIComponent(user.name || '');
-    window.open(`wireframe-telecollecte-cas1-V3.html?user=${name}`, '_blank');
+    window.open(`wireframe-telecollecte-cas1-V4.html?user=${name}`, '_blank');
   }
 
   function doLogout() {
