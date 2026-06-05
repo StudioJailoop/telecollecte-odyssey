@@ -4919,16 +4919,7 @@
       if (labelS) labelS.textContent = 'Montant saisi';
 
       // Figer le total télécollecte saisie comme référence
-      // Si déjà en mode saisie (revalidation avec complément), accumuler le complément dans le frozen
-      if (saisieMode && _frozenAttendu !== null) {
-        let complement = 0;
-        document.querySelectorAll('.inp-complement').forEach(inp => { complement += parseV(inp.value); });
-        totalSaisi = parseV(_frozenAttendu) + complement;
-      }
       _frozenAttendu = totalSaisi.toLocaleString('fr-FR', {minimumFractionDigits:2}) + ' €';
-
-      // Remettre les champs complément à zéro — la prochaine saisie repart de 0
-      document.querySelectorAll('.inp-complement').forEach(inp => { inp.value = ''; });
     }
 
     setS(true);
