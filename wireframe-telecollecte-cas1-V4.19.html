@@ -1361,17 +1361,17 @@
           <div style="margin-top:20px; padding-top:16px; border-top:1px solid var(--grey-bd); display:flex; align-items:center; gap:20px; flex-wrap:wrap;">
             <div style="display:flex;flex-direction:column;gap:4px;flex-shrink:0;">
               <span style="font-size:11px;font-weight:700;color:var(--grey-txt);text-transform:uppercase;letter-spacing:.05em;display:block;">Écart à régulariser</span>
-              <span id="reg-ecart-wrap" style="font-size:20px;font-weight:700;color:#BF2F17;display:block;">€ <span id="reg-ecart">1 000,00</span></span>
+              <span style="font-size:20px;font-weight:700;color:#BF2F17;display:block;">€ <span id="reg-ecart">1 000,00</span></span>
             </div>
             <div style="width:1px;height:36px;background:var(--grey-bd);flex-shrink:0;align-self:center;"></div>
             <div style="display:flex;flex-direction:column;gap:4px;flex-shrink:0;">
               <span style="font-size:11px;font-weight:700;color:var(--grey-txt);text-transform:uppercase;letter-spacing:.05em;display:block;">Total régularisé</span>
-              <span id="reg-sum-display" style="font-size:20px;font-weight:700;color:var(--navy);display:block;">€ 0,00</span>
+              <span id="reg-sum-display" style="font-size:20px;font-weight:700;color:#BF2F17;display:block;">€ 0,00</span>
             </div>
             <div style="width:1px;height:36px;background:var(--grey-bd);flex-shrink:0;align-self:center;"></div>
             <div style="display:flex;flex-direction:column;gap:4px;flex-shrink:0;">
               <span style="font-size:11px;font-weight:700;color:var(--grey-txt);text-transform:uppercase;letter-spacing:.05em;display:block;">Solde restant</span>
-              <span id="reg-restant-wrap" style="font-size:20px;font-weight:700;color:var(--navy);display:block;">€ <span id="reg-restant-display">1 000,00</span></span>
+              <span id="reg-restant-wrap" style="font-size:20px;font-weight:700;color:#BF2F17;display:block;">€ <span id="reg-restant-display">1 000,00</span></span>
             </div>
             <div style="margin-left:auto;display:flex;align-items:center;gap:48px;flex-shrink:0;">
               <div id="reg-badge-restant" style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:5px 14px;border-radius:20px;background:#FEF2F2;color:#BF2F17;">
@@ -4770,77 +4770,77 @@
   }
 
   function checkReg() {
-    const ecartInitial = parseNum(document.getElementById('reg-ecart')?.dataset.initial ||
-                         document.getElementById('reg-ecart')?.textContent || '0');
-    const fmtNum = n => n.toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-    const btn    = document.getElementById('btnv-reg');
+    const ecart   = parseNum(document.getElementById('reg-ecart')?.textContent || '0');
+    const fmtNum  = n => n.toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    const btn     = document.getElementById('btnv-reg');
 
-    // Mémoriser la valeur initiale de l'écart au premier appel
-    const ecartEl = document.getElementById('reg-ecart');
-    if (ecartEl && !ecartEl.dataset.initial) {
-      ecartEl.dataset.initial = parseNum(ecartEl.textContent).toString();
-    }
-    const ecartBase = parseNum(ecartEl?.dataset.initial || '0');
-
-    let sum = 0;
     if (_regSaisieMode) {
-      // Mode complément : frozen + compléments en cours
+      // Mode complément : sommer les reg-comp-inp
+      const compInputs = document.querySelectorAll('.reg-comp-inp');
       let comp = 0;
-      document.querySelectorAll('.reg-comp-inp').forEach(i => { comp += parseNum(i.value); });
-      sum = _frozenReg + comp;
-    } else {
-      document.querySelectorAll('.reg-mdp-inp').forEach(i => { sum += parseNum(i.value); });
+      compInputs.forEach(i => { comp += parseNum(i.value); });
+      const totalReg = _frozenReg + comp;
+      const restant  = ecart - totalReg;
+
+      const sumDisplay = document.getElementById('reg-sum-display');
+      if (sumDisplay) {
+        sumDisplay.textContent = '€ ' + fmtNum(totalReg);
+        sumDisplay.style.color = Math.abs(restant) < 0.01 ? '#088A20' : '#088A20';
+      }
+      const restantDisplay = document.getElementById('reg-restant-display');
+      if (restantDisplay) restantDisplay.textContent = fmtNum(Math.max(0, restant));
+      const restantWrapC = document.getElementById('reg-restant-wrap');
+      if (restantWrapC) restantWrapC.style.color = Math.abs(restant) < 0.01 ? '#088A20' : '#BF2F17';
+
+      const overEcart = totalReg > ecart + 0.005;
+      const anyComp   = [...compInputs].some(i => i.value.trim() !== '');
+      compInputs.forEach(i => {
+        i.style.borderColor = overEcart && i.value.trim() !== '' ? '#BF2F17' : '';
+        i.style.color       = overEcart && i.value.trim() !== '' ? '#BF2F17' : '';
+      });
+      if (btn) btn.className = (anyComp && !overEcart) ? 'btn-date-cta' : 'btn-date-cta off';
+      return;
     }
 
-    const ecartRestant = Math.max(0, ecartBase - sum);
-    const solved       = ecartRestant < 0.01;
-    const overEcart    = sum > ecartBase + 0.005;
+    // Mode saisie initiale : sommer les reg-mdp-inp
+    const mdpInputs = document.querySelectorAll('.reg-mdp-inp');
+    let sum = 0;
+    mdpInputs.forEach(i => { sum += parseNum(i.value); });
+    const restant = ecart - sum;
 
-    // KPI 1 — Écart à régulariser : décroît, rouge → vert
-    if (ecartEl) ecartEl.textContent = fmtNum(ecartRestant);
-    const ecartWrap = document.getElementById('reg-ecart-wrap');
-    if (ecartWrap) ecartWrap.style.color = solved ? '#088A20' : '#BF2F17';
-
-    // KPI 2 — Total régularisé : neutre (navy)
     const sumDisplay = document.getElementById('reg-sum-display');
     if (sumDisplay) {
       sumDisplay.textContent = '€ ' + fmtNum(sum);
-      sumDisplay.style.color = 'var(--navy)';
+      sumDisplay.style.color = Math.abs(restant) < 0.01 ? '#088A20' : '#BF2F17';
     }
-
-    // KPI 3 — Solde restant : identique à Écart à régulariser
     const restantDisplay = document.getElementById('reg-restant-display');
-    if (restantDisplay) restantDisplay.textContent = fmtNum(ecartRestant);
+    if (restantDisplay) restantDisplay.textContent = fmtNum(restant);
     const restantWrap = document.getElementById('reg-restant-wrap');
-    if (restantWrap) restantWrap.style.color = solved ? '#088A20' : 'var(--navy)';
+    if (restantWrap) restantWrap.style.color = Math.abs(restant) < 0.01 ? '#088A20' : '#BF2F17';
 
-    // Badge
-    const badge = document.getElementById('reg-badge-restant');
-    if (badge) {
-      badge.style.background = solved ? '#E6F4EA' : '#FEF2F2';
-      badge.style.color      = solved ? '#1A6B31' : '#BF2F17';
-      badge.innerHTML = solved
-        ? '<span style="width:8px;height:8px;border-radius:50%;background:#1A6B31;flex-shrink:0;"></span>Régularisé'
-        : '<span style="width:8px;height:8px;border-radius:50%;background:#BF2F17;flex-shrink:0;"></span>Solde restant';
-    }
+    if (!btn) return;
+    const allEmpty  = [...mdpInputs].every(i => i.value.trim() === '');
+    const overEcart = sum > ecart + 0.005;
 
-    // Champs en rouge si dépassement
-    const activeInputs = _regSaisieMode
-      ? document.querySelectorAll('.reg-comp-inp')
-      : document.querySelectorAll('.reg-mdp-inp');
-    activeInputs.forEach(i => {
+    mdpInputs.forEach(i => {
       i.style.borderColor = overEcart && i.value.trim() !== '' ? '#BF2F17' : '';
       i.style.color       = overEcart && i.value.trim() !== '' ? '#BF2F17' : '';
     });
 
-    if (!btn) return;
-    if (_regSaisieMode) {
-      const anyComp = [...document.querySelectorAll('.reg-comp-inp')].some(i => i.value.trim() !== '');
-      btn.className = (anyComp && !overEcart) ? 'btn-date-cta' : 'btn-date-cta off';
-    } else {
-      const allEmpty = [...document.querySelectorAll('.reg-mdp-inp')].every(i => i.value.trim() === '');
-      btn.className = (allEmpty || overEcart) ? 'btn-date-cta off' : 'btn-date-cta';
+    const errEl = document.getElementById('reg-over-error');
+    if (errEl) errEl.style.display = 'none';
+
+    const badgeRestant = document.getElementById('reg-badge-restant');
+    if (badgeRestant) {
+      const solved = Math.abs(restant) < 0.01;
+      badgeRestant.style.background = solved ? '#E6F4EA' : '#FEF2F2';
+      badgeRestant.style.color      = solved ? '#1A6B31' : '#BF2F17';
+      badgeRestant.innerHTML = solved
+        ? '<span style="width:8px;height:8px;border-radius:50%;background:#1A6B31;flex-shrink:0;"></span>Régularisé'
+        : '<span style="width:8px;height:8px;border-radius:50%;background:#BF2F17;flex-shrink:0;"></span>Solde restant';
     }
+
+    btn.className = (allEmpty || overEcart) ? 'btn-date-cta off' : 'btn-date-cta';
   }
 
   // ── Init versions ─────────────────────────────────────────────────────
@@ -5000,8 +5000,30 @@
       document.querySelectorAll('.reg-comp-inp').forEach(inp => { inp.value = ''; });
     }
 
-    // Déléguer la mise à jour des KPI à checkReg() — source de vérité unique
-    checkReg();
+    // Mettre à jour le KPI Total régularisé
+    const sumDisplay = document.getElementById('reg-sum-display');
+    if (sumDisplay) {
+      sumDisplay.textContent = '€ ' + _frozenReg.toLocaleString('fr-FR', {minimumFractionDigits:2});
+      sumDisplay.style.color = '#088A20';
+    }
+    // Recalculer solde restant
+    const ecart = parseV(document.getElementById('reg-ecart')?.textContent || '0');
+    const restant = ecart - _frozenReg;
+    const restantDisplay = document.getElementById('reg-restant-display');
+    if (restantDisplay) restantDisplay.textContent = restant.toLocaleString('fr-FR', {minimumFractionDigits:2});
+    const restantWrapV = document.getElementById('reg-restant-wrap');
+    if (restantWrapV) restantWrapV.style.color = Math.abs(restant) < 0.01 ? '#088A20' : '#BF2F17';
+
+    // Badge
+    const badge = document.getElementById('reg-badge-restant');
+    if (badge) {
+      const solved = Math.abs(restant) < 0.01;
+      badge.style.background = solved ? '#E6F4EA' : '#FEF2F2';
+      badge.style.color      = solved ? '#1A6B31' : '#BF2F17';
+      badge.innerHTML = solved
+        ? '<span style="width:8px;height:8px;border-radius:50%;background:#1A6B31;flex-shrink:0;"></span>Régularisé'
+        : '<span style="width:8px;height:8px;border-radius:50%;background:#BF2F17;flex-shrink:0;"></span>Solde restant';
+    }
 
     // Changer le bouton en "Compléter la régularisation"
     const btn = document.getElementById('btnv-reg');
