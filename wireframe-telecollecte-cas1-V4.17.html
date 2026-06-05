@@ -1401,23 +1401,20 @@
         </div>
 
         <!-- Tableau MDP — vue post-validation (régularisation effectuée + complément) -->
-        <div id="reg-rows-effectuee" class="table-wrap" style="display:none; margin-top:0; width:50%;">
-          <div class="t-head" style="grid-template-columns:120px 1fr 160px 160px; display:grid; padding:0 20px; gap:12px;">
+        <div id="reg-rows-effectuee" class="table-wrap" style="display:none; margin-top:0; border-radius:12px; overflow:hidden; border:1px solid var(--grey-bd); width:50%;">
+          <div class="t-head" style="grid-template-columns:1fr 180px 180px; display:grid; padding:0 20px; gap:12px;">
             <span>Mode de paiement</span>
-            <span></span>
             <span>Régularisation effectuée</span>
             <span>Complément</span>
           </div>
-          <div class="t-row" style="display:grid; grid-template-columns:120px 1fr 160px 160px; padding:0 20px; min-height:56px; align-items:center; gap:12px; border-bottom:1px solid var(--grey-bd);">
+          <div class="t-row" style="display:grid; grid-template-columns:1fr 180px 180px; padding:0 20px; min-height:56px; align-items:center; gap:12px; border-bottom:1px solid var(--grey-bd);">
             <span class="c-mdp">Visa</span>
-            <span></span>
-            <span id="reg-done-visa" class="c-amt">0,00 €</span>
+            <span id="reg-done-visa" class="c-amt" style="font-size:14px;font-weight:600;color:var(--navy);">0,00 €</span>
             <div class="iw"><span class="eur">€</span><input class="inp reg-comp-inp" type="text" placeholder="0,00" data-mdp="Visa" /></div>
           </div>
-          <div class="t-row" style="display:grid; grid-template-columns:120px 1fr 160px 160px; padding:0 20px; min-height:56px; align-items:center; gap:12px;">
+          <div class="t-row" style="display:grid; grid-template-columns:1fr 180px 180px; padding:0 20px; min-height:56px; align-items:center; gap:12px;">
             <span class="c-mdp">Amex</span>
-            <span></span>
-            <span id="reg-done-amex" class="c-amt">0,00 €</span>
+            <span id="reg-done-amex" class="c-amt" style="font-size:14px;font-weight:600;color:var(--navy);">0,00 €</span>
             <div class="iw"><span class="eur">€</span><input class="inp reg-comp-inp" type="text" placeholder="0,00" data-mdp="Amex" /></div>
           </div>
         </div>
