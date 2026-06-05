@@ -2679,131 +2679,6 @@
     renderRgList();
   }
 
-  // ── Init RG blocks au chargement de la page ─────────────────────────
-  (function initRgBlocks() {
-    const RG_BLOCKS_KEY = 'wf_rg_blocks';
-    const RG_VERSION = 'v2.0-27rg';
-    if (localStorage.getItem('wf_rg_version') !== RG_VERSION) {
-      const RG_DATA = [
-        { tab:'Télécollecte', mode:'Interfacé', titre:'Logique des montants en mode interfacé',
-          regle:'En mode interfacé, les montants remontent automatiquement depuis les TPE (colonne Montant attendu). Le GO n\'a pas à les saisir. La colonne Montant corrigé démarre à 0 € et n\'est renseignée que si le GO constate une différence entre le montant attendu et le montant réellement encaissé.',
-          comportement:'• Montant attendu = somme des montants remontés des TPE (lecture seule)\n• Montant corrigé = 0 € par défaut, éditable\n• Montant saisi   = Montant attendu + somme des corrections\n• Écart           = somme des montants corrigés\n• Badge vert "Aucun écart" si aucune correction\n• Badge rouge "Écart détecté · MDP" si au moins une correction > 0',
-          critere:'Sans correction : Montant saisi = Montant attendu, Écart = 0 €\nAvec correction : Écart = somme exacte des corrections\nN° de remise obligatoire pour toute ligne avec Montant corrigé ≠ 0' },
-        { tab:'Télécollecte', mode:'Non interfacé', titre:'Logique des montants en mode non interfacé',
-          regle:'En mode non interfacé, le village n\'est pas connecté au système central. Les TPE ne remontent aucune donnée automatiquement. Le système ne connaît pas les montants attendus — il ne peut donc pas calculer d\'écart.',
-          comportement:'• Montant attendu  = masqué (information non disponible)\n• Montant saisi    = somme des montants renseignés manuellement\n• Écart            = masqué (impossible à calculer sans montant attendu)\n• Badges d\'écart  = masqués\n• À l\'ouverture   : Montant saisi = 0 €\n• En temps réel   : Montant saisi se met à jour à chaque saisie',
-          critere:'Tout montant > 0 € doit avoir un N° remise\nMontant = 0 € → N° remise facultatif\nBouton actif uniquement si tous les montants > 0 ont leur N° remise\nKPI Montant attendu et Écart masqués' },
-        { tab:'Télécollecte', mode:'Interfacé · Non interfacé', titre:'Validation d\'une télécollecte',
-          regle:'La validation est l\'action par laquelle le GO confirme les montants saisis pour la journée comptable en cours. Elle déclenche un basculement vers le mode Télécollecte saisie (lecture seule). Elle peut être complétée jusqu\'à la clôture.',
-          comportement:'• Bouton actif uniquement si toutes les lignes avec montant > 0 ont un N° remise\n• Clic → modale de confirmation\n• Annuler → retour sans modification\n• Confirmer → toaster 5s, vue bascule en mode Télécollecte saisie\n• Mode Télécollecte saisie : Montant saisi (lecture seule) + Complément (éditable)\n• Bouton devient "Compléter la saisie" (inactif tant qu\'aucun complément)',
-          critere:'Validation bloquée si montant > 0 sans N° remise\nAprès validation, aucune modification des montants initiaux possible\nToaster confirme systématiquement le succès' },
-        { tab:'Télécollecte', mode:'Interfacé · Non interfacé', titre:'Complément avant clôture comptable',
-          regle:'Après validation, le GO peut ajouter des compléments tant que la clôture du jour n\'a pas eu lieu. Un complément s\'ajoute au montant validé. Après chaque revalidation, les champs sont remis à zéro.',
-          comportement:'• Colonne "Complément" : inputs vides après validation\n• Bouton "Compléter la saisie" inactif tant qu\'aucun complément\n• Montant saisi (KPI) = montant validé + compléments en cours\n• Revalidation → même modale → même toaster\n• Compléments absorbés, champs remis à 0\n• Opération répétable jusqu\'à la clôture',
-          critere:'Complément peut être positif ou négatif\nAucun N° remise demandé pour un complément\nAprès revalidation : champs Complément = 0,00 €' },
-        { tab:'Télécollecte', mode:'Interfacé', titre:'Gestion des écarts',
-          regle:'Un écart est la différence entre le montant attendu et le montant réellement encaissé. En mode interfacé, il est calculé automatiquement depuis les montants corrigés. En mode non interfacé, le concept d\'écart n\'existe pas.',
-          comportement:'• Écart = somme des montants corrigés (mode interfacé uniquement)\n• KPI Écart mis à jour en temps réel\n• Badge "Aucun écart" (vert) si Écart = 0\n• Badge "Écart détecté · MDP" (rouge) si Écart ≠ 0 — MDP en écart uniquement\n• Pill sticky synchronisée avec l\'état de l\'écart\n• Pill masquée si Écart = 0',
-          critere:'Écart = somme exacte des montants corrigés\nLe badge liste uniquement les MDP en écart réel\nExemple : Visa = -3 €, Amex = 0 € → badge affiche Visa uniquement' },
-        { tab:'Télécollecte', mode:'Interfacé · Non interfacé', titre:'Gestion des numéros de remise',
-          regle:'Un N° remise est un identifiant unique obligatoire dès qu\'un montant non nul est saisi. Il garantit la traçabilité comptable. Un doublon constitue une anomalie comptable.',
-          comportement:'• Télécollecte non interfacé : N° remise obligatoire si montant > 0\n• Télécollecte interfacé : N° remise obligatoire si Montant corrigé ≠ 0\n• Date antérieure : N° remise obligatoire et UNIQUE dans le système\n• Régularisation : généré automatiquement, jamais exposé à l\'utilisateur\n• Erreur inline si N° remise manquant ou doublon\n• Validation bloquée jusqu\'à correction',
-          critere:'Montant > 0 et N° remise vide → erreur inline, bouton bloqué\nN° remise doublon (Date antérieure) → erreur inline\nN° remise en Régularisation → généré automatiquement, non affiché' },
-        { tab:'Télécollecte', mode:'Interfacé', titre:'Affichage des badges d\'écart',
-          regle:'Les badges d\'écart signalent l\'état de la réconciliation en temps réel. Visibles uniquement en mode interfacé.',
-          comportement:'• Badge vert "Aucun écart" : aucun montant corrigé\n• Badge rouge "Écart détecté · MDP" : au moins un montant corrigé\n• Badges masqués en mode non interfacé\n• Badges masqués si switch "Caisses ouvertes" activé\n• Pill sticky reflète le même état\n• Pill disparaît si l\'écart revient à 0',
-          critere:'Badge rouge → au moins un MDP avec correction ≠ 0\nBadge vert → tous les MDP avec correction = 0\nListe MDP = sous-ensemble des MDP en écart réel' },
-        { tab:'Télécollecte', mode:'Interfacé · Non interfacé', titre:'Cas des montants à zéro',
-          regle:'Un montant à zéro est un comportement normal. Il se produit lorsqu\'un TPE n\'a pas enregistré de transaction pour un MDP donné.',
-          comportement:'• Montant = 0 € → N° remise facultatif, aucune erreur\n• Mode interfacé : montant attendu = 0 → ligne présente, non requise\n• Clôture sans saisie : système enregistre 0 € (non interfacé) ou valeurs système (interfacé)\n• Les lignes à 0 € restent visibles',
-          critere:'Montant = 0 et N° remise vide → valide\nMontant > 0 et N° remise vide → erreur inline\nClôture sans saisie = comportement normal' },
-        { tab:'Date antérieure', mode:'Interfacé · Non interfacé', titre:'Fonctionnement général',
-          regle:'L\'onglet Date antérieure permet de corriger ou compléter une télécollecte d\'un jour passé. La date doit être strictement antérieure au jour J.',
-          comportement:'• Date pré-remplie à J-1 au chargement\n• Sélecteur de date disponible\n• Date doit être < aujourd\'hui (bloquant si ≥ J)\n• Une fois validée, la date est figée dans la session\n• KPI : Montant corrigé / Montant attendu / Écart restant',
-          critere:'Date ≥ J → saisie bloquée\nDate < J → saisie autorisée\nLa date affichée = date sélectionnée' },
-        { tab:'Date antérieure', mode:'Interfacé', titre:'Date antérieure interfacée',
-          regle:'En mode interfacé, le tableau principal affiche les montants attendus (système) en lecture seule. Le tableau de correction permet de saisir des montants corrigés par MDP.',
-          comportement:'• Tableau gauche : Date / MDP / Emplacement / Montant attendu / N° Remise (lecture seule)\n• Tableau droit : Montant corrigé / N° Remise (éditable)\n• KPI Montant corrigé = somme des corrections\n• KPI Montant attendu = somme des montants attendus\n• KPI Écart restant = Montant attendu − Montant corrigé\n• Badge "Écart détecté · MDP" si correction ≠ 0\n• N° remise obligatoire si Montant corrigé ≠ 0',
-          critere:'Montant corrigé ≠ 0 sans N° remise → erreur inline, bouton bloqué\nN° remise doublon → erreur inline\nBouton actif uniquement si toutes les corrections ont leur N° remise' },
-        { tab:'Date antérieure', mode:'Non interfacé', titre:'Date antérieure non interfacée',
-          regle:'En mode non interfacé, les montants attendus correspondent aux montants validés lors de la télécollecte initiale. Même logique que la vue interfacée.',
-          comportement:'• Montant attendu = montant validé lors de la télécollecte initiale (figé)\n• Tableau droit : Montant corrigé + N° Remise (éditable)\n• Même logique de KPI qu\'en mode interfacé\n• N° remise obligatoire et unique',
-          critere:'Identique à RG-10\nMontants attendus = ceux de la télécollecte validée' },
-        { tab:'Date antérieure', mode:'Interfacé · Non interfacé', titre:'Affichage des montants attendus après clôture',
-          regle:'Les montants affichés dans Montant attendu sont les montants officiels de la date comptable sélectionnée. Figés et non modifiables.',
-          comportement:'• Montant attendu affiché en lecture seule\n• Colonne Date = date comptable de chaque ligne\n• Aucune interaction possible sur cette colonne',
-          critere:'Montant attendu = lecture seule\nLes montants ne changent pas si l\'utilisateur modifie les corrections' },
-        { tab:'Date antérieure', mode:'Interfacé · Non interfacé', titre:'Calcul des écarts',
-          regle:'L\'écart en Date antérieure est calculé en temps réel : différence entre le montant attendu et la somme des montants corrigés.',
-          comportement:'• Écart restant = Montant attendu − Montant corrigé (temps réel)\n• KPI mis à jour à chaque frappe\n• Écart > 0 → badge rouge "Écart détecté · MDP"\n• Écart = 0 → badge vert "Aucun écart"',
-          critere:'Écart restant = Montant attendu − Montant corrigé\nLe KPI reflète l\'état réel à chaque modification' },
-        { tab:'Date antérieure', mode:'Interfacé · Non interfacé', titre:'Régularisation des écarts via Date antérieure',
-          regle:'La correction via Date antérieure est distincte de l\'onglet Régularisation. Le GO saisit le montant réel encaissé pour la date passée. Ce n\'est pas une opération de régularisation — c\'est une correction de saisie.',
-          comportement:'• Saisir le montant réel dans "Montant corrigé"\n• Écart restant recalculé en temps réel\n• N° remise unique obligatoire\n• Même workflow de validation que la télécollecte',
-          critere:'N° remise obligatoire pour toute correction ≠ 0\nN° remise doit être unique dans le système',
-          question:'La correction via Date antérieure déclenche-t-elle automatiquement une entrée dans l\'onglet Régularisation ? Ou sont-ce deux workflows totalement indépendants ?' },
-        { tab:'Date antérieure', mode:'Interfacé · Non interfacé', titre:'Gestion des numéros de remise (Date antérieure)',
-          regle:'En Date antérieure, le N° remise est soumis à une contrainte d\'unicité stricte. Un N° déjà utilisé sur toute autre date ou opération ne peut pas être réutilisé.',
-          comportement:'• N° remise obligatoire si Montant corrigé ≠ 0\n• Validation interface : champ vide bloque le bouton\n• Validation système : doublon → erreur inline "N° de remise déjà utilisé"\n• Validation bloquée jusqu\'à correction',
-          critere:'N° remise vide + montant ≠ 0 → erreur inline, bouton bloqué\nN° remise doublon → erreur inline\nN° remise valide et unique → validation autorisée' },
-        { tab:'Date antérieure', mode:'Interfacé · Non interfacé', titre:'Badge d\'écart et moyens de paiement concernés',
-          regle:'Le badge en Date antérieure liste uniquement les MDP qui contribuent réellement à l\'écart.',
-          comportement:'• Badge rouge "Écart détecté · MDP" → MDP avec correction ≠ 0\n• MDP avec correction = 0 absent du badge\n• Badge vert "Aucun écart" → aucune correction\n• Mise à jour en temps réel',
-          critere:'Badge rouge = au moins un MDP avec Montant corrigé ≠ 0\nBadge vert = tous les MDP avec Montant corrigé = 0\nListe MDP = sous-ensemble des MDP en écart réel' },
-        { tab:'Date antérieure', mode:'Interfacé · Non interfacé', titre:'Complément après saisie Date antérieure',
-          regle:'Le comportement post-validation en Date antérieure n\'est pas explicitement documenté dans le wireframe actuel.',
-          comportement:'Option A — Complément possible (aligné sur Télécollecte) : l\'utilisateur peut revenir et ajouter un complément tant que la purge n\'a pas eu lieu.\n\nOption B — Validation unique : une fois validée, la correction est figée.',
-          critere:'Non défini — décision métier à valider avant développement',
-          question:'La correction via Date antérieure est-elle complétable après validation (Option A) ou figée définitivement (Option B) ?' },
-        { tab:'Date antérieure', mode:'Interfacé · Non interfacé', titre:'Purge comptable et fermeture définitive',
-          regle:'Une télécollecte peut être complétée via Date antérieure tant qu\'aucune purge comptable n\'a été effectuée. La purge est la fermeture définitive des données pour une période donnée. Après purge, les données sont historiques et figées.',
-          comportement:'Avant purge :\n• La date apparaît dans Date antérieure\n• Compléments et corrections possibles\n• Calculs mis à jour normalement\n\nAprès purge :\n• La date n\'est plus modifiable\n• Champs désactivés ou absents\n• Données consultables mais figées\n\nCycle : Télécollecte → Clôture comptable → Date antérieure → Purge → Données verrouillées',
-          critere:'Date purgée : aucune modification possible\nAucun complément ajouteable\nAucune validation supplémentaire autorisée',
-          question:'Les dates purgées restent-elles visibles en lecture seule dans la liste, ou disparaissent-elles totalement ? Cette décision conditionne l\'architecture de la liste de dates.' },
-        { tab:'Régularisation', mode:'Tous modes', titre:'Fonctionnement général',
-          regle:'L\'onglet Régularisation est réservé aux Financial Managers. Il permet de régulariser un écart comptable. La régularisation peut être complétée jusqu\'à la prochaine clôture comptable.',
-          comportement:'• Accès restreint au rôle Financial Manager (contrôle côté serveur)\n• Écart à régulariser affiché en rouge (non éditable, calculé par le système)\n• Tableau : uniquement les MDP concernés par l\'écart\n• Bouton "Faire une régularisation" → modale → toaster → mode complétable\n• Après validation : bouton devient "Compléter la régularisation"',
-          critere:'Un GO (non FM) ne peut pas accéder à cet onglet\nL\'écart affiché est la valeur système, non modifiable' },
-        { tab:'Régularisation', mode:'Tous modes', titre:'Régularisation interfacée',
-          regle:'La Régularisation s\'applique à un écart calculé par le système. Le montant de référence est fourni automatiquement.',
-          comportement:'• L\'écart est fourni par le système au chargement\n• Ce montant est non éditable\n• Le FM saisit les montants régularisés par MDP',
-          critere:'L\'écart initial est fourni par le système, jamais saisi par l\'utilisateur',
-          question:'La Régularisation est-elle toujours en mode interfacé, ou un mode non interfacé est-il prévu où le FM saisirait lui-même l\'écart de référence ?' },
-        { tab:'Régularisation', mode:'Tous modes', titre:'Régularisation non interfacée',
-          regle:'Le wireframe ne documente pas de comportement spécifique en mode non interfacé pour l\'onglet Régularisation.',
-          comportement:'Non défini dans le wireframe actuel.',
-          critere:'Non défini — décision métier à valider',
-          question:'Si un mode non interfacé est prévu : qui saisit le montant de référence ? Comment le système valide-t-il la cohérence de la régularisation ?' },
-        { tab:'Régularisation', mode:'Tous modes', titre:'Répartition des écarts par moyen de paiement',
-          regle:'Le tableau affiche uniquement les MDP en écart. L\'objectif est de guider le FM sans lui donner les montants à retrouver — il doit effectuer son investigation métier.',
-          comportement:'• Tableau : Mode de paiement / Montant régularisé (input)\n• Seuls les MDP avec écart non nul sont affichés\n• Aucune colonne "Montant à régulariser" visible\n• Le FM saisit librement le montant par MDP',
-          critere:'MDP sans écart → absent du tableau\nSomme partielle autorisée\nSomme > écart total → champs rouges, bouton bloqué' },
-        { tab:'Régularisation', mode:'Tous modes', titre:'Validation d\'une régularisation',
-          regle:'La validation suit exactement le même workflow que la Télécollecte : modale → toaster → mode complétable. Les mêmes composants sont réutilisés.',
-          comportement:'• Bouton actif si au moins un montant saisi et pas de dépassement\n• Modale : "Vous êtes sur le point de valider une régularisation. Vous pourrez la compléter avant la clôture comptable."\n• Annuler → retour sans modification\n• Confirmer → toaster "Régularisation enregistrée" (5s)\n• Tableau → Régularisation effectuée (figée) / Complément (input)\n• Bouton → "Compléter la régularisation" (inactif tant qu\'aucun complément)',
-          critere:'Aucun montant saisi → bouton inactif\nDépassement → champs rouges, bouton inactif\nValidation partielle autorisée' },
-        { tab:'Régularisation', mode:'Tous modes', titre:'Complément de régularisation avant clôture',
-          regle:'Identique à la logique de complément de Télécollecte. Après une première validation, le FM peut ajouter des compléments autant de fois que nécessaire avant la clôture.',
-          comportement:'• Tableau post-validation : Régularisation effectuée (figée) + Complément (input)\n• Bouton inactif jusqu\'à saisie\n• Total régularisé = frozen + compléments en cours (temps réel)\n• Revalidation → mêmes composants → compléments absorbés, champs remis à 0\n• Aucun N° remise visible (généré automatiquement)',
-          critere:'Total régularisé ne peut pas dépasser l\'écart initial\nAprès revalidation : champs Complément = 0,00 €\nAucun N° remise exposé à l\'utilisateur' },
-        { tab:'Régularisation', mode:'Tous modes', titre:'Mise à jour des KPI (Écart / Total / Solde)',
-          regle:'Les trois KPI forment un système cohérent recalculé ensemble depuis une source de vérité unique. L\'Écart à régulariser est le KPI principal.',
-          comportement:'• Écart_initial = valeur système au chargement (non modifiable)\n• Écart à régulariser = Écart_initial − Total régularisé (décroît)\n• Total régularisé = somme validée + compléments en cours\n• Solde restant = miroir de l\'Écart à régulariser\n• Écart à régulariser : rouge si > 0, vert si = 0\n• Mise à jour en temps réel',
-          critere:'Écart à régulariser + Total régularisé = Écart_initial (invariant)\nÉcart = 0 → tous les KPI en état résolu' },
-        { tab:'Régularisation', mode:'Tous modes', titre:'Affichage des moyens de paiement concernés',
-          regle:'Seuls les MDP avec un écart non nul apparaissent dans le tableau. Ce filtre est statique.',
-          comportement:'• MDP avec écart ≠ 0 → ligne présente\n• MDP avec écart = 0 → ligne absente\n• Exemple : Visa + Amex en écart → WeChat absent\n• Le filtre ne change pas pendant la saisie',
-          critere:'Nombre de lignes = nombre de MDP avec écart ≠ 0\nAucune ligne pour un MDP en équilibre' },
-        { tab:'Régularisation', mode:'Tous modes', titre:'Cas d\'une régularisation complète',
-          regle:'Régularisation complète = Total régularisé atteint l\'Écart initial. Cela n\'entraîne pas de verrouillage automatique. Le FM peut redistribuer les montants entre MDP jusqu\'à la clôture. La clôture est le seul verrou définitif.',
-          comportement:'• Écart à régulariser = 0 → couleur rouge → vert\n• Solde restant = 0, Total régularisé = Écart_initial\n• Le bouton reste disponible : redistribution entre MDP possible\n• La clôture comptable fige l\'état à l\'instant T, définitivement',
-          critere:'Écart = 0 → tous les KPI en état résolu\nLe FM peut modifier la répartition tant que somme = Écart_initial\nCloture = seul verrou définitif' }
-      ];
-      localStorage.setItem(RG_BLOCKS_KEY, JSON.stringify(RG_DATA));
-      localStorage.setItem('wf_rg_version', RG_VERSION);
-    }
-  })();
-
   function renderRgDoc() {
     const el = document.getElementById('rg-doc-content');
     if (!el) return;
@@ -2814,126 +2689,26 @@
     const savedDate = localStorage.getItem(DOC_DATE_KEY) || '';
 
     const RG_BLOCKS_KEY = 'wf_rg_blocks';
-    if (false) { // bloc désactivé — init déplacé dans initRgBlocks()
-      const RG_DATA = [
-        { tab:'Télécollecte', mode:'Interfacé', titre:'Logique des montants en mode interfacé',
-          regle:'En mode interfacé, les montants remontent automatiquement depuis les TPE (colonne Montant attendu). Le GO n\'a pas à les saisir. La colonne Montant corrigé démarre à 0 € et n\'est renseignée que si le GO constate une différence entre le montant attendu et le montant réellement encaissé.',
-          comportement:'• Montant attendu = somme des montants remontés des TPE (lecture seule)\n• Montant corrigé = 0 € par défaut, éditable\n• Montant saisi   = Montant attendu + somme des corrections\n• Écart           = somme des montants corrigés\n• Badge vert "Aucun écart" si aucune correction\n• Badge rouge "Écart détecté · MDP" si au moins une correction > 0',
-          critere:'Sans correction : Montant saisi = Montant attendu, Écart = 0 €\nAvec correction : Écart = somme exacte des corrections\nN° de remise obligatoire pour toute ligne avec Montant corrigé ≠ 0' },
-        { tab:'Télécollecte', mode:'Non interfacé', titre:'Logique des montants en mode non interfacé',
-          regle:'En mode non interfacé, le village n\'est pas connecté au système central. Les TPE ne remontent aucune donnée automatiquement. Le système ne connaît pas les montants attendus — il ne peut donc pas calculer d\'écart. La seule information disponible est celle que le GO saisit manuellement.',
-          comportement:'• Montant attendu  = masqué (information non disponible)\n• Montant saisi    = somme des montants renseignés manuellement dans le tableau\n• Écart            = masqué (impossible à calculer sans montant attendu)\n• Badges d\'écart  = masqués (aucune référence système)\n• À l\'ouverture   : Montant saisi = 0 € tant qu\'aucune saisie n\'a été effectuée\n• En temps réel   : Montant saisi se met à jour à chaque saisie',
-          critere:'Tout montant > 0 € doit avoir un numéro de remise associé\nMontant = 0 € → numéro de remise facultatif\nBouton Valider la saisie actif uniquement si tous les montants > 0 ont leur N° remise\nKPI Montant attendu et Écart masqués' },
-        { tab:'Télécollecte', mode:'Interfacé · Non interfacé', titre:'Validation d\'une télécollecte',
-          regle:'La validation est l\'action par laquelle le GO confirme les montants saisis pour la journée comptable en cours. Elle déclenche un basculement irréversible de l\'interface vers le mode Télécollecte saisie (lecture seule). La validation n\'est pas définitive au sens comptable — elle peut être complétée jusqu\'à la clôture.',
-          comportement:'• Bouton "Valider la saisie" actif uniquement si toutes les lignes avec montant > 0 ont un N° remise\n• Clic → modale de confirmation\n• Annuler → retour à l\'état précédent, aucune donnée modifiée\n• Confirmer → toaster de succès 5s, vue bascule en mode Télécollecte saisie\n• Mode Télécollecte saisie : colonnes "Montant saisi" (lecture seule) + "Complément" (éditable)\n• Bouton devient "Compléter la saisie" (inactif tant qu\'aucun complément saisi)',
-          critere:'Validation bloquée si au moins un montant > 0 sans N° remise\nAprès validation, aucune modification des montants initiaux possible\nToaster confirme systématiquement le succès' },
-        { tab:'Télécollecte', mode:'Interfacé · Non interfacé', titre:'Complément avant clôture comptable',
-          regle:'Après validation d\'une télécollecte, le GO peut ajouter un ou plusieurs compléments tant que la clôture comptable du jour n\'a pas eu lieu. Un complément est un montant additionnel qui s\'ajoute au montant déjà validé. Après chaque revalidation, les champs sont remis à zéro.',
-          comportement:'• Colonne "Complément" affiche des inputs vides après validation\n• Bouton "Compléter la saisie" inactif tant qu\'aucun complément saisi\n• Montant saisi (KPI) = montant validé + compléments en cours\n• Revalidation → même modale → même toaster\n• Compléments absorbés dans le total, champs remis à 0\n• Opération répétable jusqu\'à la clôture',
-          critere:'Complément peut être positif ou négatif\nAucun N° remise demandé pour un complément (transparent pour l\'utilisateur)\nAprès revalidation : champs Complément = 0,00 €' },
-        { tab:'Télécollecte', mode:'Interfacé', titre:'Gestion des écarts',
-          regle:'Un écart est la différence entre le montant attendu (remonté par le système) et le montant réellement encaissé. En mode interfacé, l\'écart est calculé automatiquement à partir des montants corrigés saisis par le GO. En mode non interfacé, le concept d\'écart n\'existe pas.',
-          comportement:'• Écart = somme des montants corrigés (mode interfacé uniquement)\n• KPI Écart mis à jour en temps réel à chaque frappe\n• Badge "Aucun écart" (vert) si Écart = 0\n• Badge "Écart détecté · Visa · Amex" (rouge) si Écart ≠ 0 — liste uniquement les MDP en écart\n• Pill sticky en bas de page synchronisée avec l\'état de l\'écart\n• La pill est masquée si Écart = 0',
-          critere:'Écart = somme exacte des montants corrigés (non des montants attendus)\nLe badge liste uniquement les MDP contribuant réellement à l\'écart\nExemple : Visa = -3 €, Amex = 0 € → badge affiche Visa uniquement' },
-        { tab:'Télécollecte', mode:'Interfacé · Non interfacé', titre:'Gestion des numéros de remise',
-          regle:'Un numéro de remise est un identifiant unique associé à chaque opération de transfert TPE → banque. Il est obligatoire dès qu\'un montant non nul est saisi. Il garantit la traçabilité comptable. Un doublon de N° remise constitue une anomalie comptable.',
-          comportement:'• Télécollecte non interfacé : N° remise obligatoire si montant > 0\n• Télécollecte interfacé : N° remise obligatoire si Montant corrigé ≠ 0\n• Date antérieure : N° remise obligatoire, doit être UNIQUE dans le système\n• Régularisation : N° remise généré automatiquement, jamais exposé à l\'utilisateur\n• Erreur inline si N° remise manquant ou doublon (Date antérieure)\n• Validation bloquée jusqu\'à correction',
-          critere:'Montant > 0 et N° remise vide → erreur inline, bouton bloqué\nN° remise doublon (Date antérieure) → erreur inline\nN° remise en Régularisation → généré automatiquement, non affiché' },
-        { tab:'Télécollecte', mode:'Interfacé', titre:'Affichage des badges d\'écart',
-          regle:'Les badges d\'écart sont des indicateurs visuels qui signalent l\'état de la réconciliation en temps réel. Ils ne sont visibles qu\'en mode interfacé. En mode non interfacé, aucune référence système n\'est disponible pour calculer un écart.',
-          comportement:'• Badge vert "Aucun écart" : aucun montant corrigé sur l\'ensemble des TPE\n• Badge rouge "Écart détecté · MDP" : au moins un montant corrigé saisi\n• Badges masqués en mode non interfacé\n• Badges masqués si switch "Caisses ouvertes" activé\n• Pill sticky reflète le même état\n• La pill disparaît si l\'écart revient à 0',
-          critere:'Badge rouge → au moins un MDP avec correction ≠ 0\nBadge vert → tous les MDP avec correction = 0\nListe de MDP dans le badge = sous-ensemble des MDP en écart réel' },
-        { tab:'Télécollecte', mode:'Interfacé · Non interfacé', titre:'Cas des montants à zéro',
-          regle:'Un montant à zéro est un comportement normal. Il se produit lorsqu\'un TPE n\'a pas enregistré de transaction pour un MDP donné (ex : WeChat non utilisé). Le système accepte ces lignes sans les considérer comme des erreurs.',
-          comportement:'• Montant = 0 € → N° remise facultatif, aucune erreur\n• Mode interfacé : montant attendu = 0 → ligne présente, correction non requise\n• Mode non interfacé : champ vide ou 0 → ligne valide, pas de blocage\n• Clôture automatique sans saisie : système enregistre 0 € (non interfacé) ou valeurs système (interfacé)\n• Les lignes à 0 € restent visibles dans le tableau',
-          critere:'Montant = 0 et N° remise vide → valide, pas d\'erreur\nMontant > 0 et N° remise vide → erreur inline\nClôture sans saisie = comportement normal, pas d\'erreur' },
-        // ── DATE ANTÉRIEURE ─────────────────────────────────────────────
-        { tab:'Date antérieure', mode:'Interfacé · Non interfacé', titre:'Fonctionnement général',
-          regle:'L\'onglet Date antérieure permet de corriger ou compléter une télécollecte d\'un jour passé. La date sélectionnée doit être strictement antérieure au jour J. Une fois la date confirmée, elle ne peut plus être modifiée dans le même flux.',
-          comportement:'• Date pré-remplie à J-1 au chargement\n• L\'utilisateur peut sélectionner une date différente via le sélecteur\n• La date doit être < aujourd\'hui (validation bloquante si date ≥ J)\n• Une fois validée, la date est figée dans la session\n• Le tableau charge les données correspondant à la date sélectionnée\n• KPI : Montant corrigé / Montant attendu / Écart restant',
-          critere:'Date ≥ J → saisie bloquée\nDate < J → saisie autorisée\nLa date affichée dans le bloc-date = date sélectionnée' },
-        { tab:'Date antérieure', mode:'Interfacé', titre:'Date antérieure interfacée',
-          regle:'En mode interfacé, le tableau principal affiche les montants attendus (valeurs remontées par le système pour la date sélectionnée) en lecture seule. Le tableau de correction permet de saisir des montants corrigés par MDP.',
-          comportement:'• Tableau gauche : Date / Mode de paiement / Emplacement / Montant attendu / N° Remise (lecture seule)\n• Tableau droit : Montant corrigé / N° Remise (éditable)\n• KPI Montant corrigé = somme des corrections saisies\n• KPI Montant attendu = somme des montants attendus\n• KPI Écart restant = Montant attendu − Montant corrigé\n• Badge "Écart détecté · MDP" si au moins une correction ≠ 0\n• N° remise obligatoire si Montant corrigé ≠ 0',
-          critere:'Montant corrigé ≠ 0 sans N° remise → erreur inline, bouton bloqué\nN° remise doublon → erreur inline\nBouton actif uniquement si toutes les corrections ont leur N° remise' },
-        { tab:'Date antérieure', mode:'Non interfacé', titre:'Date antérieure non interfacée',
-          regle:'En mode non interfacé, les montants attendus affichés dans le tableau correspondent aux montants validés lors de la télécollecte initiale (et non à des données système en temps réel). La logique de correction est identique à la vue interfacée.',
-          comportement:'• Montant attendu = montant validé lors de la télécollecte initiale (figé)\n• Tableau droit : Montant corrigé + N° Remise (éditable)\n• Même logique de KPI qu\'en mode interfacé\n• N° remise obligatoire pour toute correction ≠ 0\n• N° remise doit être unique dans le système',
-          critere:'Identique à RG-10 pour les contraintes de N° remise et de validation\nMontants attendus affichés = ceux de la télécollecte déjà validée' },
-        { tab:'Date antérieure', mode:'Interfacé · Non interfacé', titre:'Affichage des montants attendus après clôture',
-          regle:'Les montants affichés dans la colonne Montant attendu du tableau Date antérieure sont les montants officiels de la date comptable sélectionnée. Ces données sont figées et non modifiables. Elles servent de référence pour calculer l\'écart.',
-          comportement:'• Montant attendu affiché en lecture seule\n• La colonne Date indique la date comptable de chaque ligne\n• Montants = télécollecte validée (non interfacé) ou système (interfacé)\n• Aucune interaction possible sur cette colonne',
-          critere:'Montant attendu = lecture seule, aucun input\nLes montants ne changent pas si l\'utilisateur modifie les corrections' },
-        { tab:'Date antérieure', mode:'Interfacé · Non interfacé', titre:'Calcul des écarts',
-          regle:'L\'écart en Date antérieure est calculé en temps réel à partir de la différence entre le montant attendu de la date sélectionnée et la somme des montants corrigés saisis par l\'utilisateur.',
-          comportement:'• Écart restant = Montant attendu − Montant corrigé (temps réel)\n• KPI "Écart restant" mis à jour à chaque frappe\n• Écart restant > 0 → badge rouge "Écart détecté · MDP"\n• Écart restant = 0 → badge vert "Aucun écart"\n• Les MDP dans le badge = ceux avec correction contribuant à l\'écart',
-          critere:'Écart restant = somme Montant attendu − somme Montant corrigé\nLe KPI reflète l\'état réel à chaque modification' },
-        { tab:'Date antérieure', mode:'Interfacé · Non interfacé', titre:'Régularisation des écarts via Date antérieure',
-          regle:'La correction via Date antérieure est distincte de l\'onglet Régularisation. En Date antérieure, le GO saisit le montant réel encaissé pour la date passée. Ce n\'est pas une opération comptable de régularisation — c\'est une correction de saisie.',
-          comportement:'• L\'utilisateur saisit le montant réel dans "Montant corrigé"\n• L\'écart restant est recalculé en temps réel\n• N° remise unique obligatoire pour chaque correction\n• Validation : même workflow que télécollecte (modale → toaster)',
-          critere:'N° remise obligatoire pour toute correction ≠ 0\nN° remise doit être unique dans le système',
-          question:'La correction via Date antérieure déclenche-t-elle automatiquement une entrée dans l\'onglet Régularisation ? Ou sont-ce deux workflows totalement indépendants ?' },
-        { tab:'Date antérieure', mode:'Interfacé · Non interfacé', titre:'Gestion des numéros de remise (Date antérieure)',
-          regle:'En Date antérieure, le N° remise est soumis à une contrainte d\'unicité stricte au niveau du système. Un N° remise déjà utilisé sur n\'importe quelle autre date ou opération ne peut pas être réutilisé.',
-          comportement:'• N° remise obligatoire si Montant corrigé ≠ 0\n• Validation interface : champ vide bloque le bouton\n• Validation système : doublon → erreur inline "N° de remise déjà utilisé"\n• L\'utilisateur doit saisir un N° remise différent\n• Validation bloquée jusqu\'à correction',
-          critere:'N° remise vide + montant ≠ 0 → erreur inline, bouton bloqué\nN° remise doublon → erreur inline, bouton bloqué\nN° remise valide et unique → validation autorisée' },
-        { tab:'Date antérieure', mode:'Interfacé · Non interfacé', titre:'Badge d\'écart et moyens de paiement concernés',
-          regle:'Le badge d\'écart en Date antérieure liste uniquement les moyens de paiement qui contribuent réellement à l\'écart, c\'est-à-dire ceux pour lesquels une correction crée une différence avec le montant attendu.',
-          comportement:'• Badge rouge "Écart détecté · Visa · Amex" → MDP avec correction ≠ 0\n• MDP avec correction = 0 absent du badge même s\'il est dans le tableau\n• Badge vert "Aucun écart" → aucune correction saisie\n• Mise à jour en temps réel',
-          critere:'Badge rouge = au moins un MDP avec Montant corrigé ≠ 0\nBadge vert = tous les MDP avec Montant corrigé = 0\nListe MDP dans badge = sous-ensemble strict des MDP en écart réel' },
-        { tab:'Date antérieure', mode:'Interfacé · Non interfacé', titre:'Complément après saisie Date antérieure',
-          regle:'Le comportement post-validation en Date antérieure (ajout de complément) n\'est pas explicitement documenté dans le wireframe actuel.',
-          comportement:'Option A — Complément possible (aligné sur la logique Télécollecte)\nAprès validation, l\'utilisateur pourrait revenir sur la même date et ajouter un complément, tant que la purge comptable n\'a pas eu lieu (voir RG-18).\n\nOption B — Validation unique (comportement restrictif)\nUne fois une Date antérieure validée, la correction est figée. Toute nouvelle correction nécessite une nouvelle entrée.',
-          critere:'Non défini — décision métier à valider avant développement',
-          question:'La correction via Date antérieure est-elle complétable après validation (Option A) ou figée définitivement (Option B) ?' },
-        { tab:'Date antérieure', mode:'Interfacé · Non interfacé', titre:'Purge comptable et fermeture définitive',
-          regle:'Une télécollecte validée peut être complétée via Date antérieure tant qu\'aucune purge comptable n\'a été effectuée. La purge est la fermeture définitive des données comptables pour une période donnée. Une fois la purge exécutée, les données sont historiques et figées — aucune modification n\'est plus possible.',
-          comportement:'Avant purge :\n• La date apparaît dans Date antérieure\n• L\'utilisateur peut compléter une télécollecte déjà saisie\n• L\'utilisateur peut corriger un écart\n• Les calculs sont mis à jour normalement\n\nAprès purge :\n• La date n\'est plus modifiable\n• Les champs de complément sont désactivés ou absents\n• Aucune validation supplémentaire n\'est possible\n• Les données sont consultables mais figées\n\nCycle métier :\nTélécollecte → Clôture comptable quotidienne → Date antérieure (corrections possibles) → Purge comptable → Données définitivement verrouillées',
-          critere:'Date purgée : aucune action de modification possible\nDate purgée : aucun complément ajouteable\nDate purgée : aucune validation supplémentaire autorisée',
-          question:'Les dates purgées restent-elles visibles en lecture seule dans la liste Date antérieure, ou disparaissent-elles totalement ? Cette décision conditionne l\'architecture de la liste de dates.' },
-        // ── RÉGULARISATION ───────────────────────────────────────────────
-        { tab:'Régularisation', mode:'Tous modes', titre:'Fonctionnement général',
-          regle:'L\'onglet Régularisation est réservé aux Financial Managers. Il permet de régulariser un écart comptable constaté entre le montant attendu et le montant encaissé. La régularisation n\'est pas définitive immédiatement — elle peut être complétée jusqu\'à la prochaine clôture comptable.',
-          comportement:'• Accès restreint au rôle Financial Manager (contrôle côté serveur)\n• L\'écart à régulariser est affiché en rouge (non éditable, calculé par le système)\n• Le tableau affiche uniquement les MDP concernés par l\'écart\n• Bouton "Faire une régularisation" → modale → toaster → mode complétable\n• Après validation : bouton devient "Compléter la régularisation"',
-          critere:'Un GO (non FM) ne peut pas accéder à cet onglet\nL\'écart affiché est la valeur de référence du système, non modifiable par l\'utilisateur' },
-        { tab:'Régularisation', mode:'Tous modes', titre:'Régularisation interfacée',
-          regle:'La Régularisation s\'applique à un écart déjà calculé et fourni par le système. Cela suppose implicitement un contexte interfacé — le système connaît le montant attendu et peut calculer l\'écart.',
-          comportement:'• L\'écart est fourni par le système au chargement de l\'onglet\n• Ce montant est non éditable (valeur de référence)\n• Le FM saisit les montants régularisés par MDP',
-          critere:'L\'écart initial est fourni par le système, jamais saisi par l\'utilisateur',
-          question:'La Régularisation est-elle toujours en mode interfacé, ou un mode non interfacé est-il prévu où le FM saisirait lui-même l\'écart de référence ?' },
-        { tab:'Régularisation', mode:'Tous modes', titre:'Régularisation non interfacée',
-          regle:'Le wireframe ne documente pas de comportement spécifique en mode non interfacé pour l\'onglet Régularisation.',
-          comportement:'Non défini dans le wireframe actuel.',
-          critere:'Non défini — décision métier à valider',
-          question:'Si un mode non interfacé est prévu : qui saisit le montant de référence ? Comment le système valide-t-il la cohérence de la régularisation sans données système ?' },
-        { tab:'Régularisation', mode:'Tous modes', titre:'Répartition des écarts par moyen de paiement',
-          regle:'Le tableau de Régularisation n\'affiche que les MDP concernés par l\'écart. L\'objectif est de guider le FM vers les MDP à traiter sans lui donner directement les montants à retrouver — il doit effectuer son investigation métier.',
-          comportement:'• Tableau : Mode de paiement / Montant régularisé (input)\n• Seuls les MDP avec un écart non nul sont affichés\n• Exemple : Visa et Amex en écart → WeChat absent du tableau\n• Aucune colonne "Montant à régulariser" visible\n• Le FM saisit librement le montant qu\'il souhaite régulariser par MDP',
-          critere:'MDP sans écart → absent du tableau\nSomme des saisies peut être partielle (régularisation partielle autorisée)\nSomme des saisies > écart total → champs rouges, bouton bloqué' },
-        { tab:'Régularisation', mode:'Tous modes', titre:'Validation d\'une régularisation',
-          regle:'La validation d\'une régularisation suit exactement le même workflow que la Télécollecte : modale de confirmation → toaster → bascule en mode complétable. Les mêmes composants sont réutilisés.',
-          comportement:'• Bouton "Faire une régularisation" actif si au moins un montant saisi et pas de dépassement\n• Modale : "Vous êtes sur le point de valider une régularisation. Vous pourrez la compléter avant la clôture comptable."\n• Annuler → retour sans modification\n• Confirmer → toaster "Votre régularisation a bien été enregistrée." (5s)\n• Tableau bascule vers : Régularisation effectuée (figée) / Complément (input)\n• Bouton devient "Compléter la régularisation" (inactif tant qu\'aucun complément)',
-          critere:'Aucun montant saisi → bouton inactif\nDépassement de l\'écart → champs rouges, bouton inactif\nValidation partielle autorisée' },
-        { tab:'Régularisation', mode:'Tous modes', titre:'Complément de régularisation avant clôture',
-          regle:'Identique à la logique de complément de Télécollecte. Après une première validation, le FM peut ajouter des compléments autant de fois que nécessaire avant la clôture comptable.',
-          comportement:'• Tableau post-validation : "Régularisation effectuée" (figée) + "Complément" (input)\n• Bouton "Compléter la régularisation" inactif jusqu\'à saisie\n• Total régularisé = frozen + compléments en cours (temps réel)\n• Revalidation → même modale → même toaster → compléments absorbés, champs remis à 0\n• Opération répétable jusqu\'à la clôture comptable\n• Aucun N° remise visible (généré automatiquement)',
-          critere:'Total régularisé ne peut pas dépasser l\'Écart initial\nAprès revalidation : champs Complément = 0,00 €\nAucun N° remise exposé à l\'utilisateur' },
-        { tab:'Régularisation', mode:'Tous modes', titre:'Mise à jour des KPI (Écart / Total / Solde)',
-          regle:'Les trois KPI du bandeau Régularisation forment un système cohérent recalculé ensemble à chaque saisie depuis une source de vérité unique. L\'Écart à régulariser est le KPI principal — il reflète le problème restant à résoudre.',
-          comportement:'• Écart_initial = valeur fixée par le système au chargement (non modifiable)\n• Écart à régulariser = Écart_initial − Total régularisé (décroît)\n• Total régularisé = somme des montants validés + compléments en cours\n• Solde restant = miroir de l\'Écart à régulariser\n• Écart à régulariser : rouge si > 0, vert si = 0\n• Total régularisé : couleur neutre (navy)\n• Mise à jour en temps réel à chaque frappe',
-          critere:'Écart à régulariser + Total régularisé = Écart_initial (invariant)\nÉcart à régulariser = 0 → tous les KPI convergent vers l\'état résolu' },
-        { tab:'Régularisation', mode:'Tous modes', titre:'Affichage des moyens de paiement concernés',
-          regle:'Seuls les MDP présentant un écart non nul apparaissent dans le tableau de Régularisation. Ce filtre est appliqué dès le chargement et reste statique au fil des saisies.',
-          comportement:'• MDP avec écart ≠ 0 → ligne présente dans le tableau\n• MDP avec écart = 0 → ligne absente du tableau\n• Exemple : Visa (−400 €) + Amex (−350 €) présents ; WeChat (0 €) absent\n• Ce filtre est statique : les MDP n\'apparaissent ni ne disparaissent pendant la saisie',
-          critere:'Nombre de lignes = nombre de MDP avec écart ≠ 0\nAucune ligne pour un MDP en équilibre' },
-        { tab:'Régularisation', mode:'Tous modes', titre:'Cas d\'une régularisation complète',
-          regle:'Une régularisation est complète lorsque le Total régularisé atteint l\'Écart initial (Écart à régulariser = 0 €). Cet état peut être atteint en une ou plusieurs validations. Il n\'entraîne pas de verrouillage automatique : le FM peut continuer à redistribuer les montants entre MDP jusqu\'à la clôture comptable.',
-          comportement:'• Écart à régulariser = 0 € → couleur passe de rouge à vert\n• Solde restant = 0 €, Total régularisé = Écart_initial\n• Le bouton reste disponible : une régularisation complète peut toujours être ajustée\n• La clôture comptable est le seul verrou — elle fige l\'état à l\'instant T, définitivement\n• Après clôture : aucune modification possible, données figées',
-          critere:'Écart à régulariser = 0 → tous les KPI en état résolu\nLe FM peut redistribuer les montants entre MDP tant que la somme = Écart_initial\nCloture = seul verrou définitif' }
-      ];
-      localStorage.setItem(RG_BLOCKS_KEY, JSON.stringify(RG_DATA));
-      localStorage.setItem('wf_rg_version', RG_VERSION);
+    if (!localStorage.getItem(RG_BLOCKS_KEY)) {
+      localStorage.setItem(RG_BLOCKS_KEY, JSON.stringify([{
+        titre: 'Logique des montants en mode interfacé',
+        tab: 'Télécollecte', mode: 'Interfacé',
+        regle: 'En mode interfacé, les montants remontent automatiquement depuis les TPE (colonne Montant attendu). Le GO n\'a pas à les saisir. La colonne Montant corrigé démarre à 0 € et n\'est renseignée que si le GO constate une différence entre le montant attendu et le montant réel encaissé.',
+        comportement: '• Montant attendu = somme des montants remontés des TPE (lecture seule)\n• Montant corrigé = 0 € par défaut, éditable\n• Montant saisi   = Montant attendu + somme des corrections\n• Écart           = somme des montants corrigés\n• Badge vert "Aucun écart" si aucune correction\n• Badge rouge "Écart détecté" si au moins une correction > 0',
+        critere: 'Sans correction : Montant saisi = Montant attendu, Écart = 0 €\nAvec correction : Écart = somme exacte des corrections\nN° de remise obligatoire pour toute ligne avec montant attendu ≠ 0'
+      }]));
+    }
+    // Injecter le bloc non-interfacé s'il est absent
+    const _existingBlocks = JSON.parse(localStorage.getItem(RG_BLOCKS_KEY) || '[]');
+    if (!_existingBlocks.find(b => b.titre && b.titre.includes('non interfacé'))) {
+      _existingBlocks.push({
+        titre: 'Logique des montants en mode non interfacé',
+        tab: 'Télécollecte', mode: 'Non interfacé',
+        regle: 'En mode non interfacé, le village n\'est pas connecté au système central. Les TPE ne remontent aucune donnée automatiquement. Le système ne connaît pas les montants encaissés, ni le montant attendu, ni l\'écart potentiel.\n\nLa seule information disponible est celle que le GO saisit lui-même, manuellement, par mode de paiement et par TPE.',
+        comportement: '• Montant attendu  = masqué (information non disponible)\n• Montant saisi    = somme des montants renseignés manuellement dans le tableau\n• Écart            = masqué (impossible à calculer sans montant attendu)\n• Badges d\'écart  = masqués (aucune référence système)\n• À l\'ouverture   : Montant saisi = 0 € tant qu\'aucune saisie n\'a été effectuée\n• En temps réel   : Montant saisi se met à jour à chaque saisie dans le tableau',
+        critere: 'Tout montant > 0 € dans le tableau doit avoir un numéro de remise associé\nMontant = 0 € → numéro de remise facultatif\nLe bouton Valider la saisie n\'est actif que si tous les montants > 0 ont leur numéro de remise\nL\'interface affiche uniquement le Montant saisi — les KPI Montant attendu et Écart sont masqués'
+      });
+      localStorage.setItem(RG_BLOCKS_KEY, JSON.stringify(_existingBlocks));
     }
     const rgBlocks = JSON.parse(localStorage.getItem(RG_BLOCKS_KEY) || '[]');
 
@@ -4060,7 +3835,6 @@
     if (b.regle)        txt += `\nRÈGLE\n${b.regle}\n`;
     if (b.comportement) txt += `\nCOMPORTEMENT ATTENDU\n${b.comportement}\n`;
     if (b.critere)      txt += `\nCRITÈRE DE VALIDATION\n${b.critere}\n`;
-    if (b.question)     txt += `\nQUESTION MÉTIER À VALIDER\n${b.question}\n`;
     navigator.clipboard.writeText(txt).then(() => {
       const btn = document.getElementById('copy-rg-btn-' + idx);
       if (btn) { btn.textContent = '✓ Copié'; setTimeout(() => btn.textContent = '📋 Copier pour Jira', 2000); }
@@ -4157,11 +3931,6 @@
                     <div style="border-left:3px solid #088A20;padding-left:14px;">
                       <div style="font-size:10px;font-weight:700;color:#088A20;text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;">✓ Critère de validation</div>
                       <div style="font-size:14px;color:var(--navy);line-height:1.7;white-space:pre-wrap;">${b.critere}</div>
-                    </div>` : ''}
-                    ${b.question ? `
-                    <div style="border-left:3px solid #D97706;background:#FFFBEB;border-radius:0 8px 8px 0;padding:12px 14px;">
-                      <div style="font-size:10px;font-weight:700;color:#D97706;text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;">⚠ Question métier à valider</div>
-                      <div style="font-size:14px;color:var(--navy);line-height:1.7;white-space:pre-wrap;">${b.question}</div>
                     </div>` : ''}
                   </div>
                 </div>`;
