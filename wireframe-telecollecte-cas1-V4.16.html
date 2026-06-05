@@ -1384,8 +1384,8 @@
 
         </div>
 
-        <!-- Tableau MDP — vue saisie (avant validation) -->
-        <div id="reg-rows-saisie" class="table-wrap" style="margin-top:0; border-radius:12px; overflow:hidden; border:1px solid var(--grey-bd); width:50%;">
+        <!-- Tableau MDP — 2 colonnes : Mode de paiement + Montant régularisé -->
+        <div class="table-wrap" style="margin-top:0; border-radius:12px; overflow:hidden; border:1px solid var(--grey-bd); width:50%;">
           <div class="t-head" style="grid-template-columns:1fr 200px; display:grid; padding:0 20px; gap:12px;">
             <span>Mode de paiement</span>
             <span>Montant régularisé</span>
@@ -1397,25 +1397,6 @@
           <div class="t-row" style="display:grid; grid-template-columns:1fr 200px; padding:0 20px; min-height:56px; align-items:center; gap:12px;">
             <span class="c-mdp">Amex</span>
             <div class="iw"><span class="eur">€</span><input class="inp reg-mdp-inp" type="text" placeholder="0,00" data-mdp="Amex" /></div>
-          </div>
-        </div>
-
-        <!-- Tableau MDP — vue post-validation (régularisation effectuée + complément) -->
-        <div id="reg-rows-effectuee" class="table-wrap" style="display:none; margin-top:0; border-radius:12px; overflow:hidden; border:1px solid var(--grey-bd); width:50%;">
-          <div class="t-head" style="grid-template-columns:1fr 180px 180px; display:grid; padding:0 20px; gap:12px;">
-            <span>Mode de paiement</span>
-            <span>Régularisation effectuée</span>
-            <span>Complément</span>
-          </div>
-          <div class="t-row" style="display:grid; grid-template-columns:1fr 180px 180px; padding:0 20px; min-height:56px; align-items:center; gap:12px; border-bottom:1px solid var(--grey-bd);">
-            <span class="c-mdp">Visa</span>
-            <span id="reg-done-visa" class="c-amt" style="font-size:14px;font-weight:600;color:var(--navy);">0,00 €</span>
-            <div class="iw"><span class="eur">€</span><input class="inp reg-comp-inp" type="text" placeholder="0,00" data-mdp="Visa" /></div>
-          </div>
-          <div class="t-row" style="display:grid; grid-template-columns:1fr 180px 180px; padding:0 20px; min-height:56px; align-items:center; gap:12px;">
-            <span class="c-mdp">Amex</span>
-            <span id="reg-done-amex" class="c-amt" style="font-size:14px;font-weight:600;color:var(--navy);">0,00 €</span>
-            <div class="iw"><span class="eur">€</span><input class="inp reg-comp-inp" type="text" placeholder="0,00" data-mdp="Amex" /></div>
           </div>
         </div>
 
@@ -4767,62 +4748,43 @@
   }
 
   function checkReg() {
-    const ecart   = parseNum(document.getElementById('reg-ecart')?.textContent || '0');
-    const fmtNum  = n => n.toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-    const btn     = document.getElementById('btnv-reg');
-
-    if (_regSaisieMode) {
-      // Mode complément : sommer les reg-comp-inp
-      const compInputs = document.querySelectorAll('.reg-comp-inp');
-      let comp = 0;
-      compInputs.forEach(i => { comp += parseNum(i.value); });
-      const totalReg = _frozenReg + comp;
-      const restant  = ecart - totalReg;
-
-      const sumDisplay = document.getElementById('reg-sum-display');
-      if (sumDisplay) {
-        sumDisplay.textContent = '€ ' + fmtNum(totalReg);
-        sumDisplay.style.color = Math.abs(restant) < 0.01 ? '#088A20' : '#088A20';
-      }
-      const restantDisplay = document.getElementById('reg-restant-display');
-      if (restantDisplay) restantDisplay.textContent = fmtNum(Math.max(0, restant));
-
-      const overEcart = totalReg > ecart + 0.005;
-      const anyComp   = [...compInputs].some(i => i.value.trim() !== '');
-      compInputs.forEach(i => {
-        i.style.borderColor = overEcart && i.value.trim() !== '' ? '#BF2F17' : '';
-        i.style.color       = overEcart && i.value.trim() !== '' ? '#BF2F17' : '';
-      });
-      if (btn) btn.className = (anyComp && !overEcart) ? 'btn-date-cta' : 'btn-date-cta off';
-      return;
-    }
-
-    // Mode saisie initiale : sommer les reg-mdp-inp
+    const ecart = parseNum(document.getElementById('reg-ecart')?.textContent || '0');
     const mdpInputs = document.querySelectorAll('.reg-mdp-inp');
     let sum = 0;
     mdpInputs.forEach(i => { sum += parseNum(i.value); });
-    const restant = ecart - sum;
 
+    const fmtNum = n => n.toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+    // Total saisi — rouge si incomplet, vert si égal au total écart
+    const restant = ecart - sum;
     const sumDisplay = document.getElementById('reg-sum-display');
     if (sumDisplay) {
       sumDisplay.textContent = '€ ' + fmtNum(sum);
       sumDisplay.style.color = Math.abs(restant) < 0.01 ? '#088A20' : '#BF2F17';
     }
-    const restantDisplay = document.getElementById('reg-restant-display');
-    if (restantDisplay) restantDisplay.textContent = fmtNum(restant);
 
+    // Écart restant — toujours noir
+    const restantDisplay = document.getElementById('reg-restant-display');
+    if (restantDisplay) {
+      restantDisplay.textContent = fmtNum(restant);
+    }
+
+    const btn = document.getElementById('btnv-reg');
     if (!btn) return;
-    const allEmpty  = [...mdpInputs].every(i => i.value.trim() === '');
+    const allEmpty = [...mdpInputs].every(i => i.value.trim() === '');
     const overEcart = sum > ecart + 0.005;
 
+    // Champs en rouge si dépassement, normal sinon
     mdpInputs.forEach(i => {
       i.style.borderColor = overEcart && i.value.trim() !== '' ? '#BF2F17' : '';
-      i.style.color       = overEcart && i.value.trim() !== '' ? '#BF2F17' : '';
+      i.style.color = overEcart && i.value.trim() !== '' ? '#BF2F17' : '';
     });
 
+    // Masquer le message global — l'erreur est portée par les champs
     const errEl = document.getElementById('reg-over-error');
     if (errEl) errEl.style.display = 'none';
 
+    // Badge écart restant
     const badgeRestant = document.getElementById('reg-badge-restant');
     if (badgeRestant) {
       const solved = Math.abs(restant) < 0.01;
@@ -4833,7 +4795,12 @@
         : '<span style="width:8px;height:8px;border-radius:50%;background:#BF2F17;flex-shrink:0;"></span>Solde restant';
     }
 
-    btn.className = (allEmpty || overEcart) ? 'btn-date-cta off' : 'btn-date-cta';
+    // Actif dès qu'un montant > 0 est saisi ET pas de dépassement
+    if (allEmpty || overEcart) {
+      btn.className = 'btn-date-cta off';
+    } else {
+      btn.className = 'btn-date-cta';
+    }
   }
 
   // ── Init versions ─────────────────────────────────────────────────────
@@ -4862,23 +4829,9 @@
     if (el) el.textContent = `${yyyy} / ${mm} / ${dd}`;
   })();
 
-  // ── Contexte modal : 'tele' ou 'reg' ───────────────────────────────────
-  let _modalContext = 'tele';
-  let _regSaisieMode = false;   // équivalent de saisieMode pour Régularisation
-  let _frozenReg = 0;           // total régularisé figé au moment de la validation
-
-  function openValidationModal(context) {
-    _modalContext = context || 'tele';
+  function openValidationModal() {
     const today = new Date().toLocaleDateString('fr-FR', { day:'numeric', month:'long', year:'numeric' });
-    if (_modalContext === 'reg') {
-      document.getElementById('mv-title').textContent = 'Validation de la régularisation';
-      document.getElementById('mv-text-1').innerHTML = 'Vous êtes sur le point de valider une régularisation.';
-      document.getElementById('mv-text-2').textContent = 'Cette action enregistre la régularisation en cours. Vous pourrez la compléter avant la clôture comptable.';
-    } else {
-      document.getElementById('mv-title').textContent = 'Validation de la télécollecte';
-      document.getElementById('mv-text-1').innerHTML = 'Vous êtes sur le point de valider la saisie de télécollecte du <strong>' + today + '</strong>.';
-      document.getElementById('mv-text-2').textContent = 'Cette action confirme la saisie actuellement complétée.';
-    }
+    document.getElementById('mv-date-1').textContent = today;
     document.getElementById('modal-validation-overlay').classList.add('visible');
   }
 
@@ -4888,21 +4841,18 @@
 
   function confirmValidation() {
     closeValidationModal();
-    if (_modalContext === 'reg') {
-      confirmRegValidation();
-      return;
-    }
-    // ── Télécollecte ────────────────────────────────────────────────────
-    document.getElementById('tv-title').textContent = 'Télécollecte enregistrée';
     const today = new Date().toLocaleDateString('fr-FR', { day:'numeric', month:'long', year:'numeric' });
-    document.getElementById('tv-text').innerHTML = 'Votre télécollecte du ' + today + ' a bien été enregistrée.<br>Vous pouvez toujours la compléter si nécessaire.';
+    document.getElementById('tv-date').textContent = today;
     showToaster();
 
     const ifaceOn = document.getElementById('sw-iface')?.checked;
     const parseV  = s => parseFloat((s||'').replace(/\s/g,'').replace('€','').replace(',','.')) || 0;
 
     if (!ifaceOn) {
+      // Mode non-interfacé : capturer les montants saisis et les injecter dans rows-saisie
       let totalSaisi = 0;
+
+      // TPE 1 & 2 : lire rm, injecter montant ET n° remise dans rs
       ['1','2'].forEach(n => {
         const rm = document.getElementById('rm'+n);
         const rs = document.getElementById('rs'+n);
@@ -4915,12 +4865,19 @@
           const rsRow     = rsRows[i];
           const rsAmt     = rsRow?.querySelector('.c-amt');
           const rsRemise  = rsRow?.querySelector('input.inp.plain');
+
           const val = amtInp ? parseV(amtInp.value) : 0;
           totalSaisi += val;
           if (rsAmt) rsAmt.textContent = val.toLocaleString('fr-FR', {minimumFractionDigits:2}) + ' €';
-          if (rsRemise) rsRemise.value = (val > 0 && remiseInp) ? remiseInp.value.trim() : '';
+
+          // Copier le n° de remise saisi — vide si montant = 0
+          if (rsRemise) {
+            rsRemise.value = (val > 0 && remiseInp) ? remiseInp.value.trim() : '';
+          }
         });
       });
+
+      // TPE 3-5 : lire rows-manual, injecter montant ET n° remise dans rows-saisie
       ['3','4','5'].forEach(n => {
         const anchor = document.getElementById('tpe-anchor-' + n);
         if (!anchor) return;
@@ -4934,102 +4891,46 @@
           const remiseInp = row.querySelector('.remise-inp');
           const sRow      = sRows[i];
           const sAmt      = sRow?.querySelector('.c-amt');
+          // Dans rows-saisie le n° remise est soit un input.plain disabled, soit un .remise-inp (si 0€)
           const sRemise   = sRow?.querySelector('input.inp.plain') || sRow?.querySelector('.remise-inp');
+
           const val = amtInp ? parseV(amtInp.value) : 0;
           totalSaisi += val;
           if (sAmt) sAmt.textContent = val.toLocaleString('fr-FR', {minimumFractionDigits:2}) + ' €';
-          if (sRemise) sRemise.value = (val > 0 && remiseInp) ? remiseInp.value.trim() : '';
+
+          if (sRemise) {
+            sRemise.value = (val > 0 && remiseInp) ? remiseInp.value.trim() : '';
+          }
         });
       });
+
+      // Changer les labels KPI
       const labelA = document.getElementById('kpi-attendu-label');
       const labelS = document.getElementById('kpi-saisi-label');
       if (labelA) labelA.textContent = 'Montant saisi';
       if (labelS) labelS.textContent = 'Montant saisi';
+
+      // Figer le total télécollecte saisie comme référence
+      // Si déjà en mode saisie (revalidation avec complément), accumuler le complément dans le frozen
       if (saisieMode && _frozenAttendu !== null) {
         let complement = 0;
         document.querySelectorAll('.inp-complement').forEach(inp => { complement += parseV(inp.value); });
         totalSaisi = parseV(_frozenAttendu) + complement;
       }
       _frozenAttendu = totalSaisi.toLocaleString('fr-FR', {minimumFractionDigits:2}) + ' €';
+
+      // Remettre les champs complément à zéro — la prochaine saisie repart de 0
       document.querySelectorAll('.inp-complement').forEach(inp => { inp.value = ''; });
     }
+
     setS(true);
+    // Forcer la mise à jour des KPI immédiatement après passage en mode saisie
     setTimeout(updateKPI, 50);
-  }
-
-  function confirmRegValidation() {
-    const parseV = s => parseFloat((s||'').replace(/\s/g,'').replace('€','').replace(',','.')) || 0;
-    const fmt = n => n.toLocaleString('fr-FR', {minimumFractionDigits:2}) + ' €';
-
-    if (_regSaisieMode) {
-      // Revalidation : accumuler les compléments dans _frozenReg
-      let complement = 0;
-      document.querySelectorAll('.reg-comp-inp').forEach(inp => { complement += parseV(inp.value); });
-      _frozenReg += complement;
-      // Injecter les nouveaux totaux par MDP dans les cellules "Régularisation effectuée"
-      document.querySelectorAll('.reg-comp-inp').forEach(inp => {
-        const mdp = inp.dataset.mdp;
-        const cell = document.getElementById('reg-done-' + mdp.toLowerCase());
-        if (cell) cell.textContent = fmt(parseV(cell.textContent) + parseV(inp.value));
-        inp.value = '';
-      });
-    } else {
-      // Première validation : lire les inputs reg-mdp-inp, figer dans la vue effectuée
-      let total = 0;
-      document.querySelectorAll('.reg-mdp-inp').forEach(inp => {
-        const val = parseV(inp.value);
-        total += val;
-        const mdp = inp.dataset.mdp;
-        const cell = document.getElementById('reg-done-' + mdp.toLowerCase());
-        if (cell) cell.textContent = fmt(val);
-      });
-      _frozenReg = total;
-
-      // Basculer tableau saisie → tableau effectuée
-      document.getElementById('reg-rows-saisie').style.display = 'none';
-      document.getElementById('reg-rows-effectuee').style.display = '';
-
-      // Vider les inputs de complément
-      document.querySelectorAll('.reg-comp-inp').forEach(inp => { inp.value = ''; });
-    }
-
-    // Mettre à jour le KPI Total régularisé
-    const sumDisplay = document.getElementById('reg-sum-display');
-    if (sumDisplay) {
-      sumDisplay.textContent = '€ ' + _frozenReg.toLocaleString('fr-FR', {minimumFractionDigits:2});
-      sumDisplay.style.color = '#088A20';
-    }
-    // Recalculer solde restant
-    const ecart = parseV(document.getElementById('reg-ecart')?.textContent || '0');
-    const restant = ecart - _frozenReg;
-    const restantDisplay = document.getElementById('reg-restant-display');
-    if (restantDisplay) restantDisplay.textContent = restant.toLocaleString('fr-FR', {minimumFractionDigits:2});
-
-    // Badge
-    const badge = document.getElementById('reg-badge-restant');
-    if (badge) {
-      const solved = Math.abs(restant) < 0.01;
-      badge.style.background = solved ? '#E6F4EA' : '#FEF2F2';
-      badge.style.color      = solved ? '#1A6B31' : '#BF2F17';
-      badge.innerHTML = solved
-        ? '<span style="width:8px;height:8px;border-radius:50%;background:#1A6B31;flex-shrink:0;"></span>Régularisé'
-        : '<span style="width:8px;height:8px;border-radius:50%;background:#BF2F17;flex-shrink:0;"></span>Solde restant';
-    }
-
-    // Changer le bouton en "Compléter la régularisation"
-    const btn = document.getElementById('btnv-reg');
-    if (btn) { btn.textContent = 'Compléter la régularisation'; btn.className = 'btn-date-cta off'; }
-
-    _regSaisieMode = true;
-
-    // Toaster
-    document.getElementById('tv-title').textContent = 'Régularisation enregistrée';
-    document.getElementById('tv-text').innerHTML = 'Votre régularisation a bien été enregistrée.<br>Vous pouvez toujours la compléter avant la clôture comptable.';
-    showToaster();
   }
 
   function showToaster() {
     const t = document.getElementById('toaster-validation');
+    // S'assurer qu'il est enfant direct de body pour éviter tout stacking context parasite
     if (t.parentElement !== document.body) document.body.appendChild(t);
     t.classList.remove('hide');
     t.classList.add('show');
@@ -5043,34 +4944,29 @@
     t.classList.add('hide');
   }
 
-  // Brancher btnv sur la modale (télécollecte)
+  // Brancher btnv sur la modale si validateMode
   document.getElementById('btnv').addEventListener('click', () => {
-    openValidationModal('tele');
+    openValidationModal();
   });
   document.getElementById('btnv-sticky').addEventListener('click', () => {
-    openValidationModal('tele');
-  });
-  // Brancher btnv-reg sur la modale (régularisation)
-  document.getElementById('btnv-reg').addEventListener('click', () => {
-    if (document.getElementById('btnv-reg').classList.contains('off')) return;
-    openValidationModal('reg');
+    openValidationModal();
   });
 </script>
 
-<!-- Modale validation (télécollecte + régularisation) -->
+<!-- Modale validation télécollecte -->
 <div id="modal-validation-overlay">
   <div id="modal-validation">
     <div class="mv-header">
-      <span id="mv-title">Validation</span>
+      <span>Telecollection validation</span>
       <button class="mv-close" onclick="closeValidationModal()">×</button>
     </div>
     <div class="mv-body">
-      <p class="mv-text" id="mv-text-1"></p>
-      <p class="mv-text" id="mv-text-2"></p>
+      <p class="mv-text">You are about to validate the telecollection entry for <strong id="mv-date-1"></strong>.</p>
+      <p class="mv-text">This action confirms the entry currently completed.</p>
     </div>
     <div class="mv-actions">
-      <button class="mv-cancel" onclick="closeValidationModal()">Annuler</button>
-      <button class="mv-confirm" id="mv-confirm-btn" onclick="confirmValidation()">Confirmer</button>
+      <button class="mv-cancel" onclick="closeValidationModal()">Cancel</button>
+      <button class="mv-confirm" onclick="confirmValidation()">Confirm</button>
     </div>
   </div>
 </div>
@@ -5084,8 +4980,8 @@
     </svg>
   </div>
   <div>
-    <div class="tv-title" id="tv-title">Validation enregistrée</div>
-    <div class="tv-text" id="tv-text"></div>
+    <div class="tv-title">Telecollection submitted</div>
+    <div class="tv-text">Your telecollection for <span id="tv-date"></span> has been successfully submitted.<br>You can still complete it if needed.</div>
   </div>
   <button class="tv-close" onclick="hideToaster()">×</button>
 </div>
