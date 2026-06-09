@@ -942,7 +942,11 @@
 
       </div>
 
-      <!-- ── SECTION 3 : Dernier projet travaillé ── -->
+      <!-- ── SECTION 3 : Retours PO ── -->
+      <div class="dash-section-label">Retours PO</div>
+      <div id="treat-section"></div>
+
+      <!-- ── SECTION 4 : Dernier projet travaillé ── -->
       <div class="dash-section-label">Dernier projet travaillé</div>
       <div class="resume-tiles" id="resume-strip"></div>
 
@@ -1264,6 +1268,39 @@ function renderDashboard() {
   trendEl.textContent = pending > 0 ? `${pending} à traiter` : 'Tout traité ✓';
   trendEl.className = 'kpi-tile-trend ' + (pending > 0 ? 'alert' : 'up');
   if (pending > 0) document.getElementById('topbar-notif').classList.add('has-notif');
+
+  // ── RETOURS PO ──
+  const treatEl = document.getElementById('treat-section');
+  const activeMessages = messages.filter(m => !m.archived);
+  const TYPE_LABELS = { rg:'RG', retour:'Retour', question:'Question', idee:'Idée', feedback:'Retour' };
+  const TYPE_ICONS  = { rg:'📋', retour:'💬', question:'❓', idee:'💡', feedback:'💬' };
+  const typeGroups = {};
+  activeMessages.forEach(m => {
+    const t = m.qualifiedType || m.commentType || 'retour';
+    if (!typeGroups[t]) typeGroups[t] = [];
+    typeGroups[t].push(m);
+  });
+  const totalActive = activeMessages.length;
+  if (totalActive === 0) {
+    treatEl.innerHTML = `<div class="treat-card"><div class="treat-empty">Aucun retour en attente ✓</div></div>`;
+  } else {
+    const items = Object.entries(typeGroups).map(([type, msgs]) => {
+      const label = TYPE_LABELS[type] || type;
+      const icon  = TYPE_ICONS[type]  || '📌';
+      return `<div class="treat-item"><div class="treat-item-count">${msgs.length}</div><div class="treat-item-label">${icon} ${label}</div></div>`;
+    }).join('');
+    const lastMsg = activeMessages.sort((a,b)=>(b.id||0)-(a.id||0))[0];
+    const lastAuthor = lastMsg ? lastMsg.author : '';
+    const lastPin    = lastMsg ? lastMsg.pinLabel : '';
+    treatEl.innerHTML = `
+      <div class="treat-card">
+        <div class="treat-header">
+          <div class="treat-title">À traiter <span class="treat-badge">${totalActive}</span></div>
+          ${lastPin ? `<div style="font-size:11px;color:rgba(255,255,255,0.45)">Dernier : ${lastPin} — ${lastAuthor}</div>` : ''}
+        </div>
+        <div class="treat-items">${items}</div>
+      </div>`;
+  }
 
   // ── REPRENDRE MON TRAVAIL — tiles compactes ──
   const strip = document.getElementById('resume-strip');
