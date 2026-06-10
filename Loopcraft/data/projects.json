@@ -19,7 +19,7 @@
           "id": "cardex",
           "name": "Cardex",
           "status": "in_progress",
-          "wireframe": "../wireframe-cardex-V1.html",
+          "wireframe": "https://studiojailoop.github.io/telecollecte-odyssey/wireframe-cardex-V1.html",
           "version": "V1",
           "updated": "2026-06-10",
           "label": "Fiche client — intégration bloc Cardex"
