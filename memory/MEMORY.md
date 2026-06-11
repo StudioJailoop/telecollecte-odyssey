@@ -3,3 +3,28 @@
 - [Odyssey Trident 1.0 deprecated](feedback_ody_trident_v1_deprecated.md) — Ne jamais mentionner Odyssey Trident Ψ 1.0, il est définitivement abandonné
 - [Odyssey — profil utilisateurs](project_odyssey_users.md) — Utilisateurs pros internes Club Med (GOs, réception), pas du B2C — adapter les reviews UX en conséquence
 - [Figma references Odyssey / Club Med](reference_figma_odyssey.md) — Liens Figma : Trident 2.0 DS, Main 2.0 template, références listes et caisse
+- [Ne jamais toucher aux apps personnelles](feedback_no_browser_interference.md) — Interdiction absolue de fermer/relancer Chrome ou toute app perso sans confirmation — incident passwords perdus
+- [Ne rien installer sans demander](feedback_no_install_without_asking.md) — Demander avant tout npm install, fichier système, ou action hors de ~/Desktop/Claude Yaki/
+- [Utiliser uniquement Trident 2.0 et Odyssey 2.0](feedback_use_trident2_only.md) — JAMAIS les anciens composants d'un fichier client — tout vient du DS Trident 2.0 / Odyssey 2.0
+- [Toujours versionner les wireframes](feedback_versionning.md) — Sauvegarder V1, V2... avant chaque évolution — fichier versionné = figé, jamais modifié
+- [Système réécriture IA](project_odyssey_rewrite_system.md) — Pont local server.py → Claude Code → /tmp/wf_rewrite_response.json → navigateur — NE JAMAIS SUPPRIMER
+- [Système complet Wireframe + Outil PO](project_odyssey_system.md) — Architecture réutilisable : wireframes DS, commentaires PO, Firebase, server.py, portail GitHub
+- [Toujours publier sur GitHub](feedback_always_publish_github.md) — Chaque modif wireframe/portail → git push immédiat, sans attendre que l'utilisateur le demande
+- [Approche debug](feedback_debug_approach.md) — Jamais confirmer sans tester, max 2 tentatives puis demander l'élément exact, Playwright pour vérifier
+- [Toujours vérifier les régressions](feedback_debug_approach.md) — Après chaque fix, vérifier que rien n'a disparu (types, onglets, fonctions) avant de publier
+- [V4 version de référence](feedback_v4_reference.md) — Ne jamais régresser depuis cette version — fichier REF immuable
+- [Conservation absolue de l'existant](feedback_conservation_existant.md) — Toute modif est additive, jamais réécriture — process obligatoire + tests avant push
+- [Résumé en tableau Avant/Après](feedback_resume_tableau.md) — Toujours terminer par un tableau | Comportement | Avant | Après | après chaque modification
+- [Règle UX Loopcraft — réutiliser les patterns](feedback_loopcraft_ux_reuse_pattern.md) — Règle métier ≠ nouvelle UI — réutiliser le même composant/emplacement, déclarer "Je réutilise" ou "Je crée car..."
+- [Loopcraft Dashboard](project_loopcraft_dashboard.md) — studio.html, navigation 3 niveaux, doc confidentielle gitignorée, V4 = fichier de travail actif
+- [Règle fondatrice Loopcraft](feedback_loopcraft_regle_fondatrice.md) — Commentaires équipe = réception PO uniquement, JAMAIS le designer — ne jamais modifier ce filtre
+- [Système commentaires Loopcraft](project_loopcraft_comments_system.md) — Essence du produit : flux PO→Commentaires équipe→brief, écriture atomique fbSaveOne, JAMAIS PUT global
+- [Propositions Prop_A et Prop_Abis verrouillées](project_loopcraft_proposals_locked.md) — Validées 2026-05-27, NE PLUS TOUCHER — protocole 3 screenshots obligatoire avant toute modif zone bloc-date
+- [Prop_B et Prop_C en suspens](project_loopcraft_prop_b_c_pending.md) — Placeholders statiques, à designer en prochaine session — protocole 3 screenshots obligatoire avant de commencer
+- [Cohérence état global](feedback_coherence_etat_global.md) — Quand un état global change, rafraîchir TOUS les composants visuels dépendants, pas seulement le principal
+- [V4.8 état stable Télécollecte](project_loopcraft_v48.md) — Snapshot 2026-06-03 : KPI dynamiques, doc PO sommaire+numérotation, mode interfacé/non-interfacé propre
+- [V4.11 version active](project_loopcraft_v411.md) — Version active 2026-06-05 : date antérieure + KPIs dyn, Régularisation alignée pattern Télécollecte
+- [V4.21 checkpoint + phase review PO](project_loopcraft_v421.md) — Checkpoint 2026-06-05 : 27 RG, workflow Régularisation complet, portail POs Julie/Nelly en ligne
+- [RG badge écart — MDP réels](project_loopcraft_rg_badge_ecart.md) — Badge écart doit lister uniquement les MDP en écart réel — à inclure dans la doc RG quand demandé
+- [Comportement à l'ouverture](feedback_startup_behavior.md) — Au démarrage : version active uniquement (ex. V4.21), pas les proposals ni chantiers en suspens
+- [Cardex — sous-projet Club Med](project_loopcraft_cardex.md) — wireframe-cardex-V1.html livré 2026-06-10 : fiche client Odyssey DS, 3 props layout (A/B/C), Firebase+localStorage isolés
