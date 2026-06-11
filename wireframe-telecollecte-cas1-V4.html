@@ -459,7 +459,7 @@
       align-items: stretch;
     }
 
-    /* Partie gauche : tableau données (Date/MDP/Emplacement/Montant/N° Remise) */
+    /* Partie gauche : tableau données (Date/MDP/Location/Montant/Ref. No.) */
     .ant-main-wrap {
       flex: 1;
       border-radius: 12px;
@@ -943,7 +943,7 @@
           <div class="sub-item">Make a supply</div>
           <div class="sub-item">Make a deposit</div>
           <div class="sub-item">Easy check out</div>
-          <div class="sub-item active" id="sub-tpe" onclick="goTo('tpe')">Télécollecte</div>
+          <div class="sub-item active" id="sub-tpe" onclick="goTo('tpe')">Telecollection</div>
         </div>
       </div>
     </div>
@@ -963,9 +963,9 @@
 
     <!-- Tabs principales -->
     <div class="tabs-bar">
-      <button class="tab active" id="tab-tpe" onclick="goTo('tpe')">Télécollecte</button>
-      <button class="tab"        id="tab-ant" onclick="goTo('ant')">Date antérieure</button>
-      <button class="tab"        id="tab-reg" onclick="goTo('reg')">Régularisation</button>
+      <button class="tab active" id="tab-tpe" onclick="goTo('tpe')">Telecollection</button>
+      <button class="tab"        id="tab-ant" onclick="goTo('ant')">Previous Date</button>
+      <button class="tab"        id="tab-reg" onclick="goTo('reg')">Regularisation</button>
     </div>
 
 
@@ -975,7 +975,7 @@
       <div class="alert" id="alert">
         <span style="font-size:20px;flex-shrink:0;">⚠️</span>
         <div>
-          <strong>Impossible de lancer la télécollecte</strong>
+          <strong>Unable to start telecollection</strong>
           Toutes les caisses doivent être fermées pour la saisie du Jour J.
           <ul>
             <li>DUPONT — Poste N°2 Réception</li>
@@ -990,19 +990,19 @@
 
           <!-- Ligne 1 : texte date seul -->
           <div id="bloc-date-row" style="display:flex; align-items:center; width:100%;">
-            <span class="date-label">Vous effectuez la télécollecte du <strong id="label-date-today"></strong></span>
+            <span class="date-label">Please proceed with the telecollection of <strong id="label-date-today"></strong></span>
           </div>
 
           <!-- Ligne 2 : KPI + badge + bouton -->
           <div id="proposal-a" style="display:block; margin-top:20px; padding-top:16px; border-top:1px solid var(--grey-bd);">
             <div style="display:flex; align-items:center; gap:20px; flex-wrap:wrap;">
               <div id="kpi-attendu-wrap" style="display:flex;flex-direction:column;gap:4px;flex-shrink:0;">
-                <span id="kpi-attendu-label" style="font-size:11px;font-weight:700;color:var(--grey-txt);text-transform:uppercase;letter-spacing:.05em;display:block;">Montant attendu</span>
+                <span id="kpi-attendu-label" style="font-size:11px;font-weight:700;color:var(--grey-txt);text-transform:uppercase;letter-spacing:.05em;display:block;">Expected amount</span>
                 <span id="kpi-attendu-val" style="font-size:20px;font-weight:700;color:var(--navy);display:block;">1 250,00 €</span>
               </div>
               <div id="kpi-sep1" style="width:1px;height:36px;background:var(--grey-bd);flex-shrink:0;align-self:center;"></div>
               <div id="kpi-saisi" style="display:flex;flex-direction:column;gap:4px;flex-shrink:0;">
-                <span id="kpi-saisi-label" style="font-size:11px;font-weight:700;color:var(--grey-txt);text-transform:uppercase;letter-spacing:.05em;display:block;">Montant saisi</span>
+                <span id="kpi-saisi-label" style="font-size:11px;font-weight:700;color:var(--grey-txt);text-transform:uppercase;letter-spacing:.05em;display:block;">Entered amount</span>
                 <span id="kpi-saisi-val" style="font-size:20px;font-weight:700;color:var(--navy);display:block;">1 250,00 €</span>
               </div>
               <div id="kpi-sep2" style="width:1px;height:36px;background:var(--grey-bd);flex-shrink:0;align-self:center;"></div>
@@ -1013,23 +1013,23 @@
               <div style="margin-left:auto;display:flex;align-items:center;gap:48px;flex-shrink:0;">
               <div id="kpi-badge-group" style="display:flex;align-items:center;gap:48px;flex-shrink:0;">
 
-                <!-- Badge Aucun écart (vert, mode interfacé sans écart) -->
+                <!-- Badge No discrepancy (vert, mode interfacé sans écart) -->
                 <div id="badge-no-ecart" style="display:none;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:5px 14px;border-radius:20px;background:#E6F4EA;color:#1A6B31;border:1px solid #22863A;">
                   <span style="width:8px;height:8px;border-radius:50%;background:#1A6B31;flex-shrink:0;"></span>
-                  Aucun écart
+                  No discrepancy
                 </div>
 
                 <!-- Badge Opt_A : pill seule (archivée) -->
                 <div id="badge-opt-a" style="display:none;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:4px 12px;border-radius:20px;background:#FEF2F2;color:#BF2F17;">
                   <span style="width:8px;height:8px;border-radius:50%;background:#BF2F17;flex-shrink:0;"></span>
-                  Écart détecté
+                  Discrepancy detected
                 </div>
 
                 <!-- Badge Opt_B : pill + noms moyens de paiement inline -->
                 <div id="badge-opt-b" style="display:none;align-items:center;gap:8px;">
                   <div style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:4px 12px;border-radius:20px;background:#FEF2F2;color:#BF2F17;flex-shrink:0;">
                     <span style="width:8px;height:8px;border-radius:50%;background:#BF2F17;flex-shrink:0;"></span>
-                    Écart détecté
+                    Discrepancy detected
                   </div>
                   <div style="display:flex;align-items:center;gap:6px;">
                     <span style="font-size:12px;font-weight:600;padding:3px 10px;border-radius:20px;border:1px solid #E5E7EB;background:#F9FAFB;color:var(--navy);">Visa</span>
@@ -1040,11 +1040,11 @@
                 <!-- Badge Opt_C (En cours) : pill enrichie avec moyens de paiement -->
                 <div id="badge-opt-c" style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:5px 14px;border-radius:20px;background:#FEF2F2;color:#BF2F17;">
                   <span style="width:8px;height:8px;border-radius:50%;background:#BF2F17;flex-shrink:0;"></span>
-                  Écart détecté · <span style="color:var(--navy);margin-left:2px;">Visa · Amex</span>
+                  Discrepancy detected · <span style="color:var(--navy);margin-left:2px;">Visa · Amex</span>
                 </div>
 
                 </div><!-- /kpi-badge-group -->
-                <button class="btn-date-cta" id="btnv">Valider la saisie</button>
+                <button class="btn-date-cta" id="btnv">Submit entry</button>
               </div>
             </div>
           </div>
@@ -1064,7 +1064,7 @@
               <span style="width:7px;height:7px;border-radius:50%;background:#BF2F17;flex-shrink:0;"></span>
               Écart : -5,00 € · <span style="color:var(--navy);margin-left:2px;">Visa · Amex</span>
             </div>
-            <button class="btn-date-cta" id="btnv-sticky" style="display:none; margin-left:0;">Valider la saisie</button>
+            <button class="btn-date-cta" id="btnv-sticky" style="display:none; margin-left:0;">Submit entry</button>
           </div>
         </div>
 
@@ -1072,7 +1072,7 @@
         <div class="tpe-group" id="tpe-anchor-1">
           <div class="tpe-label">TPE N°1</div>
           <div class="table-wrap">
-            <div class="t-head gm" id="h1"><span>Mode de paiement</span><span>Emplacement</span><span>Montant saisi</span><span>N° Remise</span></div>
+            <div class="t-head gm" id="h1"><span>Payment method</span><span>Location</span><span>Entered amount</span><span>Ref. No.</span></div>
             <div id="rm1">
               <div class="t-row gm"><span class="c-mdp">Visa</span><span class="c-loc">434 – Poste N°5 Réception</span><div class="iw"><span class="eur">€</span><input class="inp" type="text" placeholder="0,00"/></div><div class="iw"><input class="inp plain remise-inp" type="text" placeholder="" style="width:160px"/><span class="field-error-msg remise-err"><svg viewBox="0 0 20 20" fill="#BF2F17"><path d="M10 2a8 8 0 1 0 0 16A8 8 0 0 0 10 2zm0 4a1 1 0 0 1 1 1v3a1 1 0 0 1-2 0V7a1 1 0 0 1 1-1zm0 7a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg>N° de remise obligatoire</span></div></div>
               <div class="t-row gm"><span class="c-mdp">Amex</span><span class="c-loc">434 – Poste N°5 Réception</span><div class="iw"><span class="eur">€</span><input class="inp" type="text" placeholder="0,00"/></div><div class="iw"><input class="inp plain remise-inp" type="text" placeholder="" style="width:160px"/><span class="field-error-msg remise-err"><svg viewBox="0 0 20 20" fill="#BF2F17"><path d="M10 2a8 8 0 1 0 0 16A8 8 0 0 0 10 2zm0 4a1 1 0 0 1 1 1v3a1 1 0 0 1-2 0V7a1 1 0 0 1 1-1zm0 7a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg>N° de remise obligatoire</span></div></div>
@@ -1095,7 +1095,7 @@
         <div class="tpe-group" id="tpe-anchor-2">
           <div class="tpe-label">TPE N°2</div>
           <div class="table-wrap">
-            <div class="t-head gm" id="h2"><span>Mode de paiement</span><span>Emplacement</span><span>Montant saisi</span><span>N° Remise</span></div>
+            <div class="t-head gm" id="h2"><span>Payment method</span><span>Location</span><span>Entered amount</span><span>Ref. No.</span></div>
             <div id="rm2">
               <div class="t-row gm"><span class="c-mdp">Visa</span><span class="c-loc">434 – Poste N°3 Réception</span><div class="iw"><span class="eur">€</span><input class="inp" type="text" placeholder="0,00"/></div><div class="iw"><input class="inp plain remise-inp" type="text" placeholder="" style="width:160px"/><span class="field-error-msg remise-err"><svg viewBox="0 0 20 20" fill="#BF2F17"><path d="M10 2a8 8 0 1 0 0 16A8 8 0 0 0 10 2zm0 4a1 1 0 0 1 1 1v3a1 1 0 0 1-2 0V7a1 1 0 0 1 1-1zm0 7a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg>N° de remise obligatoire</span></div></div>
               <div class="t-row gm"><span class="c-mdp">Amex</span><span class="c-loc">434 – Poste N°3 Réception</span><div class="iw"><span class="eur">€</span><input class="inp" type="text" placeholder="0,00"/></div><div class="iw"><input class="inp plain remise-inp" type="text" placeholder="" style="width:160px"/><span class="field-error-msg remise-err"><svg viewBox="0 0 20 20" fill="#BF2F17"><path d="M10 2a8 8 0 1 0 0 16A8 8 0 0 0 10 2zm0 4a1 1 0 0 1 1 1v3a1 1 0 0 1-2 0V7a1 1 0 0 1 1-1zm0 7a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg>N° de remise obligatoire</span></div></div>
@@ -1118,7 +1118,7 @@
         <div class="tpe-group" id="tpe-anchor-3">
           <div class="tpe-label">TPE N°3</div>
           <div class="table-wrap">
-            <div class="t-head gm" id="h3"><span>Mode de paiement</span><span>Emplacement</span><span>Montant saisi</span><span>N° Remise</span></div>
+            <div class="t-head gm" id="h3"><span>Payment method</span><span>Location</span><span>Entered amount</span><span>Ref. No.</span></div>
             <div class="rows-manual">
               <div class="t-row gm"><span class="c-mdp">Visa</span><span class="c-loc">434 – Poste N°1 Spa</span><div class="iw"><span class="eur">€</span><input class="inp" type="text" placeholder="0,00"/></div><div class="iw"><input class="inp plain remise-inp" type="text" placeholder="" style="width:160px"/><span class="field-error-msg remise-err"><svg viewBox="0 0 20 20" fill="#BF2F17"><path d="M10 2a8 8 0 1 0 0 16A8 8 0 0 0 10 2zm0 4a1 1 0 0 1 1 1v3a1 1 0 0 1-2 0V7a1 1 0 0 1 1-1zm0 7a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg>N° de remise obligatoire</span></div></div>
               <div class="t-row gm"><span class="c-mdp">Amex</span><span class="c-loc">434 – Poste N°1 Spa</span><div class="iw"><span class="eur">€</span><input class="inp" type="text" placeholder="0,00"/></div><div class="iw"><input class="inp plain remise-inp" type="text" placeholder="" style="width:160px"/><span class="field-error-msg remise-err"><svg viewBox="0 0 20 20" fill="#BF2F17"><path d="M10 2a8 8 0 1 0 0 16A8 8 0 0 0 10 2zm0 4a1 1 0 0 1 1 1v3a1 1 0 0 1-2 0V7a1 1 0 0 1 1-1zm0 7a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg>N° de remise obligatoire</span></div></div>
@@ -1141,7 +1141,7 @@
         <div class="tpe-group" id="tpe-anchor-4">
           <div class="tpe-label">TPE N°4</div>
           <div class="table-wrap">
-            <div class="t-head gm" id="h4"><span>Mode de paiement</span><span>Emplacement</span><span>Montant saisi</span><span>N° Remise</span></div>
+            <div class="t-head gm" id="h4"><span>Payment method</span><span>Location</span><span>Entered amount</span><span>Ref. No.</span></div>
             <div class="rows-manual">
               <div class="t-row gm"><span class="c-mdp">Visa</span><span class="c-loc">434 – Poste N°2 Restaurant</span><div class="iw"><span class="eur">€</span><input class="inp" type="text" placeholder="0,00"/></div><div class="iw"><input class="inp plain remise-inp" type="text" placeholder="" style="width:160px"/><span class="field-error-msg remise-err"><svg viewBox="0 0 20 20" fill="#BF2F17"><path d="M10 2a8 8 0 1 0 0 16A8 8 0 0 0 10 2zm0 4a1 1 0 0 1 1 1v3a1 1 0 0 1-2 0V7a1 1 0 0 1 1-1zm0 7a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg>N° de remise obligatoire</span></div></div>
               <div class="t-row gm"><span class="c-mdp">Amex</span><span class="c-loc">434 – Poste N°2 Restaurant</span><div class="iw"><span class="eur">€</span><input class="inp" type="text" placeholder="0,00"/></div><div class="iw"><input class="inp plain remise-inp" type="text" placeholder="" style="width:160px"/><span class="field-error-msg remise-err"><svg viewBox="0 0 20 20" fill="#BF2F17"><path d="M10 2a8 8 0 1 0 0 16A8 8 0 0 0 10 2zm0 4a1 1 0 0 1 1 1v3a1 1 0 0 1-2 0V7a1 1 0 0 1 1-1zm0 7a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg>N° de remise obligatoire</span></div></div>
@@ -1164,7 +1164,7 @@
         <div class="tpe-group" id="tpe-anchor-5">
           <div class="tpe-label">TPE N°5</div>
           <div class="table-wrap">
-            <div class="t-head gm" id="h5"><span>Mode de paiement</span><span>Emplacement</span><span>Montant saisi</span><span>N° Remise</span></div>
+            <div class="t-head gm" id="h5"><span>Payment method</span><span>Location</span><span>Entered amount</span><span>Ref. No.</span></div>
             <div class="rows-manual">
               <div class="t-row gm"><span class="c-mdp">Visa</span><span class="c-loc">434 – Poste N°1 Boutique</span><div class="iw"><span class="eur">€</span><input class="inp" type="text" placeholder="0,00"/></div><div class="iw"><input class="inp plain remise-inp" type="text" placeholder="" style="width:160px"/><span class="field-error-msg remise-err"><svg viewBox="0 0 20 20" fill="#BF2F17"><path d="M10 2a8 8 0 1 0 0 16A8 8 0 0 0 10 2zm0 4a1 1 0 0 1 1 1v3a1 1 0 0 1-2 0V7a1 1 0 0 1 1-1zm0 7a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg>N° de remise obligatoire</span></div></div>
               <div class="t-row gm"><span class="c-mdp">Amex</span><span class="c-loc">434 – Poste N°1 Boutique</span><div class="iw"><span class="eur">€</span><input class="inp" type="text" placeholder="0,00"/></div><div class="iw"><input class="inp plain remise-inp" type="text" placeholder="" style="width:160px"/><span class="field-error-msg remise-err"><svg viewBox="0 0 20 20" fill="#BF2F17"><path d="M10 2a8 8 0 1 0 0 16A8 8 0 0 0 10 2zm0 4a1 1 0 0 1 1 1v3a1 1 0 0 1-2 0V7a1 1 0 0 1 1-1zm0 7a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg>N° de remise obligatoire</span></div></div>
@@ -1207,12 +1207,12 @@
           <!-- Ligne 2 : KPI + badge + bouton (même pattern que Télécollecte Prop_A) -->
           <div style="margin-top:20px; padding-top:16px; border-top:1px solid var(--grey-bd); display:flex; align-items:center; gap:20px; flex-wrap:wrap;">
             <div style="display:flex;flex-direction:column;gap:4px;flex-shrink:0;">
-              <span style="font-size:11px;font-weight:700;color:var(--grey-txt);text-transform:uppercase;letter-spacing:.05em;display:block;">Montant corrigé</span>
+              <span style="font-size:11px;font-weight:700;color:var(--grey-txt);text-transform:uppercase;letter-spacing:.05em;display:block;">Corrected amount</span>
               <span id="ant-kpi-saisi-val" style="font-size:20px;font-weight:700;color:var(--navy);display:block;">145,00 €</span>
             </div>
             <div style="width:1px;height:36px;background:var(--grey-bd);flex-shrink:0;align-self:center;"></div>
             <div style="display:flex;flex-direction:column;gap:4px;flex-shrink:0;">
-              <span id="ant-kpi-attendu-label" style="font-size:11px;font-weight:700;color:var(--grey-txt);text-transform:uppercase;letter-spacing:.05em;display:block;">Montant saisi</span>
+              <span id="ant-kpi-attendu-label" style="font-size:11px;font-weight:700;color:var(--grey-txt);text-transform:uppercase;letter-spacing:.05em;display:block;">Entered amount</span>
               <span id="ant-kpi-attendu-val" style="font-size:20px;font-weight:700;color:var(--navy);display:block;">150,00 €</span>
             </div>
             <div style="width:1px;height:36px;background:var(--grey-bd);flex-shrink:0;align-self:center;"></div>
@@ -1224,14 +1224,14 @@
               <!-- Badge aucun écart (vert) -->
               <div id="ant-badge-no-ecart" style="display:none;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:5px 14px;border-radius:20px;background:#E6F4EA;color:#1A6B31;border:1px solid #22863A;">
                 <span style="width:8px;height:8px;border-radius:50%;background:#1A6B31;flex-shrink:0;"></span>
-                Aucun écart
+                No discrepancy
               </div>
               <!-- Badge écart détecté (rouge) avec MDP -->
               <div id="ant-badge-ecart" style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:5px 14px;border-radius:20px;background:#FEF2F2;color:#BF2F17;">
                 <span style="width:8px;height:8px;border-radius:50%;background:#BF2F17;flex-shrink:0;"></span>
-                <span id="ant-badge-ecart-txt">Écart détecté</span>
+                <span id="ant-badge-ecart-txt">Discrepancy detected</span>
               </div>
-              <button class="btn-date-cta" id="btnv-ant">Valider la saisie</button>
+              <button class="btn-date-cta" id="btnv-ant">Submit entry</button>
             </div>
           </div>
 
@@ -1250,7 +1250,7 @@
               <span style="width:7px;height:7px;border-radius:50%;background:#BF2F17;flex-shrink:0;"></span>
               <span id="ant-pill-txt">Écart : -5,00 €</span>
             </div>
-            <button class="btn-date-cta" id="btnv-ant-sticky" style="display:none; margin-left:0;">Valider la saisie</button>
+            <button class="btn-date-cta" id="btnv-ant-sticky" style="display:none; margin-left:0;">Submit entry</button>
           </div>
         </div>
 
@@ -1261,14 +1261,14 @@
           <div class="ant-row-layout">
             <!-- Tableau principal données -->
             <div class="ant-main-wrap">
-              <div class="t-head g-ant-main"><span>Date</span><span>Mode de paiement</span><span>Emplacement</span><span>Montant saisi</span><span>N° Remise</span></div>
+              <div class="t-head g-ant-main"><span>Date</span><span>Payment method</span><span>Location</span><span>Entered amount</span><span>Ref. No.</span></div>
               <div class="t-row g-ant-main"><span class="c-ro">04/05/2026</span><span class="c-mdp">Visa</span><span class="c-loc">434 – Poste N°5 Réception</span><span class="c-ro">25,00 €</span><span class="c-ro">652356233659</span></div>
               <div class="t-row g-ant-main"><span class="c-ro">04/05/2026</span><span class="c-mdp">Amex</span><span class="c-loc">434 – Poste N°5 Réception</span><span class="c-ro">120,00 €</span><span class="c-ro">652356233659</span></div>
               <div class="t-row g-ant-main"><span class="c-ro">04/05/2026</span><span class="c-mdp">WeChat</span><span class="c-loc">434 – Poste N°5 Réception</span><span class="c-ro">0,00 €</span><span class="c-ro">—</span></div>
             </div>
             <!-- Bloc Régularisation TPE 1 -->
             <div class="ant-regul-wrap">
-              <div class="t-head g-ant-regul"><span>Montant corrigé</span><span>N° Remise</span></div>
+              <div class="t-head g-ant-regul"><span>Corrected amount</span><span>Ref. No.</span></div>
               <div class="regul-row"><input class="inp-regul" type="text" placeholder="0,00 €"/><div class="ant-remise-opt"><span style="font-size:13px;font-weight:600;color:var(--navy);">652356233659</span></div></div>
               <div class="regul-row"><input class="inp-regul" type="text" placeholder="0,00 €"/><div class="ant-remise-opt"><span style="font-size:13px;font-weight:600;color:var(--navy);">652356233659</span></div></div>
               <div class="regul-row"><input class="inp-regul" type="text" placeholder="0,00 €"/><div class="ant-remise-opt"><div class="iw"><input class="inp-regul" type="text" placeholder=""/><span class="field-error-msg remise-err"><svg viewBox="0 0 20 20" fill="#BF2F17"><path d="M10 2a8 8 0 1 0 0 16A8 8 0 0 0 10 2zm0 4a1 1 0 0 1 1 1v3a1 1 0 0 1-2 0V7a1 1 0 0 1 1-1zm0 7a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg>N° de remise obligatoire</span></div></div></div>
@@ -1281,12 +1281,12 @@
           <div class="tpe-label">TPE N°2</div>
           <div class="ant-row-layout">
             <div class="ant-main-wrap">
-              <div class="t-head g-ant-main"><span>Date</span><span>Mode de paiement</span><span>Emplacement</span><span>Montant saisi</span><span>N° Remise</span></div>
+              <div class="t-head g-ant-main"><span>Date</span><span>Payment method</span><span>Location</span><span>Entered amount</span><span>Ref. No.</span></div>
               <div class="t-row g-ant-main"><span class="c-ro">04/05/2026</span><span class="c-mdp">Visa</span><span class="c-loc">434 – Poste N°3 Réception</span><span class="c-ro">0,00 €</span><span class="c-ro">—</span></div>
               <div class="t-row g-ant-main"><span class="c-ro">04/05/2026</span><span class="c-mdp">Amex</span><span class="c-loc">434 – Poste N°3 Réception</span><span class="c-ro">45,00 €</span><span class="c-ro">652356233659</span></div>
             </div>
             <div class="ant-regul-wrap">
-              <div class="t-head g-ant-regul"><span>Montant corrigé</span><span>N° Remise</span></div>
+              <div class="t-head g-ant-regul"><span>Corrected amount</span><span>Ref. No.</span></div>
               <div class="regul-row"><input class="inp-regul" type="text" placeholder="0,00 €"/><div class="ant-remise-opt"><div class="iw"><input class="inp-regul" type="text" placeholder=""/><span class="field-error-msg remise-err"><svg viewBox="0 0 20 20" fill="#BF2F17"><path d="M10 2a8 8 0 1 0 0 16A8 8 0 0 0 10 2zm0 4a1 1 0 0 1 1 1v3a1 1 0 0 1-2 0V7a1 1 0 0 1 1-1zm0 7a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg>N° de remise obligatoire</span></div></div></div>
               <div class="regul-row"><input class="inp-regul" type="text" placeholder="0,00 €"/><div class="ant-remise-opt"><span style="font-size:13px;font-weight:600;color:var(--navy);">652356233659</span></div></div>
             </div>
@@ -1298,12 +1298,12 @@
           <div class="tpe-label">TPE N°3</div>
           <div class="ant-row-layout">
             <div class="ant-main-wrap">
-              <div class="t-head g-ant-main"><span>Date</span><span>Mode de paiement</span><span>Emplacement</span><span>Montant saisi</span><span>N° Remise</span></div>
+              <div class="t-head g-ant-main"><span>Date</span><span>Payment method</span><span>Location</span><span>Entered amount</span><span>Ref. No.</span></div>
               <div class="t-row g-ant-main"><span class="c-ro">04/05/2026</span><span class="c-mdp">Visa</span><span class="c-loc">434 – Poste N°1 Spa</span><span class="c-ro">55,00 €</span><span class="c-ro">652356233659</span></div>
               <div class="t-row g-ant-main"><span class="c-ro">04/05/2026</span><span class="c-mdp">Amex</span><span class="c-loc">434 – Poste N°1 Spa</span><span class="c-ro">30,00 €</span><span class="c-ro">652356233659</span></div>
             </div>
             <div class="ant-regul-wrap">
-              <div class="t-head g-ant-regul"><span>Montant corrigé</span><span>N° Remise</span></div>
+              <div class="t-head g-ant-regul"><span>Corrected amount</span><span>Ref. No.</span></div>
               <div class="regul-row"><input class="inp-regul" type="text" placeholder="0,00 €"/><div class="ant-remise-opt"><span style="font-size:13px;font-weight:600;color:var(--navy);">652356233659</span></div></div>
               <div class="regul-row"><input class="inp-regul" type="text" placeholder="0,00 €"/><div class="ant-remise-opt"><span style="font-size:13px;font-weight:600;color:var(--navy);">652356233659</span></div></div>
             </div>
@@ -1315,12 +1315,12 @@
           <div class="tpe-label">TPE N°4</div>
           <div class="ant-row-layout">
             <div class="ant-main-wrap">
-              <div class="t-head g-ant-main"><span>Date</span><span>Mode de paiement</span><span>Emplacement</span><span>Montant saisi</span><span>N° Remise</span></div>
+              <div class="t-head g-ant-main"><span>Date</span><span>Payment method</span><span>Location</span><span>Entered amount</span><span>Ref. No.</span></div>
               <div class="t-row g-ant-main"><span class="c-ro">04/05/2026</span><span class="c-mdp">Visa</span><span class="c-loc">434 – Poste N°2 Restaurant</span><span class="c-ro">80,00 €</span><span class="c-ro">652356233659</span></div>
               <div class="t-row g-ant-main"><span class="c-ro">04/05/2026</span><span class="c-mdp">Amex</span><span class="c-loc">434 – Poste N°2 Restaurant</span><span class="c-ro">15,00 €</span><span class="c-ro">652356233659</span></div>
             </div>
             <div class="ant-regul-wrap">
-              <div class="t-head g-ant-regul"><span>Montant corrigé</span><span>N° Remise</span></div>
+              <div class="t-head g-ant-regul"><span>Corrected amount</span><span>Ref. No.</span></div>
               <div class="regul-row"><input class="inp-regul" type="text" placeholder="0,00 €"/><div class="ant-remise-opt"><span style="font-size:13px;font-weight:600;color:var(--navy);">652356233659</span></div></div>
               <div class="regul-row"><input class="inp-regul" type="text" placeholder="0,00 €"/><div class="ant-remise-opt"><span style="font-size:13px;font-weight:600;color:var(--navy);">652356233659</span></div></div>
             </div>
@@ -1332,12 +1332,12 @@
           <div class="tpe-label">TPE N°5</div>
           <div class="ant-row-layout">
             <div class="ant-main-wrap">
-              <div class="t-head g-ant-main"><span>Date</span><span>Mode de paiement</span><span>Emplacement</span><span>Montant saisi</span><span>N° Remise</span></div>
+              <div class="t-head g-ant-main"><span>Date</span><span>Payment method</span><span>Location</span><span>Entered amount</span><span>Ref. No.</span></div>
               <div class="t-row g-ant-main"><span class="c-ro">04/05/2026</span><span class="c-mdp">Visa</span><span class="c-loc">434 – Poste N°1 Boutique</span><span class="c-ro">40,00 €</span><span class="c-ro">652356233659</span></div>
               <div class="t-row g-ant-main"><span class="c-ro">04/05/2026</span><span class="c-mdp">Amex</span><span class="c-loc">434 – Poste N°1 Boutique</span><span class="c-ro">20,00 €</span><span class="c-ro">652356233659</span></div>
             </div>
             <div class="ant-regul-wrap">
-              <div class="t-head g-ant-regul"><span>Montant corrigé</span><span>N° Remise</span></div>
+              <div class="t-head g-ant-regul"><span>Corrected amount</span><span>Ref. No.</span></div>
               <div class="regul-row"><input class="inp-regul" type="text" placeholder="0,00 €"/><div class="ant-remise-opt"><span style="font-size:13px;font-weight:600;color:var(--navy);">652356233659</span></div></div>
               <div class="regul-row"><input class="inp-regul" type="text" placeholder="0,00 €"/><div class="ant-remise-opt"><span style="font-size:13px;font-weight:600;color:var(--navy);">652356233659</span></div></div>
             </div>
@@ -1375,7 +1375,7 @@
             </div>
             <div style="margin-left:auto;display:flex;align-items:center;flex-shrink:0;">
               <div id="reg-badge-restant" style="display:none;"></div>
-              <button class="btn-date-cta off" id="btnv-reg">Faire une régularisation</button>
+              <button class="btn-date-cta off" id="btnv-reg">Submit regularisation</button>
             </div>
           </div>
 
@@ -1384,8 +1384,8 @@
         <!-- Tableau MDP — vue saisie (avant validation) -->
         <div id="reg-rows-saisie" class="table-wrap" style="margin-top:0; border-radius:12px; overflow:hidden; border:1px solid var(--grey-bd); width:50%;">
           <div class="t-head" style="grid-template-columns:1fr 200px; display:grid; padding:0 20px; gap:12px;">
-            <span>Mode de paiement</span>
-            <span>Montant régularisé</span>
+            <span>Payment method</span>
+            <span>Adjusted amount</span>
           </div>
           <div class="t-row" style="display:grid; grid-template-columns:1fr 200px; padding:0 20px; min-height:56px; align-items:center; gap:12px; border-bottom:1px solid var(--grey-bd);">
             <span class="c-mdp">Visa</span>
@@ -1400,9 +1400,9 @@
         <!-- Tableau MDP — vue post-validation (régularisation effectuée + complément) -->
         <div id="reg-rows-effectuee" class="table-wrap" style="display:none; margin-top:0; width:50%;">
           <div class="t-head" style="grid-template-columns:120px 1fr 160px 160px; display:grid; padding:0 20px; gap:12px;">
-            <span>Mode de paiement</span>
+            <span>Payment method</span>
             <span></span>
-            <span>Régularisation effectuée</span>
+            <span>Adjustment made</span>
             <span>Complément</span>
           </div>
           <div class="t-row" style="display:grid; grid-template-columns:120px 1fr 160px 160px; padding:0 20px; min-height:56px; align-items:center; gap:12px; border-bottom:1px solid var(--grey-bd);">
@@ -1453,9 +1453,9 @@
     </label>
   </div>
 
-  <!-- Caisses ouvertes -->
+  <!-- Open tills -->
   <div class="switch-row">
-    <span>Caisses ouvertes</span>
+    <span>Open tills</span>
     <label class="switch">
       <input type="checkbox" id="sw-caisse" onchange="setB(this.checked)">
       <span class="track"></span>
@@ -2448,7 +2448,7 @@
       return;
     }
 
-    const tabLabels = { tpe:'Télécollecte', ant:'Date antérieure', reg:'Régularisation' };
+    const tabLabels = { tpe:'Telecollection', ant:'Previous Date', reg:'Regularisation' };
     list.innerHTML = teamComments.map((c,i) => {
       const inClaude = claudeSelection.has(c.key);
       const qualType = c.qualifiedType || '';
@@ -2519,7 +2519,7 @@
     const list = document.getElementById('rg-list-content');
     if (!list) return;
     const rgBriefs = briefs.filter(b => b.type === 'rg');
-    const TAB_LABELS = { tpe:'Télécollecte', ant:'Date antérieure', reg:'Régularisation' };
+    const TAB_LABELS = { tpe:'Telecollection', ant:'Previous Date', reg:'Regularisation' };
     const TYPE_OPTS = ['retour','idee','question'];
     const TYPE_LABELS = { retour:'💬 Retour', idee:'💡 Idée', question:'❓ Question' };
 
@@ -2685,116 +2685,116 @@
     const RG_VERSION = 'v2.0-27rg';
     if (localStorage.getItem('wf_rg_version') !== RG_VERSION) {
       const RG_DATA = [
-        { tab:'Télécollecte', mode:'Interfacé', titre:'Logique des montants en mode interfacé',
-          regle:'En mode interfacé, les montants remontent automatiquement depuis les TPE (colonne Montant attendu). Le GO n\'a pas à les saisir. La colonne Montant corrigé démarre à 0 € et n\'est renseignée que si le GO constate une différence entre le montant attendu et le montant réellement encaissé.',
-          comportement:'• Montant attendu = somme des montants remontés des TPE (lecture seule)\n• Montant corrigé = 0 € par défaut, éditable\n• Montant saisi   = Montant attendu + somme des corrections\n• Écart           = somme des montants corrigés\n• Badge vert "Aucun écart" si aucune correction\n• Badge rouge "Écart détecté · MDP" si au moins une correction > 0',
-          critere:'Sans correction : Montant saisi = Montant attendu, Écart = 0 €\nAvec correction : Écart = somme exacte des corrections\nN° de remise obligatoire pour toute ligne avec Montant corrigé ≠ 0' },
-        { tab:'Télécollecte', mode:'Non interfacé', titre:'Logique des montants en mode non interfacé',
+        { tab:'Telecollection', mode:'Interfacé', titre:'Logique des montants en mode interfacé',
+          regle:'En mode interfacé, les montants remontent automatiquement depuis les TPE (colonne Expected amount). Le GO n\'a pas à les saisir. La colonne Corrected amount démarre à 0 € et n\'est renseignée que si le GO constate une différence entre le montant attendu et le montant réellement encaissé.',
+          comportement:'• Expected amount = somme des montants remontés des TPE (lecture seule)\n• Corrected amount = 0 € par défaut, éditable\n• Entered amount   = Expected amount + somme des corrections\n• Écart           = somme des montants corrigés\n• Badge vert "No discrepancy" si aucune correction\n• Badge rouge "Discrepancy detected · MDP" si au moins une correction > 0',
+          critere:'Sans correction : Entered amount = Expected amount, Écart = 0 €\nAvec correction : Écart = somme exacte des corrections\nN° de remise obligatoire pour toute ligne avec Corrected amount ≠ 0' },
+        { tab:'Telecollection', mode:'Non interfacé', titre:'Logique des montants en mode non interfacé',
           regle:'En mode non interfacé, le village n\'est pas connecté au système central. Les TPE ne remontent aucune donnée automatiquement. Le système ne connaît pas les montants attendus — il ne peut donc pas calculer d\'écart.',
-          comportement:'• Montant attendu  = masqué (information non disponible)\n• Montant saisi    = somme des montants renseignés manuellement\n• Écart            = masqué (impossible à calculer sans montant attendu)\n• Badges d\'écart  = masqués\n• À l\'ouverture   : Montant saisi = 0 €\n• En temps réel   : Montant saisi se met à jour à chaque saisie',
-          critere:'Tout montant > 0 € doit avoir un N° remise\nMontant = 0 € → N° remise facultatif\nBouton actif uniquement si tous les montants > 0 ont leur N° remise\nKPI Montant attendu et Écart masqués' },
-        { tab:'Télécollecte', mode:'Interfacé · Non interfacé', titre:'Validation d\'une télécollecte',
+          comportement:'• Expected amount  = masqué (information non disponible)\n• Entered amount    = somme des montants renseignés manuellement\n• Écart            = masqué (impossible à calculer sans montant attendu)\n• Badges d\'écart  = masqués\n• À l\'ouverture   : Entered amount = 0 €\n• En temps réel   : Entered amount se met à jour à chaque saisie',
+          critere:'Tout montant > 0 € doit avoir un N° remise\nMontant = 0 € → N° remise facultatif\nBouton actif uniquement si tous les montants > 0 ont leur N° remise\nKPI Expected amount et Écart masqués' },
+        { tab:'Telecollection', mode:'Interfacé · Non interfacé', titre:'Validation d\'une télécollecte',
           regle:'La validation est l\'action par laquelle le GO confirme les montants saisis pour la journée comptable en cours. Elle déclenche un basculement vers le mode Télécollecte saisie (lecture seule). Elle peut être complétée jusqu\'à la clôture.',
-          comportement:'• Bouton actif uniquement si toutes les lignes avec montant > 0 ont un N° remise\n• Clic → modale de confirmation\n• Annuler → retour sans modification\n• Confirmer → toaster 5s, vue bascule en mode Télécollecte saisie\n• Mode Télécollecte saisie : Montant saisi (lecture seule) + Complément (éditable)\n• Bouton devient "Compléter la saisie" (inactif tant qu\'aucun complément)',
+          comportement:'• Bouton actif uniquement si toutes les lignes avec montant > 0 ont un N° remise\n• Clic → modale de confirmation\n• Annuler → retour sans modification\n• Confirmer → toaster 5s, vue bascule en mode Télécollecte saisie\n• Mode Télécollecte saisie : Entered amount (lecture seule) + Complément (éditable)\n• Bouton devient "Complete entry" (inactif tant qu\'aucun complément)',
           critere:'Validation bloquée si montant > 0 sans N° remise\nAprès validation, aucune modification des montants initiaux possible\nToaster confirme systématiquement le succès' },
-        { tab:'Télécollecte', mode:'Interfacé · Non interfacé', titre:'Complément avant clôture comptable',
+        { tab:'Telecollection', mode:'Interfacé · Non interfacé', titre:'Complément avant clôture comptable',
           regle:'Après validation, le GO peut ajouter des compléments tant que la clôture du jour n\'a pas eu lieu. Un complément s\'ajoute au montant validé. Après chaque revalidation, les champs sont remis à zéro.',
-          comportement:'• Colonne "Complément" : inputs vides après validation\n• Bouton "Compléter la saisie" inactif tant qu\'aucun complément\n• Montant saisi (KPI) = montant validé + compléments en cours\n• Revalidation → même modale → même toaster\n• Compléments absorbés, champs remis à 0\n• Opération répétable jusqu\'à la clôture',
+          comportement:'• Colonne "Complément" : inputs vides après validation\n• Bouton "Complete entry" inactif tant qu\'aucun complément\n• Entered amount (KPI) = montant validé + compléments en cours\n• Revalidation → même modale → même toaster\n• Compléments absorbés, champs remis à 0\n• Opération répétable jusqu\'à la clôture',
           critere:'Complément peut être positif ou négatif\nAucun N° remise demandé pour un complément\nAprès revalidation : champs Complément = 0,00 €' },
-        { tab:'Télécollecte', mode:'Interfacé', titre:'Gestion des écarts',
+        { tab:'Telecollection', mode:'Interfacé', titre:'Gestion des écarts',
           regle:'Un écart est la différence entre le montant attendu et le montant réellement encaissé. En mode interfacé, il est calculé automatiquement depuis les montants corrigés. En mode non interfacé, le concept d\'écart n\'existe pas.',
-          comportement:'• Écart = somme des montants corrigés (mode interfacé uniquement)\n• KPI Écart mis à jour en temps réel\n• Badge "Aucun écart" (vert) si Écart = 0\n• Badge "Écart détecté · MDP" (rouge) si Écart ≠ 0 — MDP en écart uniquement\n• Pill sticky synchronisée avec l\'état de l\'écart\n• Pill masquée si Écart = 0',
+          comportement:'• Écart = somme des montants corrigés (mode interfacé uniquement)\n• KPI Écart mis à jour en temps réel\n• Badge "No discrepancy" (vert) si Écart = 0\n• Badge "Discrepancy detected · MDP" (rouge) si Écart ≠ 0 — MDP en écart uniquement\n• Pill sticky synchronisée avec l\'état de l\'écart\n• Pill masquée si Écart = 0',
           critere:'Écart = somme exacte des montants corrigés\nLe badge liste uniquement les MDP en écart réel\nExemple : Visa = -3 €, Amex = 0 € → badge affiche Visa uniquement' },
-        { tab:'Télécollecte', mode:'Interfacé · Non interfacé', titre:'Gestion des numéros de remise',
+        { tab:'Telecollection', mode:'Interfacé · Non interfacé', titre:'Gestion des numéros de remise',
           regle:'Un N° remise est un identifiant unique obligatoire dès qu\'un montant non nul est saisi. Il garantit la traçabilité comptable. Un doublon constitue une anomalie comptable.',
-          comportement:'• Télécollecte non interfacé : N° remise obligatoire si montant > 0\n• Télécollecte interfacé : N° remise obligatoire si Montant corrigé ≠ 0\n• Date antérieure : N° remise obligatoire et UNIQUE dans le système\n• Régularisation : généré automatiquement, jamais exposé à l\'utilisateur\n• Erreur inline si N° remise manquant ou doublon\n• Validation bloquée jusqu\'à correction',
+          comportement:'• Télécollecte non interfacé : N° remise obligatoire si montant > 0\n• Télécollecte interfacé : N° remise obligatoire si Corrected amount ≠ 0\n• Date antérieure : N° remise obligatoire et UNIQUE dans le système\n• Régularisation : généré automatiquement, jamais exposé à l\'utilisateur\n• Erreur inline si N° remise manquant ou doublon\n• Validation bloquée jusqu\'à correction',
           critere:'Montant > 0 et N° remise vide → erreur inline, bouton bloqué\nN° remise doublon (Date antérieure) → erreur inline\nN° remise en Régularisation → généré automatiquement, non affiché' },
-        { tab:'Télécollecte', mode:'Interfacé', titre:'Affichage des badges d\'écart',
+        { tab:'Telecollection', mode:'Interfacé', titre:'Affichage des badges d\'écart',
           regle:'Les badges d\'écart signalent l\'état de la réconciliation en temps réel. Visibles uniquement en mode interfacé.',
-          comportement:'• Badge vert "Aucun écart" : aucun montant corrigé\n• Badge rouge "Écart détecté · MDP" : au moins un montant corrigé\n• Badges masqués en mode non interfacé\n• Badges masqués si switch "Caisses ouvertes" activé\n• Pill sticky reflète le même état\n• Pill disparaît si l\'écart revient à 0',
+          comportement:'• Badge vert "No discrepancy" : aucun montant corrigé\n• Badge rouge "Discrepancy detected · MDP" : au moins un montant corrigé\n• Badges masqués en mode non interfacé\n• Badges masqués si switch "Open tills" activé\n• Pill sticky reflète le même état\n• Pill disparaît si l\'écart revient à 0',
           critere:'Badge rouge → au moins un MDP avec correction ≠ 0\nBadge vert → tous les MDP avec correction = 0\nListe MDP = sous-ensemble des MDP en écart réel' },
-        { tab:'Télécollecte', mode:'Interfacé · Non interfacé', titre:'Cas des montants à zéro',
+        { tab:'Telecollection', mode:'Interfacé · Non interfacé', titre:'Cas des montants à zéro',
           regle:'Un montant à zéro est un comportement normal. Il se produit lorsqu\'un TPE n\'a pas enregistré de transaction pour un MDP donné.',
           comportement:'• Montant = 0 € → N° remise facultatif, aucune erreur\n• Mode interfacé : montant attendu = 0 → ligne présente, non requise\n• Clôture sans saisie : système enregistre 0 € (non interfacé) ou valeurs système (interfacé)\n• Les lignes à 0 € restent visibles',
           critere:'Montant = 0 et N° remise vide → valide\nMontant > 0 et N° remise vide → erreur inline\nClôture sans saisie = comportement normal' },
-        { tab:'Date antérieure', mode:'Interfacé · Non interfacé', titre:'Fonctionnement général',
+        { tab:'Previous Date', mode:'Interfacé · Non interfacé', titre:'Fonctionnement général',
           regle:'L\'onglet Date antérieure permet de corriger ou compléter une télécollecte d\'un jour passé. La date doit être strictement antérieure au jour J.',
-          comportement:'• Date pré-remplie à J-1 au chargement\n• Sélecteur de date disponible\n• Date doit être < aujourd\'hui (bloquant si ≥ J)\n• Une fois validée, la date est figée dans la session\n• KPI : Montant corrigé / Montant attendu / Écart restant',
+          comportement:'• Date pré-remplie à J-1 au chargement\n• Sélecteur de date disponible\n• Date doit être < aujourd\'hui (bloquant si ≥ J)\n• Une fois validée, la date est figée dans la session\n• KPI : Corrected amount / Expected amount / Écart restant',
           critere:'Date ≥ J → saisie bloquée\nDate < J → saisie autorisée\nLa date affichée = date sélectionnée' },
-        { tab:'Date antérieure', mode:'Interfacé', titre:'Date antérieure interfacée',
+        { tab:'Previous Date', mode:'Interfacé', titre:'Date antérieure interfacée',
           regle:'En mode interfacé, le tableau principal affiche les montants attendus (système) en lecture seule. Le tableau de correction permet de saisir des montants corrigés par MDP.',
-          comportement:'• Tableau gauche : Date / MDP / Emplacement / Montant attendu / N° Remise (lecture seule)\n• Tableau droit : Montant corrigé / N° Remise (éditable)\n• KPI Montant corrigé = somme des corrections\n• KPI Montant attendu = somme des montants attendus\n• KPI Écart restant = Montant attendu − Montant corrigé\n• Badge "Écart détecté · MDP" si correction ≠ 0\n• N° remise obligatoire si Montant corrigé ≠ 0',
-          critere:'Montant corrigé ≠ 0 sans N° remise → erreur inline, bouton bloqué\nN° remise doublon → erreur inline\nBouton actif uniquement si toutes les corrections ont leur N° remise' },
-        { tab:'Date antérieure', mode:'Non interfacé', titre:'Date antérieure non interfacée',
+          comportement:'• Tableau gauche : Date / MDP / Location / Expected amount / Ref. No. (lecture seule)\n• Tableau droit : Corrected amount / Ref. No. (éditable)\n• KPI Corrected amount = somme des corrections\n• KPI Expected amount = somme des montants attendus\n• KPI Écart restant = Expected amount − Corrected amount\n• Badge "Discrepancy detected · MDP" si correction ≠ 0\n• N° remise obligatoire si Corrected amount ≠ 0',
+          critere:'Corrected amount ≠ 0 sans N° remise → erreur inline, bouton bloqué\nN° remise doublon → erreur inline\nBouton actif uniquement si toutes les corrections ont leur N° remise' },
+        { tab:'Previous Date', mode:'Non interfacé', titre:'Date antérieure non interfacée',
           regle:'En mode non interfacé, les montants attendus correspondent aux montants validés lors de la télécollecte initiale. Même logique que la vue interfacée.',
-          comportement:'• Montant attendu = montant validé lors de la télécollecte initiale (figé)\n• Tableau droit : Montant corrigé + N° Remise (éditable)\n• Même logique de KPI qu\'en mode interfacé\n• N° remise obligatoire et unique',
+          comportement:'• Expected amount = montant validé lors de la télécollecte initiale (figé)\n• Tableau droit : Corrected amount + Ref. No. (éditable)\n• Même logique de KPI qu\'en mode interfacé\n• N° remise obligatoire et unique',
           critere:'Identique à RG-10\nMontants attendus = ceux de la télécollecte validée' },
-        { tab:'Date antérieure', mode:'Interfacé · Non interfacé', titre:'Affichage des montants attendus après clôture',
-          regle:'Les montants affichés dans Montant attendu sont les montants officiels de la date comptable sélectionnée. Figés et non modifiables.',
-          comportement:'• Montant attendu affiché en lecture seule\n• Colonne Date = date comptable de chaque ligne\n• Aucune interaction possible sur cette colonne',
-          critere:'Montant attendu = lecture seule\nLes montants ne changent pas si l\'utilisateur modifie les corrections' },
-        { tab:'Date antérieure', mode:'Interfacé · Non interfacé', titre:'Calcul des écarts',
+        { tab:'Previous Date', mode:'Interfacé · Non interfacé', titre:'Affichage des montants attendus après clôture',
+          regle:'Les montants affichés dans Expected amount sont les montants officiels de la date comptable sélectionnée. Figés et non modifiables.',
+          comportement:'• Expected amount affiché en lecture seule\n• Colonne Date = date comptable de chaque ligne\n• Aucune interaction possible sur cette colonne',
+          critere:'Expected amount = lecture seule\nLes montants ne changent pas si l\'utilisateur modifie les corrections' },
+        { tab:'Previous Date', mode:'Interfacé · Non interfacé', titre:'Calcul des écarts',
           regle:'L\'écart en Date antérieure est calculé en temps réel : différence entre le montant attendu et la somme des montants corrigés.',
-          comportement:'• Écart restant = Montant attendu − Montant corrigé (temps réel)\n• KPI mis à jour à chaque frappe\n• Écart > 0 → badge rouge "Écart détecté · MDP"\n• Écart = 0 → badge vert "Aucun écart"',
-          critere:'Écart restant = Montant attendu − Montant corrigé\nLe KPI reflète l\'état réel à chaque modification' },
-        { tab:'Date antérieure', mode:'Interfacé · Non interfacé', titre:'Régularisation des écarts via Date antérieure',
+          comportement:'• Écart restant = Expected amount − Corrected amount (temps réel)\n• KPI mis à jour à chaque frappe\n• Écart > 0 → badge rouge "Discrepancy detected · MDP"\n• Écart = 0 → badge vert "No discrepancy"',
+          critere:'Écart restant = Expected amount − Corrected amount\nLe KPI reflète l\'état réel à chaque modification' },
+        { tab:'Previous Date', mode:'Interfacé · Non interfacé', titre:'Régularisation des écarts via Date antérieure',
           regle:'La correction via Date antérieure est distincte de l\'onglet Régularisation. Le GO saisit le montant réel encaissé pour la date passée. Ce n\'est pas une opération de régularisation — c\'est une correction de saisie.',
-          comportement:'• Saisir le montant réel dans "Montant corrigé"\n• Écart restant recalculé en temps réel\n• N° remise unique obligatoire\n• Même workflow de validation que la télécollecte',
+          comportement:'• Saisir le montant réel dans "Corrected amount"\n• Écart restant recalculé en temps réel\n• N° remise unique obligatoire\n• Même workflow de validation que la télécollecte',
           critere:'N° remise obligatoire pour toute correction ≠ 0\nN° remise doit être unique dans le système',
           question:'La correction via Date antérieure déclenche-t-elle automatiquement une entrée dans l\'onglet Régularisation ? Ou sont-ce deux workflows totalement indépendants ?' },
-        { tab:'Date antérieure', mode:'Interfacé · Non interfacé', titre:'Gestion des numéros de remise (Date antérieure)',
+        { tab:'Previous Date', mode:'Interfacé · Non interfacé', titre:'Gestion des numéros de remise (Date antérieure)',
           regle:'En Date antérieure, le N° remise est soumis à une contrainte d\'unicité stricte. Un N° déjà utilisé sur toute autre date ou opération ne peut pas être réutilisé.',
-          comportement:'• N° remise obligatoire si Montant corrigé ≠ 0\n• Validation interface : champ vide bloque le bouton\n• Validation système : doublon → erreur inline "N° de remise déjà utilisé"\n• Validation bloquée jusqu\'à correction',
+          comportement:'• N° remise obligatoire si Corrected amount ≠ 0\n• Validation interface : champ vide bloque le bouton\n• Validation système : doublon → erreur inline "N° de remise déjà utilisé"\n• Validation bloquée jusqu\'à correction',
           critere:'N° remise vide + montant ≠ 0 → erreur inline, bouton bloqué\nN° remise doublon → erreur inline\nN° remise valide et unique → validation autorisée' },
-        { tab:'Date antérieure', mode:'Interfacé · Non interfacé', titre:'Badge d\'écart et moyens de paiement concernés',
+        { tab:'Previous Date', mode:'Interfacé · Non interfacé', titre:'Badge d\'écart et moyens de paiement concernés',
           regle:'Le badge en Date antérieure liste uniquement les MDP qui contribuent réellement à l\'écart.',
-          comportement:'• Badge rouge "Écart détecté · MDP" → MDP avec correction ≠ 0\n• MDP avec correction = 0 absent du badge\n• Badge vert "Aucun écart" → aucune correction\n• Mise à jour en temps réel',
-          critere:'Badge rouge = au moins un MDP avec Montant corrigé ≠ 0\nBadge vert = tous les MDP avec Montant corrigé = 0\nListe MDP = sous-ensemble des MDP en écart réel' },
-        { tab:'Date antérieure', mode:'Interfacé · Non interfacé', titre:'Complément après saisie Date antérieure',
+          comportement:'• Badge rouge "Discrepancy detected · MDP" → MDP avec correction ≠ 0\n• MDP avec correction = 0 absent du badge\n• Badge vert "No discrepancy" → aucune correction\n• Mise à jour en temps réel',
+          critere:'Badge rouge = au moins un MDP avec Corrected amount ≠ 0\nBadge vert = tous les MDP avec Corrected amount = 0\nListe MDP = sous-ensemble des MDP en écart réel' },
+        { tab:'Previous Date', mode:'Interfacé · Non interfacé', titre:'Complément après saisie Date antérieure',
           regle:'Le comportement post-validation en Date antérieure n\'est pas explicitement documenté dans le wireframe actuel.',
           comportement:'Option A — Complément possible (aligné sur Télécollecte) : l\'utilisateur peut revenir et ajouter un complément tant que la purge n\'a pas eu lieu.\n\nOption B — Validation unique : une fois validée, la correction est figée.',
           critere:'Non défini — décision métier à valider avant développement',
           question:'La correction via Date antérieure est-elle complétable après validation (Option A) ou figée définitivement (Option B) ?' },
-        { tab:'Date antérieure', mode:'Interfacé · Non interfacé', titre:'Purge comptable et fermeture définitive',
+        { tab:'Previous Date', mode:'Interfacé · Non interfacé', titre:'Purge comptable et fermeture définitive',
           regle:'Une télécollecte peut être complétée via Date antérieure tant qu\'aucune purge comptable n\'a été effectuée. La purge est la fermeture définitive des données pour une période donnée. Après purge, les données sont historiques et figées.',
           comportement:'Avant purge :\n• La date apparaît dans Date antérieure\n• Compléments et corrections possibles\n• Calculs mis à jour normalement\n\nAprès purge :\n• La date n\'est plus modifiable\n• Champs désactivés ou absents\n• Données consultables mais figées\n\nCycle : Télécollecte → Clôture comptable → Date antérieure → Purge → Données verrouillées',
           critere:'Date purgée : aucune modification possible\nAucun complément ajouteable\nAucune validation supplémentaire autorisée',
           question:'Les dates purgées restent-elles visibles en lecture seule dans la liste, ou disparaissent-elles totalement ? Cette décision conditionne l\'architecture de la liste de dates.' },
-        { tab:'Régularisation', mode:'Tous modes', titre:'Fonctionnement général',
+        { tab:'Regularisation', mode:'Tous modes', titre:'Fonctionnement général',
           regle:'L\'onglet Régularisation est réservé aux Financial Managers. Il permet de régulariser un écart comptable. La régularisation peut être complétée jusqu\'à la prochaine clôture comptable.',
-          comportement:'• Accès restreint au rôle Financial Manager (contrôle côté serveur)\n• Écart à régulariser affiché en rouge (non éditable, calculé par le système)\n• Tableau : uniquement les MDP concernés par l\'écart\n• Bouton "Faire une régularisation" → modale → toaster → mode complétable\n• Après validation : bouton devient "Compléter la régularisation"',
+          comportement:'• Accès restreint au rôle Financial Manager (contrôle côté serveur)\n• Écart à régulariser affiché en rouge (non éditable, calculé par le système)\n• Tableau : uniquement les MDP concernés par l\'écart\n• Bouton "Submit regularisation" → modale → toaster → mode complétable\n• Après validation : bouton devient "Complete regularisation"',
           critere:'Un GO (non FM) ne peut pas accéder à cet onglet\nL\'écart affiché est la valeur système, non modifiable' },
-        { tab:'Régularisation', mode:'Tous modes', titre:'Régularisation interfacée',
+        { tab:'Regularisation', mode:'Tous modes', titre:'Régularisation interfacée',
           regle:'La Régularisation s\'applique à un écart calculé par le système. Le montant de référence est fourni automatiquement.',
           comportement:'• L\'écart est fourni par le système au chargement\n• Ce montant est non éditable\n• Le FM saisit les montants régularisés par MDP',
           critere:'L\'écart initial est fourni par le système, jamais saisi par l\'utilisateur',
           question:'La Régularisation est-elle toujours en mode interfacé, ou un mode non interfacé est-il prévu où le FM saisirait lui-même l\'écart de référence ?' },
-        { tab:'Régularisation', mode:'Tous modes', titre:'Régularisation non interfacée',
+        { tab:'Regularisation', mode:'Tous modes', titre:'Régularisation non interfacée',
           regle:'Le wireframe ne documente pas de comportement spécifique en mode non interfacé pour l\'onglet Régularisation.',
           comportement:'Non défini dans le wireframe actuel.',
           critere:'Non défini — décision métier à valider',
           question:'Si un mode non interfacé est prévu : qui saisit le montant de référence ? Comment le système valide-t-il la cohérence de la régularisation ?' },
-        { tab:'Régularisation', mode:'Tous modes', titre:'Répartition des écarts par moyen de paiement',
+        { tab:'Regularisation', mode:'Tous modes', titre:'Répartition des écarts par moyen de paiement',
           regle:'Le tableau affiche uniquement les MDP en écart. L\'objectif est de guider le FM sans lui donner les montants à retrouver — il doit effectuer son investigation métier.',
-          comportement:'• Tableau : Mode de paiement / Montant régularisé (input)\n• Seuls les MDP avec écart non nul sont affichés\n• Aucune colonne "Montant à régulariser" visible\n• Le FM saisit librement le montant par MDP',
+          comportement:'• Tableau : Payment method / Adjusted amount (input)\n• Seuls les MDP avec écart non nul sont affichés\n• Aucune colonne "Montant à régulariser" visible\n• Le FM saisit librement le montant par MDP',
           critere:'MDP sans écart → absent du tableau\nSomme partielle autorisée\nSomme > écart total → champs rouges, bouton bloqué' },
-        { tab:'Régularisation', mode:'Tous modes', titre:'Validation d\'une régularisation',
+        { tab:'Regularisation', mode:'Tous modes', titre:'Validation d\'une régularisation',
           regle:'La validation suit exactement le même workflow que la Télécollecte : modale → toaster → mode complétable. Les mêmes composants sont réutilisés.',
-          comportement:'• Bouton actif si au moins un montant saisi et pas de dépassement\n• Modale : "Vous êtes sur le point de valider une régularisation. Vous pourrez la compléter avant la clôture comptable."\n• Annuler → retour sans modification\n• Confirmer → toaster "Régularisation enregistrée" (5s)\n• Tableau → Régularisation effectuée (figée) / Complément (input)\n• Bouton → "Compléter la régularisation" (inactif tant qu\'aucun complément)',
+          comportement:'• Bouton actif si au moins un montant saisi et pas de dépassement\n• Modale : "Vous êtes sur le point de valider une régularisation. Vous pourrez la compléter avant la clôture comptable."\n• Annuler → retour sans modification\n• Confirmer → toaster "Régularisation enregistrée" (5s)\n• Tableau → Adjustment made (figée) / Complément (input)\n• Bouton → "Complete regularisation" (inactif tant qu\'aucun complément)',
           critere:'Aucun montant saisi → bouton inactif\nDépassement → champs rouges, bouton inactif\nValidation partielle autorisée' },
-        { tab:'Régularisation', mode:'Tous modes', titre:'Complément de régularisation avant clôture',
+        { tab:'Regularisation', mode:'Tous modes', titre:'Complément de régularisation avant clôture',
           regle:'Identique à la logique de complément de Télécollecte. Après une première validation, le FM peut ajouter des compléments autant de fois que nécessaire avant la clôture.',
-          comportement:'• Tableau post-validation : Régularisation effectuée (figée) + Complément (input)\n• Bouton inactif jusqu\'à saisie\n• Total régularisé = frozen + compléments en cours (temps réel)\n• Revalidation → mêmes composants → compléments absorbés, champs remis à 0\n• Aucun N° remise visible (généré automatiquement)',
+          comportement:'• Tableau post-validation : Adjustment made (figée) + Complément (input)\n• Bouton inactif jusqu\'à saisie\n• Total régularisé = frozen + compléments en cours (temps réel)\n• Revalidation → mêmes composants → compléments absorbés, champs remis à 0\n• Aucun N° remise visible (généré automatiquement)',
           critere:'Total régularisé ne peut pas dépasser l\'écart initial\nAprès revalidation : champs Complément = 0,00 €\nAucun N° remise exposé à l\'utilisateur' },
-        { tab:'Régularisation', mode:'Tous modes', titre:'Mise à jour des KPI (Écart / Total / Solde)',
+        { tab:'Regularisation', mode:'Tous modes', titre:'Mise à jour des KPI (Écart / Total / Solde)',
           regle:'Les trois KPI forment un système cohérent recalculé ensemble depuis une source de vérité unique. L\'Écart à régulariser est le KPI principal.',
           comportement:'• Écart_initial = valeur système au chargement (non modifiable)\n• Écart à régulariser = Écart_initial − Total régularisé (décroît)\n• Total régularisé = somme validée + compléments en cours\n• Solde restant = miroir de l\'Écart à régulariser\n• Écart à régulariser : rouge si > 0, vert si = 0\n• Mise à jour en temps réel',
           critere:'Écart à régulariser + Total régularisé = Écart_initial (invariant)\nÉcart = 0 → tous les KPI en état résolu' },
-        { tab:'Régularisation', mode:'Tous modes', titre:'Affichage des moyens de paiement concernés',
+        { tab:'Regularisation', mode:'Tous modes', titre:'Affichage des moyens de paiement concernés',
           regle:'Seuls les MDP avec un écart non nul apparaissent dans le tableau. Ce filtre est statique.',
           comportement:'• MDP avec écart ≠ 0 → ligne présente\n• MDP avec écart = 0 → ligne absente\n• Exemple : Visa + Amex en écart → WeChat absent\n• Le filtre ne change pas pendant la saisie',
           critere:'Nombre de lignes = nombre de MDP avec écart ≠ 0\nAucune ligne pour un MDP en équilibre' },
-        { tab:'Régularisation', mode:'Tous modes', titre:'Cas d\'une régularisation complète',
+        { tab:'Regularisation', mode:'Tous modes', titre:'Cas d\'une régularisation complète',
           regle:'Régularisation complète = Total régularisé atteint l\'Écart initial. Cela n\'entraîne pas de verrouillage automatique. Le FM peut redistribuer les montants entre MDP jusqu\'à la clôture. La clôture est le seul verrou définitif.',
           comportement:'• Écart à régulariser = 0 → couleur rouge → vert\n• Solde restant = 0, Total régularisé = Écart_initial\n• Le bouton reste disponible : redistribution entre MDP possible\n• La clôture comptable fige l\'état à l\'instant T, définitivement',
           critere:'Écart = 0 → tous les KPI en état résolu\nLe FM peut modifier la répartition tant que somme = Écart_initial\nCloture = seul verrou définitif' }
@@ -2809,125 +2809,125 @@
     if (!el) return;
     const DOC_KEY = 'wf_documentation';
     const DOC_DATE_KEY = 'wf_documentation_date';
-    if (!localStorage.getItem(DOC_KEY)) { localStorage.setItem(DOC_KEY, "DOCUMENTATION FONCTIONNELLE \u2014 T\u00e9l\u00e9collecte TPE\nProjet : Odyssey \u2014 Club Med\nDate : 3 juin 2026\n\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\n\n1. OBJECTIF DE L'\u00c9CRAN\n\nL'\u00e9cran T\u00e9l\u00e9collecte TPE permet aux \u00e9quipes terrain des villages Club Med (GOs et r\u00e9ception) de saisir, valider et r\u00e9gulariser les remises TPE en fin de journ\u00e9e comptable.\n\nIl r\u00e9pond \u00e0 un besoin op\u00e9rationnel critique : s'assurer que les montants encaiss\u00e9s par chaque terminal de paiement correspondent aux montants attendus par le syst\u00e8me, et conserver une trace fiable de chaque op\u00e9ration pour la comptabilit\u00e9.\n\nSans cet outil, les \u00e9quipes devaient g\u00e9rer cette r\u00e9conciliation manuellement, avec un risque d'erreurs et d'\u00e9carts non d\u00e9tect\u00e9s.\n\n\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\n\n2. PR\u00c9SENTATION DES SECTIONS\n\nBLOC DATE COMPTABLE\nAffich\u00e9 en haut de chaque onglet. Indique la date comptable du jour J. Cette date est non modifiable depuis l'\u00e9cran principal \u2014 toute correction sur une date pass\u00e9e passe par l'onglet Date ant\u00e9rieure. Le wording doit explicitement utiliser le terme Date comptable.\n\nONGLET T\u00c9L\u00c9COLLECTE (Jour J)\n\u00c9cran principal de saisie. Affiche les 5 TPE du village, chacun d\u00e9clin\u00e9 par mode de paiement (Visa, Amex, WeChat). Selon la configuration du TPE, l'interface bascule en mode standard ou interfac\u00e9.\n\nONGLET DATE ANT\u00c9RIEURE\nPermet de corriger une saisie sur une date pass\u00e9e. La date est s\u00e9lectionnable mais non modifiable une fois valid\u00e9e. Un num\u00e9ro de remise unique est obligatoire pour chaque correction.\n\nONGLET R\u00c9GULARISATION\nR\u00e9serv\u00e9 aux Financial Managers. Permet de r\u00e9gulariser un \u00e9cart constat\u00e9 entre le montant attendu et le montant encaiss\u00e9. Le formulaire affiche l'\u00e9cart \u00e0 r\u00e9gulariser (non \u00e9ditable), 3 lignes de saisie par mode de paiement, un total saisi mis \u00e0 jour en temps r\u00e9el et un \u00e9cart restant.\n\nPANEL R\u00c8GLES DE GESTION (espace designer)\nEspace de travail interne \u2014 non visible par les utilisateurs finaux. Contient les retours qualifi\u00e9s, les d\u00e9cisions valid\u00e9es et la documentation g\u00e9n\u00e9r\u00e9e.\n\n\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\n\n3. PARCOURS UTILISATEUR\n\nMODE STANDARD (TPE non interfac\u00e9)\n\u00c9tape 1 \u2014 Le GO ouvre l'onglet T\u00e9l\u00e9collecte.\n\u00c9tape 2 \u2014 Pour chaque TPE, il saisit le montant encaiss\u00e9 par mode de paiement.\n\u00c9tape 3 \u2014 Si le montant > 0, il renseigne le num\u00e9ro de remise correspondant. Ce champ est obligatoire.\n\u00c9tape 4 \u2014 Une fois tous les champs requis remplis, le bouton Valider la saisie devient actif.\n\u00c9tape 5 \u2014 Il clique sur Valider. Une modale de confirmation s'affiche.\n\u00c9tape 6 \u2014 Il confirme. Un toaster de succ\u00e8s appara\u00eet. La vue bascule en mode T\u00e9l\u00e9collecte saisie (lecture seule).\nCas alternatif \u2014 Si le GO ne saisit rien avant la cl\u00f4ture automatique, les montants sont enregistr\u00e9s \u00e0 z\u00e9ro.\n\nMODE INTERFAC\u00c9 (TPE connect\u00e9 au syst\u00e8me)\n\u00c9tape 1 \u2014 Le GO ouvre l'onglet T\u00e9l\u00e9collecte.\n\u00c9tape 2 \u2014 Le syst\u00e8me a pr\u00e9-rempli le montant calcul\u00e9 (montant attendu). Le GO le consulte.\n\u00c9tape 3 \u2014 Si le montant r\u00e9el correspond, aucune action n'est n\u00e9cessaire sur ces champs.\n\u00c9tape 4 \u2014 Si le GO constate un \u00e9cart, il saisit le montant corrig\u00e9 dans la colonne d\u00e9di\u00e9e.\n\u00c9tape 5 \u2014 D\u00e8s qu'un montant corrig\u00e9 est renseign\u00e9, un num\u00e9ro de remise devient obligatoire pour cette ligne.\n\u00c9tape 6 \u2014 Le reste du parcours est identique au mode standard.\n\nMODE T\u00c9L\u00c9COLLECTE SAISIE (post-validation)\nActiv\u00e9 automatiquement apr\u00e8s confirmation de la saisie. Les colonnes T\u00e9l\u00e9collecte saisie affichent les montants valid\u00e9s en lecture seule. Le GO peut saisir un compl\u00e9ment si n\u00e9cessaire. Ce mode est aussi accessible directement via le switch d\u00e9di\u00e9 pour visualisation.\n\nR\u00c9GULARISATION\n\u00c9tape 1 \u2014 Le Financial Manager ouvre l'onglet R\u00e9gularisation.\n\u00c9tape 2 \u2014 L'\u00e9cart \u00e0 r\u00e9gulariser est affich\u00e9 (non \u00e9ditable, calcul\u00e9 par le syst\u00e8me).\n\u00c9tape 3 \u2014 Il saisit les montants \u00e0 r\u00e9gulariser par mode de paiement. La saisie partielle est autoris\u00e9e.\n\u00c9tape 4 \u2014 Le total saisi et l'\u00e9cart restant se mettent \u00e0 jour en temps r\u00e9el.\n\u00c9tape 5 \u2014 Si un montant d\u00e9passe l'\u00e9cart, les champs passent en rouge et le bouton est bloqu\u00e9.\n\u00c9tape 6 \u2014 Une fois la saisie valide, le bouton Faire une r\u00e9gularisation devient actif.\n\u00c9tape 7 \u2014 Apr\u00e8s validation, un toaster de succ\u00e8s ou d'\u00e9chec s'affiche. En cas de succ\u00e8s, le formulaire est vid\u00e9. Un num\u00e9ro de remise est g\u00e9n\u00e9r\u00e9 automatiquement.\n\n\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\n\n4. CONCEPTS M\u00c9TIER\n\nTPE (Terminal de Paiement \u00c9lectronique)\nAppareil physique utilis\u00e9 pour encaisser les paiements par carte. Chaque village Club Med dispose de plusieurs TPE positionn\u00e9s \u00e0 diff\u00e9rents endroits (r\u00e9ception, restaurant, spa, boutique\u2026).\n\nT\u00e9l\u00e9collecte\nOp\u00e9ration de fin de journ\u00e9e consistant \u00e0 r\u00e9cup\u00e9rer les donn\u00e9es de transactions enregistr\u00e9es par le TPE et \u00e0 les r\u00e9concilier avec le syst\u00e8me informatique central. En cas d'anomalie, un \u00e9cart est d\u00e9tect\u00e9.\n\nDate comptable\nDate officielle \u00e0 laquelle l'op\u00e9ration est enregistr\u00e9e dans la comptabilit\u00e9. Elle peut diff\u00e9rer de la date calendaire (ex : saisie effectu\u00e9e apr\u00e8s minuit mais rattach\u00e9e \u00e0 J-1). C'est cette date qui fait foi pour tous les traitements.\n\nRemise\nOp\u00e9ration de transfert des fonds collect\u00e9s par le TPE vers la banque. Chaque remise est identifi\u00e9e par un num\u00e9ro unique. Ce num\u00e9ro est indispensable pour la tra\u00e7abilit\u00e9 comptable.\n\nNum\u00e9ro de remise\nIdentifiant unique associ\u00e9 \u00e0 chaque op\u00e9ration de remise. Il doit \u00eatre renseign\u00e9 d\u00e8s qu'un montant est saisi. Il doit \u00eatre unique sur l'ensemble du syst\u00e8me \u2014 un doublon est une anomalie comptable.\n\n\u00c9cart\nDiff\u00e9rence entre le montant attendu (calcul\u00e9 par le syst\u00e8me) et le montant r\u00e9ellement encaiss\u00e9 par le TPE. Un \u00e9cart peut \u00eatre positif (encaissement sup\u00e9rieur) ou n\u00e9gatif (encaissement inf\u00e9rieur).\n\nR\u00e9gularisation\nOp\u00e9ration corrective permettant de combler un \u00e9cart constat\u00e9 sur une date comptable pass\u00e9e. R\u00e9serv\u00e9e aux Financial Managers. La r\u00e9gularisation n'est pas obligatoirement totale \u2014 une r\u00e9gularisation partielle est valide.\n\nGO (Gentil Organisateur)\nD\u00e9nomination Club Med d\u00e9signant les membres du personnel des villages. Dans le contexte Odyssey, les GOs sont les utilisateurs principaux de l'\u00e9cran T\u00e9l\u00e9collecte. Ils effectuent les saisies quotidiennes.\n\nFinancial Manager\nR\u00f4le sp\u00e9cifique au sein de l'\u00e9quipe Club Med. Seul ce profil est autoris\u00e9 \u00e0 acc\u00e9der \u00e0 l'\u00e9cran R\u00e9gularisation et \u00e0 valider des corrections d'\u00e9carts.\n\n\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\n\n5. R\u00c8GLES M\u00c9TIER IMPORTANTES\n\nNum\u00e9ro de remise obligatoire si montant > 0\nTout montant non nul doit \u00eatre accompagn\u00e9 d'un num\u00e9ro de remise. Cette r\u00e8gle s'applique en mode standard, interfac\u00e9 et date ant\u00e9rieure. Sans num\u00e9ro de remise, la validation est bloqu\u00e9e.\n\nNum\u00e9ro de remise unique (date ant\u00e9rieure)\nSur l'\u00e9cran Date ant\u00e9rieure, chaque num\u00e9ro de remise doit \u00eatre unique dans le syst\u00e8me. Un num\u00e9ro d\u00e9j\u00e0 utilis\u00e9 d\u00e9clenche une erreur inline. La validation est bloqu\u00e9e jusqu'\u00e0 correction.\n\nG\u00e9n\u00e9ration automatique du num\u00e9ro de remise (r\u00e9gularisation)\nEn R\u00e9gularisation, le num\u00e9ro de remise est g\u00e9n\u00e9r\u00e9 automatiquement par le syst\u00e8me. L'utilisateur n'a pas \u00e0 le saisir.\n\nCl\u00f4ture automatique\nSi aucune saisie n'est effectu\u00e9e manuellement avant la cl\u00f4ture de fin de journ\u00e9e, le syst\u00e8me enregistre automatiquement : z\u00e9ro pour les TPE non interfac\u00e9s, valeurs syst\u00e8me pour les TPE interfac\u00e9s. Toute modification ult\u00e9rieure passe par Date ant\u00e9rieure.\n\nR\u00e9gularisation partielle autoris\u00e9e\nIl n'est pas obligatoire de r\u00e9gulariser la totalit\u00e9 de l'\u00e9cart en une seule op\u00e9ration. Une r\u00e9gularisation partielle est valide et accept\u00e9e par le syst\u00e8me.\n\nAcc\u00e8s R\u00e9gularisation restreint\nL'onglet R\u00e9gularisation n'est accessible qu'aux utilisateurs avec le r\u00f4le Financial Manager. Ce contr\u00f4le doit \u00eatre impl\u00e9ment\u00e9 c\u00f4t\u00e9 serveur, pas uniquement en UI.\n\n\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\n\n6. CAS PARTICULIERS\n\nMontants n\u00e9gatifs\nUn montant n\u00e9gatif peut \u00eatre saisi (ex : remboursement, erreur de caisse). Le syst\u00e8me l'accepte. Le num\u00e9ro de remise reste obligatoire. Les calculs d'\u00e9cart et de total doivent g\u00e9rer les valeurs n\u00e9gatives correctement.\n\nCl\u00f4ture automatique sans saisie\nSi le GO ne saisit rien avant la cl\u00f4ture, les valeurs sont gel\u00e9es \u00e0 z\u00e9ro (standard) ou aux valeurs syst\u00e8me (interfac\u00e9). Aucun message d'erreur n'est g\u00e9n\u00e9r\u00e9 \u2014 c'est un comportement normal. Une modification le lendemain passe par Date ant\u00e9rieure.\n\nD\u00e9passement de l'\u00e9cart en r\u00e9gularisation\nSi la somme saisie d\u00e9passe l'\u00e9cart \u00e0 r\u00e9gulariser, les champs concern\u00e9s passent en rouge et le bouton de validation est d\u00e9sactiv\u00e9. L'utilisateur doit corriger avant de pouvoir valider.\n\nM\u00eame mode de paiement sur tous les TPE\nTous les TPE du village doivent proposer les m\u00eames modes de paiement (Visa, Amex, WeChat). Si un TPE ne supporte pas un moyen de paiement, la ligne reste \u00e0 0,00 \u20ac sans blocage.\n\n\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\n\n7. COMPORTEMENT ATTENDU\n\nCe qui doit toujours \u00eatre vrai :\n- Le bouton Valider la saisie est inactif tant qu'un montant > 0 n'a pas son num\u00e9ro de remise associ\u00e9.\n- Le bouton Faire une r\u00e9gularisation est inactif si aucun montant n'est saisi ou si la somme d\u00e9passe l'\u00e9cart.\n- La date comptable est affich\u00e9e et non modifiable sur l'\u00e9cran principal.\n- Le num\u00e9ro de remise est g\u00e9n\u00e9r\u00e9 automatiquement en R\u00e9gularisation \u2014 jamais expos\u00e9 \u00e0 l'utilisateur.\n- La vue T\u00e9l\u00e9collecte saisie est en lecture seule apr\u00e8s validation.\n- Un toaster confirme syst\u00e9matiquement le succ\u00e8s ou l'\u00e9chec d'une validation.\n\nCe qui ne doit jamais arriver :\n- Valider une saisie sans num\u00e9ro de remise si un montant > 0 est pr\u00e9sent.\n- Permettre \u00e0 un GO (non FM) d'acc\u00e9der \u00e0 l'onglet R\u00e9gularisation.\n- Enregistrer un num\u00e9ro de remise en doublon sur Date ant\u00e9rieure.\n- Vider le formulaire de r\u00e9gularisation en cas d'\u00e9chec de validation.\n- Modifier le montant calcul\u00e9 (colonne syst\u00e8me) en mode interfac\u00e9.\n\n\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\n\n8. VOCABULAIRE\n\nDate comptable : date officielle de rattachement comptable d'une op\u00e9ration.\nT\u00e9l\u00e9collecte : r\u00e9cup\u00e9ration et r\u00e9conciliation des donn\u00e9es de transactions TPE en fin de journ\u00e9e.\nTPE : Terminal de Paiement \u00c9lectronique \u2014 appareil d'encaissement physique.\nRemise : transfert des fonds collect\u00e9s vers la banque, identifi\u00e9 par un num\u00e9ro unique.\n\u00c9cart : diff\u00e9rence entre montant attendu (syst\u00e8me) et montant r\u00e9el encaiss\u00e9.\nR\u00e9gularisation : correction d'un \u00e9cart constat\u00e9 sur une date comptable pass\u00e9e.\nGO : Gentil Organisateur \u2014 membre du personnel Club Med, utilisateur principal.\nFinancial Manager (FM) : profil Club Med autoris\u00e9 \u00e0 effectuer des r\u00e9gularisations.\nMode standard : saisie manuelle sans aide du syst\u00e8me.\nMode interfac\u00e9 : saisie assist\u00e9e par les donn\u00e9es du syst\u00e8me (montant calcul\u00e9 pr\u00e9-rempli).\nMode T\u00e9l\u00e9collecte saisie : vue post-validation en lecture seule.\nDate ant\u00e9rieure : \u00e9cran permettant de corriger une saisie d'un jour pass\u00e9.\nMontant corrig\u00e9 : montant saisi par le GO pour corriger le montant calcul\u00e9 en mode interfac\u00e9.\nCompl\u00e9ment : montant additionnel pouvant \u00eatre ajout\u00e9 en mode T\u00e9l\u00e9collecte saisie.\n\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501"); localStorage.setItem(DOC_DATE_KEY, '3 juin 2026'); }
+    if (!localStorage.getItem(DOC_KEY)) { localStorage.setItem(DOC_KEY, "DOCUMENTATION FONCTIONNELLE \u2014 T\u00e9l\u00e9collecte TPE\nProjet : Odyssey \u2014 Club Med\nDate : 3 juin 2026\n\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\n\n1. OBJECTIF DE L'\u00c9CRAN\n\nL'\u00e9cran T\u00e9l\u00e9collecte TPE permet aux \u00e9quipes terrain des villages Club Med (GOs et r\u00e9ception) de saisir, valider et r\u00e9gulariser les remises TPE en fin de journ\u00e9e comptable.\n\nIl r\u00e9pond \u00e0 un besoin op\u00e9rationnel critique : s'assurer que les montants encaiss\u00e9s par chaque terminal de paiement correspondent aux montants attendus par le syst\u00e8me, et conserver une trace fiable de chaque op\u00e9ration pour la comptabilit\u00e9.\n\nSans cet outil, les \u00e9quipes devaient g\u00e9rer cette r\u00e9conciliation manuellement, avec un risque d'erreurs et d'\u00e9carts non d\u00e9tect\u00e9s.\n\n\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\n\n2. PR\u00c9SENTATION DES SECTIONS\n\nBLOC DATE COMPTABLE\nAffich\u00e9 en haut de chaque onglet. Indique la date comptable du jour J. Cette date est non modifiable depuis l'\u00e9cran principal \u2014 toute correction sur une date pass\u00e9e passe par l'onglet Date ant\u00e9rieure. Le wording doit explicitement utiliser le terme Date comptable.\n\nONGLET T\u00c9L\u00c9COLLECTE (Jour J)\n\u00c9cran principal de saisie. Affiche les 5 TPE du village, chacun d\u00e9clin\u00e9 par mode de paiement (Visa, Amex, WeChat). Selon la configuration du TPE, l'interface bascule en mode standard ou interfac\u00e9.\n\nONGLET DATE ANT\u00c9RIEURE\nPermet de corriger une saisie sur une date pass\u00e9e. La date est s\u00e9lectionnable mais non modifiable une fois valid\u00e9e. Un num\u00e9ro de remise unique est obligatoire pour chaque correction.\n\nONGLET R\u00c9GULARISATION\nR\u00e9serv\u00e9 aux Financial Managers. Permet de r\u00e9gulariser un \u00e9cart constat\u00e9 entre le montant attendu et le montant encaiss\u00e9. Le formulaire affiche l'\u00e9cart \u00e0 r\u00e9gulariser (non \u00e9ditable), 3 lignes de saisie par mode de paiement, un total saisi mis \u00e0 jour en temps r\u00e9el et un \u00e9cart restant.\n\nPANEL R\u00c8GLES DE GESTION (espace designer)\nEspace de travail interne \u2014 non visible par les utilisateurs finaux. Contient les retours qualifi\u00e9s, les d\u00e9cisions valid\u00e9es et la documentation g\u00e9n\u00e9r\u00e9e.\n\n\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\n\n3. PARCOURS UTILISATEUR\n\nMODE STANDARD (TPE non interfac\u00e9)\n\u00c9tape 1 \u2014 Le GO ouvre l'onglet T\u00e9l\u00e9collecte.\n\u00c9tape 2 \u2014 Pour chaque TPE, il saisit le montant encaiss\u00e9 par mode de paiement.\n\u00c9tape 3 \u2014 Si le montant > 0, il renseigne le num\u00e9ro de remise correspondant. Ce champ est obligatoire.\n\u00c9tape 4 \u2014 Une fois tous les champs requis remplis, le bouton Submit entry devient actif.\n\u00c9tape 5 \u2014 Il clique sur Valider. Une modale de confirmation s'affiche.\n\u00c9tape 6 \u2014 Il confirme. Un toaster de succ\u00e8s appara\u00eet. La vue bascule en mode T\u00e9l\u00e9collecte saisie (lecture seule).\nCas alternatif \u2014 Si le GO ne saisit rien avant la cl\u00f4ture automatique, les montants sont enregistr\u00e9s \u00e0 z\u00e9ro.\n\nMODE INTERFAC\u00c9 (TPE connect\u00e9 au syst\u00e8me)\n\u00c9tape 1 \u2014 Le GO ouvre l'onglet T\u00e9l\u00e9collecte.\n\u00c9tape 2 \u2014 Le syst\u00e8me a pr\u00e9-rempli le montant calcul\u00e9 (montant attendu). Le GO le consulte.\n\u00c9tape 3 \u2014 Si le montant r\u00e9el correspond, aucune action n'est n\u00e9cessaire sur ces champs.\n\u00c9tape 4 \u2014 Si le GO constate un \u00e9cart, il saisit le montant corrig\u00e9 dans la colonne d\u00e9di\u00e9e.\n\u00c9tape 5 \u2014 D\u00e8s qu'un montant corrig\u00e9 est renseign\u00e9, un num\u00e9ro de remise devient obligatoire pour cette ligne.\n\u00c9tape 6 \u2014 Le reste du parcours est identique au mode standard.\n\nMODE T\u00c9L\u00c9COLLECTE SAISIE (post-validation)\nActiv\u00e9 automatiquement apr\u00e8s confirmation de la saisie. Les colonnes T\u00e9l\u00e9collecte saisie affichent les montants valid\u00e9s en lecture seule. Le GO peut saisir un compl\u00e9ment si n\u00e9cessaire. Ce mode est aussi accessible directement via le switch d\u00e9di\u00e9 pour visualisation.\n\nR\u00c9GULARISATION\n\u00c9tape 1 \u2014 Le Financial Manager ouvre l'onglet R\u00e9gularisation.\n\u00c9tape 2 \u2014 L'\u00e9cart \u00e0 r\u00e9gulariser est affich\u00e9 (non \u00e9ditable, calcul\u00e9 par le syst\u00e8me).\n\u00c9tape 3 \u2014 Il saisit les montants \u00e0 r\u00e9gulariser par mode de paiement. La saisie partielle est autoris\u00e9e.\n\u00c9tape 4 \u2014 Le total saisi et l'\u00e9cart restant se mettent \u00e0 jour en temps r\u00e9el.\n\u00c9tape 5 \u2014 Si un montant d\u00e9passe l'\u00e9cart, les champs passent en rouge et le bouton est bloqu\u00e9.\n\u00c9tape 6 \u2014 Une fois la saisie valide, le bouton Faire une r\u00e9gularisation devient actif.\n\u00c9tape 7 \u2014 Apr\u00e8s validation, un toaster de succ\u00e8s ou d'\u00e9chec s'affiche. En cas de succ\u00e8s, le formulaire est vid\u00e9. Un num\u00e9ro de remise est g\u00e9n\u00e9r\u00e9 automatiquement.\n\n\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\n\n4. CONCEPTS M\u00c9TIER\n\nTPE (Terminal de Paiement \u00c9lectronique)\nAppareil physique utilis\u00e9 pour encaisser les paiements par carte. Chaque village Club Med dispose de plusieurs TPE positionn\u00e9s \u00e0 diff\u00e9rents endroits (r\u00e9ception, restaurant, spa, boutique\u2026).\n\nT\u00e9l\u00e9collecte\nOp\u00e9ration de fin de journ\u00e9e consistant \u00e0 r\u00e9cup\u00e9rer les donn\u00e9es de transactions enregistr\u00e9es par le TPE et \u00e0 les r\u00e9concilier avec le syst\u00e8me informatique central. En cas d'anomalie, un \u00e9cart est d\u00e9tect\u00e9.\n\nDate comptable\nDate officielle \u00e0 laquelle l'op\u00e9ration est enregistr\u00e9e dans la comptabilit\u00e9. Elle peut diff\u00e9rer de la date calendaire (ex : saisie effectu\u00e9e apr\u00e8s minuit mais rattach\u00e9e \u00e0 J-1). C'est cette date qui fait foi pour tous les traitements.\n\nRemise\nOp\u00e9ration de transfert des fonds collect\u00e9s par le TPE vers la banque. Chaque remise est identifi\u00e9e par un num\u00e9ro unique. Ce num\u00e9ro est indispensable pour la tra\u00e7abilit\u00e9 comptable.\n\nNum\u00e9ro de remise\nIdentifiant unique associ\u00e9 \u00e0 chaque op\u00e9ration de remise. Il doit \u00eatre renseign\u00e9 d\u00e8s qu'un montant est saisi. Il doit \u00eatre unique sur l'ensemble du syst\u00e8me \u2014 un doublon est une anomalie comptable.\n\n\u00c9cart\nDiff\u00e9rence entre le montant attendu (calcul\u00e9 par le syst\u00e8me) et le montant r\u00e9ellement encaiss\u00e9 par le TPE. Un \u00e9cart peut \u00eatre positif (encaissement sup\u00e9rieur) ou n\u00e9gatif (encaissement inf\u00e9rieur).\n\nR\u00e9gularisation\nOp\u00e9ration corrective permettant de combler un \u00e9cart constat\u00e9 sur une date comptable pass\u00e9e. R\u00e9serv\u00e9e aux Financial Managers. La r\u00e9gularisation n'est pas obligatoirement totale \u2014 une r\u00e9gularisation partielle est valide.\n\nGO (Gentil Organisateur)\nD\u00e9nomination Club Med d\u00e9signant les membres du personnel des villages. Dans le contexte Odyssey, les GOs sont les utilisateurs principaux de l'\u00e9cran T\u00e9l\u00e9collecte. Ils effectuent les saisies quotidiennes.\n\nFinancial Manager\nR\u00f4le sp\u00e9cifique au sein de l'\u00e9quipe Club Med. Seul ce profil est autoris\u00e9 \u00e0 acc\u00e9der \u00e0 l'\u00e9cran R\u00e9gularisation et \u00e0 valider des corrections d'\u00e9carts.\n\n\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\n\n5. R\u00c8GLES M\u00c9TIER IMPORTANTES\n\nNum\u00e9ro de remise obligatoire si montant > 0\nTout montant non nul doit \u00eatre accompagn\u00e9 d'un num\u00e9ro de remise. Cette r\u00e8gle s'applique en mode standard, interfac\u00e9 et date ant\u00e9rieure. Sans num\u00e9ro de remise, la validation est bloqu\u00e9e.\n\nNum\u00e9ro de remise unique (date ant\u00e9rieure)\nSur l'\u00e9cran Date ant\u00e9rieure, chaque num\u00e9ro de remise doit \u00eatre unique dans le syst\u00e8me. Un num\u00e9ro d\u00e9j\u00e0 utilis\u00e9 d\u00e9clenche une erreur inline. La validation est bloqu\u00e9e jusqu'\u00e0 correction.\n\nG\u00e9n\u00e9ration automatique du num\u00e9ro de remise (r\u00e9gularisation)\nEn R\u00e9gularisation, le num\u00e9ro de remise est g\u00e9n\u00e9r\u00e9 automatiquement par le syst\u00e8me. L'utilisateur n'a pas \u00e0 le saisir.\n\nCl\u00f4ture automatique\nSi aucune saisie n'est effectu\u00e9e manuellement avant la cl\u00f4ture de fin de journ\u00e9e, le syst\u00e8me enregistre automatiquement : z\u00e9ro pour les TPE non interfac\u00e9s, valeurs syst\u00e8me pour les TPE interfac\u00e9s. Toute modification ult\u00e9rieure passe par Date ant\u00e9rieure.\n\nR\u00e9gularisation partielle autoris\u00e9e\nIl n'est pas obligatoire de r\u00e9gulariser la totalit\u00e9 de l'\u00e9cart en une seule op\u00e9ration. Une r\u00e9gularisation partielle est valide et accept\u00e9e par le syst\u00e8me.\n\nAcc\u00e8s R\u00e9gularisation restreint\nL'onglet R\u00e9gularisation n'est accessible qu'aux utilisateurs avec le r\u00f4le Financial Manager. Ce contr\u00f4le doit \u00eatre impl\u00e9ment\u00e9 c\u00f4t\u00e9 serveur, pas uniquement en UI.\n\n\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\n\n6. CAS PARTICULIERS\n\nMontants n\u00e9gatifs\nUn montant n\u00e9gatif peut \u00eatre saisi (ex : remboursement, erreur de caisse). Le syst\u00e8me l'accepte. Le num\u00e9ro de remise reste obligatoire. Les calculs d'\u00e9cart et de total doivent g\u00e9rer les valeurs n\u00e9gatives correctement.\n\nCl\u00f4ture automatique sans saisie\nSi le GO ne saisit rien avant la cl\u00f4ture, les valeurs sont gel\u00e9es \u00e0 z\u00e9ro (standard) ou aux valeurs syst\u00e8me (interfac\u00e9). Aucun message d'erreur n'est g\u00e9n\u00e9r\u00e9 \u2014 c'est un comportement normal. Une modification le lendemain passe par Date ant\u00e9rieure.\n\nD\u00e9passement de l'\u00e9cart en r\u00e9gularisation\nSi la somme saisie d\u00e9passe l'\u00e9cart \u00e0 r\u00e9gulariser, les champs concern\u00e9s passent en rouge et le bouton de validation est d\u00e9sactiv\u00e9. L'utilisateur doit corriger avant de pouvoir valider.\n\nM\u00eame mode de paiement sur tous les TPE\nTous les TPE du village doivent proposer les m\u00eames modes de paiement (Visa, Amex, WeChat). Si un TPE ne supporte pas un moyen de paiement, la ligne reste \u00e0 0,00 \u20ac sans blocage.\n\n\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\n\n7. COMPORTEMENT ATTENDU\n\nCe qui doit toujours \u00eatre vrai :\n- Le bouton Submit entry est inactif tant qu'un montant > 0 n'a pas son num\u00e9ro de remise associ\u00e9.\n- Le bouton Faire une r\u00e9gularisation est inactif si aucun montant n'est saisi ou si la somme d\u00e9passe l'\u00e9cart.\n- La date comptable est affich\u00e9e et non modifiable sur l'\u00e9cran principal.\n- Le num\u00e9ro de remise est g\u00e9n\u00e9r\u00e9 automatiquement en R\u00e9gularisation \u2014 jamais expos\u00e9 \u00e0 l'utilisateur.\n- La vue T\u00e9l\u00e9collecte saisie est en lecture seule apr\u00e8s validation.\n- Un toaster confirme syst\u00e9matiquement le succ\u00e8s ou l'\u00e9chec d'une validation.\n\nCe qui ne doit jamais arriver :\n- Valider une saisie sans num\u00e9ro de remise si un montant > 0 est pr\u00e9sent.\n- Permettre \u00e0 un GO (non FM) d'acc\u00e9der \u00e0 l'onglet R\u00e9gularisation.\n- Enregistrer un num\u00e9ro de remise en doublon sur Date ant\u00e9rieure.\n- Vider le formulaire de r\u00e9gularisation en cas d'\u00e9chec de validation.\n- Modifier le montant calcul\u00e9 (colonne syst\u00e8me) en mode interfac\u00e9.\n\n\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\n\n8. VOCABULAIRE\n\nDate comptable : date officielle de rattachement comptable d'une op\u00e9ration.\nT\u00e9l\u00e9collecte : r\u00e9cup\u00e9ration et r\u00e9conciliation des donn\u00e9es de transactions TPE en fin de journ\u00e9e.\nTPE : Terminal de Paiement \u00c9lectronique \u2014 appareil d'encaissement physique.\nRemise : transfert des fonds collect\u00e9s vers la banque, identifi\u00e9 par un num\u00e9ro unique.\n\u00c9cart : diff\u00e9rence entre montant attendu (syst\u00e8me) et montant r\u00e9el encaiss\u00e9.\nR\u00e9gularisation : correction d'un \u00e9cart constat\u00e9 sur une date comptable pass\u00e9e.\nGO : Gentil Organisateur \u2014 membre du personnel Club Med, utilisateur principal.\nFinancial Manager (FM) : profil Club Med autoris\u00e9 \u00e0 effectuer des r\u00e9gularisations.\nMode standard : saisie manuelle sans aide du syst\u00e8me.\nMode interfac\u00e9 : saisie assist\u00e9e par les donn\u00e9es du syst\u00e8me (montant calcul\u00e9 pr\u00e9-rempli).\nMode T\u00e9l\u00e9collecte saisie : vue post-validation en lecture seule.\nDate ant\u00e9rieure : \u00e9cran permettant de corriger une saisie d'un jour pass\u00e9.\nMontant corrig\u00e9 : montant saisi par le GO pour corriger le montant calcul\u00e9 en mode interfac\u00e9.\nCompl\u00e9ment : montant additionnel pouvant \u00eatre ajout\u00e9 en mode T\u00e9l\u00e9collecte saisie.\n\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501"); localStorage.setItem(DOC_DATE_KEY, '3 juin 2026'); }
     const saved = localStorage.getItem(DOC_KEY) || '';
     const savedDate = localStorage.getItem(DOC_DATE_KEY) || '';
 
     const RG_BLOCKS_KEY = 'wf_rg_blocks';
     if (false) { // bloc désactivé — init déplacé dans initRgBlocks()
       const RG_DATA = [
-        { tab:'Télécollecte', mode:'Interfacé', titre:'Logique des montants en mode interfacé',
-          regle:'En mode interfacé, les montants remontent automatiquement depuis les TPE (colonne Montant attendu). Le GO n\'a pas à les saisir. La colonne Montant corrigé démarre à 0 € et n\'est renseignée que si le GO constate une différence entre le montant attendu et le montant réellement encaissé.',
-          comportement:'• Montant attendu = somme des montants remontés des TPE (lecture seule)\n• Montant corrigé = 0 € par défaut, éditable\n• Montant saisi   = Montant attendu + somme des corrections\n• Écart           = somme des montants corrigés\n• Badge vert "Aucun écart" si aucune correction\n• Badge rouge "Écart détecté · MDP" si au moins une correction > 0',
-          critere:'Sans correction : Montant saisi = Montant attendu, Écart = 0 €\nAvec correction : Écart = somme exacte des corrections\nN° de remise obligatoire pour toute ligne avec Montant corrigé ≠ 0' },
-        { tab:'Télécollecte', mode:'Non interfacé', titre:'Logique des montants en mode non interfacé',
+        { tab:'Telecollection', mode:'Interfacé', titre:'Logique des montants en mode interfacé',
+          regle:'En mode interfacé, les montants remontent automatiquement depuis les TPE (colonne Expected amount). Le GO n\'a pas à les saisir. La colonne Corrected amount démarre à 0 € et n\'est renseignée que si le GO constate une différence entre le montant attendu et le montant réellement encaissé.',
+          comportement:'• Expected amount = somme des montants remontés des TPE (lecture seule)\n• Corrected amount = 0 € par défaut, éditable\n• Entered amount   = Expected amount + somme des corrections\n• Écart           = somme des montants corrigés\n• Badge vert "No discrepancy" si aucune correction\n• Badge rouge "Discrepancy detected · MDP" si au moins une correction > 0',
+          critere:'Sans correction : Entered amount = Expected amount, Écart = 0 €\nAvec correction : Écart = somme exacte des corrections\nN° de remise obligatoire pour toute ligne avec Corrected amount ≠ 0' },
+        { tab:'Telecollection', mode:'Non interfacé', titre:'Logique des montants en mode non interfacé',
           regle:'En mode non interfacé, le village n\'est pas connecté au système central. Les TPE ne remontent aucune donnée automatiquement. Le système ne connaît pas les montants attendus — il ne peut donc pas calculer d\'écart. La seule information disponible est celle que le GO saisit manuellement.',
-          comportement:'• Montant attendu  = masqué (information non disponible)\n• Montant saisi    = somme des montants renseignés manuellement dans le tableau\n• Écart            = masqué (impossible à calculer sans montant attendu)\n• Badges d\'écart  = masqués (aucune référence système)\n• À l\'ouverture   : Montant saisi = 0 € tant qu\'aucune saisie n\'a été effectuée\n• En temps réel   : Montant saisi se met à jour à chaque saisie',
-          critere:'Tout montant > 0 € doit avoir un numéro de remise associé\nMontant = 0 € → numéro de remise facultatif\nBouton Valider la saisie actif uniquement si tous les montants > 0 ont leur N° remise\nKPI Montant attendu et Écart masqués' },
-        { tab:'Télécollecte', mode:'Interfacé · Non interfacé', titre:'Validation d\'une télécollecte',
+          comportement:'• Expected amount  = masqué (information non disponible)\n• Entered amount    = somme des montants renseignés manuellement dans le tableau\n• Écart            = masqué (impossible à calculer sans montant attendu)\n• Badges d\'écart  = masqués (aucune référence système)\n• À l\'ouverture   : Entered amount = 0 € tant qu\'aucune saisie n\'a été effectuée\n• En temps réel   : Entered amount se met à jour à chaque saisie',
+          critere:'Tout montant > 0 € doit avoir un numéro de remise associé\nMontant = 0 € → numéro de remise facultatif\nBouton Submit entry actif uniquement si tous les montants > 0 ont leur N° remise\nKPI Expected amount et Écart masqués' },
+        { tab:'Telecollection', mode:'Interfacé · Non interfacé', titre:'Validation d\'une télécollecte',
           regle:'La validation est l\'action par laquelle le GO confirme les montants saisis pour la journée comptable en cours. Elle déclenche un basculement irréversible de l\'interface vers le mode Télécollecte saisie (lecture seule). La validation n\'est pas définitive au sens comptable — elle peut être complétée jusqu\'à la clôture.',
-          comportement:'• Bouton "Valider la saisie" actif uniquement si toutes les lignes avec montant > 0 ont un N° remise\n• Clic → modale de confirmation\n• Annuler → retour à l\'état précédent, aucune donnée modifiée\n• Confirmer → toaster de succès 5s, vue bascule en mode Télécollecte saisie\n• Mode Télécollecte saisie : colonnes "Montant saisi" (lecture seule) + "Complément" (éditable)\n• Bouton devient "Compléter la saisie" (inactif tant qu\'aucun complément saisi)',
+          comportement:'• Bouton "Submit entry" actif uniquement si toutes les lignes avec montant > 0 ont un N° remise\n• Clic → modale de confirmation\n• Annuler → retour à l\'état précédent, aucune donnée modifiée\n• Confirmer → toaster de succès 5s, vue bascule en mode Télécollecte saisie\n• Mode Télécollecte saisie : colonnes "Entered amount" (lecture seule) + "Complément" (éditable)\n• Bouton devient "Complete entry" (inactif tant qu\'aucun complément saisi)',
           critere:'Validation bloquée si au moins un montant > 0 sans N° remise\nAprès validation, aucune modification des montants initiaux possible\nToaster confirme systématiquement le succès' },
-        { tab:'Télécollecte', mode:'Interfacé · Non interfacé', titre:'Complément avant clôture comptable',
+        { tab:'Telecollection', mode:'Interfacé · Non interfacé', titre:'Complément avant clôture comptable',
           regle:'Après validation d\'une télécollecte, le GO peut ajouter un ou plusieurs compléments tant que la clôture comptable du jour n\'a pas eu lieu. Un complément est un montant additionnel qui s\'ajoute au montant déjà validé. Après chaque revalidation, les champs sont remis à zéro.',
-          comportement:'• Colonne "Complément" affiche des inputs vides après validation\n• Bouton "Compléter la saisie" inactif tant qu\'aucun complément saisi\n• Montant saisi (KPI) = montant validé + compléments en cours\n• Revalidation → même modale → même toaster\n• Compléments absorbés dans le total, champs remis à 0\n• Opération répétable jusqu\'à la clôture',
+          comportement:'• Colonne "Complément" affiche des inputs vides après validation\n• Bouton "Complete entry" inactif tant qu\'aucun complément saisi\n• Entered amount (KPI) = montant validé + compléments en cours\n• Revalidation → même modale → même toaster\n• Compléments absorbés dans le total, champs remis à 0\n• Opération répétable jusqu\'à la clôture',
           critere:'Complément peut être positif ou négatif\nAucun N° remise demandé pour un complément (transparent pour l\'utilisateur)\nAprès revalidation : champs Complément = 0,00 €' },
-        { tab:'Télécollecte', mode:'Interfacé', titre:'Gestion des écarts',
+        { tab:'Telecollection', mode:'Interfacé', titre:'Gestion des écarts',
           regle:'Un écart est la différence entre le montant attendu (remonté par le système) et le montant réellement encaissé. En mode interfacé, l\'écart est calculé automatiquement à partir des montants corrigés saisis par le GO. En mode non interfacé, le concept d\'écart n\'existe pas.',
-          comportement:'• Écart = somme des montants corrigés (mode interfacé uniquement)\n• KPI Écart mis à jour en temps réel à chaque frappe\n• Badge "Aucun écart" (vert) si Écart = 0\n• Badge "Écart détecté · Visa · Amex" (rouge) si Écart ≠ 0 — liste uniquement les MDP en écart\n• Pill sticky en bas de page synchronisée avec l\'état de l\'écart\n• La pill est masquée si Écart = 0',
+          comportement:'• Écart = somme des montants corrigés (mode interfacé uniquement)\n• KPI Écart mis à jour en temps réel à chaque frappe\n• Badge "No discrepancy" (vert) si Écart = 0\n• Badge "Discrepancy detected · Visa · Amex" (rouge) si Écart ≠ 0 — liste uniquement les MDP en écart\n• Pill sticky en bas de page synchronisée avec l\'état de l\'écart\n• La pill est masquée si Écart = 0',
           critere:'Écart = somme exacte des montants corrigés (non des montants attendus)\nLe badge liste uniquement les MDP contribuant réellement à l\'écart\nExemple : Visa = -3 €, Amex = 0 € → badge affiche Visa uniquement' },
-        { tab:'Télécollecte', mode:'Interfacé · Non interfacé', titre:'Gestion des numéros de remise',
+        { tab:'Telecollection', mode:'Interfacé · Non interfacé', titre:'Gestion des numéros de remise',
           regle:'Un numéro de remise est un identifiant unique associé à chaque opération de transfert TPE → banque. Il est obligatoire dès qu\'un montant non nul est saisi. Il garantit la traçabilité comptable. Un doublon de N° remise constitue une anomalie comptable.',
-          comportement:'• Télécollecte non interfacé : N° remise obligatoire si montant > 0\n• Télécollecte interfacé : N° remise obligatoire si Montant corrigé ≠ 0\n• Date antérieure : N° remise obligatoire, doit être UNIQUE dans le système\n• Régularisation : N° remise généré automatiquement, jamais exposé à l\'utilisateur\n• Erreur inline si N° remise manquant ou doublon (Date antérieure)\n• Validation bloquée jusqu\'à correction',
+          comportement:'• Télécollecte non interfacé : N° remise obligatoire si montant > 0\n• Télécollecte interfacé : N° remise obligatoire si Corrected amount ≠ 0\n• Date antérieure : N° remise obligatoire, doit être UNIQUE dans le système\n• Régularisation : N° remise généré automatiquement, jamais exposé à l\'utilisateur\n• Erreur inline si N° remise manquant ou doublon (Date antérieure)\n• Validation bloquée jusqu\'à correction',
           critere:'Montant > 0 et N° remise vide → erreur inline, bouton bloqué\nN° remise doublon (Date antérieure) → erreur inline\nN° remise en Régularisation → généré automatiquement, non affiché' },
-        { tab:'Télécollecte', mode:'Interfacé', titre:'Affichage des badges d\'écart',
+        { tab:'Telecollection', mode:'Interfacé', titre:'Affichage des badges d\'écart',
           regle:'Les badges d\'écart sont des indicateurs visuels qui signalent l\'état de la réconciliation en temps réel. Ils ne sont visibles qu\'en mode interfacé. En mode non interfacé, aucune référence système n\'est disponible pour calculer un écart.',
-          comportement:'• Badge vert "Aucun écart" : aucun montant corrigé sur l\'ensemble des TPE\n• Badge rouge "Écart détecté · MDP" : au moins un montant corrigé saisi\n• Badges masqués en mode non interfacé\n• Badges masqués si switch "Caisses ouvertes" activé\n• Pill sticky reflète le même état\n• La pill disparaît si l\'écart revient à 0',
+          comportement:'• Badge vert "No discrepancy" : aucun montant corrigé sur l\'ensemble des TPE\n• Badge rouge "Discrepancy detected · MDP" : au moins un montant corrigé saisi\n• Badges masqués en mode non interfacé\n• Badges masqués si switch "Open tills" activé\n• Pill sticky reflète le même état\n• La pill disparaît si l\'écart revient à 0',
           critere:'Badge rouge → au moins un MDP avec correction ≠ 0\nBadge vert → tous les MDP avec correction = 0\nListe de MDP dans le badge = sous-ensemble des MDP en écart réel' },
-        { tab:'Télécollecte', mode:'Interfacé · Non interfacé', titre:'Cas des montants à zéro',
+        { tab:'Telecollection', mode:'Interfacé · Non interfacé', titre:'Cas des montants à zéro',
           regle:'Un montant à zéro est un comportement normal. Il se produit lorsqu\'un TPE n\'a pas enregistré de transaction pour un MDP donné (ex : WeChat non utilisé). Le système accepte ces lignes sans les considérer comme des erreurs.',
           comportement:'• Montant = 0 € → N° remise facultatif, aucune erreur\n• Mode interfacé : montant attendu = 0 → ligne présente, correction non requise\n• Mode non interfacé : champ vide ou 0 → ligne valide, pas de blocage\n• Clôture automatique sans saisie : système enregistre 0 € (non interfacé) ou valeurs système (interfacé)\n• Les lignes à 0 € restent visibles dans le tableau',
           critere:'Montant = 0 et N° remise vide → valide, pas d\'erreur\nMontant > 0 et N° remise vide → erreur inline\nClôture sans saisie = comportement normal, pas d\'erreur' },
         // ── DATE ANTÉRIEURE ─────────────────────────────────────────────
-        { tab:'Date antérieure', mode:'Interfacé · Non interfacé', titre:'Fonctionnement général',
+        { tab:'Previous Date', mode:'Interfacé · Non interfacé', titre:'Fonctionnement général',
           regle:'L\'onglet Date antérieure permet de corriger ou compléter une télécollecte d\'un jour passé. La date sélectionnée doit être strictement antérieure au jour J. Une fois la date confirmée, elle ne peut plus être modifiée dans le même flux.',
-          comportement:'• Date pré-remplie à J-1 au chargement\n• L\'utilisateur peut sélectionner une date différente via le sélecteur\n• La date doit être < aujourd\'hui (validation bloquante si date ≥ J)\n• Une fois validée, la date est figée dans la session\n• Le tableau charge les données correspondant à la date sélectionnée\n• KPI : Montant corrigé / Montant attendu / Écart restant',
+          comportement:'• Date pré-remplie à J-1 au chargement\n• L\'utilisateur peut sélectionner une date différente via le sélecteur\n• La date doit être < aujourd\'hui (validation bloquante si date ≥ J)\n• Une fois validée, la date est figée dans la session\n• Le tableau charge les données correspondant à la date sélectionnée\n• KPI : Corrected amount / Expected amount / Écart restant',
           critere:'Date ≥ J → saisie bloquée\nDate < J → saisie autorisée\nLa date affichée dans le bloc-date = date sélectionnée' },
-        { tab:'Date antérieure', mode:'Interfacé', titre:'Date antérieure interfacée',
+        { tab:'Previous Date', mode:'Interfacé', titre:'Date antérieure interfacée',
           regle:'En mode interfacé, le tableau principal affiche les montants attendus (valeurs remontées par le système pour la date sélectionnée) en lecture seule. Le tableau de correction permet de saisir des montants corrigés par MDP.',
-          comportement:'• Tableau gauche : Date / Mode de paiement / Emplacement / Montant attendu / N° Remise (lecture seule)\n• Tableau droit : Montant corrigé / N° Remise (éditable)\n• KPI Montant corrigé = somme des corrections saisies\n• KPI Montant attendu = somme des montants attendus\n• KPI Écart restant = Montant attendu − Montant corrigé\n• Badge "Écart détecté · MDP" si au moins une correction ≠ 0\n• N° remise obligatoire si Montant corrigé ≠ 0',
-          critere:'Montant corrigé ≠ 0 sans N° remise → erreur inline, bouton bloqué\nN° remise doublon → erreur inline\nBouton actif uniquement si toutes les corrections ont leur N° remise' },
-        { tab:'Date antérieure', mode:'Non interfacé', titre:'Date antérieure non interfacée',
+          comportement:'• Tableau gauche : Date / Payment method / Location / Expected amount / Ref. No. (lecture seule)\n• Tableau droit : Corrected amount / Ref. No. (éditable)\n• KPI Corrected amount = somme des corrections saisies\n• KPI Expected amount = somme des montants attendus\n• KPI Écart restant = Expected amount − Corrected amount\n• Badge "Discrepancy detected · MDP" si au moins une correction ≠ 0\n• N° remise obligatoire si Corrected amount ≠ 0',
+          critere:'Corrected amount ≠ 0 sans N° remise → erreur inline, bouton bloqué\nN° remise doublon → erreur inline\nBouton actif uniquement si toutes les corrections ont leur N° remise' },
+        { tab:'Previous Date', mode:'Non interfacé', titre:'Date antérieure non interfacée',
           regle:'En mode non interfacé, les montants attendus affichés dans le tableau correspondent aux montants validés lors de la télécollecte initiale (et non à des données système en temps réel). La logique de correction est identique à la vue interfacée.',
-          comportement:'• Montant attendu = montant validé lors de la télécollecte initiale (figé)\n• Tableau droit : Montant corrigé + N° Remise (éditable)\n• Même logique de KPI qu\'en mode interfacé\n• N° remise obligatoire pour toute correction ≠ 0\n• N° remise doit être unique dans le système',
+          comportement:'• Expected amount = montant validé lors de la télécollecte initiale (figé)\n• Tableau droit : Corrected amount + Ref. No. (éditable)\n• Même logique de KPI qu\'en mode interfacé\n• N° remise obligatoire pour toute correction ≠ 0\n• N° remise doit être unique dans le système',
           critere:'Identique à RG-10 pour les contraintes de N° remise et de validation\nMontants attendus affichés = ceux de la télécollecte déjà validée' },
-        { tab:'Date antérieure', mode:'Interfacé · Non interfacé', titre:'Affichage des montants attendus après clôture',
-          regle:'Les montants affichés dans la colonne Montant attendu du tableau Date antérieure sont les montants officiels de la date comptable sélectionnée. Ces données sont figées et non modifiables. Elles servent de référence pour calculer l\'écart.',
-          comportement:'• Montant attendu affiché en lecture seule\n• La colonne Date indique la date comptable de chaque ligne\n• Montants = télécollecte validée (non interfacé) ou système (interfacé)\n• Aucune interaction possible sur cette colonne',
-          critere:'Montant attendu = lecture seule, aucun input\nLes montants ne changent pas si l\'utilisateur modifie les corrections' },
-        { tab:'Date antérieure', mode:'Interfacé · Non interfacé', titre:'Calcul des écarts',
+        { tab:'Previous Date', mode:'Interfacé · Non interfacé', titre:'Affichage des montants attendus après clôture',
+          regle:'Les montants affichés dans la colonne Expected amount du tableau Date antérieure sont les montants officiels de la date comptable sélectionnée. Ces données sont figées et non modifiables. Elles servent de référence pour calculer l\'écart.',
+          comportement:'• Expected amount affiché en lecture seule\n• La colonne Date indique la date comptable de chaque ligne\n• Montants = télécollecte validée (non interfacé) ou système (interfacé)\n• Aucune interaction possible sur cette colonne',
+          critere:'Expected amount = lecture seule, aucun input\nLes montants ne changent pas si l\'utilisateur modifie les corrections' },
+        { tab:'Previous Date', mode:'Interfacé · Non interfacé', titre:'Calcul des écarts',
           regle:'L\'écart en Date antérieure est calculé en temps réel à partir de la différence entre le montant attendu de la date sélectionnée et la somme des montants corrigés saisis par l\'utilisateur.',
-          comportement:'• Écart restant = Montant attendu − Montant corrigé (temps réel)\n• KPI "Écart restant" mis à jour à chaque frappe\n• Écart restant > 0 → badge rouge "Écart détecté · MDP"\n• Écart restant = 0 → badge vert "Aucun écart"\n• Les MDP dans le badge = ceux avec correction contribuant à l\'écart',
-          critere:'Écart restant = somme Montant attendu − somme Montant corrigé\nLe KPI reflète l\'état réel à chaque modification' },
-        { tab:'Date antérieure', mode:'Interfacé · Non interfacé', titre:'Régularisation des écarts via Date antérieure',
+          comportement:'• Écart restant = Expected amount − Corrected amount (temps réel)\n• KPI "Écart restant" mis à jour à chaque frappe\n• Écart restant > 0 → badge rouge "Discrepancy detected · MDP"\n• Écart restant = 0 → badge vert "No discrepancy"\n• Les MDP dans le badge = ceux avec correction contribuant à l\'écart',
+          critere:'Écart restant = somme Expected amount − somme Corrected amount\nLe KPI reflète l\'état réel à chaque modification' },
+        { tab:'Previous Date', mode:'Interfacé · Non interfacé', titre:'Régularisation des écarts via Date antérieure',
           regle:'La correction via Date antérieure est distincte de l\'onglet Régularisation. En Date antérieure, le GO saisit le montant réel encaissé pour la date passée. Ce n\'est pas une opération comptable de régularisation — c\'est une correction de saisie.',
-          comportement:'• L\'utilisateur saisit le montant réel dans "Montant corrigé"\n• L\'écart restant est recalculé en temps réel\n• N° remise unique obligatoire pour chaque correction\n• Validation : même workflow que télécollecte (modale → toaster)',
+          comportement:'• L\'utilisateur saisit le montant réel dans "Corrected amount"\n• L\'écart restant est recalculé en temps réel\n• N° remise unique obligatoire pour chaque correction\n• Validation : même workflow que télécollecte (modale → toaster)',
           critere:'N° remise obligatoire pour toute correction ≠ 0\nN° remise doit être unique dans le système',
           question:'La correction via Date antérieure déclenche-t-elle automatiquement une entrée dans l\'onglet Régularisation ? Ou sont-ce deux workflows totalement indépendants ?' },
-        { tab:'Date antérieure', mode:'Interfacé · Non interfacé', titre:'Gestion des numéros de remise (Date antérieure)',
+        { tab:'Previous Date', mode:'Interfacé · Non interfacé', titre:'Gestion des numéros de remise (Date antérieure)',
           regle:'En Date antérieure, le N° remise est soumis à une contrainte d\'unicité stricte au niveau du système. Un N° remise déjà utilisé sur n\'importe quelle autre date ou opération ne peut pas être réutilisé.',
-          comportement:'• N° remise obligatoire si Montant corrigé ≠ 0\n• Validation interface : champ vide bloque le bouton\n• Validation système : doublon → erreur inline "N° de remise déjà utilisé"\n• L\'utilisateur doit saisir un N° remise différent\n• Validation bloquée jusqu\'à correction',
+          comportement:'• N° remise obligatoire si Corrected amount ≠ 0\n• Validation interface : champ vide bloque le bouton\n• Validation système : doublon → erreur inline "N° de remise déjà utilisé"\n• L\'utilisateur doit saisir un N° remise différent\n• Validation bloquée jusqu\'à correction',
           critere:'N° remise vide + montant ≠ 0 → erreur inline, bouton bloqué\nN° remise doublon → erreur inline, bouton bloqué\nN° remise valide et unique → validation autorisée' },
-        { tab:'Date antérieure', mode:'Interfacé · Non interfacé', titre:'Badge d\'écart et moyens de paiement concernés',
+        { tab:'Previous Date', mode:'Interfacé · Non interfacé', titre:'Badge d\'écart et moyens de paiement concernés',
           regle:'Le badge d\'écart en Date antérieure liste uniquement les moyens de paiement qui contribuent réellement à l\'écart, c\'est-à-dire ceux pour lesquels une correction crée une différence avec le montant attendu.',
-          comportement:'• Badge rouge "Écart détecté · Visa · Amex" → MDP avec correction ≠ 0\n• MDP avec correction = 0 absent du badge même s\'il est dans le tableau\n• Badge vert "Aucun écart" → aucune correction saisie\n• Mise à jour en temps réel',
-          critere:'Badge rouge = au moins un MDP avec Montant corrigé ≠ 0\nBadge vert = tous les MDP avec Montant corrigé = 0\nListe MDP dans badge = sous-ensemble strict des MDP en écart réel' },
-        { tab:'Date antérieure', mode:'Interfacé · Non interfacé', titre:'Complément après saisie Date antérieure',
+          comportement:'• Badge rouge "Discrepancy detected · Visa · Amex" → MDP avec correction ≠ 0\n• MDP avec correction = 0 absent du badge même s\'il est dans le tableau\n• Badge vert "No discrepancy" → aucune correction saisie\n• Mise à jour en temps réel',
+          critere:'Badge rouge = au moins un MDP avec Corrected amount ≠ 0\nBadge vert = tous les MDP avec Corrected amount = 0\nListe MDP dans badge = sous-ensemble strict des MDP en écart réel' },
+        { tab:'Previous Date', mode:'Interfacé · Non interfacé', titre:'Complément après saisie Date antérieure',
           regle:'Le comportement post-validation en Date antérieure (ajout de complément) n\'est pas explicitement documenté dans le wireframe actuel.',
           comportement:'Option A — Complément possible (aligné sur la logique Télécollecte)\nAprès validation, l\'utilisateur pourrait revenir sur la même date et ajouter un complément, tant que la purge comptable n\'a pas eu lieu (voir RG-18).\n\nOption B — Validation unique (comportement restrictif)\nUne fois une Date antérieure validée, la correction est figée. Toute nouvelle correction nécessite une nouvelle entrée.',
           critere:'Non défini — décision métier à valider avant développement',
           question:'La correction via Date antérieure est-elle complétable après validation (Option A) ou figée définitivement (Option B) ?' },
-        { tab:'Date antérieure', mode:'Interfacé · Non interfacé', titre:'Purge comptable et fermeture définitive',
+        { tab:'Previous Date', mode:'Interfacé · Non interfacé', titre:'Purge comptable et fermeture définitive',
           regle:'Une télécollecte validée peut être complétée via Date antérieure tant qu\'aucune purge comptable n\'a été effectuée. La purge est la fermeture définitive des données comptables pour une période donnée. Une fois la purge exécutée, les données sont historiques et figées — aucune modification n\'est plus possible.',
           comportement:'Avant purge :\n• La date apparaît dans Date antérieure\n• L\'utilisateur peut compléter une télécollecte déjà saisie\n• L\'utilisateur peut corriger un écart\n• Les calculs sont mis à jour normalement\n\nAprès purge :\n• La date n\'est plus modifiable\n• Les champs de complément sont désactivés ou absents\n• Aucune validation supplémentaire n\'est possible\n• Les données sont consultables mais figées\n\nCycle métier :\nTélécollecte → Clôture comptable quotidienne → Date antérieure (corrections possibles) → Purge comptable → Données définitivement verrouillées',
           critere:'Date purgée : aucune action de modification possible\nDate purgée : aucun complément ajouteable\nDate purgée : aucune validation supplémentaire autorisée',
           question:'Les dates purgées restent-elles visibles en lecture seule dans la liste Date antérieure, ou disparaissent-elles totalement ? Cette décision conditionne l\'architecture de la liste de dates.' },
         // ── RÉGULARISATION ───────────────────────────────────────────────
-        { tab:'Régularisation', mode:'Tous modes', titre:'Fonctionnement général',
+        { tab:'Regularisation', mode:'Tous modes', titre:'Fonctionnement général',
           regle:'L\'onglet Régularisation est réservé aux Financial Managers. Il permet de régulariser un écart comptable constaté entre le montant attendu et le montant encaissé. La régularisation n\'est pas définitive immédiatement — elle peut être complétée jusqu\'à la prochaine clôture comptable.',
-          comportement:'• Accès restreint au rôle Financial Manager (contrôle côté serveur)\n• L\'écart à régulariser est affiché en rouge (non éditable, calculé par le système)\n• Le tableau affiche uniquement les MDP concernés par l\'écart\n• Bouton "Faire une régularisation" → modale → toaster → mode complétable\n• Après validation : bouton devient "Compléter la régularisation"',
+          comportement:'• Accès restreint au rôle Financial Manager (contrôle côté serveur)\n• L\'écart à régulariser est affiché en rouge (non éditable, calculé par le système)\n• Le tableau affiche uniquement les MDP concernés par l\'écart\n• Bouton "Submit regularisation" → modale → toaster → mode complétable\n• Après validation : bouton devient "Complete regularisation"',
           critere:'Un GO (non FM) ne peut pas accéder à cet onglet\nL\'écart affiché est la valeur de référence du système, non modifiable par l\'utilisateur' },
-        { tab:'Régularisation', mode:'Tous modes', titre:'Régularisation interfacée',
+        { tab:'Regularisation', mode:'Tous modes', titre:'Régularisation interfacée',
           regle:'La Régularisation s\'applique à un écart déjà calculé et fourni par le système. Cela suppose implicitement un contexte interfacé — le système connaît le montant attendu et peut calculer l\'écart.',
           comportement:'• L\'écart est fourni par le système au chargement de l\'onglet\n• Ce montant est non éditable (valeur de référence)\n• Le FM saisit les montants régularisés par MDP',
           critere:'L\'écart initial est fourni par le système, jamais saisi par l\'utilisateur',
           question:'La Régularisation est-elle toujours en mode interfacé, ou un mode non interfacé est-il prévu où le FM saisirait lui-même l\'écart de référence ?' },
-        { tab:'Régularisation', mode:'Tous modes', titre:'Régularisation non interfacée',
+        { tab:'Regularisation', mode:'Tous modes', titre:'Régularisation non interfacée',
           regle:'Le wireframe ne documente pas de comportement spécifique en mode non interfacé pour l\'onglet Régularisation.',
           comportement:'Non défini dans le wireframe actuel.',
           critere:'Non défini — décision métier à valider',
           question:'Si un mode non interfacé est prévu : qui saisit le montant de référence ? Comment le système valide-t-il la cohérence de la régularisation sans données système ?' },
-        { tab:'Régularisation', mode:'Tous modes', titre:'Répartition des écarts par moyen de paiement',
+        { tab:'Regularisation', mode:'Tous modes', titre:'Répartition des écarts par moyen de paiement',
           regle:'Le tableau de Régularisation n\'affiche que les MDP concernés par l\'écart. L\'objectif est de guider le FM vers les MDP à traiter sans lui donner directement les montants à retrouver — il doit effectuer son investigation métier.',
-          comportement:'• Tableau : Mode de paiement / Montant régularisé (input)\n• Seuls les MDP avec un écart non nul sont affichés\n• Exemple : Visa et Amex en écart → WeChat absent du tableau\n• Aucune colonne "Montant à régulariser" visible\n• Le FM saisit librement le montant qu\'il souhaite régulariser par MDP',
+          comportement:'• Tableau : Payment method / Adjusted amount (input)\n• Seuls les MDP avec un écart non nul sont affichés\n• Exemple : Visa et Amex en écart → WeChat absent du tableau\n• Aucune colonne "Montant à régulariser" visible\n• Le FM saisit librement le montant qu\'il souhaite régulariser par MDP',
           critere:'MDP sans écart → absent du tableau\nSomme des saisies peut être partielle (régularisation partielle autorisée)\nSomme des saisies > écart total → champs rouges, bouton bloqué' },
-        { tab:'Régularisation', mode:'Tous modes', titre:'Validation d\'une régularisation',
+        { tab:'Regularisation', mode:'Tous modes', titre:'Validation d\'une régularisation',
           regle:'La validation d\'une régularisation suit exactement le même workflow que la Télécollecte : modale de confirmation → toaster → bascule en mode complétable. Les mêmes composants sont réutilisés.',
-          comportement:'• Bouton "Faire une régularisation" actif si au moins un montant saisi et pas de dépassement\n• Modale : "Vous êtes sur le point de valider une régularisation. Vous pourrez la compléter avant la clôture comptable."\n• Annuler → retour sans modification\n• Confirmer → toaster "Votre régularisation a bien été enregistrée." (5s)\n• Tableau bascule vers : Régularisation effectuée (figée) / Complément (input)\n• Bouton devient "Compléter la régularisation" (inactif tant qu\'aucun complément)',
+          comportement:'• Bouton "Submit regularisation" actif si au moins un montant saisi et pas de dépassement\n• Modale : "Vous êtes sur le point de valider une régularisation. Vous pourrez la compléter avant la clôture comptable."\n• Annuler → retour sans modification\n• Confirmer → toaster "Votre régularisation a bien été enregistrée." (5s)\n• Tableau bascule vers : Adjustment made (figée) / Complément (input)\n• Bouton devient "Complete regularisation" (inactif tant qu\'aucun complément)',
           critere:'Aucun montant saisi → bouton inactif\nDépassement de l\'écart → champs rouges, bouton inactif\nValidation partielle autorisée' },
-        { tab:'Régularisation', mode:'Tous modes', titre:'Complément de régularisation avant clôture',
+        { tab:'Regularisation', mode:'Tous modes', titre:'Complément de régularisation avant clôture',
           regle:'Identique à la logique de complément de Télécollecte. Après une première validation, le FM peut ajouter des compléments autant de fois que nécessaire avant la clôture comptable.',
-          comportement:'• Tableau post-validation : "Régularisation effectuée" (figée) + "Complément" (input)\n• Bouton "Compléter la régularisation" inactif jusqu\'à saisie\n• Total régularisé = frozen + compléments en cours (temps réel)\n• Revalidation → même modale → même toaster → compléments absorbés, champs remis à 0\n• Opération répétable jusqu\'à la clôture comptable\n• Aucun N° remise visible (généré automatiquement)',
+          comportement:'• Tableau post-validation : "Adjustment made" (figée) + "Complément" (input)\n• Bouton "Complete regularisation" inactif jusqu\'à saisie\n• Total régularisé = frozen + compléments en cours (temps réel)\n• Revalidation → même modale → même toaster → compléments absorbés, champs remis à 0\n• Opération répétable jusqu\'à la clôture comptable\n• Aucun N° remise visible (généré automatiquement)',
           critere:'Total régularisé ne peut pas dépasser l\'Écart initial\nAprès revalidation : champs Complément = 0,00 €\nAucun N° remise exposé à l\'utilisateur' },
-        { tab:'Régularisation', mode:'Tous modes', titre:'Mise à jour des KPI (Écart / Total / Solde)',
+        { tab:'Regularisation', mode:'Tous modes', titre:'Mise à jour des KPI (Écart / Total / Solde)',
           regle:'Les trois KPI du bandeau Régularisation forment un système cohérent recalculé ensemble à chaque saisie depuis une source de vérité unique. L\'Écart à régulariser est le KPI principal — il reflète le problème restant à résoudre.',
           comportement:'• Écart_initial = valeur fixée par le système au chargement (non modifiable)\n• Écart à régulariser = Écart_initial − Total régularisé (décroît)\n• Total régularisé = somme des montants validés + compléments en cours\n• Solde restant = miroir de l\'Écart à régulariser\n• Écart à régulariser : rouge si > 0, vert si = 0\n• Total régularisé : couleur neutre (navy)\n• Mise à jour en temps réel à chaque frappe',
           critere:'Écart à régulariser + Total régularisé = Écart_initial (invariant)\nÉcart à régulariser = 0 → tous les KPI convergent vers l\'état résolu' },
-        { tab:'Régularisation', mode:'Tous modes', titre:'Affichage des moyens de paiement concernés',
+        { tab:'Regularisation', mode:'Tous modes', titre:'Affichage des moyens de paiement concernés',
           regle:'Seuls les MDP présentant un écart non nul apparaissent dans le tableau de Régularisation. Ce filtre est appliqué dès le chargement et reste statique au fil des saisies.',
           comportement:'• MDP avec écart ≠ 0 → ligne présente dans le tableau\n• MDP avec écart = 0 → ligne absente du tableau\n• Exemple : Visa (−400 €) + Amex (−350 €) présents ; WeChat (0 €) absent\n• Ce filtre est statique : les MDP n\'apparaissent ni ne disparaissent pendant la saisie',
           critere:'Nombre de lignes = nombre de MDP avec écart ≠ 0\nAucune ligne pour un MDP en équilibre' },
-        { tab:'Régularisation', mode:'Tous modes', titre:'Cas d\'une régularisation complète',
+        { tab:'Regularisation', mode:'Tous modes', titre:'Cas d\'une régularisation complète',
           regle:'Une régularisation est complète lorsque le Total régularisé atteint l\'Écart initial (Écart à régulariser = 0 €). Cet état peut être atteint en une ou plusieurs validations. Il n\'entraîne pas de verrouillage automatique : le FM peut continuer à redistribuer les montants entre MDP jusqu\'à la clôture comptable.',
           comportement:'• Écart à régulariser = 0 € → couleur passe de rouge à vert\n• Solde restant = 0 €, Total régularisé = Écart_initial\n• Le bouton reste disponible : une régularisation complète peut toujours être ajustée\n• La clôture comptable est le seul verrou — elle fige l\'état à l\'instant T, définitivement\n• Après clôture : aucune modification possible, données figées',
           critere:'Écart à régulariser = 0 → tous les KPI en état résolu\nLe FM peut redistribuer les montants entre MDP tant que la somme = Écart_initial\nCloture = seul verrou définitif' }
@@ -2937,7 +2937,7 @@
     }
     const rgBlocks = JSON.parse(localStorage.getItem(RG_BLOCKS_KEY) || '[]');
 
-    const TABS_OPTS = ['Télécollecte','Date antérieure','Régularisation'];
+    const TABS_OPTS = ['Telecollection','Previous Date','Regularisation'];
     const MODES_OPTS = ['Interfacé','Non interfacé','Tous modes'];
 
     const blocksHTML = rgBlocks.length === 0
@@ -3021,7 +3021,7 @@
 
     const allRg = briefs.filter(b => b.type === 'rg');
     const allComments = JSON.parse(localStorage.getItem('wf_comments_telecollecte') || '[]');
-    const TAB_LABELS = { tpe:'Télécollecte', ant:'Date antérieure', reg:'Régularisation' };
+    const TAB_LABELS = { tpe:'Telecollection', ant:'Previous Date', reg:'Regularisation' };
     const today = new Date().toLocaleDateString('fr-FR', { day:'numeric', month:'long', year:'numeric' });
 
     // Grouper les RG par tab
@@ -3200,7 +3200,7 @@
     if (btn) { btn.textContent = '⏳ Génération en cours...'; btn.disabled = true; }
 
     const today = new Date().toLocaleDateString('fr-FR', { day:'numeric', month:'long', year:'numeric' });
-    const TAB_LABELS = { tpe:'Télécollecte', ant:'Date antérieure', reg:'Régularisation' };
+    const TAB_LABELS = { tpe:'Telecollection', ant:'Previous Date', reg:'Regularisation' };
 
     // Grouper par tab
     const byTab = {};
@@ -3223,7 +3223,7 @@
     prompt += `\n MODE STANDARD (non interfacé)\n`;
     prompt += `Le GO saisit manuellement le montant télécollecté par mode de paiement (Visa, Amex, WeChat) pour chaque TPE.\n`;
     prompt += `Un numéro de remise est obligatoire pour tout montant > 0.\n`;
-    prompt += `Le bouton "Valider la saisie" devient actif une fois tous les champs requis remplis.\n`;
+    prompt += `Le bouton "Submit entry" devient actif une fois tous les champs requis remplis.\n`;
     prompt += `\n MODE INTERFACÉ\n`;
     prompt += `Le système pré-remplit automatiquement le montant calculé (montant attendu selon le système).\n`;
     prompt += `Le GO peut saisir un montant corrigé s'il y a un écart.\n`;
@@ -3730,15 +3730,15 @@
     const i = checked;
     const gc = i ? 'gi' : 'gm';
     const hh = i
-      ? '<span>Mode de paiement</span><span>Emplacement</span><span>Montant attendu</span><span>Montant corrigé</span><span>N° Remise</span>'
-      : '<span>Mode de paiement</span><span>Emplacement</span><span>Montant saisi</span><span>N° Remise</span>';
+      ? '<span>Payment method</span><span>Location</span><span>Expected amount</span><span>Corrected amount</span><span>Ref. No.</span>'
+      : '<span>Payment method</span><span>Location</span><span>Entered amount</span><span>Ref. No.</span>';
     ['1','2'].forEach(n => {
       const h = document.getElementById('h'+n);
       h.className = 't-head ' + gc; h.innerHTML = hh;
       document.getElementById('rm'+n).style.display = i ? 'none' : 'block';
       const riEl = document.getElementById('ri'+n);
       riEl.style.display = i ? 'block' : 'none';
-      // Montant corrigé démarre à 0 — c'est une correction manuelle, pas un pré-remplissage
+      // Corrected amount démarre à 0 — c'est une correction manuelle, pas un pré-remplissage
       if (i) {
         riEl.querySelectorAll('.t-row').forEach(row => {
           const corrInp = row.querySelector('.inp:not(.remise-inp):not(.plain)');
@@ -3767,18 +3767,18 @@
       const el = document.getElementById(id);
       if (el && !i) el.style.display = 'none';
     });
-    // KPI Montant saisi : reset à 0 en non-interfacé, dynamique en interfacé
+    // KPI Entered amount : reset à 0 en non-interfacé, dynamique en interfacé
     if (!i) {
       const kvS = document.getElementById('kpi-saisi-val');
       if (kvS) kvS.textContent = '0,00 €';
     }
     // Mettre à jour les headers et KPI de l'onglet Date antérieure selon le mode
     const antHeader = i
-      ? '<span>Date</span><span>Mode de paiement</span><span>Emplacement</span><span>Montant attendu</span><span>N° Remise</span>'
-      : '<span>Date</span><span>Mode de paiement</span><span>Emplacement</span><span>Montant saisi</span><span>N° Remise</span>';
+      ? '<span>Date</span><span>Payment method</span><span>Location</span><span>Expected amount</span><span>Ref. No.</span>'
+      : '<span>Date</span><span>Payment method</span><span>Location</span><span>Entered amount</span><span>Ref. No.</span>';
     document.querySelectorAll('.t-head.g-ant-main').forEach(h => { h.innerHTML = antHeader; });
     const antKpiLabel = document.getElementById('ant-kpi-attendu-label');
-    if (antKpiLabel) antKpiLabel.textContent = i ? 'Montant attendu' : 'Montant saisi';
+    if (antKpiLabel) antKpiLabel.textContent = i ? 'Expected amount' : 'Entered amount';
     // Initialiser les KPI dynamiques dès le switch
     setTimeout(updateKPI, 50);
   }
@@ -3794,7 +3794,7 @@
   }
 
   let saisieMode = false;
-  let _frozenAttendu = null; // KPI Montant attendu figé au moment de la validation
+  let _frozenAttendu = null; // KPI Expected amount figé au moment de la validation
   function setS(checked) {
     saisieMode = checked;
     if (checked) {
@@ -3807,10 +3807,10 @@
       _frozenAttendu = null;
     }
     const gc = 'gs';
-    const hSaisie = '<span>Mode de paiement</span><span>Emplacement</span><span>Montant saisi</span><span>Complément</span><span>N° Remise</span>';
+    const hSaisie = '<span>Payment method</span><span>Location</span><span>Entered amount</span><span>Complément</span><span>Ref. No.</span>';
     const hNormal = document.getElementById('sw-iface')?.checked
-      ? '<span>Mode de paiement</span><span>Emplacement</span><span>Montant attendu</span><span>Montant corrigé</span><span>N° Remise</span>'
-      : '<span>Mode de paiement</span><span>Emplacement</span><span>Montant saisi</span><span>N° Remise</span>';
+      ? '<span>Payment method</span><span>Location</span><span>Expected amount</span><span>Corrected amount</span><span>Ref. No.</span>'
+      : '<span>Payment method</span><span>Location</span><span>Entered amount</span><span>Ref. No.</span>';
 
     // TPE 1 & 2 : basculer rm/ri ↔ rs
     ['1','2'].forEach(n => {
@@ -3858,18 +3858,18 @@
     const btnv = document.getElementById('btnv');
     const btnvS = document.getElementById('btnv-sticky');
     if (checked) {
-      if (btnv)  { btnv.textContent  = 'Compléter la saisie'; btnv.className  = 'btn-date-cta off'; }
-      if (btnvS) { btnvS.textContent = 'Compléter la saisie'; btnvS.className = 'btn-date-cta off'; }
+      if (btnv)  { btnv.textContent  = 'Complete entry'; btnv.className  = 'btn-date-cta off'; }
+      if (btnvS) { btnvS.textContent = 'Complete entry'; btnvS.className = 'btn-date-cta off'; }
     } else {
-      if (btnv)  { btnv.textContent  = 'Valider la saisie';   btnv.className  = 'btn-date-cta'; }
-      if (btnvS) { btnvS.textContent = 'Valider la saisie';   btnvS.className = 'btn-date-cta'; }
+      if (btnv)  { btnv.textContent  = 'Submit entry';   btnv.className  = 'btn-date-cta'; }
+      if (btnvS) { btnvS.textContent = 'Submit entry';   btnvS.className = 'btn-date-cta'; }
     }
     // Restaurer les labels KPI si on sort du mode saisie
     if (!checked) {
       const labelA = document.getElementById('kpi-attendu-label');
       const labelS = document.getElementById('kpi-saisi-label');
-      if (labelA) labelA.textContent = 'Montant attendu';
-      if (labelS) labelS.textContent = 'Montant saisi';
+      if (labelA) labelA.textContent = 'Expected amount';
+      if (labelS) labelS.textContent = 'Entered amount';
     }
     checkAll();
   }
@@ -4085,8 +4085,8 @@
     const rgBlocks = JSON.parse(localStorage.getItem('wf_rg_blocks') || '[]');
     const today = new Date().toLocaleDateString('fr-FR', { day:'numeric', month:'long', year:'numeric' });
 
-    const TAB_COLORS = { 'Télécollecte':'#E8F4FD', 'Date antérieure':'#FEF3C7', 'Régularisation':'#F0FDF4' };
-    const TAB_TEXT   = { 'Télécollecte':'#0057A8', 'Date antérieure':'#92400E', 'Régularisation':'#1A6B31' };
+    const TAB_COLORS = { 'Telecollection':'#E8F4FD', 'Previous Date':'#FEF3C7', 'Regularisation':'#F0FDF4' };
+    const TAB_TEXT   = { 'Telecollection':'#0057A8', 'Previous Date':'#92400E', 'Regularisation':'#1A6B31' };
     const MODE_COLORS = { 'Interfacé':'#EDE9FE', 'Non interfacé':'#F3F4F6', 'Tous modes':'#F3F4F6' };
     const MODE_TEXT   = { 'Interfacé':'#5B21B6', 'Non interfacé':'#374151', 'Tous modes':'#374151' };
 
@@ -4101,7 +4101,7 @@
       // Grouper par tab en conservant l'index global pour la numérotation
       const grouped = {};
       rgBlocks.forEach((b, i) => {
-        const t = b.tab || 'Télécollecte';
+        const t = b.tab || 'Telecollection';
         if (!grouped[t]) grouped[t] = [];
         grouped[t].push({ ...b, _globalIdx: i });
       });
@@ -4185,11 +4185,11 @@
     if (toc && rgBlocks.length > 0) {
       const grouped2 = {};
       rgBlocks.forEach((b, i) => {
-        const t = b.tab || 'Télécollecte';
+        const t = b.tab || 'Telecollection';
         if (!grouped2[t]) grouped2[t] = [];
         grouped2[t].push({ ...b, _idx: i });
       });
-      const TAB_TEXT2 = { 'Télécollecte':'#0057A8', 'Date antérieure':'#92400E', 'Régularisation':'#1A6B31' };
+      const TAB_TEXT2 = { 'Telecollection':'#0057A8', 'Previous Date':'#92400E', 'Regularisation':'#1A6B31' };
       toc.innerHTML = `
         <div style="font-size:11px;font-weight:700;color:var(--grey-txt);text-transform:uppercase;letter-spacing:.08em;margin-bottom:16px;">Sommaire</div>
         ${Object.entries(grouped2).map(([tab, rgs]) => `
@@ -4692,7 +4692,7 @@
       return;
     }
 
-    const tabLabels = { tpe:'Télécollecte', ant:'Date antérieure', reg:'Régularisation' };
+    const tabLabels = { tpe:'Telecollection', ant:'Previous Date', reg:'Regularisation' };
     list.innerHTML = mine.map(c => `
       <div style="background:white;border:1px solid #E0E0E0;border-left:3px solid #D93025;border-radius:10px;padding:12px 14px;">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
@@ -4766,7 +4766,7 @@
   // Trois cas exclusifs, aucun chevauchement possible :
   //   1. MODE SAISIE  : attendu = _frozenAttendu (figé), saisi = attendu + compléments, écart = compléments
   //   2. MODE INTERFACÉ : attendu = ∑ c-amt ri/rows-iface, saisi = attendu + corrections, écart = corrections
-  //   3. MODE STANDARD : seul Montant saisi affiché = ∑ saisies manuelles
+  //   3. MODE STANDARD : seul Entered amount affiché = ∑ saisies manuelles
   function updateKPI() {
     const fmt    = n => n.toLocaleString('fr-FR', { minimumFractionDigits:2, maximumFractionDigits:2 });
     const parseV = s => parseFloat((s||'').replace(/\s/g,'').replace('€','').replace(',','.')) || 0;
@@ -4865,7 +4865,7 @@
     const badgeC = document.getElementById('badge-opt-c');
     if (badgeC && hasEcart) {
       badgeC.style.display = 'flex';
-      badgeC.innerHTML = `<span style="width:8px;height:8px;border-radius:50%;background:#BF2F17;flex-shrink:0;"></span>Écart détecté`;
+      badgeC.innerHTML = `<span style="width:8px;height:8px;border-radius:50%;background:#BF2F17;flex-shrink:0;"></span>Discrepancy detected`;
     }
     const pill = document.getElementById('proposal-a-pill');
     if (pill) {
@@ -4891,7 +4891,7 @@
       if (spans[1]) saisi += parseV(spans[1].textContent);
     });
 
-    // Montant attendu : valeur post-clôture simulée = saisi + 20 (écart de 20€ pour le wireframe)
+    // Expected amount : valeur post-clôture simulée = saisi + 20 (écart de 20€ pour le wireframe)
     const attendu = saisi + 20;
     const ecart = saisi - attendu;
     const hasEcart = Math.abs(ecart) >= 0.005;
@@ -4934,7 +4934,7 @@
       const mdpHtml = mdpEnEcart.length
         ? ' · <span style="color:var(--navy);margin-left:2px;">' + mdpEnEcart.join(' · ') + '</span>'
         : '';
-      badgeTxt.innerHTML = 'Écart détecté' + mdpHtml;
+      badgeTxt.innerHTML = 'Discrepancy detected' + mdpHtml;
     }
 
     // Pill sticky
@@ -5064,8 +5064,8 @@
       badge.style.background = solved ? '#E6F4EA' : '#FEF2F2';
       badge.style.color      = solved ? '#1A6B31' : '#BF2F17';
       badge.innerHTML = solved
-        ? '<span style="width:8px;height:8px;border-radius:50%;background:#1A6B31;flex-shrink:0;"></span>Régularisé'
-        : '<span style="width:8px;height:8px;border-radius:50%;background:#BF2F17;flex-shrink:0;"></span>Solde restant';
+        ? '<span style="width:8px;height:8px;border-radius:50%;background:#1A6B31;flex-shrink:0;"></span>Regularised'
+        : '<span style="width:8px;height:8px;border-radius:50%;background:#BF2F17;flex-shrink:0;"></span>Remaining balance';
     }
 
     // Champs en rouge si dépassement
@@ -5194,8 +5194,8 @@
       });
       const labelA = document.getElementById('kpi-attendu-label');
       const labelS = document.getElementById('kpi-saisi-label');
-      if (labelA) labelA.textContent = 'Montant saisi';
-      if (labelS) labelS.textContent = 'Montant saisi';
+      if (labelA) labelA.textContent = 'Entered amount';
+      if (labelS) labelS.textContent = 'Entered amount';
       if (saisieMode && _frozenAttendu !== null) {
         let complement = 0;
         document.querySelectorAll('.inp-complement').forEach(inp => { complement += parseV(inp.value); });
@@ -5217,7 +5217,7 @@
       let complement = 0;
       document.querySelectorAll('.reg-comp-inp').forEach(inp => { complement += parseV(inp.value); });
       _frozenReg += complement;
-      // Injecter les nouveaux totaux par MDP dans les cellules "Régularisation effectuée"
+      // Injecter les nouveaux totaux par MDP dans les cellules "Adjustment made"
       document.querySelectorAll('.reg-comp-inp').forEach(inp => {
         const mdp = inp.dataset.mdp;
         const cell = document.getElementById('reg-done-' + mdp.toLowerCase());
@@ -5247,9 +5247,9 @@
     // Déléguer la mise à jour des KPI à checkReg() — source de vérité unique
     checkReg();
 
-    // Changer le bouton en "Compléter la régularisation"
+    // Changer le bouton en "Complete regularisation"
     const btn = document.getElementById('btnv-reg');
-    if (btn) { btn.textContent = 'Compléter la régularisation'; btn.className = 'btn-date-cta off'; }
+    if (btn) { btn.textContent = 'Complete regularisation'; btn.className = 'btn-date-cta off'; }
 
     _regSaisieMode = true;
 
