@@ -19,10 +19,10 @@
           "id": "cardex",
           "name": "Cardex",
           "status": "in_progress",
-          "wireframe": "https://studiojailoop.github.io/telecollecte-odyssey/wireframe-cardex-V1.html",
-          "version": "V1",
-          "updated": "2026-06-10",
-          "label": "Fiche client — intégration bloc Cardex"
+          "wireframe": "https://studiojailoop.github.io/telecollecte-odyssey/wireframe-cardex-V2.html",
+          "version": "V2",
+          "updated": "2026-06-11",
+          "label": "Fiche client — Prop D 3 colonnes (réf. Figma)"
         }
       ]
     }
