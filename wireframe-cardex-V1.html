@@ -396,15 +396,8 @@
     .cardex-more svg { width:16px;height:16px;stroke:var(--grey-txt);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round; }
 
     /* ══════════════════════════════════════
-       PROPOSITIONS ALTERNATIVES (panel)
+       PROPOSITIONS — boutons panel
     ══════════════════════════════════════ */
-    .prop-switcher {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 16px;
-    }
-    .prop-switcher-label { font-size: 12px; color: var(--grey-txt); font-weight: 600; }
     .prop-btn {
       padding: 5px 14px;
       border-radius: 20px;
@@ -746,16 +739,6 @@
     <!-- CONTENU -->
     <div class="content" id="main-content">
       <div class="content-inner">
-
-        <!-- Sélecteur de proposition — visible uniquement en local -->
-        <div id="prop-switcher-bar" style="display:none;margin-bottom:16px;">
-          <div class="prop-switcher">
-            <span class="prop-switcher-label">Proposition :</span>
-            <button class="prop-btn active" onclick="setProp('B', this)">B — Bande</button>
-            <button class="prop-btn" onclick="setProp('A', this)">A — 4 colonnes</button>
-            <button class="prop-btn" onclick="setProp('C', this)">C — Empilé</button>
-          </div>
-        </div>
 
         <!-- ══ PROPOSITION B (défaut) ══ -->
         <div id="prop-B">
@@ -1104,7 +1087,6 @@
   if (isLocal) {
     document.getElementById('back-dashboard-btn').style.display = 'flex';
     document.getElementById('briefs-nav-btn').style.display = 'flex';
-    document.getElementById('prop-switcher-bar').style.display = 'flex';
   }
 
   // ══════════════════════════════════════
