@@ -25,6 +25,9 @@
 - [V4.8 état stable Télécollecte](project_loopcraft_v48.md) — Snapshot 2026-06-03 : KPI dynamiques, doc PO sommaire+numérotation, mode interfacé/non-interfacé propre
 - [V4.11 version active](project_loopcraft_v411.md) — Version active 2026-06-05 : date antérieure + KPIs dyn, Régularisation alignée pattern Télécollecte
 - [V4.21 checkpoint + phase review PO](project_loopcraft_v421.md) — Checkpoint 2026-06-05 : 27 RG, workflow Régularisation complet, portail POs Julie/Nelly en ligne
+- [V4.22 session 2026-06-12](project_loopcraft_v422.md) — Textes UI EN, fix sticky Submit entry Telecollection+Previous Date, Cardex V2 Prop D, mémoire Dropbox
 - [RG badge écart — MDP réels](project_loopcraft_rg_badge_ecart.md) — Badge écart doit lister uniquement les MDP en écart réel — à inclure dans la doc RG quand demandé
 - [Comportement à l'ouverture](feedback_startup_behavior.md) — Au démarrage : version active uniquement (ex. V4.21), pas les proposals ni chantiers en suspens
 - [Cardex — sous-projet Club Med](project_loopcraft_cardex.md) — wireframe-cardex-V1.html livré 2026-06-10 : fiche client Odyssey DS, 3 props layout (A/B/C), Firebase+localStorage isolés
+- [Propositions dans le panel uniquement](feedback_propositions_panel_only.md) — switcher A/B/C JAMAIS dans le corps du wireframe — uniquement dans wf-panel section Propositions
+- [Règles de conception Cardex](feedback_cardex_design_rules.md) — DS strict, no new components, spacing grille x4, cohérence > créativité — checklist obligatoire avant toute production
