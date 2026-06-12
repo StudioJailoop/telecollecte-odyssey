@@ -329,7 +329,7 @@
     /* ── Tabs Tertiary DS Trident 2.0 — sticky dans le scroll ── */
     .tpe-tabs-bar {
       position: sticky;
-      top: -28px;
+      top: 0;
       background: transparent;
       border-bottom: 1px solid transparent;
       margin: 0 -32px 24px -32px;
@@ -3653,64 +3653,56 @@
   }
   // Détection sticky barre TPE — fond blanc + bouton sticky selon scroll
   const tpeBar = document.getElementById('tpe-tabs-bar');
-  const sentinel = document.createElement('div');
-  sentinel.style.cssText = 'height:1px;margin-bottom:-1px;';
-  tpeBar.parentNode.insertBefore(sentinel, tpeBar);
-
   const scrollRoot = document.querySelector('.content');
 
-  // Observer du bloc-date Télécollecte — affiche le bouton sticky quand le bloc sort du viewport
-  const blocDateTpe = document.querySelector('#mc .bloc-date');
-  const btnvSticky = document.getElementById('btnv-sticky');
-  const btnvMain = document.getElementById('btnv');
-  new IntersectionObserver(([entry]) => {
-    // Ne réagir que si on est sur l'onglet Télécollecte
-    if (currentTab !== 'tpe') return;
-    const hidden = !entry.isIntersecting;
-    btnvSticky.style.display = (hidden && tpeBar.classList.contains('is-stuck')) ? 'flex' : 'none';
-    btnvSticky.className = btnvMain.className;
-    // Pill sticky : visible seulement si sticky ET écart réel détecté en mode interfacé
-    const pill = document.getElementById('proposal-a-pill');
-    if (pill) {
-      const ifaceOn = document.getElementById('sw-iface')?.checked;
-      const badgeC = document.getElementById('badge-opt-c');
-      const hasEcart = badgeC && badgeC.style.display !== 'none';
-      pill.style.display = (hidden && ifaceOn && hasEcart) ? 'flex' : 'none';
-    }
-  }, { root: scrollRoot, threshold: 0 }).observe(blocDateTpe);
-
-  const observer = new IntersectionObserver(([entry]) => {
-    tpeBar.classList.toggle('is-stuck', !entry.isIntersecting);
-  }, { root: scrollRoot, threshold: 0 });
-  observer.observe(sentinel);
-
-  // Observer sticky pour la barre ant
-  const tpeBarAnt = document.getElementById('tpe-tabs-bar-ant');
-  const sentinelAnt = document.createElement('div');
-  sentinelAnt.style.cssText = 'height:1px;margin-bottom:-1px;';
-  tpeBarAnt.parentNode.insertBefore(sentinelAnt, tpeBarAnt);
-
-  // Observer du bloc-date Date antérieure
-  const blocDateAnt = document.querySelector('#view-ant .bloc-date');
+  const btnvSticky    = document.getElementById('btnv-sticky');
+  const btnvMain      = document.getElementById('btnv');
+  const tpeBarAnt     = document.getElementById('tpe-tabs-bar-ant');
   const btnvAntSticky = document.getElementById('btnv-ant-sticky');
-  const btnvAnt = document.getElementById('btnv-ant');
-  new IntersectionObserver(([entry]) => {
-    if (currentTab !== 'ant') return;
-    const hidden = !entry.isIntersecting;
-    btnvAntSticky.style.display = (hidden && tpeBarAnt.classList.contains('is-stuck')) ? 'flex' : 'none';
-    btnvAntSticky.className = btnvAnt.className;
-    // Pill écart sticky Date antérieure
-    const pill = document.getElementById('ant-pill');
-    if (pill) {
-      const badgeOui = document.getElementById('ant-badge-ecart');
-      const hasEcart = badgeOui && badgeOui.style.display !== 'none';
-      pill.style.display = (hidden && hasEcart) ? 'flex' : 'none';
-    }
-  }, { root: scrollRoot, threshold: 0 }).observe(blocDateAnt);
+  const btnvAnt       = document.getElementById('btnv-ant');
 
-  new IntersectionObserver(([entry]) => {
-    tpeBarAnt.classList.toggle('is-stuck', !entry.isIntersecting);
-  }, { root: scrollRoot, threshold: 0 }).observe(sentinelAnt);
+  function updateStickyState() {
+    const rootRect = scrollRoot.getBoundingClientRect();
+
+    // ── Télécollecte ──
+    if (currentTab === 'tpe') {
+      const blocDateTpe = document.querySelector('#mc .bloc-date');
+      if (blocDateTpe) {
+        const r = blocDateTpe.getBoundingClientRect();
+        const hidden = r.bottom < rootRect.top;
+        tpeBar.classList.toggle('is-stuck', hidden);
+        btnvSticky.style.display = hidden ? 'flex' : 'none';
+        if (hidden) btnvSticky.className = btnvMain.className;
+        const pill = document.getElementById('proposal-a-pill');
+        if (pill) {
+          const ifaceOn = document.getElementById('sw-iface')?.checked;
+          const badgeC = document.getElementById('badge-opt-c');
+          const hasEcart = badgeC && badgeC.style.display !== 'none';
+          pill.style.display = (hidden && ifaceOn && hasEcart) ? 'flex' : 'none';
+        }
+      }
+    }
+
+    // ── Previous Date ──
+    if (currentTab === 'ant') {
+      const blocDateAnt = document.querySelector('#view-ant .bloc-date');
+      if (blocDateAnt) {
+        const r = blocDateAnt.getBoundingClientRect();
+        const hidden = r.bottom < rootRect.top;
+        tpeBarAnt.classList.toggle('is-stuck', hidden);
+        btnvAntSticky.style.display = hidden ? 'flex' : 'none';
+        if (hidden) btnvAntSticky.className = btnvAnt.className;
+        const pill = document.getElementById('ant-pill');
+        if (pill) {
+          const badgeOui = document.getElementById('ant-badge-ecart');
+          const hasEcart = badgeOui && badgeOui.style.display !== 'none';
+          pill.style.display = (hidden && hasEcart) ? 'flex' : 'none';
+        }
+      }
+    }
+  }
+
+  scrollRoot.addEventListener('scroll', updateStickyState, { passive: true });
 
   function scrollToAntTpe(n, el) {
     document.querySelectorAll('#tpe-tabs-bar-ant .tpe-tab').forEach(t => t.classList.remove('active'));
