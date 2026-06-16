@@ -10,7 +10,7 @@
           "id": "telecollecte",
           "name": "Télécollecte",
           "status": "in_progress",
-          "wireframe": "https://studiojailoop.github.io/telecollecte-odyssey/wireframe-telecollecte-cas1-V4.html?designer=1",
+          "wireframe": "../wireframe-telecollecte-cas1-V4.html",
           "version": "En cours",
           "updated": "2026-05-21",
           "label": "Fichier de travail actif"
@@ -19,7 +19,7 @@
           "id": "cardex",
           "name": "Cardex",
           "status": "in_progress",
-          "wireframe": "https://studiojailoop.github.io/telecollecte-odyssey/wireframe-cardex-V2.html",
+          "wireframe": "../wireframe-cardex-V2.html",
           "version": "V2",
           "updated": "2026-06-11",
           "label": "Fiche client — Prop D 3 colonnes (réf. Figma)"

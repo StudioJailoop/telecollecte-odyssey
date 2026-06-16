@@ -1038,7 +1038,7 @@ const PROJECT_LOGOS = {
 // ═══════════════════════════════════════════════════════
 async function loadData() {
   try {
-    const r = await fetch('./data/projects.json');
+    const r = await fetch('./data/projects.json?v=' + Date.now());
     const d = await r.json();
     projects = d.projects || [];
   } catch(e) {
@@ -1047,7 +1047,7 @@ async function loadData() {
       description:'Refonte de l\'outil Odyssey pour les équipes Club Med',
       subprojects:[{
         id:'telecollecte', name:'Télécollecte', status:'in_progress',
-        wireframe:'https://studiojailoop.github.io/telecollecte-odyssey/wireframe-telecollecte-cas1-V4.html?designer=1', version:'V4', updated:'2026-05-21'
+        wireframe:'../wireframe-telecollecte-cas1-V4.html', version:'V4', updated:'2026-05-21'
       }]
     }];
   }
