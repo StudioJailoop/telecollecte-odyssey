@@ -1662,8 +1662,22 @@
     }).catch(() => {});
   }
 
-  const TYPE_LABELS = { retour:'💬 Retour', idee:'💡 Idée', rg:'📋 Règle de gestion', question:'❓ Question', team:'💬 Équipe' };
-  const TYPE_COLORS = { retour:'#1E2643', idee:'#D97706', rg:'#7C3AED', question:'#0891B2', team:'#D93025' };
+  // ── INVARIANT LOOPCRAFT — Source unique des catégories métier ──────────────────
+  // Ces 4 types sont les seuls autorisés. Toute modification ici est une décision
+  // structurelle qui impacte le workflow complet (filtres, badges, requalification).
+  // Ne jamais ajouter une catégorie ici sans valider la Constitution Loopcraft.
+  const LOOPCRAFT_TYPES = [
+    { id: 'retour',   label: '💬 Retour',            color: '#1E2643' },
+    { id: 'idee',     label: '💡 Idée',              color: '#D97706' },
+    { id: 'rg',       label: '📋 Règle de gestion',  color: '#7C3AED' },
+    { id: 'question', label: '❓ Question',           color: '#0891B2' },
+  ];
+  // Dérivés — ne jamais modifier directement, modifier LOOPCRAFT_TYPES
+  const TYPE_LABELS = Object.fromEntries(LOOPCRAFT_TYPES.map(t => [t.id, t.label]));
+  const TYPE_COLORS = Object.fromEntries(LOOPCRAFT_TYPES.map(t => [t.id, t.color]));
+  TYPE_LABELS.team = '💬 Équipe';
+  TYPE_COLORS.team = '#D93025';
+  // ─────────────────────────────────────────────────────────────────────────────
 
   let archivesMode = false;
 
@@ -2684,6 +2698,8 @@
     const RG_BLOCKS_KEY = 'wf_rg_blocks';
     const RG_VERSION = 'v2.0-27rg';
     if (localStorage.getItem('wf_rg_version') !== RG_VERSION) {
+      const existing = JSON.parse(localStorage.getItem(RG_BLOCKS_KEY) || '[]');
+      const existingTitles = new Set(existing.map(r => r.titre));
       const RG_DATA = [
         { tab:'Telecollection', mode:'Interfacé', titre:'Logique des montants en mode interfacé',
           regle:'En mode interfacé, les montants remontent automatiquement depuis les TPE (colonne Expected amount). Le GO n\'a pas à les saisir. La colonne Corrected amount démarre à 0 € et n\'est renseignée que si le GO constate une différence entre le montant attendu et le montant réellement encaissé.',
@@ -2799,10 +2815,40 @@
           comportement:'• Écart à régulariser = 0 → couleur rouge → vert\n• Solde restant = 0, Total régularisé = Écart_initial\n• Le bouton reste disponible : redistribution entre MDP possible\n• La clôture comptable fige l\'état à l\'instant T, définitivement',
           critere:'Écart = 0 → tous les KPI en état résolu\nLe FM peut modifier la répartition tant que somme = Écart_initial\nCloture = seul verrou définitif' }
       ];
-      localStorage.setItem(RG_BLOCKS_KEY, JSON.stringify(RG_DATA));
+      // Merge : conserver les RG existantes, ajouter uniquement les nouvelles (par titre)
+      const toAdd = RG_DATA.filter(r => !existingTitles.has(r.titre));
+      const merged = [...existing, ...toAdd];
+      localStorage.setItem(RG_BLOCKS_KEY, JSON.stringify(merged));
       localStorage.setItem('wf_rg_version', RG_VERSION);
     }
   })();
+
+  // ── Documentation Firebase — structure cible /projects/telecollecte/documentation ──
+  const FB_DOC_URL = 'https://studio-jailoop-default-rtdb.firebaseio.com/projects/telecollecte/documentation.json';
+
+  async function saveDocToFirebase(content, date) {
+    try {
+      await fetch(FB_DOC_URL, {
+        method: 'PUT',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ content, date })
+      });
+    } catch(e) { /* offline — sauvegardé localement uniquement */ }
+  }
+
+  async function syncDocFromFirebase() {
+    try {
+      const res = await fetch(FB_DOC_URL);
+      const remote = await res.json();
+      if (remote && remote.content) {
+        const localDate = localStorage.getItem('wf_documentation_date') || '';
+        if (!localDate || (remote.date && remote.date > localDate)) {
+          localStorage.setItem('wf_documentation', remote.content);
+          localStorage.setItem('wf_documentation_date', remote.date);
+        }
+      }
+    } catch(e) { /* Firebase offline — localStorage reste source de vérité */ }
+  }
 
   function renderRgDoc() {
     const el = document.getElementById('rg-doc-content');
@@ -3008,10 +3054,15 @@
         <div id="rg-blocks-list" style="display:flex;flex-direction:column;gap:10px;">${blocksHTML}</div>
       </div>`;
 
-    // Auto-save à chaque frappe
+    // Auto-save à chaque frappe + sync Firebase
     setTimeout(() => {
       const ta = document.getElementById('doc-text');
-      if (ta) ta.addEventListener('input', () => localStorage.setItem(DOC_KEY, ta.value));
+      if (ta) ta.addEventListener('input', () => {
+        localStorage.setItem(DOC_KEY, ta.value);
+        const dateStr = new Date().toISOString();
+        localStorage.setItem(DOC_DATE_KEY, dateStr);
+        saveDocToFirebase(ta.value, dateStr);
+      });
     }, 100);
   }
 
@@ -3093,8 +3144,9 @@
               clearInterval(poll);
               const ta = document.getElementById('doc-text');
               if (ta) { ta.value = data.result; localStorage.setItem('wf_documentation', data.result); }
-              const dateStr = new Date().toLocaleDateString('fr-FR', { day:'numeric', month:'long', year:'numeric', hour:'2-digit', minute:'2-digit' });
+              const dateStr = new Date().toISOString();
               localStorage.setItem('wf_documentation_date', dateStr);
+              saveDocToFirebase(data.result, dateStr);
               if (btn) { btn.textContent = '⚡ Générer la documentation'; btn.disabled = false; }
               // Refresh pour mettre à jour la date affichée
               renderRgDoc();
@@ -3349,7 +3401,8 @@
     const toDeleteIds = toDelete.map(b => b.id);
     briefs = briefs.filter(b => !(b.type === currentBriefTab && (archivesMode ? b.done : !b.done)));
     saveBriefs();
-    toDeleteIds.forEach(id => fetch('https://studio-jailoop-default-rtdb.firebaseio.com/briefs_telecollecte/b' + id + '.json', { method: 'DELETE' }).catch(() => {}));
+    // INVARIANT LOOPCRAFT — Archiver ≠ supprimer. Aucun DELETE Firebase ici.
+    // Les briefs retirés de la vue restent dans Firebase. La corbeille locale est le seul filet.
     renderBriefs();
     updateAllCounts();
   }
@@ -3417,7 +3470,17 @@
       // Fallback : copie dans le presse-papier
       await navigator.clipboard.writeText(prompt);
       btn.textContent = '📋 Prompt copié !';
-      // Afficher un message clair
+      // Archivage garanti même sans serveur local — invariant constitution Loopcraft
+      claudeSelection.forEach(key => {
+        const b = briefs.find(b => String(b.id) === String(key));
+        if (b) { b.done = true; setCommentArchived(b.sourcePin, true); fbUpdateBrief(b); }
+      });
+      saveBriefs();
+      claudeSelection.clear();
+      updateAllCounts();
+      renderBriefs();
+      refreshPins();
+      // Feedback visuel
       const panel = document.getElementById('claude-prompt-text');
       if (panel) {
         const old = panel.style.borderColor;
@@ -4744,6 +4807,7 @@
   renderComments();
   if (typeof updateArchivesCount === "function") updateArchivesCount();
   updateAuthorFilter();
+  syncDocFromFirebase(); // Sync documentation depuis Firebase au démarrage
 
   // Fermer popover si clic ailleurs
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closePopover(); });
