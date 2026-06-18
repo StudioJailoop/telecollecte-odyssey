@@ -613,7 +613,6 @@
     }
     .switch input:checked + .track { background: var(--navy); }
     .switch input:checked + .track::after { transform: translateX(20px); }
-    #sw-sim-ecart:checked + .track { background: #BF2F17; }
 
     /* ── Panneau versions ── */
     .version-list { display: flex; flex-direction: column; gap: 6px; }
@@ -1515,15 +1514,6 @@
     <span>Caisses ouvertes</span>
     <label class="switch">
       <input type="checkbox" id="sw-caisse" onchange="setB(this.checked)">
-      <span class="track"></span>
-    </label>
-  </div>
-
-  <!-- Simuler écart -->
-  <div class="switch-row">
-    <span style="color:#BF2F17;">Simuler écart</span>
-    <label class="switch">
-      <input type="checkbox" id="sw-sim-ecart" onchange="setSim(this.checked)">
       <span class="track"></span>
     </label>
   </div>
@@ -3850,54 +3840,6 @@
       const el = document.getElementById(id);
       if (el) el.style.display = ko ? 'none' : '';
     });
-  }
-
-  let _simBackup = null; // sauvegarde des corrections avant simulation
-
-  function setSim(on) {
-    const parseV = s => parseFloat((s||'').replace(/\s/g,'').replace('€','').replace(',','.')) || 0;
-    // S'assurer que le mode interfacé est actif
-    const sw = document.getElementById('sw-iface');
-    if (on && sw && !sw.checked) { sw.checked = true; setV(true); }
-
-    if (on) {
-      // Sauvegarder l'état actuel des corrections
-      _simBackup = [];
-      document.querySelectorAll('#ri1 .t-row, #ri2 .t-row').forEach(row => {
-        const inp = row.querySelector('.inp:not(.remise-inp):not(.plain)');
-        if (inp) _simBackup.push({ inp, val: inp.value });
-      });
-      ['3','4','5'].forEach(n => {
-        const anchor = document.getElementById('tpe-anchor-' + n);
-        if (!anchor) return;
-        const ifaceEl = anchor.querySelector('.rows-iface');
-        if (!ifaceEl) return;
-        ifaceEl.querySelectorAll('.t-row').forEach(row => {
-          const inp = row.querySelector('.inp:not(.remise-inp):not(.plain)');
-          if (inp) _simBackup.push({ inp, val: inp.value });
-        });
-      });
-      // Injecter des corrections simulées sur le premier TPE (Visa + Amex)
-      const ri1 = document.getElementById('ri1');
-      if (ri1) {
-        ri1.querySelectorAll('.t-row').forEach(row => {
-          const mdp = row.querySelector('.c-mdp')?.textContent?.trim();
-          const inp = row.querySelector('.inp:not(.remise-inp):not(.plain)');
-          if (!inp) return;
-          if (mdp === 'Visa')  { inp.value = '60,00'; }
-          if (mdp === 'Amex')  { inp.value = '40,00'; }
-          if (mdp === 'WeChat'){ inp.value = '';      }
-          inp.dispatchEvent(new Event('input'));
-        });
-      }
-    } else {
-      // Restaurer les valeurs sauvegardées
-      if (_simBackup) {
-        _simBackup.forEach(({ inp, val }) => { inp.value = val; inp.dispatchEvent(new Event('input')); });
-        _simBackup = null;
-      }
-    }
-    updateKPI();
   }
 
   let saisieMode = false;
