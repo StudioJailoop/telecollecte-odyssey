@@ -1012,7 +1012,8 @@
                 <div id="kpi-ecart-propc" style="display:none;border:1px solid #D1FAE5;border-radius:10px;overflow:hidden;flex-shrink:0;min-width:148px;">
                   <div id="kpi-ecart-propc-header" style="display:flex;align-items:center;gap:6px;padding:6px 12px 6px 10px;background:#ECFDF5;border-bottom:1px solid #D1FAE5;">
                     <span id="kpi-ecart-propc-dot" style="width:8px;height:8px;border-radius:50%;background:#088A20;flex-shrink:0;"></span>
-                    <span id="kpi-ecart-propc-total" style="font-size:14px;font-weight:700;color:#088A20;">0,00 €</span>
+                    <span id="kpi-ecart-propc-label" style="font-size:11px;font-weight:700;color:#088A20;text-transform:uppercase;letter-spacing:.05em;white-space:nowrap;">Aucun écart</span>
+                    <span id="kpi-ecart-propc-total" style="margin-left:auto;font-size:14px;font-weight:700;color:#088A20;display:none;">0,00 €</span>
                   </div>
                   <div id="kpi-ecart-propc-rows" style="display:none;background:#fff;padding:6px 12px 6px 10px;flex-direction:column;gap:4px;"></div>
                 </div>
@@ -4972,6 +4973,7 @@
     const propcTotal = document.getElementById('kpi-ecart-propc-total');
     const propcRows  = document.getElementById('kpi-ecart-propc-rows');
     const noEcartEl  = document.getElementById('kpi-ecart-noecart');
+    const propcLabel = document.getElementById('kpi-ecart-propc-label');
     if (propc) propc.style.display = 'flex';
     if (propc) propc.style.flexDirection = 'column';
     if (noEcartEl) noEcartEl.style.display = 'none';
@@ -4979,7 +4981,8 @@
       if (propcHdr)   { propcHdr.style.background = '#ECFDF5'; propcHdr.style.borderBottomColor = '#D1FAE5'; }
       if (propc)      propc.style.borderColor = '#D1FAE5';
       if (propcDot)   propcDot.style.background = '#088A20';
-      if (propcTotal) { propcTotal.textContent = fmt(0) + ' €'; propcTotal.style.color = '#088A20'; }
+      if (propcLabel) { propcLabel.textContent = 'Aucun écart'; propcLabel.style.color = '#088A20'; }
+      if (propcTotal) { propcTotal.style.display = 'none'; }
       if (propcRows)  { propcRows.style.display = 'none'; propcRows.innerHTML = ''; }
     }
 
@@ -5031,10 +5034,12 @@
       const propcRows  = document.getElementById('kpi-ecart-propc-rows');
       const noEcartEl  = document.getElementById('kpi-ecart-noecart');
       if (noEcartEl) noEcartEl.style.display = 'none';
+      const propcLabel = document.getElementById('kpi-ecart-propc-label');
       if (propc)    { propc.style.display = 'flex'; propc.style.flexDirection = 'column'; propc.style.borderColor = '#FECACA'; }
       if (propcHdr) { propcHdr.style.background = '#FEF2F2'; propcHdr.style.borderBottomColor = '#FECACA'; }
       if (propcDot) propcDot.style.background = '#BF2F17';
-      if (propcTotal) { propcTotal.textContent = totalFmt; propcTotal.style.color = '#BF2F17'; }
+      if (propcLabel) { propcLabel.textContent = 'Écart de'; propcLabel.style.color = '#BF2F17'; }
+      if (propcTotal) { propcTotal.textContent = totalFmt; propcTotal.style.color = '#BF2F17'; propcTotal.style.display = 'block'; }
       if (propcRows)  { propcRows.style.display = 'flex'; propcRows.innerHTML = rowsHtml; }
 
       // Badge latéral opt-c (pill de droite) — garder synchronisé
