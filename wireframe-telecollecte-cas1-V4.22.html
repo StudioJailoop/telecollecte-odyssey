@@ -3909,6 +3909,10 @@
         const kvA = document.getElementById('kpi-attendu-val');
         if (kvA) _frozenAttendu = kvA.textContent;
       }
+      // Sauvegarder la valeur initiale de chaque c-amt des lignes saisie
+      document.querySelectorAll('.t-row.gs .c-amt').forEach(el => {
+        if (!el.dataset.initial) el.dataset.initial = el.textContent.trim();
+      });
     } else {
       _frozenAttendu = null;
     }
@@ -4881,6 +4885,15 @@
       const ecart = complement;
       if (kvA) kvA.textContent = fmt(attendu) + ' €';
       if (kvS) kvS.textContent = fmt(saisi)   + ' €';
+      // Mettre à jour c-amt de chaque ligne : initial + complément de cette ligne
+      document.querySelectorAll('.t-row.gs').forEach(row => {
+        const amtEl = row.querySelector('.c-amt');
+        const inp   = row.querySelector('.inp-complement');
+        if (!amtEl || !inp) return;
+        const initial = parseV(amtEl.dataset.initial || amtEl.textContent);
+        if (!amtEl.dataset.initial) amtEl.dataset.initial = amtEl.textContent.trim();
+        amtEl.textContent = fmt(initial + parseV(inp.value)) + ' €';
+      });
       if (kvE) {
         kvE.textContent = (ecart < -0.005 ? '-' : '') + fmt(Math.abs(ecart)) + ' €';
         kvE.style.color = '#088A20'; // en mode saisie le complément est toujours normal
