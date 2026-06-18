@@ -1539,11 +1539,10 @@
   <hr>
 
   <!-- Propositions -->
-  <div id="proposals-section" style="display:none;">
-    <div class="panel-title">Propositions</div>
-    <div id="version-list"></div>
-    <hr>
-  </div>
+  <div class="panel-title">Propositions</div>
+  <div id="version-list"></div>
+
+  <hr>
 
   <!-- Commentaires -->
   <div class="panel-title">Commentaires</div>
@@ -4050,11 +4049,9 @@
     const section = document.getElementById('proposals-section');
     if (!list) return;
     if (proposals.length === 0) {
-      if (section) section.style.display = 'none';
-      list.innerHTML = '';
+      list.innerHTML = `<div style="font-size:12px;color:var(--grey-txt);padding:4px 0;font-style:italic;">Aucune proposition en attente</div>`;
       return;
     }
-    if (section) section.style.display = 'block';
     list.innerHTML = proposals.map(p => {
       const isActive = activeProposal === p.id;
       return `<div class="version-item${isActive ? ' active' : ''}" ${!isActive ? `onclick="showProposal('${p.id}')" style="cursor:pointer;"` : ''}>
