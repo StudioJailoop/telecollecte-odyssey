@@ -1539,11 +1539,10 @@
   <hr>
 
   <!-- Propositions -->
-  <div id="proposals-section" style="display:none;">
-    <div class="panel-title">Propositions</div>
-    <div id="version-list"></div>
-    <hr>
-  </div>
+  <div class="panel-title">Propositions</div>
+  <div id="version-list"></div>
+
+  <hr>
 
   <!-- Commentaires -->
   <div class="panel-title">Commentaires</div>
@@ -3997,7 +3996,11 @@
 
   // badgeId : id du div badge à afficher dans la ligne KPI
   // display : valeur CSS display à utiliser quand visible ('flex'|'inline-flex'|'block')
-  let proposals = [];
+  let proposals = [
+    { id: 'prop-a', label: 'Prop A — Pill + liste MDP inline',    badgeId: 'badge-prop-a', display: 'flex' },
+    { id: 'prop-b', label: 'Prop B — Tags MDP dans KPI Écart',    badgeId: 'badge-prop-b', display: 'flex' },
+    { id: 'prop-c', label: 'Prop C — Encadré autonome',           badgeId: 'badge-prop-c', display: 'flex' },
+  ];
 
   function showProposal(id) {
     activeProposal = id;
@@ -4047,14 +4050,11 @@
 
   function renderVersionPanel() {
     const list = document.getElementById('version-list');
-    const section = document.getElementById('proposals-section');
     if (!list) return;
     if (proposals.length === 0) {
-      if (section) section.style.display = 'none';
-      list.innerHTML = '';
+      list.innerHTML = `<div style="font-size:12px;color:var(--grey-txt);padding:8px 4px;font-style:italic;">Pas de proposition en attente</div>`;
       return;
     }
-    if (section) section.style.display = 'block';
     list.innerHTML = proposals.map(p => {
       const isActive = activeProposal === p.id;
       return `<div class="version-item${isActive ? ' active' : ''}" ${!isActive ? `onclick="showProposal('${p.id}')" style="cursor:pointer;"` : ''}>
