@@ -1037,14 +1037,10 @@
                   </div>
                 </div>
 
-                <!-- Badge Opt_C (En cours) : encadré autonome Prop C -->
-                <div id="badge-opt-c" style="display:none;border:1px solid #FECACA;border-radius:10px;overflow:hidden;flex-shrink:0;min-width:196px;">
-                  <div style="display:flex;align-items:center;gap:6px;padding:6px 12px 6px 10px;background:#FEF2F2;border-bottom:1px solid #FECACA;">
-                    <span style="width:8px;height:8px;border-radius:50%;background:#BF2F17;flex-shrink:0;"></span>
-                    <span style="font-size:11px;font-weight:700;color:#BF2F17;text-transform:uppercase;letter-spacing:.05em;">Écart détecté</span>
-                    <span id="badge-opt-c-total" style="margin-left:auto;font-size:14px;font-weight:700;color:#BF2F17;">–0,00 €</span>
-                  </div>
-                  <div id="badge-opt-c-rows" style="background:#fff;padding:6px 12px 6px 10px;display:flex;flex-direction:column;gap:4px;"></div>
+                <!-- Badge Opt_C (En cours) : pill enrichie avec moyens de paiement -->
+                <div id="badge-opt-c" style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:5px 14px;border-radius:20px;background:#FEF2F2;color:#BF2F17;">
+                  <span style="width:8px;height:8px;border-radius:50%;background:#BF2F17;flex-shrink:0;"></span>
+                  Écart détecté · <span style="color:var(--navy);margin-left:2px;">Visa · Amex</span>
                 </div>
 
                 <!-- Badge Prop A : pill signal + séparateur vertical + liste MDP + montants -->
@@ -3942,8 +3938,9 @@
     // Nettoyer dots tableau
     document.querySelectorAll('#mc .c-mdp').forEach(el => el.classList.remove('prop-c-signal'));
     if (id === 'current') {
-      // En cours : recalculer les KPI pour alimenter badge-opt-c dynamiquement
-      updateKPI();
+      // En cours : badge-opt-c visible (Opt_C validée)
+      const el = document.getElementById('badge-opt-c');
+      if (el) el.style.display = 'flex';
     } else {
       const prop = proposals.find(p => p.id === id);
       if (prop) {
@@ -4891,57 +4888,11 @@
       const el = document.getElementById(id);
       if (el) el.style.display = 'none';
     });
-
-    if (hasEcart) {
-      // Calculer l'écart par MDP (somme des corrections de chaque MDP sur tous les TPE)
-      const parseV = s => parseFloat((s||'').replace(/\s/g,'').replace('€','').replace(',','.')) || 0;
-      const mdpMap = {};
-      const addMdp = (name, val) => { mdpMap[name] = (mdpMap[name]||0) + val; };
-      ['1','2'].forEach(n => {
-        const riEl = document.getElementById('ri'+n);
-        if (!riEl || riEl.style.display === 'none') return;
-        riEl.querySelectorAll('.t-row').forEach(row => {
-          const mdp  = row.querySelector('.c-mdp')?.textContent?.trim();
-          const corr = row.querySelector('.inp:not(.remise-inp):not(.plain)');
-          if (mdp && corr) addMdp(mdp, parseV(corr.value));
-        });
-      });
-      ['3','4','5'].forEach(n => {
-        const anchor  = document.getElementById('tpe-anchor-' + n);
-        if (!anchor) return;
-        const ifaceEl = anchor.querySelector('.rows-iface');
-        if (!ifaceEl || ifaceEl.style.display === 'none') return;
-        ifaceEl.querySelectorAll('.t-row').forEach(row => {
-          const mdp  = row.querySelector('.c-mdp')?.textContent?.trim();
-          const corr = row.querySelector('.inp:not(.remise-inp):not(.plain)');
-          if (mdp && corr) addMdp(mdp, parseV(corr.value));
-        });
-      });
-
-      // Trier : MDP en écart en premier, puis sans écart
-      const mdpList = Object.entries(mdpMap).sort((a,b) => Math.abs(b[1]) - Math.abs(a[1]));
-      const totalEcart = mdpList.reduce((s,[,v]) => s + v, 0);
-
-      const badgeC = document.getElementById('badge-opt-c');
-      const badgeCTotal = document.getElementById('badge-opt-c-total');
-      const badgeCRows = document.getElementById('badge-opt-c-rows');
-      if (badgeC) {
-        badgeC.style.display = 'flex';
-        if (badgeCTotal) badgeCTotal.textContent = (totalEcart < -0.005 ? '–' : '') + fmt(Math.abs(totalEcart)) + ' €';
-        if (badgeCRows) {
-          badgeCRows.innerHTML = mdpList.map(([name, val]) => {
-            const isEcart = Math.abs(val) >= 0.005;
-            const clr = isEcart ? '#BF2F17' : '#6B7280';
-            const fw  = isEcart ? '700' : '400';
-            return `<div style="display:flex;align-items:center;justify-content:space-between;gap:24px;font-size:12px;">
-              <span style="color:${clr};font-weight:700;">${name}</span>
-              <span style="color:${clr};font-weight:${fw};">${fmt(Math.abs(val))} €</span>
-            </div>`;
-          }).join('');
-        }
-      }
+    const badgeC = document.getElementById('badge-opt-c');
+    if (badgeC && hasEcart) {
+      badgeC.style.display = 'flex';
+      badgeC.innerHTML = `<span style="width:8px;height:8px;border-radius:50%;background:#BF2F17;flex-shrink:0;"></span>Écart détecté`;
     }
-
     const pill = document.getElementById('proposal-a-pill');
     if (pill) {
       const ifaceOn = document.getElementById('sw-iface')?.checked;
