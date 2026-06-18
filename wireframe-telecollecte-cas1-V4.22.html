@@ -4877,26 +4877,14 @@
     const ifaceOn = document.getElementById('sw-iface')?.checked;
 
     // ── CAS 1 : MODE SAISIE (post-validation) ──
+    // KPI et c-amt figés pendant la saisie — mis à jour uniquement à la revalidation
     if (saisieMode && _frozenAttendu !== null) {
-      const attendu  = parseV(_frozenAttendu);
-      let complement = 0;
-      document.querySelectorAll('.inp-complement').forEach(inp => { complement += parseV(inp.value); });
-      const saisi = attendu + complement;
-      const ecart = complement;
+      const attendu = parseV(_frozenAttendu);
       if (kvA) kvA.textContent = fmt(attendu) + ' €';
-      if (kvS) kvS.textContent = fmt(saisi)   + ' €';
-      // Mettre à jour c-amt de chaque ligne : initial + complément de cette ligne
-      document.querySelectorAll('.t-row.gs').forEach(row => {
-        const amtEl = row.querySelector('.c-amt');
-        const inp   = row.querySelector('.inp-complement');
-        if (!amtEl || !inp) return;
-        const initial = parseV(amtEl.dataset.initial || amtEl.textContent);
-        if (!amtEl.dataset.initial) amtEl.dataset.initial = amtEl.textContent.trim();
-        amtEl.textContent = fmt(initial + parseV(inp.value)) + ' €';
-      });
+      if (kvS) kvS.textContent = fmt(attendu) + ' €';
       if (kvE) {
-        kvE.textContent = (ecart < -0.005 ? '-' : '') + fmt(Math.abs(ecart)) + ' €';
-        kvE.style.color = '#088A20'; // en mode saisie le complément est toujours normal
+        kvE.textContent = '0,00 €';
+        kvE.style.color = '#088A20';
       }
       // En mode saisie : masquer tous les badges d'écart et la pill sticky
       ['badge-no-ecart','badge-opt-a','badge-opt-b','badge-opt-c'].forEach(id => {
@@ -5392,6 +5380,17 @@
         let complement = 0;
         document.querySelectorAll('.inp-complement').forEach(inp => { complement += parseV(inp.value); });
         totalSaisi = parseV(_frozenAttendu) + complement;
+        // Mettre à jour c-amt de chaque ligne avec initial + complément de cette ligne
+        document.querySelectorAll('.t-row.gs').forEach(row => {
+          const amtEl = row.querySelector('.c-amt');
+          const inp   = row.querySelector('.inp-complement');
+          if (!amtEl || !inp) return;
+          const initial = parseV(amtEl.dataset.initial || amtEl.textContent);
+          if (!amtEl.dataset.initial) amtEl.dataset.initial = amtEl.textContent.trim();
+          const newVal = initial + parseV(inp.value);
+          amtEl.textContent = newVal.toLocaleString('fr-FR', {minimumFractionDigits:2}) + ' €';
+          amtEl.dataset.initial = amtEl.textContent.trim(); // la nouvelle valeur devient le nouvel initial
+        });
       }
       _frozenAttendu = totalSaisi.toLocaleString('fr-FR', {minimumFractionDigits:2}) + ' €';
       document.querySelectorAll('.inp-complement').forEach(inp => { inp.value = ''; });
