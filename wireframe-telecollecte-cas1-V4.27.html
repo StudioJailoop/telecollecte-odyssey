@@ -1007,19 +1007,21 @@
                 <span id="kpi-saisi-val" style="font-size:20px;font-weight:700;color:var(--navy);display:block;">1 250,00 €</span>
               </div>
               <div id="kpi-sep2" style="width:1px;height:36px;background:var(--grey-bd);flex-shrink:0;align-self:center;"></div>
-              <!-- KPI Écart — encadré unique, vert sans écart / rouge avec écart -->
+              <!-- KPI Écart — mode sans écart : label + valeur / mode avec écart : encadré Prop C inline -->
               <div id="kpi-ecart" style="display:flex;flex-direction:column;gap:4px;flex-shrink:0;">
-                <div id="kpi-ecart-propc" style="display:none;border:1px solid #D1FAE5;border-radius:10px;overflow:hidden;flex-shrink:0;min-width:148px;">
-                  <div id="kpi-ecart-propc-header" style="display:flex;align-items:center;gap:6px;padding:6px 12px 6px 10px;background:#ECFDF5;border-bottom:1px solid #D1FAE5;">
-                    <span id="kpi-ecart-propc-dot" style="width:8px;height:8px;border-radius:50%;background:#088A20;flex-shrink:0;"></span>
-                    <span id="kpi-ecart-propc-total" style="font-size:14px;font-weight:700;color:#088A20;">0,00 €</span>
-                  </div>
-                  <div id="kpi-ecart-propc-rows" style="display:none;background:#fff;padding:6px 12px 6px 10px;flex-direction:column;gap:4px;"></div>
-                </div>
-                <!-- Fallback : label classique quand mode non-interfacé -->
+                <!-- État sans écart : label classique -->
                 <div id="kpi-ecart-noecart" style="display:flex;flex-direction:column;gap:4px;">
                   <span style="font-size:11px;font-weight:700;color:var(--grey-txt);text-transform:uppercase;letter-spacing:.05em;display:block;">Écart</span>
                   <span id="kpi-ecart-val" style="font-size:20px;font-weight:700;color:#BF2F17;display:block;">0,00 €</span>
+                </div>
+                <!-- État avec écart : encadré Prop C inline -->
+                <div id="kpi-ecart-propc" style="display:none;border:1px solid #FECACA;border-radius:10px;overflow:hidden;flex-shrink:0;min-width:196px;">
+                  <div style="display:flex;align-items:center;gap:6px;padding:6px 12px 6px 10px;background:#FEF2F2;border-bottom:1px solid #FECACA;">
+                    <span style="width:8px;height:8px;border-radius:50%;background:#BF2F17;flex-shrink:0;"></span>
+                    <span style="font-size:11px;font-weight:700;color:#BF2F17;text-transform:uppercase;letter-spacing:.05em;">Écart détecté</span>
+                    <span id="kpi-ecart-propc-total" style="margin-left:auto;font-size:14px;font-weight:700;color:#BF2F17;">0,00 €</span>
+                  </div>
+                  <div id="kpi-ecart-propc-rows" style="background:#fff;padding:6px 12px 6px 10px;display:flex;flex-direction:column;gap:4px;"></div>
                 </div>
               </div>
               <div style="margin-left:auto;display:flex;align-items:center;gap:48px;flex-shrink:0;">
@@ -4950,11 +4952,6 @@
     });
     if (kvS) kvS.textContent = fmt(sum) + ' €';
     if (badgeNoEcart) badgeNoEcart.style.display = 'none';
-    // Remettre le fallback label/valeur en non-interfacé
-    const _propc = document.getElementById('kpi-ecart-propc');
-    const _noEcart = document.getElementById('kpi-ecart-noecart');
-    if (_propc) _propc.style.display = 'none';
-    if (_noEcart) _noEcart.style.display = 'flex';
   }
 
   function _updateBadges(ecart, fmt) {
@@ -4965,22 +4962,12 @@
       const el = document.getElementById(id);
       if (el) el.style.display = 'none';
     });
-    // KPI Écart encadré unifié : vert sans écart, rouge avec
-    const propc      = document.getElementById('kpi-ecart-propc');
-    const propcHdr   = document.getElementById('kpi-ecart-propc-header');
-    const propcDot   = document.getElementById('kpi-ecart-propc-dot');
-    const propcTotal = document.getElementById('kpi-ecart-propc-total');
-    const propcRows  = document.getElementById('kpi-ecart-propc-rows');
-    const noEcartEl  = document.getElementById('kpi-ecart-noecart');
-    if (propc) propc.style.display = 'flex';
-    if (propc) propc.style.flexDirection = 'column';
-    if (noEcartEl) noEcartEl.style.display = 'none';
+    // KPI Écart inline : reset si pas d'écart
     if (!hasEcart) {
-      if (propcHdr)   { propcHdr.style.background = '#ECFDF5'; propcHdr.style.borderBottomColor = '#D1FAE5'; }
-      if (propc)      propc.style.borderColor = '#D1FAE5';
-      if (propcDot)   propcDot.style.background = '#088A20';
-      if (propcTotal) { propcTotal.textContent = fmt(0) + ' €'; propcTotal.style.color = '#088A20'; }
-      if (propcRows)  { propcRows.style.display = 'none'; propcRows.innerHTML = ''; }
+      const propc = document.getElementById('kpi-ecart-propc');
+      const noEcartEl = document.getElementById('kpi-ecart-noecart');
+      if (propc) propc.style.display = 'none';
+      if (noEcartEl) noEcartEl.style.display = 'flex';
     }
 
     if (hasEcart) {
@@ -5023,19 +5010,15 @@
         </div>`;
       }).join('');
 
-      // KPI Écart encadré rouge avec détail MDP
-      const propc      = document.getElementById('kpi-ecart-propc');
-      const propcHdr   = document.getElementById('kpi-ecart-propc-header');
-      const propcDot   = document.getElementById('kpi-ecart-propc-dot');
+      // KPI Écart inline Prop C
+      const propc = document.getElementById('kpi-ecart-propc');
       const propcTotal = document.getElementById('kpi-ecart-propc-total');
-      const propcRows  = document.getElementById('kpi-ecart-propc-rows');
-      const noEcartEl  = document.getElementById('kpi-ecart-noecart');
+      const propcRows = document.getElementById('kpi-ecart-propc-rows');
+      const noEcartEl = document.getElementById('kpi-ecart-noecart');
+      if (propc) { propc.style.display = 'flex'; propc.style.flexDirection = 'column'; }
+      if (propcTotal) propcTotal.textContent = totalFmt;
+      if (propcRows) propcRows.innerHTML = rowsHtml;
       if (noEcartEl) noEcartEl.style.display = 'none';
-      if (propc)    { propc.style.display = 'flex'; propc.style.flexDirection = 'column'; propc.style.borderColor = '#FECACA'; }
-      if (propcHdr) { propcHdr.style.background = '#FEF2F2'; propcHdr.style.borderBottomColor = '#FECACA'; }
-      if (propcDot) propcDot.style.background = '#BF2F17';
-      if (propcTotal) { propcTotal.textContent = totalFmt; propcTotal.style.color = '#BF2F17'; }
-      if (propcRows)  { propcRows.style.display = 'flex'; propcRows.innerHTML = rowsHtml; }
 
       // Badge latéral opt-c (pill de droite) — garder synchronisé
       const badgeC = document.getElementById('badge-opt-c');
