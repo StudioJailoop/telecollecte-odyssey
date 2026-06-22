@@ -295,7 +295,7 @@
     e.preventDefault();
     const user = JSON.parse(sessionStorage.getItem('wf_user') || '{}');
     const name = encodeURIComponent(user.name || '');
-    window.open(`wireframe-telecollecte-cas1-V4.html?user=${name}`, '_blank');
+    window.location.href = `wireframe-telecollecte-cas1-V4.html?user=${name}`;
   }
 
   function doLogout() {
