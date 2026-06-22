@@ -765,34 +765,44 @@
         <div id="prop-A">
           <div class="info-grid-4">
 
-            <!-- Card Profil -->
+            <!-- Card Info client — conforme Figma -->
             <div class="info-card">
-              <div class="profile-row" style="margin-bottom:10px;">
-                <span class="profile-badge badge-gold">Gold</span>
+              <div style="display:flex;gap:8px;margin-bottom:8px;">
                 <span class="profile-badge badge-vip">VIP</span>
+                <span class="profile-badge badge-donor">Donor</span>
               </div>
-              <div class="info-row"><span class="info-lbl">Age</span><span class="info-val">38 years</span></div>
-              <div class="info-row"><span class="info-lbl">Country</span><span class="info-val">United States</span></div>
-              <div class="info-row"><span class="info-lbl">Stay</span><span class="info-val">09/04 → 09/05/24</span></div>
-              <div class="info-row"><span class="info-lbl">Membership</span><span class="info-val">123455456</span></div>
-              <button class="btn-pass" style="margin-top:12px;">Club Med Pass</button>
+              <div class="profile-row"><span class="profile-label">Age:</span><span class="profile-value">01/01/1988 — 38 years</span></div>
+              <div class="profile-row"><span class="profile-label">Country:</span><span class="profile-value">United States</span></div>
+              <div class="profile-row"><span class="profile-label">Stay:</span><span class="profile-value">from 09/04/24 to 09/05/24</span></div>
+              <div style="margin:4px 0;">
+                <span style="font-size:14px;font-weight:600;color:#BF2F17;text-decoration:underline;cursor:pointer;">See more absence (3)</span>
+              </div>
+              <div class="profile-row"><span class="profile-label">Membership:</span><span class="profile-value">123455456</span></div>
+              <div class="profile-row"><span class="profile-label">File:</span><span class="profile-value">12526633521452</span></div>
+              <button class="btn-pass">Club Med Pass management</button>
             </div>
 
-            <!-- Card Arrival -->
+            <!-- Card Arrival — conforme Figma -->
             <div class="info-card">
               <div class="card-section-title">
-                <svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 2 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+                <svg viewBox="0 0 24 24"><path d="M5 17H3a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11a2 2 0 0 1 2 2v3m-4 13a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2h-8a2 2 0 0 0-2 2v8z"/></svg>
                 Arrival Information
               </div>
-              <div class="info-row"><span class="info-lbl">Package</span><span class="info-val">Transport + Transfer</span><span class="info-link">See transfers</span></div>
-              <div class="info-row"><span class="info-lbl">Departure</span><span class="info-val">CMF</span></div>
-              <div class="info-row"><span class="info-lbl">Arrival</span><span class="info-val">Val Thorens Sensation</span></div>
-              <div class="info-row"><span class="info-lbl">Date / Time</span><span class="info-val">08/03/2026 — 10:12</span></div>
+              <div class="info-row">
+                <span class="profile-label" style="font-size:14px;">Transp:</span>
+                <span class="profile-value">Transport included<br>Transfer included<br><span style="color:#D97706;font-weight:600;">VV arrival at 18:00</span></span>
+                <span class="info-link">See transfers</span>
+              </div>
+              <div class="profile-row" style="margin-top:6px;"><span class="profile-label" style="font-size:14px;">Departure loc:</span><span class="profile-value">CMF</span></div>
+              <div class="profile-row"><span class="profile-label" style="font-size:14px;">Arrival loc:</span><span class="profile-value">Val Thorens Sensation</span></div>
+              <div class="profile-row"><span class="profile-label" style="font-size:14px;">Date:</span><span class="profile-value">08/03/2026</span></div>
+              <div class="profile-row"><span class="profile-label" style="font-size:14px;">Arrival time:</span><span class="profile-value">10:12</span></div>
             </div>
 
-            <!-- Card Room -->
-            <div class="info-card">
-              <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:4px;">
+            <!-- Card Room — conforme Figma -->
+            <div class="info-card" style="gap:8px;">
+              <!-- Room header -->
+              <div style="display:flex;align-items:flex-start;justify-content:space-between;">
                 <div>
                   <div class="room-title">Room 301
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
@@ -803,16 +813,30 @@
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#D93025" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
                 </div>
               </div>
-              <div class="room-meta">
-                <div class="room-meta-item"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>G</div>
-                <div class="room-meta-item"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>C2</div>
+              <!-- Meta -->
+              <div class="room-meta" style="margin-bottom:0;">
+                <div class="room-meta-item"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Fado coimbra</div>
+                <div class="room-meta-item"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.64 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.55 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.09 6.09l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>202</div>
               </div>
-              <div class="expense-box">
-                <div>
-                  <div class="expense-amount">70,00 €</div>
-                  <div class="expense-label">Expense Report</div>
+              <!-- Make a request -->
+              <button style="align-self:center;height:32px;padding:0 16px;border:1px solid var(--navy);border-radius:32px;background:transparent;font-size:13px;font-weight:600;color:var(--navy);cursor:pointer;font-family:inherit;">Make a request</button>
+              <!-- Expense -->
+              <div style="display:flex;align-items:center;gap:8px;margin-top:4px;">
+                <span style="font-size:20px;font-weight:700;color:#BF2F17;">- 23,00 €</span>
+                <span style="font-size:13px;color:var(--grey-txt);">Expense Report</span>
+              </div>
+              <!-- Visa row -->
+              <div style="display:flex;align-items:center;justify-content:space-between;">
+                <div style="display:flex;align-items:center;gap:6px;">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#088A20" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+                  <span style="font-size:13px;color:var(--navy);font-weight:500;">Visa = 250,00 €</span>
                 </div>
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#088A20" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+                <button style="height:32px;padding:0 14px;border:1px solid var(--navy);border-radius:32px;background:transparent;font-size:12px;font-weight:600;color:var(--navy);cursor:pointer;font-family:inherit;">Modify</button>
+              </div>
+              <!-- Easy checkout switch -->
+              <div style="display:flex;align-items:center;gap:10px;background:#F6EFE7;border-radius:32px;padding:6px 12px;">
+                <label class="switch" style="flex-shrink:0;"><input type="checkbox" checked><span class="track"></span></label>
+                <span style="font-size:13px;font-weight:600;color:var(--navy);">Easy checkout</span>
               </div>
             </div>
 
@@ -950,10 +974,10 @@
 </div>
 
 <!-- Panel wireframe -->
-<div class="wf-panel" id="wf-panel">
+<div class="wf-panel collapsed" id="wf-panel">
   <div class="panel-title" style="display:flex;align-items:center;justify-content:space-between;">
     OPTIONS
-    <button onclick="togglePanel()" style="background:none;border:none;cursor:pointer;font-size:16px;color:var(--grey-txt);line-height:1;">−</button>
+    <button onclick="togglePanel()" style="background:none;border:none;cursor:pointer;font-size:16px;color:var(--grey-txt);line-height:1;">+</button>
   </div>
   <div class="panel-body">
     <div class="panel-title">Proposition Cardex</div>
