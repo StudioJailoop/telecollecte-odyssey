@@ -4094,10 +4094,8 @@
   setInterval(fbLoad, 5000);
   // Chargement initial depuis Firebase
   fbLoad();
-  // Designer : pings activés par défaut sauf si explicitement désactivé
-  let commentMode = isDesigner
-    ? localStorage.getItem('wf_pins_visible') !== '0'
-    : localStorage.getItem('wf_pins_visible') === '1';
+  // Designer et PO : pings toujours activés (PO doit pouvoir commenter)
+  let commentMode = true;
   let pendingPin = null;
   let currentTab = 'tpe'; // tab active au moment du commentaire
   const AUTHOR_COLORS = {
