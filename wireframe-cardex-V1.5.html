@@ -536,13 +536,9 @@
     .switch input:checked + .track { background:var(--navy); }
     .switch input:checked + .track::after { transform:translateX(20px); }
 
-    /* Panel wireframe — système Loopcraft complet */
-    .wf-panel.collapsed > .panel-body { display: none; }
-    .wf-panel.collapsed > .panel-header { display: none !important; }
-    .wf-panel.collapsed > #panel-doc-section { display: none; }
-    .wf-panel.collapsed { min-width: 0; padding: 6px; border: none; background: none; box-shadow: none; }
-    .wf-panel.collapsed > #btn-panel-open { display: flex !important; }
-    #btn-panel-open { display: none; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 50%; background: var(--white); border: 2px solid var(--navy); cursor: pointer; font-size: 18px; font-weight: 700; color: var(--navy); box-shadow: 0 2px 8px rgba(0,0,0,.15); }
+    /* Panel wireframe */
+    .wf-panel.collapsed .panel-body { display:none; }
+    .wf-panel.collapsed { min-width:0; }
     .wf-panel { position:fixed;bottom:80px;right:20px;background:var(--white);border:2px solid var(--navy);border-radius:12px;padding:16px 18px;z-index:999;font-size:13px;box-shadow:0 4px 20px rgba(0,0,0,.15);min-width:240px;display:flex;flex-direction:column;gap:12px; }
     .panel-body { display:flex;flex-direction:column;gap:12px; }
     .wf-panel .panel-title { font-size:11px;font-weight:700;color:var(--grey-txt);text-transform:uppercase;letter-spacing:.5px; }
@@ -1061,73 +1057,34 @@
   <button class="btn-footer yellow">Check in</button>
 </div>
 
-<!-- Panel wireframe — système Loopcraft complet -->
+<!-- Panel wireframe -->
 <div class="wf-panel collapsed" id="wf-panel">
-
-  <button id="btn-panel-open" onclick="togglePanel()" title="Ouvrir">+</button>
-
-  <div class="panel-header" style="display:flex;align-items:center;justify-content:space-between;">
-    <span class="panel-title">Règles de gestion</span>
-    <button onclick="togglePanel()" style="background:none;border:none;cursor:pointer;font-size:16px;color:var(--grey-txt);line-height:1;" title="Réduire">−</button>
+  <div class="panel-title" style="display:flex;align-items:center;justify-content:space-between;">
+    OPTIONS
+    <button onclick="togglePanel()" style="background:none;border:none;cursor:pointer;font-size:16px;color:var(--grey-txt);line-height:1;">+</button>
   </div>
-
   <div class="panel-body">
-
-    <hr>
-
-    <!-- Propositions -->
-    <div class="panel-title">Propositions</div>
+    <div class="panel-title">Proposition Cardex</div>
     <div style="display:flex;flex-direction:column;gap:6px;">
-      <button class="prop-btn active" id="pnl-A" onclick="setProp('A',this)">A — 4 colonnes (défaut)</button>
-      <button class="prop-btn" id="pnl-B" onclick="setProp('B',this)">B — Bande</button>
-      <button class="prop-btn" id="pnl-C" onclick="setProp('C',this)">C — Empilé milieu</button>
+      <button class="prop-btn" id="pnl-B" onclick="setProp('B',this);syncPropBtns('B')">B — Bande</button>
+      <button class="prop-btn active" id="pnl-A" onclick="setProp('A',this);syncPropBtns('A')">A — 4 colonnes (défaut)</button>
+      <button class="prop-btn" id="pnl-C" onclick="setProp('C',this);syncPropBtns('C')">C — Empilé milieu</button>
     </div>
-
     <hr>
-
-    <!-- Commentaires -->
     <div class="panel-title">Commentaires</div>
     <div class="switch-row">
       <span>Afficher les pins</span>
       <label class="switch"><input type="checkbox" id="sw-comments" onchange="setCmtMode(this.checked)"><span class="track"></span></label>
     </div>
-    <select class="author-filter" id="author-filter" onchange="refreshPins()" style="display:none;">
+    <select class="author-filter" id="author-filter" onchange="refreshPins()">
       <option value="">Tous les auteurs</option>
+      <option value="Julie">Julie</option>
+      <option value="Nelly">Nelly</option>
+      <option value="Jérôme">Jérôme</option>
+      <option value="Kirsty">Kirsty</option>
+      <option value="Laurent">Laurent</option>
+      <option value="Sébastien">Sébastien</option>
     </select>
-
-  </div><!-- /panel-body -->
-
-  <!-- Documentation -->
-  <div id="panel-doc-section" style="padding:12px 16px;border-top:1px solid var(--grey-bd);">
-    <div class="panel-title" style="margin-bottom:10px;">Documentation</div>
-    <div style="display:flex;flex-direction:column;gap:2px;">
-      <button onclick="openDocDrawer()"
-        style="display:flex;align-items:center;justify-content:space-between;background:none;border:none;border-radius:8px;padding:8px 10px;cursor:pointer;font-family:inherit;width:100%;text-align:left;transition:background .12s;"
-        onmouseover="this.style.background='#F3F4F6'" onmouseout="this.style.background='none'">
-        <span style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:500;color:var(--navy);">
-          <span style="font-size:15px;">📘</span> Règles de gestion
-        </span>
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--grey-txt)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
-      </button>
-    </div>
-  </div>
-
-</div>
-
-<!-- ══ DRAWER DOCUMENTATION (full-screen) ══ -->
-<div id="doc-drawer" style="display:none;position:fixed;inset:0;background:var(--white);z-index:2200;flex-direction:column;">
-  <div style="background:#0F1629;padding:14px 28px;display:flex;align-items:center;gap:16px;flex-shrink:0;">
-    <button onclick="closeDocDrawer()"
-      style="display:flex;align-items:center;gap:6px;background:none;border:1px solid rgba(255,255,255,0.2);border-radius:8px;padding:6px 14px;font-size:13px;font-weight:600;color:rgba(255,255,255,0.7);cursor:pointer;font-family:inherit;"
-      onmouseover="this.style.borderColor='rgba(255,255,255,0.5)';this.style.color='white'" onmouseout="this.style.borderColor='rgba(255,255,255,0.2)';this.style.color='rgba(255,255,255,0.7)'">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
-      Retour
-    </button>
-    <div style="color:#C4B5FD;font-size:15px;font-weight:700;">📘 Règles de gestion — Fiche Client Cardex</div>
-  </div>
-  <div style="flex:1;display:flex;overflow:hidden;">
-    <div id="doc-drawer-toc" style="width:260px;flex-shrink:0;border-right:1px solid var(--grey-bd);overflow-y:auto;padding:28px 20px;background:#FAFAFA;"></div>
-    <div id="doc-drawer-content" style="flex:1;overflow-y:auto;padding:32px 48px;"></div>
   </div>
 </div>
 
@@ -1143,11 +1100,6 @@
     el.classList.add('active');
   }
 
-  function togglePanel() {
-    const p = document.getElementById('wf-panel');
-    p.classList.toggle('collapsed');
-  }
-
   function setProp(p, btn) {
     ['A','B','C'].forEach(id => {
       const el = document.getElementById('prop-'+id);
@@ -1155,192 +1107,25 @@
     });
     document.querySelectorAll('.prop-btn').forEach(b => b.classList.remove('active'));
     if (btn) btn.classList.add('active');
+    syncPropBtns(p);
   }
 
-  // ── RG Cardex ──────────────────────────────────────────
-  const RG_CARDEX = [
-    {
-      id: 'RG-01', titre: 'Affichage des informations identité client',
-      regle: 'La barre d\'identité affiche : Civilité, Nom, Prénom, Téléphone (modifiable), Email (modifiable).',
-      comportement: 'Les champs Téléphone et Email disposent d\'un lien "Edit" permettant la modification en ligne.\nLes 5 champs sont toujours visibles, quelle que soit la résolution (1440px minimum).',
-      critere: 'Les 5 cellules sont affichées avec les valeurs du dossier client. Le lien Edit est cliquable.',
-      question: ''
-    },
-    {
-      id: 'RG-02', titre: 'Boutons action identité — Demande particulière et Carnet de liaison',
-      regle: 'Deux boutons sont affichés à droite de la barre identité : Demande particulière (vert) et Carnet de liaison (jaune).\nLe bouton Carnet de liaison affiche un badge rouge si des messages non lus existent.',
-      comportement: 'Badge rouge = nombre de messages non lus dans le carnet de liaison.\nSans messages non lus, le badge est masqué.',
-      critere: 'Les deux boutons sont affichés. Le badge s\'affiche uniquement si count > 0.',
-      question: 'Quelle est la source des données du carnet de liaison ? API dédiée ou module existant ?'
-    },
-    {
-      id: 'RG-03', titre: 'Navigation par onglets — Fiche client',
-      regle: 'Les onglets disponibles sont : Check-in, Prepaids, Sell services, Sale history, Deposit / Withdrawal, Account balance, Change, Invoice.\nL\'onglet actif est mis en évidence par un fond noir et texte blanc (pill DS2).',
-      comportement: 'Un seul onglet actif à la fois. Le clic sur un onglet charge le contenu correspondant.\nL\'onglet Check-in est actif par défaut à l\'ouverture de la fiche.',
-      critere: 'Le bon onglet est actif. Le contenu se met à jour au clic.',
-      question: ''
-    },
-    {
-      id: 'RG-04', titre: 'Card Info client — Badges et données',
-      regle: 'La card Info client affiche : badges (VIP, Donor, etc.), Age, Country, Stay, See more absence, Membership, File, et le bouton Club Med Pass management.',
-      comportement: '"See more absence (N)" s\'affiche en rouge si N > 0, et est cliquable pour voir le détail des absences.\nLe bouton "Club Med Pass management" ouvre le module de gestion du pass.',
-      critere: 'Tous les champs sont affichés. Le lien absence est rouge et cliquable si count > 0.',
-      question: 'Quelle est la règle d\'affichage des badges (VIP, Donor) ? Basé sur un statut dans le dossier client ?'
-    },
-    {
-      id: 'RG-05', titre: 'Card Arrival Information',
-      regle: 'La card Arrival affiche : Transport (inclus/non), Transfer (inclus/non), heure VV d\'arrivée, lien See transfers, Departure loc, Arrival loc, Date, Arrival time.',
-      comportement: 'L\'heure "VV arrival at HH:MM" est mise en évidence en orange si elle diffère de l\'heure standard.\n"See transfers" est un lien cliquable vers le détail des transferts.',
-      critere: 'Tous les champs sont affichés. L\'heure VV est en orange.',
-      question: 'L\'heure VV est-elle toujours en orange ou seulement quand elle est hors norme ?'
-    },
-    {
-      id: 'RG-06', titre: 'Card Room — Numéro, localisation et compte',
-      regle: 'La card Room affiche : numéro de chambre cliquable, type de chambre, localisation, téléphone, bouton "Make a request", montant Expense Report, ligne Visa avec montant et bouton Modify, switch Easy checkout.',
-      comportement: 'Le montant Expense Report est affiché en rouge si négatif (écart à régulariser).\nLe switch "Easy checkout" permet d\'activer/désactiver le checkout simplifié.\n"Make a request" ouvre le module de demande particulière pour cette chambre.',
-      critere: 'Le montant négatif est en rouge. Le switch est interactif. Le bouton Make a request est fonctionnel.',
-      question: 'Le bouton Modify sur la ligne Visa — que modifie-t-il exactement ? Le moyen de paiement ou le montant ?'
-    },
-    {
-      id: 'RG-07', titre: 'Card Cardex in a nutshell',
-      regle: 'La card Cardex affiche : titre "Cardex in a nutshell", flèche de navigation vers le Cardex complet, nombre de séjours passés, dernier village visité, badges programme de fidélité (Gold, Honeymoon, etc.).',
-      comportement: 'La flèche → ouvre la fiche Cardex complète du client.\nLes badges reflètent le statut fidélité actuel du client.',
-      critere: 'La flèche est cliquable. Les données sont issues du dossier client.',
-      question: 'Les badges (Gold, Honeymoon) — quels sont tous les statuts possibles ? Y a-t-il une liste exhaustive dans le référentiel ?'
-    },
-    {
-      id: 'RG-08', titre: 'Tableau GM — Colonnes et données',
-      regle: 'Le tableau affiche les GMs du dossier avec les colonnes : Checkbox, State, Stay date, Civility, First name, Last name, Qu., Master, Age, Type, Code, Room, Status.',
-      comportement: 'La colonne State affiche l\'état de check-in : "Not check-in" (cercle gris), "Not check-in" (cercle rouge = erreur), "Check-in" (cercle vert).\nLa colonne Master affiche un picto ⊕ pour le GM principal du dossier.\nLa colonne Type affiche le badge Platinum (DS2).\nLa colonne Status affiche un cercle vert ✓ (OK) ou rouge ⓘ (anomalie).',
-      critere: 'Toutes les colonnes sont affichées. Les icônes State sont correctes selon l\'état.',
-      question: 'Colonne "Qu." — quelle est la valeur exacte ? "GM ordi", "GM mineur", autre ?'
-    },
-    {
-      id: 'RG-09', titre: 'Footer actions — Boutons de la fiche',
-      regle: 'Le footer affiche 4 boutons : Separate GMs, Presence, Add a GM (noir), Check in (jaune).\nLe footer est sticky en bas de l\'écran, centré horizontalement.',
-      comportement: '"Separate GMs" — sépare les GMs sélectionnés en dossiers distincts.\n"Presence" — marque la présence physique d\'un GM.\n"Add a GM" — ajoute un GM au dossier.\n"Check in" — déclenche le check-in pour les GMs sélectionnés.',
-      critere: 'Les 4 boutons sont visibles et cliquables. Check in est désactivé si aucun GM n\'est sélectionné.',
-      question: 'Règle d\'activation du bouton "Check in" : basé sur la sélection des checkboxes ou autre condition ?'
-    },
-  ];
-
-  const RG_KEY = 'wf_rg_blocks_cardex';
-
-  function initRgCardex() {
-    const stored = localStorage.getItem(RG_KEY);
-    if (!stored) {
-      const blocks = RG_CARDEX.map(rg => ({
-        id: Date.now() + Math.random(),
-        tab: 'Fiche Client',
-        titre: rg.titre,
-        regle: rg.regle,
-        comportement: rg.comportement,
-        critere: rg.critere,
-        question: rg.question,
-        mode: 'Tous modes'
-      }));
-      localStorage.setItem(RG_KEY, JSON.stringify(blocks));
-    }
+  function syncPropBtns(p) {
+    ['A','B','C'].forEach(id => {
+      const pnl = document.getElementById('pnl-'+id);
+      if (pnl) pnl.classList.toggle('active', id === p);
+    });
+    document.querySelectorAll('.prop-btn').forEach(b => {
+      const label = b.textContent.trim();
+      if (label.startsWith(p)) b.classList.add('active');
+    });
   }
 
-  function openDocDrawer() {
-    const drawer = document.getElementById('doc-drawer');
-    const content = document.getElementById('doc-drawer-content');
-    if (!drawer || !content) return;
-
-    initRgCardex();
-    const rgBlocks = JSON.parse(localStorage.getItem(RG_KEY) || '[]');
-    const today = new Date().toLocaleDateString('fr-FR', { day:'numeric', month:'long', year:'numeric' });
-
-    if (rgBlocks.length === 0) {
-      content.innerHTML = `<div style="text-align:center;padding:60px 0;color:var(--grey-txt);">
-        <div style="font-size:32px;margin-bottom:16px;">📘</div>
-        <div style="font-size:16px;font-weight:600;color:var(--navy);margin-bottom:8px;">Aucune règle documentée</div>
-      </div>`;
-    } else {
-      const grouped = {};
-      rgBlocks.forEach((b, i) => {
-        const t = b.tab || 'Fiche Client';
-        if (!grouped[t]) grouped[t] = [];
-        grouped[t].push({ ...b, _globalIdx: i });
-      });
-      content.innerHTML = `
-        <div style="margin-bottom:40px;padding-bottom:28px;border-bottom:2px solid var(--grey-bd);">
-          <div style="font-size:12px;font-weight:700;color:var(--grey-txt);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;">Documentation fonctionnelle · ${today}</div>
-          <h1 style="font-size:26px;font-weight:800;color:var(--navy);margin:0 0 14px;line-height:1.2;">Fiche Client — Règles de gestion</h1>
-          <p style="font-size:15px;color:#374151;line-height:1.7;margin:0 0 10px;">Ce document recense les règles de gestion de la fiche client (écran Cardex) de l'outil Odyssey (Club Med). Il est destiné aux Product Owners, développeurs, QA et équipes métier.</p>
-          <div style="margin-top:16px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
-            <span style="background:#F0FDF4;color:#1A6B31;border-radius:20px;padding:4px 12px;font-size:12px;font-weight:600;">● ${rgBlocks.length} règle${rgBlocks.length > 1 ? 's' : ''} documentée${rgBlocks.length > 1 ? 's' : ''}</span>
-          </div>
-        </div>
-        ${Object.entries(grouped).map(([tab, rgs]) => `
-          <div style="margin-bottom:48px;">
-            <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px;">
-              <span style="background:#EDE9FE;color:#5B21B6;border-radius:8px;padding:4px 14px;font-size:12px;font-weight:700;">${tab}</span>
-              <div style="flex:1;height:1px;background:var(--grey-bd);"></div>
-              <span style="font-size:11px;color:var(--grey-txt);">${rgs.length} règle${rgs.length > 1 ? 's' : ''}</span>
-            </div>
-            <div style="display:flex;flex-direction:column;gap:20px;">
-              ${rgs.map(b => {
-                const id = String(b._globalIdx + 1).padStart(2, '0');
-                return `<div id="rg-block-${b._globalIdx}" style="border:1px solid var(--grey-bd);border-radius:14px;overflow:hidden;scroll-margin-top:24px;">
-                  <div style="padding:16px 24px;border-bottom:1px solid var(--grey-bd);display:flex;align-items:flex-start;justify-content:space-between;gap:12px;background:#FAFAFA;">
-                    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
-                      <span style="background:#7C3AED;color:white;border-radius:8px;padding:3px 10px;font-size:12px;font-weight:800;letter-spacing:.04em;">RG-${id}</span>
-                      <h3 style="font-size:15px;font-weight:700;color:var(--navy);margin:0;">${b.titre}</h3>
-                    </div>
-                  </div>
-                  <div style="padding:20px 24px;display:flex;flex-direction:column;gap:16px;">
-                    ${b.regle ? `<div><div style="font-size:10px;font-weight:700;color:var(--grey-txt);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;">Règle</div><div style="font-size:14px;color:var(--navy);line-height:1.7;white-space:pre-wrap;">${b.regle}</div></div>` : ''}
-                    ${b.comportement ? `<div style="background:#F8F9FB;border-radius:10px;padding:16px;"><div style="font-size:10px;font-weight:700;color:var(--grey-txt);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;">Comportement attendu</div><div style="font-size:14px;color:var(--navy);line-height:1.8;white-space:pre-wrap;">${b.comportement}</div></div>` : ''}
-                    ${b.critere ? `<div style="border-left:3px solid #088A20;padding-left:14px;"><div style="font-size:10px;font-weight:700;color:#088A20;text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;">✓ Critère de validation</div><div style="font-size:14px;color:var(--navy);line-height:1.7;white-space:pre-wrap;">${b.critere}</div></div>` : ''}
-                    ${b.question ? `<div style="border-left:3px solid #D97706;background:#FFFBEB;border-radius:0 8px 8px 0;padding:12px 14px;"><div style="font-size:10px;font-weight:700;color:#D97706;text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;">⚠ Question métier à valider</div><div style="font-size:14px;color:var(--navy);line-height:1.7;white-space:pre-wrap;">${b.question}</div></div>` : ''}
-                  </div>
-                </div>`;
-              }).join('')}
-            </div>
-          </div>`).join('')}`;
-    }
-
-    // Sommaire
-    const toc = document.getElementById('doc-drawer-toc');
-    if (toc && rgBlocks.length > 0) {
-      const grouped2 = {};
-      rgBlocks.forEach((b, i) => {
-        const t = b.tab || 'Fiche Client';
-        if (!grouped2[t]) grouped2[t] = [];
-        grouped2[t].push({ ...b, _idx: i });
-      });
-      toc.innerHTML = `
-        <div style="font-size:11px;font-weight:700;color:var(--grey-txt);text-transform:uppercase;letter-spacing:.08em;margin-bottom:16px;">Sommaire</div>
-        ${Object.entries(grouped2).map(([tab, rgs]) => `
-          <div style="margin-bottom:20px;">
-            <div style="font-size:11px;font-weight:700;color:#5B21B6;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--grey-bd);">${tab}</div>
-            <div style="display:flex;flex-direction:column;gap:4px;">
-              ${rgs.map(b => {
-                const id = String(b._idx + 1).padStart(2, '0');
-                return `<button onclick="document.getElementById('rg-block-${b._idx}').scrollIntoView({behavior:'smooth',block:'start'})"
-                  style="display:flex;align-items:baseline;gap:8px;background:none;border:none;border-radius:6px;padding:6px 8px;cursor:pointer;font-family:inherit;text-align:left;width:100%;transition:background .12s;"
-                  onmouseover="this.style.background='#EDE9FE'" onmouseout="this.style.background='none'">
-                  <span style="background:#7C3AED;color:white;border-radius:5px;padding:1px 7px;font-size:10px;font-weight:800;flex-shrink:0;">RG-${id}</span>
-                  <span style="font-size:12px;color:var(--navy);font-weight:500;line-height:1.4;">${b.titre}</span>
-                </button>`;
-              }).join('')}
-            </div>
-          </div>`).join('')}`;
-    }
-
-    drawer.style.display = 'flex';
-    document.body.style.overflow = 'hidden';
+  function togglePanel() {
+    const p = document.getElementById('wf-panel');
+    p.classList.toggle('collapsed');
+    p.querySelector('[onclick="togglePanel()"]').textContent = p.classList.contains('collapsed') ? '+' : '−';
   }
-
-  function closeDocDrawer() {
-    const drawer = document.getElementById('doc-drawer');
-    if (drawer) drawer.style.display = 'none';
-    document.body.style.overflow = '';
-  }
-
-  initRgCardex();
 
   const BRIEFS_KEY = 'wf_briefs_cardex';
   let briefs = JSON.parse(localStorage.getItem(BRIEFS_KEY) || '[]');
