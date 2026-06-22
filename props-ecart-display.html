@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Propositions — Affichage écart par MDP</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --navy:     #1E2643;
+      --yellow:   #FDBE00;
+      --white:    #FFFFFF;
+      --grey-bg:  #F4F4F4;
+      --grey-bd:  #E0E0E0;
+      --grey-txt: #6B7280;
+      --red-bg:   #FEF2F2;
+      --red-txt:  #BF2F17;
+      --red-bd:   #FECACA;
+    }
+
+    html, body {
+      font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+      font-size: 14px;
+      color: var(--navy);
+      background: #ECEEF4;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── Barre de navigation propositions ── */
+    .nav-bar {
+      background: var(--navy);
+      padding: 14px 32px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+    .nav-bar .nav-title {
+      font-size: 13px; font-weight: 700; color: rgba(255,255,255,0.5);
+      text-transform: uppercase; letter-spacing: .06em;
+      margin-right: 16px;
+    }
+    .nav-btn {
+      padding: 7px 20px;
+      border-radius: 20px;
+      font-size: 13px; font-weight: 600;
+      border: none; cursor: pointer;
+      font-family: inherit;
+      background: rgba(255,255,255,0.1);
+      color: rgba(255,255,255,0.6);
+      transition: background .15s, color .15s;
+    }
+    .nav-btn:hover { background: rgba(255,255,255,0.2); color: #fff; }
+    .nav-btn.active {
+      background: var(--yellow);
+      color: #000;
+    }
+    .nav-bar .nav-hint {
+      margin-left: auto;
+      font-size: 12px; color: rgba(255,255,255,0.35);
+    }
+
+    /* ── Zone centrale : frame contextuelle ── */
+    .stage {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 32px 48px 24px;
+      overflow-y: auto;
+    }
+
+    /* ── Frame qui simule le bloc-date ── */
+    .demo-frame {
+      background: var(--white);
+      border: 1px solid var(--grey-bd);
+      border-radius: 12px;
+      padding: 20px 24px;
+      width: 100%;
+      max-width: 1080px;
+    }
+    .demo-date-row {
+      font-size: 16px; color: var(--navy);
+      margin-bottom: 20px;
+    }
+    .demo-divider {
+      border-top: 1px solid var(--grey-bd);
+      margin-bottom: 20px;
+    }
+
+    /* ── KPI bar (identique V4) ── */
+    .kpi-bar {
+      display: flex; align-items: center;
+      gap: 20px; flex-wrap: wrap;
+    }
+    .kpi-bar.top { align-items: flex-start; }
+    .kpi-item { display: flex; flex-direction: column; gap: 4px; flex-shrink: 0; }
+    .kpi-lbl {
+      font-size: 11px; font-weight: 700; color: var(--grey-txt);
+      text-transform: uppercase; letter-spacing: .05em; display: block;
+    }
+    .kpi-val { font-size: 20px; font-weight: 700; color: var(--navy); display: block; }
+    .kpi-val.red { color: var(--red-txt); }
+    .kpi-sep { width: 1px; height: 36px; background: var(--grey-bd); flex-shrink: 0; align-self: center; }
+    .kpi-right { margin-left: auto; display: flex; align-items: center; gap: 48px; flex-shrink: 0; }
+
+    /* ── Bouton Valider ── */
+    .btn-valider {
+      background: #FDBE00; color: #000; border: none; border-radius: 100px;
+      padding: 0 32px; height: 48px; font-size: 16px; font-weight: 600;
+      cursor: pointer; font-family: inherit; white-space: nowrap; flex-shrink: 0;
+    }
+
+    /* ── Barre sticky simulée ── */
+    .demo-sticky-wrap { width: 100%; max-width: 1080px; margin-top: 8px; }
+    .demo-sticky-label {
+      font-size: 11px; font-weight: 700; color: var(--grey-txt);
+      text-transform: uppercase; letter-spacing: .05em;
+      margin-bottom: 4px;
+    }
+    .demo-sticky {
+      background: var(--white); border: 1px solid var(--grey-bd);
+      border-radius: 10px; padding: 0 20px; height: 56px;
+      display: flex; align-items: center; gap: 24px;
+      box-shadow: 0 2px 8px rgba(0,0,0,.08);
+    }
+    .tpe-tab-d {
+      font-size: 13px; font-weight: 700; color: var(--navy);
+      border-bottom: 2px solid var(--navy); height: 56px;
+      display: flex; align-items: center;
+    }
+    .tpe-tab-d.off { font-weight: 400; border-color: transparent; color: var(--grey-txt); }
+    .sticky-right { margin-left: auto; display: flex; align-items: center; gap: 24px; }
+
+    /* ── Description bas de page ── */
+    .desc-bar {
+      width: 100%; max-width: 1080px;
+      margin-top: 16px;
+      background: var(--white);
+      border: 1px solid var(--grey-bd);
+      border-radius: 10px;
+      padding: 14px 20px;
+      display: flex; gap: 32px; flex-wrap: wrap;
+    }
+    .desc-block { flex: 1; min-width: 200px; }
+    .desc-block .db-lbl {
+      font-size: 11px; font-weight: 700; color: var(--grey-txt);
+      text-transform: uppercase; letter-spacing: .05em;
+      margin-bottom: 4px;
+    }
+    .desc-block .db-txt { font-size: 13px; color: var(--navy); line-height: 1.5; }
+    .desc-block .db-txt.pro { color: #15803D; }
+    .desc-block .db-txt.con { color: #92400E; }
+
+
+    /* ════════════════════════════
+       COMPOSANTS PAR PROPOSITION
+    ════════════════════════════ */
+
+    /* ── Pill écart (identique existant) ── */
+    .pill-ecart {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 12px; font-weight: 600; padding: 5px 14px;
+      border-radius: 20px; background: var(--red-bg); color: var(--red-txt);
+      flex-shrink: 0; white-space: nowrap;
+    }
+    .pill-ecart .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--red-txt); flex-shrink: 0; }
+
+    /* Pill compact sticky */
+    .pill-sticky {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 12px; font-weight: 600; padding: 4px 12px;
+      border-radius: 20px; background: var(--red-bg); color: var(--red-txt); flex-shrink: 0;
+    }
+    .pill-sticky .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--red-txt); }
+
+    /* ── Prop A : pill + sep + liste inline ── */
+    .prop-a-group { display: flex; align-items: flex-start; gap: 12px; flex-shrink: 0; }
+    .v-sep { width: 1px; background: var(--grey-bd); flex-shrink: 0; align-self: stretch; }
+    .mdp-list { display: flex; flex-direction: column; gap: 3px; }
+    .mdp-row { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 600; }
+    .mn { color: var(--navy); min-width: 46px; }
+    .mn.r { color: var(--red-txt); }
+    .ma { color: var(--navy); }
+    .ma.r { color: var(--red-txt); }
+    .ma.g { color: var(--grey-txt); font-weight: 400; }
+
+    /* ── Prop B : tags sous KPI ── */
+    .kpi-ecart-b { display: flex; flex-direction: column; gap: 4px; flex-shrink: 0; }
+    .mdp-tags { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; margin-top: 2px; }
+    .mdp-tag {
+      font-size: 11px; font-weight: 600; padding: 2px 8px;
+      border-radius: 20px; border: 1px solid #E5E7EB;
+      background: #F9FAFB; color: var(--navy); white-space: nowrap;
+    }
+    .mdp-tag.r { border-color: var(--red-bd); background: var(--red-bg); color: var(--red-txt); }
+
+    /* ── Prop C : encadré autonome ── */
+    .ecart-bloc {
+      border: 1px solid var(--red-bd); border-radius: 10px;
+      overflow: hidden; flex-shrink: 0; min-width: 196px;
+    }
+    .ecart-bloc-head {
+      display: flex; align-items: center; gap: 6px;
+      padding: 6px 12px 6px 10px;
+      background: var(--red-bg); border-bottom: 1px solid var(--red-bd);
+    }
+    .ecart-bloc-head .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--red-txt); flex-shrink: 0; }
+    .ecart-bloc-head .lbl { font-size: 11px; font-weight: 700; color: var(--red-txt); text-transform: uppercase; letter-spacing: .05em; }
+    .ecart-bloc-head .total { margin-left: auto; font-size: 14px; font-weight: 700; color: var(--red-txt); }
+    .ecart-bloc-body { background: var(--white); padding: 6px 12px 6px 10px; display: flex; flex-direction: column; gap: 4px; }
+    .bloc-row { display: flex; align-items: center; justify-content: space-between; gap: 24px; font-size: 12px; font-weight: 500; }
+    .bloc-row .bn { color: var(--navy); }
+    .bloc-row .bn.r { color: var(--red-txt); font-weight: 700; }
+    .bloc-row .ba { font-weight: 600; text-align: right; color: var(--navy); }
+    .bloc-row .ba.r { color: var(--red-txt); }
+    .bloc-row .ba.g { color: var(--grey-txt); font-weight: 400; }
+
+    /* ── Prop C sticky row ── */
+    .ecart-bloc.row { flex-direction: row; }
+    .ecart-bloc.row .ecart-bloc-head { border-bottom: none; border-right: 1px solid var(--red-bd); padding: 4px 10px; }
+    .ecart-bloc.row .ecart-bloc-body { flex-direction: row; gap: 12px; padding: 4px 10px; align-items: center; }
+
+    /* panels */
+    .prop-panel { display: none; }
+    .prop-panel.active { display: flex; flex-direction: column; align-items: center; width: 100%; }
+  </style>
+</head>
+<body>
+
+  <!-- Barre de navigation -->
+  <div class="nav-bar">
+    <span class="nav-title">Propositions écart</span>
+    <button class="nav-btn" id="btn-ref" onclick="show('ref')">État actuel</button>
+    <button class="nav-btn active" id="btn-a" onclick="show('a')">Prop A</button>
+    <button class="nav-btn" id="btn-b" onclick="show('b')">Prop B</button>
+    <button class="nav-btn" id="btn-c" onclick="show('c')">Prop C</button>
+    <span class="nav-hint">Données exemple : écart –100 € · Visa 60 € · Amex 40 € · WeChat 0 €</span>
+  </div>
+
+  <div class="stage">
+
+    <!-- ════════════════════════
+         ÉTAT ACTUEL
+    ════════════════════════ -->
+    <div class="prop-panel" id="panel-ref">
+      <div class="demo-frame">
+        <div class="demo-date-row">Please proceed with the telecollection of <strong>Tuesday, June 17, 2026</strong></div>
+        <div class="demo-divider"></div>
+        <div class="kpi-bar">
+          <div class="kpi-item"><span class="kpi-lbl">Montant attendu</span><span class="kpi-val">1 250,00 €</span></div>
+          <div class="kpi-sep"></div>
+          <div class="kpi-item"><span class="kpi-lbl">Montant saisi</span><span class="kpi-val">1 150,00 €</span></div>
+          <div class="kpi-sep"></div>
+          <div class="kpi-item"><span class="kpi-lbl">Écart</span><span class="kpi-val red">–100,00 €</span></div>
+          <div class="kpi-right">
+            <div style="display:inline-flex;align-items:center;gap:8px;">
+              <div class="pill-ecart"><span class="dot"></span>Écart détecté</div>
+              <div style="display:flex;align-items:center;gap:6px;">
+                <span style="font-size:12px;font-weight:600;padding:3px 10px;border-radius:20px;border:1px solid #E5E7EB;background:#F9FAFB;color:var(--navy);">Visa</span>
+                <span style="font-size:12px;font-weight:600;padding:3px 10px;border-radius:20px;border:1px solid #E5E7EB;background:#F9FAFB;color:var(--navy);">Amex</span>
+              </div>
+            </div>
+            <button class="btn-valider">Valider la saisie</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="demo-sticky-wrap">
+        <div class="demo-sticky-label">Barre TPE sticky</div>
+        <div class="demo-sticky">
+          <span class="tpe-tab-d">TPE 1</span><span class="tpe-tab-d off">TPE 2</span><span class="tpe-tab-d off">TPE 3</span>
+          <div class="sticky-right">
+            <div style="display:inline-flex;align-items:center;gap:6px;">
+              <div class="pill-sticky"><span class="dot"></span>Écart : –100,00 € · <span style="color:var(--navy);margin-left:2px;">Visa · Amex</span></div>
+            </div>
+            <button class="btn-valider" style="height:40px;font-size:14px;padding:0 24px;">Valider la saisie</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="desc-bar">
+        <div class="desc-block"><div class="db-lbl">Principe</div><div class="db-txt">Badge + noms MDP sans montant. L'utilisateur sait quels MDP sont en écart mais pas leur poids financier.</div></div>
+        <div class="desc-block"><div class="db-lbl">Limite</div><div class="db-txt con">Doit scroller dans les tableaux pour trouver les montants. Pas de hiérarchisation du risque.</div></div>
+      </div>
+    </div>
+
+
+    <!-- ════════════════════════
+         PROP A
+    ════════════════════════ -->
+    <div class="prop-panel active" id="panel-a">
+      <div class="demo-frame">
+        <div class="demo-date-row">Please proceed with the telecollection of <strong>Tuesday, June 17, 2026</strong></div>
+        <div class="demo-divider"></div>
+        <div class="kpi-bar">
+          <div class="kpi-item"><span class="kpi-lbl">Montant attendu</span><span class="kpi-val">1 250,00 €</span></div>
+          <div class="kpi-sep"></div>
+          <div class="kpi-item"><span class="kpi-lbl">Montant saisi</span><span class="kpi-val">1 150,00 €</span></div>
+          <div class="kpi-sep"></div>
+          <div class="kpi-item"><span class="kpi-lbl">Écart</span><span class="kpi-val red">–100,00 €</span></div>
+          <div class="kpi-right">
+            <div class="prop-a-group">
+              <div class="pill-ecart" style="margin-top:4px;"><span class="dot"></span>Écart détecté</div>
+              <div class="v-sep"></div>
+              <div class="mdp-list">
+                <div class="mdp-row"><span class="mn r">Visa</span><span class="ma r">60,00 €</span></div>
+                <div class="mdp-row"><span class="mn r">Amex</span><span class="ma r">40,00 €</span></div>
+                <div class="mdp-row"><span class="mn" style="color:var(--grey-txt)">WeChat</span><span class="ma g">0,00 €</span></div>
+              </div>
+            </div>
+            <button class="btn-valider">Valider la saisie</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="demo-sticky-wrap">
+        <div class="demo-sticky-label">Barre TPE sticky</div>
+        <div class="demo-sticky">
+          <span class="tpe-tab-d">TPE 1</span><span class="tpe-tab-d off">TPE 2</span><span class="tpe-tab-d off">TPE 3</span>
+          <div class="sticky-right">
+            <div class="prop-a-group" style="gap:10px;">
+              <div class="pill-sticky"><span class="dot"></span>Écart : –100,00 €</div>
+              <div class="v-sep" style="height:32px;"></div>
+              <div class="mdp-list">
+                <div class="mdp-row" style="font-size:11px;"><span class="mn r">Visa</span><span class="ma r">60,00 €</span></div>
+                <div class="mdp-row" style="font-size:11px;"><span class="mn r">Amex</span><span class="ma r">40,00 €</span></div>
+                <div class="mdp-row" style="font-size:11px;"><span class="mn" style="color:var(--grey-txt)">WeChat</span><span class="ma g">0,00 €</span></div>
+              </div>
+            </div>
+            <button class="btn-valider" style="height:40px;font-size:14px;padding:0 24px;">Valider la saisie</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="desc-bar">
+        <div class="desc-block"><div class="db-lbl">Principe</div><div class="db-txt">La pill "Écart détecté" reste identique à l'existant. Un séparateur vertical introduit la liste MDP + montant à sa droite. Rouge = en écart, gris = sans écart.</div></div>
+        <div class="desc-block"><div class="db-lbl">Avantage</div><div class="db-txt pro">Continuité maximale — la pill existante est préservée. Transition douce pour les utilisateurs.</div></div>
+        <div class="desc-block"><div class="db-lbl">Compromis</div><div class="db-txt con">La zone droite s'élargit (3 lignes verticales). Peut être tendu avec 5+ MDP.</div></div>
+      </div>
+    </div>
+
+
+    <!-- ════════════════════════
+         PROP B
+    ════════════════════════ -->
+    <div class="prop-panel" id="panel-b">
+      <div class="demo-frame">
+        <div class="demo-date-row">Please proceed with the telecollection of <strong>Tuesday, June 17, 2026</strong></div>
+        <div class="demo-divider"></div>
+        <div class="kpi-bar top">
+          <div class="kpi-item"><span class="kpi-lbl">Montant attendu</span><span class="kpi-val">1 250,00 €</span></div>
+          <div class="kpi-sep" style="margin-top:8px;"></div>
+          <div class="kpi-item"><span class="kpi-lbl">Montant saisi</span><span class="kpi-val">1 150,00 €</span></div>
+          <div class="kpi-sep" style="margin-top:8px;"></div>
+          <div class="kpi-ecart-b">
+            <span class="kpi-lbl">Écart</span>
+            <span class="kpi-val red">–100,00 €</span>
+            <div class="mdp-tags">
+              <span class="mdp-tag r">Visa · 60,00 €</span>
+              <span class="mdp-tag r">Amex · 40,00 €</span>
+              <span class="mdp-tag">WeChat · 0,00 €</span>
+            </div>
+          </div>
+          <div class="kpi-right" style="align-self:center;">
+            <button class="btn-valider">Valider la saisie</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="demo-sticky-wrap">
+        <div class="demo-sticky-label">Barre TPE sticky</div>
+        <div class="demo-sticky">
+          <span class="tpe-tab-d">TPE 1</span><span class="tpe-tab-d off">TPE 2</span><span class="tpe-tab-d off">TPE 3</span>
+          <div class="sticky-right">
+            <div style="display:flex;align-items:center;gap:6px;">
+              <div class="pill-sticky"><span class="dot"></span>Écart : –100,00 €</div>
+              <span class="mdp-tag r" style="font-size:11px;">Visa · 60 €</span>
+              <span class="mdp-tag r" style="font-size:11px;">Amex · 40 €</span>
+              <span class="mdp-tag" style="font-size:11px;">WeChat · 0 €</span>
+            </div>
+            <button class="btn-valider" style="height:40px;font-size:14px;padding:0 24px;">Valider la saisie</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="desc-bar">
+        <div class="desc-block"><div class="db-lbl">Principe</div><div class="db-txt">Les MDP s'intègrent directement dans le KPI Écart, sous la valeur. Le badge "Écart détecté" disparaît — l'information est portée par le KPI lui-même.</div></div>
+        <div class="desc-block"><div class="db-lbl">Avantage</div><div class="db-txt pro">Pas de redondance. Lecture verticale naturelle. Pattern tag pill déjà dans le DS.</div></div>
+        <div class="desc-block"><div class="db-lbl">Compromis</div><div class="db-txt con">Le KPI Écart devient plus "chargé" que ses voisins. La hauteur du bloc-date augmente légèrement.</div></div>
+      </div>
+    </div>
+
+
+    <!-- ════════════════════════
+         PROP C
+    ════════════════════════ -->
+    <div class="prop-panel" id="panel-c">
+      <div class="demo-frame">
+        <div class="demo-date-row">Please proceed with the telecollection of <strong>Tuesday, June 17, 2026</strong></div>
+        <div class="demo-divider"></div>
+        <div class="kpi-bar">
+          <div class="kpi-item"><span class="kpi-lbl">Montant attendu</span><span class="kpi-val">1 250,00 €</span></div>
+          <div class="kpi-sep"></div>
+          <div class="kpi-item"><span class="kpi-lbl">Montant saisi</span><span class="kpi-val">1 150,00 €</span></div>
+          <div class="kpi-sep"></div>
+          <div class="kpi-item"><span class="kpi-lbl">Écart</span><span class="kpi-val red">–100,00 €</span></div>
+          <div class="kpi-right">
+            <div class="ecart-bloc">
+              <div class="ecart-bloc-head">
+                <span class="dot"></span>
+                <span class="lbl">Écart détecté</span>
+                <span class="total">–100,00 €</span>
+              </div>
+              <div class="ecart-bloc-body">
+                <div class="bloc-row"><span class="bn r">Visa</span><span class="ba r">60,00 €</span></div>
+                <div class="bloc-row"><span class="bn r">Amex</span><span class="ba r">40,00 €</span></div>
+                <div class="bloc-row"><span class="bn" style="color:var(--grey-txt)">WeChat</span><span class="ba g">0,00 €</span></div>
+              </div>
+            </div>
+            <button class="btn-valider">Valider la saisie</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="demo-sticky-wrap">
+        <div class="demo-sticky-label">Barre TPE sticky</div>
+        <div class="demo-sticky">
+          <span class="tpe-tab-d">TPE 1</span><span class="tpe-tab-d off">TPE 2</span><span class="tpe-tab-d off">TPE 3</span>
+          <div class="sticky-right">
+            <div class="ecart-bloc row" style="flex-direction:row;">
+              <div class="ecart-bloc-head" style="border-bottom:none;border-right:1px solid var(--red-bd);padding:4px 10px;gap:5px;">
+                <span class="dot"></span>
+                <span class="lbl" style="font-size:10px;">Écart</span>
+                <span class="total" style="font-size:12px;">–100,00 €</span>
+              </div>
+              <div class="ecart-bloc-body" style="flex-direction:row;gap:12px;padding:4px 10px;align-items:center;">
+                <span style="font-size:11px;font-weight:700;color:var(--red-txt);">Visa 60 €</span>
+                <span style="font-size:11px;font-weight:700;color:var(--red-txt);">Amex 40 €</span>
+                <span style="font-size:11px;color:var(--grey-txt);">WeChat 0 €</span>
+              </div>
+            </div>
+            <button class="btn-valider" style="height:40px;font-size:14px;padding:0 24px;">Valider la saisie</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="desc-bar">
+        <div class="desc-block"><div class="db-lbl">Principe</div><div class="db-txt">Un encadré compact remplace le badge : en-tête signal + total, corps avec liste MDP. Pattern proche du bloc Régularisation.</div></div>
+        <div class="desc-block"><div class="db-lbl">Avantage</div><div class="db-txt pro">Hiérarchie la plus lisible d'un seul regard. Signal → total → détail par MDP.</div></div>
+        <div class="desc-block"><div class="db-lbl">Compromis</div><div class="db-txt con">Plus d'espace horizontal. À tester avec 5+ MDP.</div></div>
+      </div>
+    </div>
+
+  </div><!-- /stage -->
+
+  <script>
+    function show(id) {
+      ['ref','a','b','c'].forEach(k => {
+        document.getElementById('panel-' + k).classList.toggle('active', k === id);
+        document.getElementById('btn-' + k).classList.toggle('active', k === id);
+      });
+    }
+  </script>
+</body>
+</html>
