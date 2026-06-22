@@ -729,7 +729,7 @@
 </header>
 
 <!-- Bouton Retour dashboard -->
-<a id="back-dashboard-btn" href="https://studiojailoop.github.io/telecollecte-odyssey/01_Club%20Med/Loopcraft/studio.html?go=dashboard" title="Retour au dashboard"
+<a id="back-dashboard-btn" href="Loopcraft/studio.html?go=dashboard" title="Retour au dashboard"
   style="display:none;position:fixed;bottom:24px;left:24px;width:48px;height:48px;border-radius:100px;background:var(--white);cursor:pointer;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,0.15);z-index:300;border:1.5px solid var(--grey-bd);text-decoration:none;transition:border-color 0.15s,box-shadow 0.15s;"
   onmouseover="this.style.borderColor='#C8D0E0';this.style.boxShadow='0 4px 14px rgba(0,0,0,0.18)'"
   onmouseout="this.style.borderColor='var(--grey-bd)';this.style.boxShadow='0 2px 8px rgba(0,0,0,0.15)'">
@@ -961,7 +961,7 @@
 
   <!-- ══ MAIN ══ -->
   <main class="main">
-  <div class="content-customer-file" style="display:flex;flex-direction:column;gap:20px;padding-top:24px;flex:1;overflow:hidden;min-height:0;">
+  <div class="content-customer-file" style="display:flex;flex-direction:column;gap:20px;padding:24px 32px 0 32px;flex:1;overflow:hidden;min-height:0;">
 
     <!-- Breadcrumb -->
     <div style="padding:0;flex-shrink:0;">
@@ -1231,45 +1231,19 @@
 
   <div class="panel-body">
 
-  <!-- Interfacé -->
-  <div class="switch-row">
-    <span>Interfacé</span>
-    <label class="switch">
-      <input type="checkbox" id="sw-iface" onchange="setV(this.checked)">
-      <span class="track"></span>
-    </label>
-  </div>
-
-  <!-- Open tills -->
-  <div class="switch-row">
-    <span>Open tills</span>
-    <label class="switch">
-      <input type="checkbox" id="sw-caisse" onchange="setB(this.checked)">
-      <span class="track"></span>
-    </label>
-  </div>
-
-  <hr>
-
-  <!-- En cours -->
-  <div class="panel-title">En cours</div>
-  <div id="current-version-block" style="display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:8px;border:1.5px solid var(--navy);background:#F0F1F8;font-size:13px;font-weight:700;color:var(--navy);">
-    <span style="font-size:11px;">★</span>
-    <span style="flex:1;">Version active</span>
-  </div>
-
   <hr>
 
   <!-- Propositions -->
   <div class="panel-title">Propositions</div>
-  <div id="version-list"></div>
+  <div id="version-list">
+    <div style="font-size:12px;color:var(--grey-txt);font-style:italic;padding:6px 2px;">Aucune proposition</div>
+  </div>
 
   <hr>
 
   <!-- Commentaires -->
   <div class="panel-title">Commentaires</div>
 
-  <!-- Mode avec/sans pings — switch -->
   <div class="switch-row">
     <span>Afficher les pings</span>
     <label class="switch">
@@ -1278,7 +1252,7 @@
     </label>
   </div>
 
-  <!-- Filtre auteur (caché, valeur vide = tous — nécessaire pour refreshPins) -->
+  <!-- Filtre auteur (caché — nécessaire pour refreshPins) -->
   <select class="author-filter" id="author-filter" onchange="refreshPins()" style="display:none;">
     <option value="">Tous les auteurs</option>
   </select>
@@ -1288,16 +1262,7 @@
   <!-- Documentation -->
   <div id="panel-doc-section" style="padding:12px 16px;border-top:1px solid var(--grey-bd);">
     <div class="panel-title" style="margin-bottom:10px;">Documentation</div>
-    <div style="display:flex;flex-direction:column;gap:2px;">
-      <button onclick="openDocDrawer()"
-        style="display:flex;align-items:center;justify-content:space-between;background:none;border:none;border-radius:8px;padding:8px 10px;cursor:pointer;font-family:inherit;width:100%;text-align:left;transition:background .12s;"
-        onmouseover="this.style.background='#F3F4F6'" onmouseout="this.style.background='none'">
-        <span style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:500;color:var(--navy);">
-          <span style="font-size:15px;">📘</span> Règles de gestion
-        </span>
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--grey-txt)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
-      </button>
-    </div>
+    <div style="font-size:12px;color:var(--grey-txt);font-style:italic;padding:2px 2px 6px;">Aucune documentation</div>
   </div>
 
 </div>
