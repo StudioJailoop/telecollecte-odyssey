@@ -30,11 +30,11 @@
     }
 
     /* ══════════════════════════════════════
-       HEADER DS2 — 72px (Figma exact)
+       HEADER DS2 — 56px
     ══════════════════════════════════════ */
     .header {
       background: var(--navy);
-      height: 72px;
+      height: 56px;
       display: flex;
       align-items: center;
       padding: 0 24px;
@@ -43,8 +43,8 @@
       top: 0; left: 0; right: 0;
       z-index: 100;
     }
-    .logo { height: 32px; display:flex; align-items:center; flex-shrink:0; }
-    .logo img { height: 32px; }
+    .logo { height: 28px; display:flex; align-items:center; flex-shrink:0; }
+    .logo img { height: 28px; }
     .search {
       flex: 1; max-width: 560px;
       background: var(--white);
@@ -68,9 +68,9 @@
     ══════════════════════════════════════ */
     .layout {
       position: fixed;
-      top: 72px; left: 0;
+      top: 56px; left: 0;
       width: 1440px;
-      height: calc(1024px - 72px);
+      height: calc(1024px - 56px);
       display: flex;
     }
 
@@ -212,32 +212,58 @@
     }
 
     /* ══════════════════════════════════════
-       TABS DS2 — Figma exact
+       TABS DS2 — hauteur 40px, pill, navy
     ══════════════════════════════════════ */
     .tabs-bar {
-      padding: 0;
+      border-bottom: 1px solid var(--grey-bd);
+      padding: 0 24px;
       display: flex;
       align-items: center;
       gap: 4px;
+      height: 52px;
       flex-shrink: 0;
     }
     .tab {
-      height: 48px;
-      padding: 4px 20px;
-      font-size: 16px;
-      font-weight: 600;
-      border-radius: 100px;
+      height: 40px;
+      padding: 0 16px;
+      font-size: 14px;
+      font-weight: 500;
+      border-radius: 20px;
       cursor: pointer;
-      color: #000000;
+      color: var(--grey-txt);
       border: none;
       background: transparent;
       font-family: inherit;
-      transition: background .15s;
+      transition: color .15s, background .15s;
       white-space: nowrap;
-      display: flex; align-items: center;
     }
-    .tab:hover { background: #F3F3F3; }
-    .tab.active { background: #000000; color: #FFFFFF; }
+    .tab:hover { background: var(--grey-bg); color: var(--navy); }
+    .tab.active { background: var(--navy); color: var(--white); font-weight: 700; }
+    .tab-exchange {
+      margin-left: auto;
+      height: 36px;
+      padding: 0 16px;
+      font-size: 13px;
+      font-weight: 600;
+      border-radius: 20px;
+      cursor: pointer;
+      color: var(--navy);
+      border: 1.5px solid var(--navy);
+      background: transparent;
+      font-family: inherit;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .badge-notif {
+      background: var(--yellow);
+      color: #000;
+      font-size: 10px;
+      font-weight: 700;
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+    }
 
     /* ══════════════════════════════════════
        CONTENU SCROLLABLE
@@ -245,7 +271,7 @@
     .content {
       flex: 1;
       overflow-y: auto;
-      padding: 0 0 80px;
+      padding: 24px 24px 80px;
       background: var(--grey-bg);
       position: relative;
     }
@@ -258,6 +284,7 @@
       display: grid;
       grid-template-columns: 1fr 1fr 1fr 1fr;
       gap: 16px;
+      margin-bottom: 16px;
     }
 
     /* Card Profil — DS2 Figma */
@@ -416,96 +443,74 @@
     .cardex-card-C:hover { box-shadow: 0 2px 12px rgba(30,38,67,0.1); }
 
     /* ══════════════════════════════════════
-       TABLEAU GM — Figma exact
-       Header : h-56px, radius 16px top
-       Lignes : min-h-80px, bg #F6EFE7, border #CCC, radius 16px, gap 12px
-       Colonnes (widths Figma) :
-         checkbox: flex px-24 | state: 70px | stay: 130px | civility: 50px
-         firstname: 132px | lastname: 220px | qu: 60px | master: 60px
-         age: 60px | type: 100px | code: 60px | room: 70px | status: 96px
+       TABLEAU GM — DS2
     ══════════════════════════════════════ */
-    .gm-table-wrap { overflow: visible; }
-    .gm-head {
-      background: #1E2643; color: #FFFFFF;
-      display: flex;
-      height: 56px;
-      align-items: center;
-      font-size: 16px; font-weight: 600;
-      border-radius: 16px 16px 0 0;
+    .gm-table-wrap {
+      border-radius: 12px;
       overflow: hidden;
     }
-    .gm-head-cell {
-      display: flex; align-items: center; justify-content: center;
-      padding: 10px 24px; height: 56px; flex-shrink: 0; white-space: nowrap;
-    }
-    .gm-head-cell.start { justify-content: flex-start; border-radius: 16px 0 0 0; }
-    .gm-head-cell.end   { border-radius: 0 16px 0 0; }
-    .gm-table-rows {
-      display: flex; flex-direction: column; gap: 12px;
-      padding: 12px 0 0;
+    .gm-head {
+      background: var(--navy); color: var(--white);
+      display: grid;
+      grid-template-columns: 40px 72px 176px 1fr 1fr 64px 56px 100px 56px 64px;
+      padding: 0 16px;
+      height: 44px;
+      align-items: center;
+      font-size: 12px; font-weight: 600; gap: 8px;
+      border-radius: 10px 10px 0 0;
     }
     .gm-row {
-      display: flex;
+      display: grid;
+      grid-template-columns: 40px 72px 176px 1fr 1fr 64px 56px 100px 56px 64px;
+      padding: 0 16px;
+      height: 56px;
       align-items: center;
-      min-height: 80px;
-      border-radius: 16px;
-      overflow: hidden;
+      font-size: 13px; gap: 8px;
+      background: var(--white);
+      margin-top: 12px;
+      border-radius: 10px;
     }
-    .gm-cell {
+    .gm-row:first-of-type { margin-top: 0; border-radius: 0 0 10px 10px; }
+    .gm-table-rows {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      background: var(--grey-bg);
+      padding: 12px 0 0;
+    }
+    .gm-row.master-row { background: #FAFBFF; }
+    .state-col {
+      display: flex; flex-direction: column; align-items: center; gap: 2px;
+    }
+    .state-icon {
+      width: 28px; height: 28px;
+      border-radius: 50%;
       display: flex; align-items: center; justify-content: center;
-      min-height: 80px; padding: 10px 24px; flex-shrink: 0;
-      background: #F6EFE7;
-      border-top: 1px solid #CCCCCC;
-      border-bottom: 1px solid #CCCCCC;
-      font-size: 16px; color: #000; white-space: nowrap;
     }
-    .gm-cell.start {
-      border-left: 1px solid #CCCCCC;
-      border-radius: 16px 0 0 16px;
-      justify-content: flex-start;
-    }
-    .gm-cell.end {
-      border-right: 1px solid #CCCCCC;
-      border-radius: 0 16px 16px 0;
-    }
-    /* Widths colonnes Figma */
-    .gm-col-state    { width: 70px; }
-    .gm-col-stay     { width: 130px; }
-    .gm-col-civ      { width: 50px; }
-    .gm-col-fname    { width: 132px; justify-content: flex-start; }
-    .gm-col-lname    { width: 220px; justify-content: flex-start; }
-    .gm-col-qu       { width: 60px; }
-    .gm-col-master   { width: 60px; }
-    .gm-col-age      { width: 60px; }
-    .gm-col-type     { width: 100px; }
-    .gm-col-code     { width: 60px; }
-    .gm-col-room     { width: 70px; }
-    .gm-col-status   { width: 96px; }
-    /* State icons */
-    .state-col { display:flex; flex-direction:column; align-items:center; gap:4px; }
-    .state-icon { width:24px; height:24px; display:flex; align-items:center; justify-content:center; }
-    .state-lbl { font-size:10px; font-weight:400; color:#000; white-space:nowrap; }
-    /* Date col */
-    .date-col { display:flex; flex-direction:column; gap:0; }
-    .date-from { font-size:14px; font-weight:400; color:#000; line-height:20px; }
-    .date-to   { font-size:14px; font-weight:400; color:#000; line-height:20px; }
-    /* Badge platinum */
-    .badge-platinum { background:#1E2643; color:white; font-size:14px; font-weight:600; padding:4px 16px; border-radius:100px; white-space:nowrap; }
-    /* Status check */
-    .status-ok-icon  { width:48px; height:48px; display:flex; align-items:center; justify-content:center; }
-    .status-ok-icon svg { width:48px; height:48px; }
+    .state-icon svg { width:14px;height:14px; }
+    .status-ok   { background: #E6F4EA; }
+    .status-warn { background: #FFF3E0; }
+    .status-err  { background: #FCE8E6; }
+    .state-lbl { font-size:10px; color:var(--grey-txt); white-space:nowrap; }
+    .state-lbl.ok { color: var(--green); }
+    .status-check { width:28px;height:28px;border-radius:50%;border:2px solid;display:flex;align-items:center;justify-content:center; }
+    .status-check.ok  { border-color:var(--green);background:#E6F4EA; }
+    .status-check.err { border-color:var(--red);background:#FCE8E6; }
+    .date-col { display:flex;flex-direction:column;gap:1px; }
+    .date-from { font-size:12px;font-weight:600;color:var(--navy); }
+    .date-to   { font-size:12px;color:var(--grey-txt); }
+    .star-icon svg { width:20px;height:20px;stroke:var(--grey-bd);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round; }
 
     /* ══════════════════════════════════════
-       FOOTER ACTIONS DS2 — Figma exact
-       h-64px, boutons 44px pill, Add a GM = #000
+       FOOTER ACTIONS DS2 — 44px buttons
     ══════════════════════════════════════ */
     .footer-actions {
       position: fixed;
       bottom: 0; left: 130px; right: 0;
       background: var(--white);
-      border-top: 1px solid #CCCCCC;
-      padding: 0 12px;
-      height: 64px;
+      border-top: 1px solid var(--grey-bd);
+      padding: 0 24px;
+      height: 68px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -516,15 +521,14 @@
       height: 44px;
       border-radius: 22px;
       padding: 0 24px;
-      font-size: 16px; font-weight: 600;
+      font-size: 14px; font-weight: 600;
       cursor: pointer; font-family: inherit;
-      border: 1.5px solid #000000;
+      border: 1.5px solid var(--navy);
       background: transparent;
-      color: #000000;
-      white-space: nowrap;
+      color: var(--navy);
     }
-    .btn-footer.primary { background: #000000; color: #FFFFFF; border-color: #000000; }
-    .btn-footer.yellow  { background: #FDBE00; color: #000; border-color: #FDBE00; }
+    .btn-footer.primary { background: var(--navy); color: var(--white); border-color: var(--navy); }
+    .btn-footer.yellow  { background: var(--yellow); color: #000; border-color: var(--yellow); }
 
     /* Switch row */
     .switch-row { display:flex;align-items:center;justify-content:space-between;gap:12px; }
@@ -863,7 +867,7 @@
             </div>
 
             <!-- Card Cardex in a nutshell — DS2 Figma -->
-            <div class="info-card" style="justify-content:space-between;gap:12px;">
+            <div class="info-card" style="justify-content:space-between;">
               <div class="cardex-nutshell-header">
                 <span class="cardex-card-title">Cardex in a nutshell</span>
                 <div class="cardex-nutshell-arrow" onclick="alert('→ Cardex complet')">
@@ -915,129 +919,68 @@
           </div>
         </div><!-- /prop-C -->
 
-        <!-- ══ TABLEAU GM — Figma exact ══ -->
+        <!-- ══ TABLEAU GM — DS2 ══ -->
         <div class="gm-table-wrap">
-          <!-- Header -->
           <div class="gm-head">
-            <div class="gm-head-cell start" style="padding:10px 24px;width:auto;border-radius:16px 0 0 0;">
-              <button style="width:24px;height:24px;border:1px solid #666;border-radius:8px;background:white;cursor:pointer;flex-shrink:0;"></button>
-            </div>
-            <div class="gm-head-cell gm-col-state">State</div>
-            <div class="gm-head-cell gm-col-stay">Stay date</div>
-            <div class="gm-head-cell gm-col-civ" style="justify-content:flex-start;"></div>
-            <div class="gm-head-cell gm-col-fname" style="justify-content:flex-start;">First name</div>
-            <div class="gm-head-cell gm-col-lname" style="justify-content:flex-start;">Last name</div>
-            <div class="gm-head-cell gm-col-qu">Qu.</div>
-            <div class="gm-head-cell gm-col-master">Master</div>
-            <div class="gm-head-cell gm-col-age">Age</div>
-            <div class="gm-head-cell gm-col-type">Type</div>
-            <div class="gm-head-cell gm-col-code">Code</div>
-            <div class="gm-head-cell gm-col-room">Room</div>
-            <div class="gm-head-cell gm-col-status end">Status</div>
+            <span></span>
+            <span>State</span>
+            <span>Stay date</span>
+            <span>First name</span>
+            <span>Last name</span>
+            <span>Master</span>
+            <span>Age</span>
+            <span>Type</span>
+            <span>Code</span>
+            <span style="text-align:center;">Status</span>
           </div>
-          <!-- Lignes -->
           <div class="gm-table-rows">
-            <!-- GM 1 — Mr John Mc Doe (Not check-in, master) -->
-            <div class="gm-row">
-              <div class="gm-cell start" style="padding:10px 24px;width:auto;">
-                <button style="width:24px;height:24px;border:1px solid #666;border-radius:8px;background:rgba(255,255,255,0);cursor:pointer;"></button>
-              </div>
-              <div class="gm-cell gm-col-state">
-                <div class="state-col">
-                  <div class="state-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="8" y1="12" x2="16" y2="12"/></svg></div>
-                  <span class="state-lbl">Not check-in</span>
+            <!-- GM 1 — Master -->
+            <div class="gm-row master-row">
+              <input type="checkbox" style="width:16px;height:16px;cursor:pointer;accent-color:var(--navy);">
+              <div class="state-col">
+                <div class="state-icon status-warn">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
                 </div>
+                <span class="state-lbl">Not check-in</span>
               </div>
-              <div class="gm-cell gm-col-stay"><div class="date-col"><span class="date-from">From 03/03/2024</span><span class="date-to">To 13/03/2024</span></div></div>
-              <div class="gm-cell gm-col-civ">Mr</div>
-              <div class="gm-cell gm-col-fname">John</div>
-              <div class="gm-cell gm-col-lname">Mc Doe</div>
-              <div class="gm-cell gm-col-qu">GM ordi</div>
-              <div class="gm-cell gm-col-master">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
-              </div>
-              <div class="gm-cell gm-col-age">42</div>
-              <div class="gm-cell gm-col-type"><span class="badge-platinum">Platinum</span></div>
-              <div class="gm-cell gm-col-code">C2</div>
-              <div class="gm-cell gm-col-room">301</div>
-              <div class="gm-cell gm-col-status end">
-                <svg width="48" height="48" viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="20" stroke="#088A20" stroke-width="2.5"/><polyline points="16,24 22,30 32,18" stroke="#088A20" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              </div>
+              <div class="date-col"><span class="date-from">From 03/03/2024</span><span class="date-to">To 13/03/2024</span></div>
+              <span style="font-weight:700;">John</span>
+              <span style="font-weight:700;">Mc Doe</span>
+              <div class="star-icon"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
+              <span>42</span>
+              <span class="badge-platinum">Platinum</span>
+              <span>C2</span>
+              <div style="display:flex;justify-content:center;"><div class="status-check ok"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#088A20" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div></div>
             </div>
-            <!-- GM 2 — Pierre John Mc Doe (Not check-in, erreur) -->
+            <!-- GM 2 -->
             <div class="gm-row">
-              <div class="gm-cell start" style="padding:10px 24px;width:auto;">
-                <button style="width:24px;height:24px;border:1px solid #666;border-radius:8px;background:rgba(255,255,255,0);cursor:pointer;"></button>
-              </div>
-              <div class="gm-cell gm-col-state">
-                <div class="state-col">
-                  <div class="state-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#BF2F17" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><circle cx="12" cy="16" r="1" fill="#BF2F17"/></svg></div>
-                  <span class="state-lbl" style="color:#BF2F17;">Not check-in</span>
-                </div>
-              </div>
-              <div class="gm-cell gm-col-stay"><div class="date-col"><span class="date-from">From 03/03/2024</span><span class="date-to">To 13/03/2024</span></div></div>
-              <div class="gm-cell gm-col-civ">Pierre</div>
-              <div class="gm-cell gm-col-fname">John</div>
-              <div class="gm-cell gm-col-lname">Mc Doe</div>
-              <div class="gm-cell gm-col-qu">GM ordi</div>
-              <div class="gm-cell gm-col-master"></div>
-              <div class="gm-cell gm-col-age">42</div>
-              <div class="gm-cell gm-col-type"><span class="badge-platinum">Platinum</span></div>
-              <div class="gm-cell gm-col-code">C2</div>
-              <div class="gm-cell gm-col-room">301</div>
-              <div class="gm-cell gm-col-status end">
-                <svg width="48" height="48" viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="20" stroke="#088A20" stroke-width="2.5"/><polyline points="16,24 22,30 32,18" stroke="#088A20" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              </div>
+              <input type="checkbox" style="width:16px;height:16px;cursor:pointer;accent-color:var(--navy);">
+              <div class="state-col"><div class="state-icon status-err"><svg viewBox="0 0 24 24" fill="none" stroke="#D93025" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div><span class="state-lbl">Not check-in</span></div>
+              <div class="date-col"><span class="date-from">From 03/03/2024</span><span class="date-to">To 13/03/2024</span></div>
+              <span>Pierre</span><span>Mc Doe</span><span></span><span>42</span>
+              <span class="badge-platinum">Platinum</span>
+              <span>C2</span>
+              <div style="display:flex;justify-content:center;"><div class="status-check ok"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#088A20" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div></div>
             </div>
-            <!-- GM 3 — Jeanne John Mc Doe -->
+            <!-- GM 3 -->
             <div class="gm-row">
-              <div class="gm-cell start" style="padding:10px 24px;width:auto;">
-                <button style="width:24px;height:24px;border:1px solid #666;border-radius:8px;background:rgba(255,255,255,0);cursor:pointer;"></button>
-              </div>
-              <div class="gm-cell gm-col-state">
-                <div class="state-col">
-                  <div class="state-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#BF2F17" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><circle cx="12" cy="16" r="1" fill="#BF2F17"/></svg></div>
-                  <span class="state-lbl" style="color:#BF2F17;">Not check-in</span>
-                </div>
-              </div>
-              <div class="gm-cell gm-col-stay"><div class="date-col"><span class="date-from">From 03/03/2024</span><span class="date-to">To 13/03/2024</span></div></div>
-              <div class="gm-cell gm-col-civ">Jeanne</div>
-              <div class="gm-cell gm-col-fname">John</div>
-              <div class="gm-cell gm-col-lname">Mc Doe</div>
-              <div class="gm-cell gm-col-qu">GM ordi</div>
-              <div class="gm-cell gm-col-master"></div>
-              <div class="gm-cell gm-col-age">42</div>
-              <div class="gm-cell gm-col-type"><span class="badge-platinum">Platinum</span></div>
-              <div class="gm-cell gm-col-code">C4</div>
-              <div class="gm-cell gm-col-room">302</div>
-              <div class="gm-cell gm-col-status end">
-                <svg width="48" height="48" viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="20" stroke="#088A20" stroke-width="2.5"/><polyline points="16,24 22,30 32,18" stroke="#088A20" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              </div>
+              <input type="checkbox" style="width:16px;height:16px;cursor:pointer;accent-color:var(--navy);">
+              <div class="state-col"><div class="state-icon status-err"><svg viewBox="0 0 24 24" fill="none" stroke="#D93025" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div><span class="state-lbl">Not check-in</span></div>
+              <div class="date-col"><span class="date-from">From 03/03/2024</span><span class="date-to">To 13/03/2024</span></div>
+              <span>Jeanne</span><span>Mc Doe</span><span></span><span>42</span>
+              <span class="badge-platinum">Platinum</span>
+              <span>C4</span>
+              <div style="display:flex;justify-content:center;"><div class="status-check ok"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#088A20" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div></div>
             </div>
-            <!-- GM 4 — Sonia John Mc Doe (Check-in) -->
+            <!-- GM 4 -->
             <div class="gm-row">
-              <div class="gm-cell start" style="padding:10px 24px;width:auto;">
-                <button style="width:24px;height:24px;border:1px solid #666;border-radius:8px;background:rgba(255,255,255,0);cursor:pointer;"></button>
-              </div>
-              <div class="gm-cell gm-col-state">
-                <div class="state-col">
-                  <div class="state-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#088A20" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="8,12 11,15 16,9" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-                  <span class="state-lbl" style="color:#088A20;">Check-in</span>
-                </div>
-              </div>
-              <div class="gm-cell gm-col-stay"><div class="date-col"><span class="date-from">From 03/03/2024</span><span class="date-to">To 13/03/2024</span></div></div>
-              <div class="gm-cell gm-col-civ">Sonia</div>
-              <div class="gm-cell gm-col-fname">John</div>
-              <div class="gm-cell gm-col-lname">Mc Doe</div>
-              <div class="gm-cell gm-col-qu">GM ordi</div>
-              <div class="gm-cell gm-col-master"></div>
-              <div class="gm-cell gm-col-age">42</div>
-              <div class="gm-cell gm-col-type"><span class="badge-platinum">Platinum</span></div>
-              <div class="gm-cell gm-col-code">C4</div>
-              <div class="gm-cell gm-col-room">302</div>
-              <div class="gm-cell gm-col-status end">
-                <svg width="48" height="48" viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="20" stroke="#088A20" stroke-width="2.5"/><polyline points="16,24 22,30 32,18" stroke="#088A20" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              </div>
+              <input type="checkbox" style="width:16px;height:16px;cursor:pointer;accent-color:var(--navy);">
+              <div class="state-col"><div class="state-icon status-ok"><svg viewBox="0 0 24 24" fill="none" stroke="#088A20" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="9 12 11 14 15 10"/></svg></div><span class="state-lbl ok">Check-in</span></div>
+              <div class="date-col"><span class="date-from">From 03/03/2024</span><span class="date-to">To 13/03/2024</span></div>
+              <span>Sonia</span><span>Mc Doe</span><span></span><span>42</span>
+              <span class="badge-platinum">Platinum</span>
+              <span>C4</span>
+              <div style="display:flex;justify-content:center;"><div class="status-check err"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#D93025" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div></div>
             </div>
           </div>
         </div>
