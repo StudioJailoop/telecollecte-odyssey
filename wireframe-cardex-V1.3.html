@@ -139,54 +139,42 @@
       margin-bottom: 6px;
     }
     .breadcrumb span { color: var(--navy); font-weight: 600; }
-    .page-title { display: none; }
+    .page-title {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 12px;
+      letter-spacing: -0.3px;
+    }
 
     /* ══════════════════════════════════════
-       BARRE IDENTITÉ CLIENT — DS2 Figma
+       BARRE IDENTITÉ CLIENT
     ══════════════════════════════════════ */
     .identity-bar {
       display: flex;
-      gap: 4px;
-      padding: 0 24px;
-      margin: 12px 0 0;
+      gap: 1px;
+      margin: 0 0 0;
       flex-shrink: 0;
-      align-items: center;
+      border-top: 1px solid var(--grey-bd);
+      border-bottom: 1px solid var(--grey-bd);
+      background: var(--grey-bd);
     }
     .id-cell {
-      background: #F6EFE7;
-      padding: 12px;
+      background: var(--white);
+      padding: 8px 16px;
       display: flex;
       flex-direction: column;
-      gap: 4px;
-      border-radius: 16px;
+      gap: 2px;
       flex: 1;
-      height: 80px;
-      justify-content: flex-start;
     }
-    .id-cell.civility   { flex: 0 0 78px; }
-    .id-cell.name       { flex: 0 0 200px; }
-    .id-cell.firstname  { flex: 0 0 160px; }
-    .id-cell.phone      { flex: 0 0 210px; }
-    .id-cell.email      { flex: 1; }
-    .id-label { font-size: 16px; color: var(--navy); font-weight: 400; line-height: 24px; }
-    .id-value { font-size: 20px; font-weight: 600; color: var(--navy); line-height: 28px; }
-    .id-top   { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
-    .id-edit  { font-size: 16px; font-weight: 600; color: var(--navy); cursor: pointer; text-decoration: underline; white-space: nowrap; line-height: 24px; }
-    /* Boutons action (Demande particulière + Carnet de liaison) */
-    .id-actions { display: flex; gap: 8px; margin-left: 4px; flex-shrink: 0; }
-    .id-action-btn {
-      width: 48px; height: 48px; border-radius: 50%; border: none; cursor: pointer;
-      display: flex; align-items: center; justify-content: center; flex-shrink: 0; position: relative;
-    }
-    .id-action-btn.green { background: #088A20; }
-    .id-action-btn.yellow { background: #FDBE00; }
-    .id-action-btn svg { width: 22px; height: 22px; }
-    .notif-badge {
-      position: absolute; top: -2px; right: -2px;
-      width: 18px; height: 18px; border-radius: 50%;
-      background: #BF2F17; display: flex; align-items: center; justify-content: center;
-      font-size: 10px; font-weight: 700; color: white;
-    }
+    .id-cell.civility { flex: 0 0 88px; }
+    .id-cell.name     { flex: 0 0 160px; }
+    .id-cell.firstname{ flex: 0 0 130px; }
+    .id-cell.phone    { flex: 0 0 220px; }
+    .id-cell.email    { flex: 1; }
+    .id-label { font-size: 11px; color: var(--grey-txt); font-weight: 500; text-transform: uppercase; letter-spacing: 0.3px; }
+    .id-value { font-size: 14px; font-weight: 700; color: var(--navy); }
+    .id-edit { font-size: 12px; font-weight: 600; text-decoration: underline; cursor: pointer; color: var(--navy); }
 
     /* ══════════════════════════════════════
        TABS DS2 — hauteur 40px, pill, navy
@@ -255,7 +243,7 @@
     .content-inner { padding-bottom: 16px; }
 
     /* ══════════════════════════════════════
-       GRID 4 CARDS INFO — DS2 Figma
+       GRID 4 CARDS INFO — DS2 beige
     ══════════════════════════════════════ */
     .info-grid-4 {
       display: grid;
@@ -264,40 +252,38 @@
       margin-bottom: 16px;
     }
 
-    /* Card Profil — DS2 Figma */
     .info-card {
-      background: var(--white);
-      border: 1px solid #CCCCCC;
-      border-radius: 16px;
-      padding: 20px;
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
+      background: var(--beige);
+      border-radius: 12px;
+      padding: 16px;
+      min-height: 64px;
     }
-    .profile-row { display:flex; align-items:center; gap:16px; }
-    .profile-label { font-size:16px; color:var(--navy); font-weight:600; white-space:nowrap; line-height:24px; }
-    .profile-value { font-size:14px; font-weight:400; color:var(--navy); line-height:20px; }
+
+    /* Card Profil */
+    .profile-row { display:flex; align-items:center; gap:8px; margin-bottom:8px; }
+    .profile-row:last-of-type { margin-bottom: 0; }
+    .profile-label { font-size:12px; color:var(--grey-txt); font-weight:500; min-width:80px; }
+    .profile-value { font-size:13px; font-weight:600; color:var(--navy); }
     .profile-badge {
       display: inline-flex; align-items: center;
-      padding: 4px 16px;
-      border-radius: 100px;
-      font-size: 14px; font-weight: 600; line-height: 20px;
+      padding: 2px 10px;
+      border-radius: 20px;
+      font-size: 11px; font-weight: 700;
     }
-    .badge-gold     { background: #C8914F; color: black; }
-    .badge-vip      { background: transparent; color: black; border: 1px solid black; }
-    .badge-donor    { background: transparent; color: black; border: 1px solid black; }
-    .badge-platinum { background: var(--navy); color: white; }
-    .badge-honeymoon { background: #F6EFE7; color: #924833; font-size:14px; font-weight:600; padding: 4px 16px; border-radius: 100px; }
+    .badge-gold     { background: #8B6914; color: white; }
+    .badge-vip      { background: var(--white); color: var(--navy); border: 1.5px solid var(--navy); }
+    .badge-donor    { background: var(--white); color: var(--navy); border: 1.5px solid var(--navy); }
+    .badge-platinum { background: var(--navy); color: white; font-size:11px; padding: 2px 10px; border-radius: 20px; }
+    .badge-honeymoon { background: #F3EFE8; color: var(--navy); border: 1.5px solid #C8B99A; font-size:11px; padding: 2px 10px; border-radius: 20px; }
     .btn-pass {
-      margin-top: 12px;
-      align-self: flex-start;
-      padding: 0 13px;
-      height: 32px;
-      border: 1px solid var(--navy);
-      border-radius: 32px;
+      margin-top: 10px;
+      width: 100%;
+      padding: 8px 0;
+      border: 1.5px solid var(--navy);
+      border-radius: 20px;
       background: transparent;
       font-size: 12px; font-weight: 600; color: var(--navy);
-      cursor: pointer; font-family: inherit; white-space: nowrap;
+      cursor: pointer; font-family: inherit;
     }
 
     /* Card Arrival */
@@ -340,25 +326,11 @@
     .expense-amount { font-size: 20px; font-weight: 700; color: var(--green); }
     .expense-label  { font-size: 11px; color: var(--grey-txt); margin-top: 1px; }
 
-    /* Card Cardex in a nutshell — DS2 Figma */
+    /* Card Cardex */
     .cardex-card-title {
-      font-size: 16px; font-weight: 600; color: var(--navy);
-      line-height: 24px;
+      font-size: 12px; font-weight: 700; color: var(--navy);
+      text-transform: uppercase; letter-spacing: .5px; margin-bottom: 10px;
     }
-    .cardex-nutshell-header {
-      display: flex; align-items: center; justify-content: space-between;
-      margin-bottom: 12px;
-    }
-    .cardex-nutshell-arrow {
-      width: 48px; height: 48px; display: flex; align-items: center; justify-content: center;
-      cursor: pointer; flex-shrink: 0;
-    }
-    .cardex-nutshell-arrow svg { width: 20px; height: 20px; stroke: var(--navy); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; transform: scaleX(-1); }
-    .cardex-nutshell-list { list-style: disc; padding-left: 20px; display: flex; flex-direction: column; gap: 2px; margin-bottom: 12px; }
-    .cardex-nutshell-list li { font-size: 14px; font-weight: 400; color: var(--navy); line-height: 20px; }
-    .cardex-nutshell-list li strong { font-weight: 600; }
-    .cardex-nutshell-badges { display: flex; gap: 8px; flex-wrap: wrap; }
-    /* Ancienne card Cardex (prop A beige) — gardée pour rétrocompat */
     .cardex-card-list { list-style: none; display: flex; flex-direction: column; gap: 6px; }
     .cardex-card-list li { font-size: 12px; color: var(--navy); display: flex; align-items: flex-start; gap: 7px; line-height: 1.4; }
     .cardex-card-list li::before { content: '·'; color: var(--grey-txt); flex-shrink: 0; font-size:16px; line-height:1.1; }
@@ -666,9 +638,10 @@
       <div class="breadcrumb">
         Home <span style="opacity:.4">›</span> Pages <span style="opacity:.4">›</span> ... <span>• Final page</span>
       </div>
+      <div class="page-title">Customer file</div>
     </div>
 
-    <!-- Barre identité — DS2 Figma -->
+    <!-- Barre identité -->
     <div class="identity-bar">
       <div class="id-cell civility">
         <span class="id-label">Civility</span>
@@ -683,28 +656,18 @@
         <span class="id-value">John</span>
       </div>
       <div class="id-cell phone">
-        <div class="id-top">
-          <span class="id-label">Phone number</span>
+        <span class="id-label">Phone number</span>
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
+          <span class="id-value">+33 6 20 00 76 00</span>
           <span class="id-edit">Edit</span>
         </div>
-        <span class="id-value">+33 6 20 00 76 00</span>
       </div>
       <div class="id-cell email">
-        <div class="id-top">
-          <span class="id-label">Email</span>
+        <span class="id-label">Email</span>
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
+          <span class="id-value">johnmcdoe.gmail.com</span>
           <span class="id-edit">Edit</span>
         </div>
-        <span class="id-value">johnmcdoe.gmail.com</span>
-      </div>
-      <!-- Boutons action -->
-      <div class="id-actions">
-        <button class="id-action-btn green" title="Demande particulière">
-          <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
-        </button>
-        <button class="id-action-btn yellow" title="Carnet de liaison" style="position:relative;">
-          <svg viewBox="0 0 24 24" fill="none" stroke="#1E2643" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-          <span class="notif-badge">2</span>
-        </button>
       </div>
     </div>
 
@@ -715,9 +678,10 @@
       <button class="tab" onclick="setTab(this)">Sell services</button>
       <button class="tab" onclick="setTab(this)">Sale history</button>
       <button class="tab" onclick="setTab(this)">Deposit / Withdrawal</button>
-      <button class="tab" onclick="setTab(this)">Account balance</button>
-      <button class="tab" onclick="setTab(this)">Change</button>
       <button class="tab" onclick="setTab(this)">Invoice</button>
+      <button class="tab-exchange" onclick="setTab(this)">
+        Exchange <span class="badge-notif">1</span>
+      </button>
     </div>
 
     <!-- CONTENU -->
@@ -816,21 +780,20 @@
               </div>
             </div>
 
-            <!-- Card Cardex in a nutshell — DS2 Figma -->
-            <div class="info-card" style="justify-content:space-between;">
-              <div class="cardex-nutshell-header">
-                <span class="cardex-card-title">Cardex in a nutshell</span>
-                <div class="cardex-nutshell-arrow" onclick="alert('→ Cardex complet')">
-                  <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-                </div>
-              </div>
-              <ul class="cardex-nutshell-list">
-                <li>9 past stays</li>
-                <li>Last visit to <strong>Cefalu</strong></li>
+            <!-- Card Cardex -->
+            <div class="cardex-card-A" onclick="alert('→ Cardex complet')">
+              <div class="cardex-card-title">Cardex</div>
+              <ul class="cardex-card-list">
+                <li>Vegan &amp; gluten-free, lactose allergy</li>
+                <li>Tennis, yoga, fitness, spa</li>
+                <li>Drinks: green tea, Jack Daniel's</li>
+                <li>French &amp; English speaker</li>
+                <li>Early riser, terrace breakfast</li>
+                <li>Calm atmospheres preferred</li>
               </ul>
-              <div class="cardex-nutshell-badges">
-                <span class="profile-badge badge-gold">Gold</span>
-                <span class="profile-badge badge-honeymoon">Honeymoon</span>
+              <div class="cardex-see-more">
+                Voir le Cardex complet
+                <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
               </div>
             </div>
 
