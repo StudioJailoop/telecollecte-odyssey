@@ -1588,20 +1588,12 @@
 </div>
 
 <script>
-  // Designer = local SANS ?user= dans l'URL, OU ?designer=1 explicite
-  // PO = ?user=Quelqu'un → mode lecture seule, pas de panel designer
-  const _params = new URLSearchParams(location.search);
-  const _isUserPO = !!_params.get('user');
-  const isDesigner = (!_isUserPO && (location.hostname === 'localhost' || location.hostname === '127.0.0.1')) ||
-    _params.get('designer') === '1';
+  // Afficher les boutons designer en local OU si ?designer=1 dans l'URL
+  const isDesigner = location.hostname === 'localhost' || location.hostname === '127.0.0.1' ||
+    new URLSearchParams(location.search).get('designer') === '1';
   if (isDesigner) {
     document.getElementById('briefs-nav-btn').style.display = 'flex';
     document.getElementById('back-dashboard-btn').style.display = 'flex';
-  }
-  // Masquer le panel RG pour les POs
-  if (!isDesigner) {
-    const panel = document.getElementById('wf-panel');
-    if (panel) panel.style.display = 'none';
   }
 
   // ══ Retours PO ══════════════════════════════════════════════
@@ -4094,8 +4086,10 @@
   setInterval(fbLoad, 5000);
   // Chargement initial depuis Firebase
   fbLoad();
-  // Designer et PO : pings toujours activés (PO doit pouvoir commenter)
-  let commentMode = true;
+  // Designer : pings activés par défaut sauf si explicitement désactivé
+  let commentMode = isDesigner
+    ? localStorage.getItem('wf_pins_visible') !== '0'
+    : localStorage.getItem('wf_pins_visible') === '1';
   let pendingPin = null;
   let currentTab = 'tpe'; // tab active au moment du commentaire
   const AUTHOR_COLORS = {
