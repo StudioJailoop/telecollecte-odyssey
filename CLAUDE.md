@@ -2,6 +2,21 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+> **CONSTITUTION LOOPCRAFT — LIRE AVANT TOUTE MODIFICATION**
+>
+> Avant toute modification sur Loopcraft, lire obligatoirement :
+> - `LOOPCRAFT_CONSTITUTION.md` — ce qu'est Loopcraft, ses invariants, ses règles absolues
+> - `LOOPCRAFT_ROLE_MODEL.md` — rôles Designer et PO, permissions, éléments affichés/masqués
+> - `LOOPCRAFT_PRE_CODE_CHECKLIST.md` — checklist à remplir avant de coder
+>
+> Puis répondre à la checklist. Si un risque existe → STOP et demander validation.
+>
+> **Distinctions fondamentales :**
+> - **Le Panel** = fenêtre flottante bas-droite. Présent dans les DEUX vues. Panel Designer ≠ Panel PO.
+> - **La Design Zone** = grande modale jaune. Réservée au Designer UNIQUEMENT.
+> - `PO = Panel PO` — jamais `PO = pas de panel`
+> - Le rôle doit être explicite (`?role=designer` ou `?role=po&user=X`) — jamais basé uniquement sur localhost.
+
 > **Système réutilisable** : tout le système est documenté dans les fichiers ARCHITECTURE.md, UX_RULES.md, TECH_RULES.md. Lire ces fichiers avant toute intervention.
 
 ## Mémoire projet — LIRE EN DÉBUT DE SESSION
