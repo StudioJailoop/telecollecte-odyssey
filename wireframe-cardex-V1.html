@@ -8,10 +8,11 @@
 
     :root {
       --navy:     #1E2643;
-      --yellow:   #FDBE00;
+      --yellow:   #FFC107;
       --white:    #FFFFFF;
       --lavender: #9EAEF4;
-      --grey-bg:  #F4F4F4;
+      --beige:    #F3EFE8;
+      --grey-bg:  #F7F8FA;
       --grey-bd:  #E0E0E0;
       --grey-txt: #6B7280;
       --red:      #D93025;
@@ -29,77 +30,86 @@
     }
 
     /* ══════════════════════════════════════
-       HEADER — Odyssey DS exact
+       HEADER DS2 — 56px
     ══════════════════════════════════════ */
     .header {
       background: var(--navy);
-      height: 72px;
+      height: 56px;
       display: flex;
       align-items: center;
-      padding: 12px 24px;
-      gap: 24px;
+      padding: 0 24px;
+      gap: 16px;
       position: fixed;
       top: 0; left: 0; right: 0;
       z-index: 100;
     }
-    .logo { height: 32px; display:flex; align-items:center; flex-shrink:0; }
-    .logo img { height: 32px; }
+    .logo { height: 28px; display:flex; align-items:center; flex-shrink:0; }
+    .logo img { height: 28px; }
     .search {
-      flex: 1; max-width: 698px;
+      flex: 1; max-width: 560px;
       background: var(--white);
-      border: 1px solid #000;
+      border: 1px solid rgba(255,255,255,0.2);
       border-radius: 32px;
       height: 40px;
       display: flex; align-items: center;
-      padding: 6px; gap: 4px;
+      padding: 0 8px 0 14px; gap: 8px;
     }
-    .search .s-icon { width:24px;height:24px;padding:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0; }
-    .search .s-icon img { width:16px;height:16px; }
-    .search input { flex:1;border:none;outline:none;font-size:16px;color:#999;background:transparent;font-family:inherit; }
+    .search svg { width:16px;height:16px;stroke:#999;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0; }
+    .search input { flex:1;border:none;outline:none;font-size:14px;color:#999;background:transparent;font-family:inherit; }
     .search .s-btn { background:var(--yellow);border:none;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0; }
-    .search .s-btn img { width:12px;height:12px;transform:scaleX(-1); }
-    .h-btn { height:36px;border:none;border-radius:32px;padding:0 24px;font-size:14px;font-weight:600;cursor:pointer;white-space:nowrap;font-family:inherit; }
+    .search .s-btn svg { width:13px;height:13px;stroke:#000;transform:scaleX(-1); }
+    .h-btn { height:36px;border:none;border-radius:22px;padding:0 20px;font-size:14px;font-weight:600;cursor:pointer;white-space:nowrap;font-family:inherit; }
     .h-btn.yellow { background:var(--yellow);color:#000; }
     .h-btn.white  { background:var(--white);color:#000; }
-    .avatar { margin-left:auto;width:48px;height:48px;background:var(--lavender);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:16px;color:#000;flex-shrink:0; }
+    .avatar { margin-left:auto;width:36px;height:36px;background:var(--lavender);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;color:#000;flex-shrink:0; }
 
     /* ══════════════════════════════════════
        LAYOUT
     ══════════════════════════════════════ */
     .layout {
       position: fixed;
-      top: 72px; left: 0;
+      top: 56px; left: 0;
       width: 1440px;
-      height: calc(1024px - 72px);
+      height: calc(1024px - 56px);
       display: flex;
     }
 
     /* ══════════════════════════════════════
-       SIDEBAR
+       SIDEBAR DS2 — 64px, gap 32px
     ══════════════════════════════════════ */
     .sidebar {
       background: var(--navy);
-      width: 72px;
+      width: 64px;
       flex-shrink: 0;
       padding: 24px 0;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 8px;
+      gap: 0;
       overflow: hidden;
     }
     .nav-icon {
-      width: 48px; height: 48px;
+      width: 64px; height: 48px;
       display: flex; align-items: center; justify-content: center;
-      border-radius: 12px;
       cursor: pointer;
-      opacity: 0.5;
-      transition: opacity .15s, background .15s;
+      opacity: 0.45;
+      transition: opacity .15s;
+      position: relative;
     }
-    .nav-icon:hover { opacity: 0.8; }
-    .nav-icon.active { background: rgba(255,255,255,0.1); opacity: 1; }
-    .nav-icon svg { width: 22px; height: 22px; stroke: white; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+    .nav-icon:hover { opacity: 0.75; }
+    .nav-icon.active { opacity: 1; }
+    .nav-icon.active::before {
+      content: '';
+      position: absolute;
+      left: 8px; top: 50%;
+      transform: translateY(-50%);
+      width: 48px; height: 36px;
+      background: rgba(255,255,255,0.12);
+      border-radius: 10px;
+    }
+    .nav-icon svg { width: 20px; height: 20px; stroke: white; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; position:relative; z-index:1; }
     .nav-icon.bottom { margin-top: auto; }
+    .nav-sep { height: 32px; }
 
     /* ══════════════════════════════════════
        MAIN
@@ -117,7 +127,7 @@
        BREADCRUMB + TITRE
     ══════════════════════════════════════ */
     .page-header {
-      padding: 20px 32px 0;
+      padding: 16px 24px 0;
       flex-shrink: 0;
     }
     .breadcrumb {
@@ -126,14 +136,15 @@
       display: flex;
       align-items: center;
       gap: 6px;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
     }
     .breadcrumb span { color: var(--navy); font-weight: 600; }
     .page-title {
-      font-size: 22px;
+      font-size: 24px;
       font-weight: 700;
       color: var(--navy);
-      margin-bottom: 16px;
+      margin-bottom: 12px;
+      letter-spacing: -0.3px;
     }
 
     /* ══════════════════════════════════════
@@ -141,57 +152,62 @@
     ══════════════════════════════════════ */
     .identity-bar {
       display: flex;
-      gap: 2px;
-      margin: 0 32px 16px;
+      gap: 1px;
+      margin: 0 0 0;
       flex-shrink: 0;
+      border-top: 1px solid var(--grey-bd);
+      border-bottom: 1px solid var(--grey-bd);
+      background: var(--grey-bd);
     }
     .id-cell {
-      background: var(--grey-bg);
-      border: 1px solid var(--grey-bd);
-      border-radius: 4px;
-      padding: 10px 16px;
+      background: var(--white);
+      padding: 8px 16px;
       display: flex;
       flex-direction: column;
-      gap: 4px;
+      gap: 2px;
       flex: 1;
     }
-    .id-cell.civility { flex: 0 0 100px; }
-    .id-cell.name     { flex: 0 0 180px; }
-    .id-cell.firstname{ flex: 0 0 140px; }
+    .id-cell.civility { flex: 0 0 88px; }
+    .id-cell.name     { flex: 0 0 160px; }
+    .id-cell.firstname{ flex: 0 0 130px; }
     .id-cell.phone    { flex: 0 0 220px; }
     .id-cell.email    { flex: 1; }
-    .id-label { font-size: 11px; color: var(--grey-txt); font-weight: 500; }
-    .id-value { font-size: 15px; font-weight: 700; color: var(--navy); }
-    .id-edit { font-size: 12px; font-weight: 600; text-decoration: underline; cursor: pointer; color: var(--navy); margin-left: auto; align-self: flex-start; }
+    .id-label { font-size: 11px; color: var(--grey-txt); font-weight: 500; text-transform: uppercase; letter-spacing: 0.3px; }
+    .id-value { font-size: 14px; font-weight: 700; color: var(--navy); }
+    .id-edit { font-size: 12px; font-weight: 600; text-decoration: underline; cursor: pointer; color: var(--navy); }
 
     /* ══════════════════════════════════════
-       TABS principales
+       TABS DS2 — hauteur 40px, pill, navy
     ══════════════════════════════════════ */
     .tabs-bar {
       border-bottom: 1px solid var(--grey-bd);
-      padding: 0 32px;
+      padding: 0 24px;
       display: flex;
       align-items: center;
       gap: 4px;
+      height: 52px;
       flex-shrink: 0;
     }
     .tab {
-      padding: 10px 20px;
+      height: 40px;
+      padding: 0 16px;
       font-size: 14px;
       font-weight: 500;
-      border-radius: 20px 20px 0 0;
+      border-radius: 20px;
       cursor: pointer;
       color: var(--grey-txt);
       border: none;
       background: transparent;
       font-family: inherit;
-      margin-bottom: 0;
       transition: color .15s, background .15s;
+      white-space: nowrap;
     }
-    .tab.active { background: var(--navy); color: var(--white); font-weight: 700; border-radius: 20px 20px 0 0; }
+    .tab:hover { background: var(--grey-bg); color: var(--navy); }
+    .tab.active { background: var(--navy); color: var(--white); font-weight: 700; }
     .tab-exchange {
       margin-left: auto;
-      padding: 8px 20px;
+      height: 36px;
+      padding: 0 16px;
       font-size: 13px;
       font-weight: 600;
       border-radius: 20px;
@@ -204,7 +220,7 @@
       align-items: center;
       gap: 6px;
     }
-    .tab-exchange .badge-notif {
+    .badge-notif {
       background: var(--yellow);
       color: #000;
       font-size: 10px;
@@ -220,44 +236,47 @@
     .content {
       flex: 1;
       overflow-y: auto;
-      padding: 24px 32px 40px;
+      padding: 24px 24px 80px;
       background: var(--grey-bg);
       position: relative;
     }
+    .content-inner { padding-bottom: 16px; }
 
     /* ══════════════════════════════════════
-       GRID 3 CARDS INFO
+       GRID 4 CARDS INFO — DS2 beige
     ══════════════════════════════════════ */
-    .info-grid {
+    .info-grid-4 {
       display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap: 12px;
-      margin-bottom: 12px;
+      grid-template-columns: 1fr 1fr 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 16px;
     }
 
     .info-card {
-      background: var(--white);
-      border: 1px solid var(--grey-bd);
+      background: var(--beige);
       border-radius: 12px;
-      padding: 20px;
+      padding: 16px;
+      min-height: 64px;
     }
 
     /* Card Profil */
-    .profile-row { display:flex; align-items:center; gap:8px; margin-bottom:10px; }
-    .profile-label { font-size:13px; color:var(--grey-txt); font-weight:500; min-width:90px; }
+    .profile-row { display:flex; align-items:center; gap:8px; margin-bottom:8px; }
+    .profile-row:last-of-type { margin-bottom: 0; }
+    .profile-label { font-size:12px; color:var(--grey-txt); font-weight:500; min-width:80px; }
     .profile-value { font-size:13px; font-weight:600; color:var(--navy); }
     .profile-badge {
       display: inline-flex; align-items: center;
-      padding: 3px 12px;
+      padding: 2px 10px;
       border-radius: 20px;
-      font-size: 12px; font-weight: 700;
+      font-size: 11px; font-weight: 700;
     }
     .badge-gold     { background: #8B6914; color: white; }
     .badge-vip      { background: var(--white); color: var(--navy); border: 1.5px solid var(--navy); }
     .badge-donor    { background: var(--white); color: var(--navy); border: 1.5px solid var(--navy); }
-    .badge-platinum { background: var(--navy); color: white; }
+    .badge-platinum { background: var(--navy); color: white; font-size:11px; padding: 2px 10px; border-radius: 20px; }
+    .badge-honeymoon { background: #F3EFE8; color: var(--navy); border: 1.5px solid #C8B99A; font-size:11px; padding: 2px 10px; border-radius: 20px; }
     .btn-pass {
-      margin-top: 12px;
+      margin-top: 10px;
       width: 100%;
       padding: 8px 0;
       border: 1.5px solid var(--navy);
@@ -268,255 +287,179 @@
     }
 
     /* Card Arrival */
-    .arrival-title {
+    .card-section-title {
       display: flex; align-items: center; gap: 8px;
-      font-size: 15px; font-weight: 700; color: var(--navy);
-      margin-bottom: 14px;
+      font-size: 13px; font-weight: 700; color: var(--navy);
+      margin-bottom: 12px;
     }
-    .arrival-row { display:flex; gap:4px; margin-bottom:8px; }
-    .arrival-label { font-size:13px; color:var(--grey-txt); font-weight:500; min-width:130px; }
-    .arrival-value { font-size:13px; font-weight:600; color:var(--navy); }
-    .arrival-link { font-size:13px; font-weight:600; color:var(--navy); text-decoration:underline; cursor:pointer; }
+    .card-section-title svg { width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round; }
+    .info-row { display:flex; flex-direction:column; gap:1px; margin-bottom:8px; }
+    .info-row:last-child { margin-bottom: 0; }
+    .info-lbl { font-size:11px; color:var(--grey-txt); font-weight:500; }
+    .info-val { font-size:13px; font-weight:600; color:var(--navy); }
+    .info-link { font-size:13px; font-weight:600; color:var(--navy); text-decoration:underline; cursor:pointer; }
 
     /* Card Room */
     .room-title {
-      font-size: 18px; font-weight: 700; color: var(--navy);
+      font-size: 16px; font-weight: 700; color: var(--navy);
       text-decoration: underline; cursor: pointer;
-      display: flex; align-items: center; gap: 8px;
-      margin-bottom: 4px;
+      display: flex; align-items: center; gap: 6px;
+      margin-bottom: 2px;
     }
-    .room-subtitle { font-size: 13px; color: var(--grey-txt); margin-bottom: 12px; }
-    .room-meta { display:flex; align-items:center; gap:16px; margin-bottom:16px; }
-    .room-meta-item { display:flex; align-items:center; gap:6px; font-size:13px; color:var(--navy); }
+    .room-subtitle { font-size: 12px; color: var(--grey-txt); margin-bottom: 10px; }
+    .room-meta { display:flex; align-items:center; gap:12px; margin-bottom:12px; flex-wrap:wrap; }
+    .room-meta-item { display:flex; align-items:center; gap:5px; font-size:12px; color:var(--navy); }
+    .room-meta-item svg { width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round; }
     .room-alert {
-      width: 36px; height: 36px;
+      width: 32px; height: 32px;
       border-radius: 50%;
       border: 2px solid var(--red);
       display: flex; align-items: center; justify-content: center;
       flex-shrink: 0;
     }
-    .btn-request {
-      border: 1.5px solid var(--navy); border-radius: 20px;
-      background: transparent; padding: 7px 16px;
-      font-size: 12px; font-weight: 600; color: var(--navy);
-      cursor: pointer; font-family: inherit;
-    }
     .expense-box {
-      background: var(--grey-bg);
+      background: rgba(255,255,255,0.6);
       border-radius: 8px;
-      padding: 14px 16px;
+      padding: 10px 12px;
       display: flex; align-items: center; justify-content: space-between;
-      margin-top: 8px;
     }
     .expense-amount { font-size: 20px; font-weight: 700; color: var(--green); }
-    .expense-label  { font-size: 12px; color: var(--grey-txt); margin-top: 2px; }
-    .btn-warranty {
-      border: 1.5px solid var(--navy); border-radius: 20px;
-      background: transparent; padding: 7px 16px;
-      font-size: 12px; font-weight: 600; color: var(--navy);
-      cursor: pointer; font-family: inherit; margin-top: 8px;
-      width: 100%;
-    }
+    .expense-label  { font-size: 11px; color: var(--grey-txt); margin-top: 1px; }
 
-    /* ══════════════════════════════════════
-       CARDEX BANNER — Option B
-       Bande pleine largeur, cliquable
-    ══════════════════════════════════════ */
-    .cardex-banner {
-      background: var(--white);
-      border: 1px solid var(--grey-bd);
-      border-radius: 12px;
-      padding: 16px 24px;
-      margin-bottom: 12px;
-      display: flex;
-      align-items: flex-start;
-      gap: 20px;
-      cursor: pointer;
-      transition: border-color .15s, box-shadow .15s;
-      position: relative;
+    /* Card Cardex */
+    .cardex-card-title {
+      font-size: 12px; font-weight: 700; color: var(--navy);
+      text-transform: uppercase; letter-spacing: .5px; margin-bottom: 10px;
     }
-    .cardex-banner:hover {
-      border-color: var(--navy);
-      box-shadow: 0 2px 12px rgba(30,38,67,0.1);
-    }
-    .cardex-banner-left {
-      flex-shrink: 0;
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-      min-width: 160px;
-    }
-    .cardex-banner-title {
-      font-size: 13px; font-weight: 700; color: var(--navy);
-      text-transform: uppercase; letter-spacing: .5px;
-    }
-    .cardex-banner-sub {
-      font-size: 11px; color: var(--grey-txt);
-    }
-    .cardex-banner-cta {
-      display: inline-flex; align-items: center; gap: 6px;
-      margin-top: 10px;
-      padding: 6px 14px;
-      border: 1.5px solid var(--navy);
-      border-radius: 20px;
-      font-size: 11px; font-weight: 700; color: var(--navy);
-      background: transparent;
-      cursor: pointer; font-family: inherit;
-      white-space: nowrap;
-    }
-    .cardex-divider {
-      width: 1px; background: var(--grey-bd); align-self: stretch; flex-shrink: 0;
-    }
-    .cardex-banner-content {
-      flex: 1;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px 24px;
-      align-content: flex-start;
-    }
-    .cardex-tag {
-      display: flex; align-items: center; gap: 6px;
-      font-size: 13px; color: var(--navy);
-    }
-    .cardex-tag::before {
-      content: '';
-      width: 6px; height: 6px;
-      border-radius: 50%;
-      background: var(--navy);
-      flex-shrink: 0;
-      opacity: 0.4;
-    }
-    .cardex-more {
-      position: absolute;
-      right: 20px; top: 50%;
-      transform: translateY(-50%);
+    .cardex-card-list { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+    .cardex-card-list li { font-size: 12px; color: var(--navy); display: flex; align-items: flex-start; gap: 7px; line-height: 1.4; }
+    .cardex-card-list li::before { content: '·'; color: var(--grey-txt); flex-shrink: 0; font-size:16px; line-height:1.1; }
+    .cardex-see-more {
       display: flex; align-items: center; gap: 4px;
       font-size: 12px; font-weight: 600; color: var(--grey-txt);
+      margin-top: 12px; cursor: pointer;
     }
-    .cardex-more svg { width:16px;height:16px;stroke:var(--grey-txt);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round; }
-
-    /* ══════════════════════════════════════
-       PROPOSITIONS ALTERNATIVES (panel)
-    ══════════════════════════════════════ */
-    .prop-switcher {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 16px;
-    }
-    .prop-switcher-label { font-size: 12px; color: var(--grey-txt); font-weight: 600; }
-    .prop-btn {
-      padding: 5px 14px;
-      border-radius: 20px;
-      border: 1.5px solid var(--grey-bd);
-      background: transparent;
-      font-size: 12px; font-weight: 600; color: var(--grey-txt);
-      cursor: pointer; font-family: inherit;
-      transition: all .15s;
-    }
-    .prop-btn.active { background: var(--navy); color: var(--white); border-color: var(--navy); }
-
-    /* ══════════════════════════════════════
-       OPTION A — 4 colonnes
-    ══════════════════════════════════════ */
-    .info-grid-4 {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr 1fr;
-      gap: 12px;
-      margin-bottom: 12px;
-    }
-    .cardex-card-A {
-      background: var(--white);
-      border: 1px solid var(--grey-bd);
-      border-radius: 12px;
-      padding: 20px;
-      cursor: pointer;
-      transition: border-color .15s, box-shadow .15s;
-    }
-    .cardex-card-A:hover { border-color: var(--navy); box-shadow: 0 2px 12px rgba(30,38,67,0.1); }
-    .cardex-card-title { font-size: 13px; font-weight: 700; color: var(--navy); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 12px; }
-    .cardex-card-list { list-style: none; display: flex; flex-direction: column; gap: 7px; }
-    .cardex-card-list li { font-size: 12px; color: var(--navy); display: flex; align-items: flex-start; gap: 7px; line-height: 1.4; }
-    .cardex-card-list li::before { content: '•'; color: var(--grey-txt); flex-shrink: 0; margin-top: 1px; }
-    .cardex-card-footer { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--grey-bg); display: flex; align-items: center; justify-content: flex-end; }
-    .cardex-see-more { font-size: 11px; font-weight: 700; color: var(--grey-txt); display: flex; align-items: center; gap: 4px; }
     .cardex-see-more svg { width:13px;height:13px;stroke:var(--grey-txt);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round; }
 
     /* ══════════════════════════════════════
-       OPTION C — colonne milieu empilée
+       PROPOSITIONS B & C — gardées masquées
     ══════════════════════════════════════ */
-    .info-grid-C {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap: 12px;
-      margin-bottom: 12px;
+    .info-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; margin-bottom:16px; }
+    .info-grid-C { display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; margin-bottom:16px; }
+    .col-middle { display:flex; flex-direction:column; gap:16px; }
+    .prop-switcher { display:flex; align-items:center; gap:8px; margin-bottom:16px; }
+    .prop-switcher-label { font-size:12px; color:var(--grey-txt); font-weight:600; }
+    .prop-btn {
+      padding: 5px 14px; border-radius: 20px; border: 1.5px solid var(--grey-bd);
+      background: transparent; font-size: 12px; font-weight: 600; color: var(--grey-txt);
+      cursor: pointer; font-family: inherit; transition: all .15s;
     }
-    .col-middle { display: flex; flex-direction: column; gap: 12px; }
+    .prop-btn.active { background: var(--navy); color: var(--white); border-color: var(--navy); }
+    .cardex-banner {
+      background: var(--beige); border-radius: 12px; padding: 16px 24px;
+      margin-bottom: 16px; display:flex; align-items:flex-start; gap:20px;
+      cursor:pointer; transition:box-shadow .15s; position:relative;
+    }
+    .cardex-banner:hover { box-shadow: 0 2px 12px rgba(30,38,67,0.12); }
+    .cardex-banner-left { flex-shrink:0; display:flex; flex-direction:column; gap:4px; min-width:160px; }
+    .cardex-banner-title { font-size:12px; font-weight:700; color:var(--navy); text-transform:uppercase; letter-spacing:.5px; }
+    .cardex-banner-sub { font-size:11px; color:var(--grey-txt); }
+    .cardex-banner-cta {
+      display:inline-flex; align-items:center; gap:6px; margin-top:10px;
+      padding:6px 14px; border:1.5px solid var(--navy); border-radius:20px;
+      font-size:11px; font-weight:700; color:var(--navy); background:transparent;
+      cursor:pointer; font-family:inherit; white-space:nowrap;
+    }
+    .cardex-divider { width:1px; background:var(--grey-bd); align-self:stretch; flex-shrink:0; }
+    .cardex-banner-content { flex:1; display:flex; flex-wrap:wrap; gap:6px 24px; align-content:flex-start; }
+    .cardex-tag { display:flex; align-items:center; gap:6px; font-size:13px; color:var(--navy); }
+    .cardex-tag::before { content:''; width:6px; height:6px; border-radius:50%; background:var(--navy); flex-shrink:0; opacity:0.4; }
+    .cardex-more {
+      position:absolute; right:20px; top:50%; transform:translateY(-50%);
+      display:flex; align-items:center; gap:4px;
+      font-size:12px; font-weight:600; color:var(--grey-txt);
+    }
+    .cardex-more svg { width:16px;height:16px;stroke:var(--grey-txt);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round; }
+    .cardex-card-A {
+      background: var(--beige); border-radius: 12px; padding: 16px;
+      cursor:pointer; transition:box-shadow .15s;
+    }
+    .cardex-card-A:hover { box-shadow: 0 2px 12px rgba(30,38,67,0.1); }
     .cardex-card-C {
-      background: var(--white);
-      border: 1px solid var(--grey-bd);
-      border-radius: 12px;
-      padding: 16px 20px;
-      cursor: pointer;
-      transition: border-color .15s, box-shadow .15s;
-      flex: 1;
+      background: var(--beige); border-radius: 12px; padding: 16px;
+      cursor:pointer; transition:box-shadow .15s; flex:1;
     }
-    .cardex-card-C:hover { border-color: var(--navy); box-shadow: 0 2px 12px rgba(30,38,67,0.1); }
+    .cardex-card-C:hover { box-shadow: 0 2px 12px rgba(30,38,67,0.1); }
 
     /* ══════════════════════════════════════
-       TABLEAU GM
+       TABLEAU GM — DS2
     ══════════════════════════════════════ */
     .gm-table-wrap {
-      background: var(--white);
       border-radius: 12px;
       overflow: hidden;
-      border: 1px solid var(--grey-bd);
     }
     .gm-head {
       background: var(--navy); color: var(--white);
       display: grid;
-      grid-template-columns: 40px 60px 180px 1fr 1fr 80px 100px 80px 80px 60px;
+      grid-template-columns: 40px 72px 176px 1fr 1fr 64px 56px 100px 56px 64px;
       padding: 0 16px;
-      height: 48px;
+      height: 44px;
       align-items: center;
       font-size: 12px; font-weight: 600; gap: 8px;
+      border-radius: 10px 10px 0 0;
     }
     .gm-row {
       display: grid;
-      grid-template-columns: 40px 60px 180px 1fr 1fr 80px 100px 80px 80px 60px;
+      grid-template-columns: 40px 72px 176px 1fr 1fr 64px 56px 100px 56px 64px;
       padding: 0 16px;
-      min-height: 56px;
+      height: 56px;
       align-items: center;
       font-size: 13px; gap: 8px;
-      border-bottom: 1px solid var(--grey-bd);
       background: var(--white);
+      margin-top: 12px;
+      border-radius: 10px;
     }
-    .gm-row:last-child { border-bottom: none; }
+    .gm-row:first-of-type { margin-top: 0; border-radius: 0 0 10px 10px; }
+    .gm-table-rows {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      background: var(--grey-bg);
+      padding: 12px 0 0;
+    }
     .gm-row.master-row { background: #FAFBFF; }
+    .state-col {
+      display: flex; flex-direction: column; align-items: center; gap: 2px;
+    }
     .state-icon {
-      width: 32px; height: 32px;
+      width: 28px; height: 28px;
       border-radius: 50%;
       display: flex; align-items: center; justify-content: center;
-      flex-shrink: 0;
     }
-    .state-icon svg { width:16px;height:16px; }
+    .state-icon svg { width:14px;height:14px; }
     .status-ok   { background: #E6F4EA; }
     .status-warn { background: #FFF3E0; }
     .status-err  { background: #FCE8E6; }
-    .master-tag  { font-size:11px;font-weight:700;color:#D93025; }
+    .state-lbl { font-size:10px; color:var(--grey-txt); white-space:nowrap; }
+    .state-lbl.ok { color: var(--green); }
     .status-check { width:28px;height:28px;border-radius:50%;border:2px solid;display:flex;align-items:center;justify-content:center; }
     .status-check.ok  { border-color:var(--green);background:#E6F4EA; }
     .status-check.err { border-color:var(--red);background:#FCE8E6; }
+    .date-col { display:flex;flex-direction:column;gap:1px; }
+    .date-from { font-size:12px;font-weight:600;color:var(--navy); }
+    .date-to   { font-size:12px;color:var(--grey-txt); }
+    .star-icon svg { width:20px;height:20px;stroke:var(--grey-bd);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round; }
 
     /* ══════════════════════════════════════
-       FOOTER ACTIONS
+       FOOTER ACTIONS DS2 — 44px buttons
     ══════════════════════════════════════ */
     .footer-actions {
       position: fixed;
-      bottom: 0; left: 72px; right: 0;
+      bottom: 0; left: 64px; right: 0;
       background: var(--white);
       border-top: 1px solid var(--grey-bd);
-      padding: 12px 32px;
+      padding: 0 24px;
+      height: 68px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -526,15 +469,15 @@
     .btn-footer {
       height: 44px;
       border-radius: 22px;
-      padding: 0 28px;
+      padding: 0 24px;
       font-size: 14px; font-weight: 600;
       cursor: pointer; font-family: inherit;
       border: 1.5px solid var(--navy);
       background: transparent;
       color: var(--navy);
     }
-    .btn-footer.primary   { background: var(--navy); color: var(--white); border-color: var(--navy); }
-    .btn-footer.yellow    { background: var(--yellow); color: #000; border-color: var(--yellow); }
+    .btn-footer.primary { background: var(--navy); color: var(--white); border-color: var(--navy); }
+    .btn-footer.yellow  { background: var(--yellow); color: #000; border-color: var(--yellow); }
 
     /* Switch row */
     .switch-row { display:flex;align-items:center;justify-content:space-between;gap:12px; }
@@ -549,12 +492,10 @@
     /* Panel wireframe */
     .wf-panel.collapsed .panel-body { display:none; }
     .wf-panel.collapsed { min-width:0; }
-    .wf-panel { position:fixed;bottom:20px;right:20px;background:var(--white);border:2px solid var(--navy);border-radius:12px;padding:16px 18px;z-index:999;font-size:13px;box-shadow:0 4px 20px rgba(0,0,0,.15);min-width:240px;display:flex;flex-direction:column;gap:12px; }
+    .wf-panel { position:fixed;bottom:80px;right:20px;background:var(--white);border:2px solid var(--navy);border-radius:12px;padding:16px 18px;z-index:999;font-size:13px;box-shadow:0 4px 20px rgba(0,0,0,.15);min-width:240px;display:flex;flex-direction:column;gap:12px; }
     .panel-body { display:flex;flex-direction:column;gap:12px; }
     .wf-panel .panel-title { font-size:11px;font-weight:700;color:var(--grey-txt);text-transform:uppercase;letter-spacing:.5px; }
     .wf-panel hr { border:none;border-top:1px solid var(--grey-bd); }
-    .version-select { width:100%;padding:8px 10px;border:1px solid var(--grey-bd);border-radius:8px;font-size:13px;font-family:inherit;color:var(--navy);background:var(--white);cursor:pointer;outline:none; }
-    .version-select:focus { border-color:var(--navy); }
     .author-filter { width:100%;font-size:12px;font-family:inherit;border:1px solid var(--grey-bd);border-radius:6px;padding:5px 8px;outline:none;color:var(--navy); }
 
     /* Commentaires pins */
@@ -569,9 +510,6 @@
     .comment-popover .cp-actions { display:flex;gap:8px;margin-top:8px;justify-content:flex-end; }
     .comment-popover .cp-cancel { background:none;border:1px solid var(--grey-bd);border-radius:6px;padding:5px 14px;font-size:12px;cursor:pointer;font-family:inherit;color:var(--grey-txt); }
     .comment-popover .cp-save { background:var(--navy);color:var(--white);border:none;border-radius:6px;padding:5px 14px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit; }
-
-    /* Extra bottom spacing for fixed footer */
-    .content-inner { padding-bottom: 72px; }
   </style>
 </head>
 <body>
@@ -579,15 +517,13 @@
 <!-- ══════════ HEADER ══════════ -->
 <header class="header">
   <div class="logo">
-    <img src="https://www.figma.com/api/mcp/asset/bd084c92-7e54-4ab0-9f9b-8070e351c39a" alt="odyssey" />
+    <img src="https://www.figma.com/api/mcp/asset/bd084c92-7e54-4ab0-9f9b-8070e351c39a" alt="odyssey" onerror="this.parentNode.innerHTML='<span style=\'color:white;font-weight:700;font-size:16px;letter-spacing:-0.5px;\'>⊙ odyssey</span>'" />
   </div>
   <div class="search">
-    <div class="s-icon">
-      <img src="https://www.figma.com/api/mcp/asset/a8a25ef4-a846-48d0-a05d-ba1fc84d415e" alt="" />
-    </div>
+    <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
     <input type="text" placeholder="Search anything" />
     <button class="s-btn">
-      <img src="https://www.figma.com/api/mcp/asset/588b1b81-88f0-4859-b358-ddd2fffe035c" alt="" />
+      <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
     </button>
   </div>
   <button class="h-btn yellow">Scan Bracelet</button>
@@ -597,7 +533,7 @@
 
 <!-- Bouton Retour dashboard — local only -->
 <a id="back-dashboard-btn" href="Loopcraft/studio.html?go=dashboard" title="Retour au dashboard"
-  style="display:none;position:fixed;bottom:80px;left:24px;width:48px;height:48px;border-radius:100px;background:var(--white);cursor:pointer;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,0.15);z-index:300;border:1.5px solid var(--grey-bd);text-decoration:none;"
+  style="display:none;position:fixed;bottom:80px;left:24px;width:44px;height:44px;border-radius:50%;background:var(--white);cursor:pointer;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,0.15);z-index:300;border:1.5px solid var(--grey-bd);text-decoration:none;"
   onmouseover="this.style.borderColor='#C8D0E0'" onmouseout="this.style.borderColor='var(--grey-bd)'">
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1E2643" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
     <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
@@ -606,8 +542,8 @@
 
 <!-- Bouton Retours PO — local only -->
 <div id="briefs-nav-btn" onclick="openBriefs()" title="Retours PO"
-  style="display:none;position:fixed;bottom:24px;left:24px;width:48px;height:48px;border-radius:100px;background:var(--yellow);cursor:pointer;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(0,0,0,0.4);z-index:300;">
-  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1E2643" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+  style="display:none;position:fixed;bottom:24px;left:24px;width:44px;height:44px;border-radius:50%;background:var(--yellow);cursor:pointer;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(0,0,0,0.4);z-index:300;">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1E2643" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
     <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
   </svg>
 </div>
@@ -666,18 +602,23 @@
     <div class="nav-icon">
       <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
     </div>
+    <div class="nav-sep"></div>
     <div class="nav-icon active">
       <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
     </div>
+    <div class="nav-sep"></div>
     <div class="nav-icon">
       <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
     </div>
+    <div class="nav-sep"></div>
     <div class="nav-icon">
       <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
     </div>
+    <div class="nav-sep"></div>
     <div class="nav-icon">
       <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
     </div>
+    <div class="nav-sep"></div>
     <div class="nav-icon">
       <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
     </div>
@@ -695,7 +636,7 @@
     <!-- Header page -->
     <div class="page-header">
       <div class="breadcrumb">
-        Home <span style="opacity:.4">•</span> Pages <span style="opacity:.4">•</span> ... <span>• Final page</span>
+        Home <span style="opacity:.4">›</span> Pages <span style="opacity:.4">›</span> ... <span>• Final page</span>
       </div>
       <div class="page-title">Customer file</div>
     </div>
@@ -716,14 +657,14 @@
       </div>
       <div class="id-cell phone">
         <span class="id-label">Phone number</span>
-        <div style="display:flex;align-items:center;justify-content:space-between;">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
           <span class="id-value">+33 6 20 00 76 00</span>
           <span class="id-edit">Edit</span>
         </div>
       </div>
       <div class="id-cell email">
         <span class="id-label">Email</span>
-        <div style="display:flex;align-items:center;justify-content:space-between;">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
           <span class="id-value">johnmcdoe.gmail.com</span>
           <span class="id-edit">Edit</span>
         </div>
@@ -747,172 +688,99 @@
     <div class="content" id="main-content">
       <div class="content-inner">
 
-
-        <!-- ══ PROPOSITION B ══ -->
+        <!-- ══ PROPOSITION B — masquée ══ -->
         <div id="prop-B" style="display:none;">
-          <!-- 3 cards info -->
           <div class="info-grid">
-            <!-- Card Profil -->
             <div class="info-card">
-              <div class="profile-row">
-                <span class="profile-label">Type:</span>
-                <span class="profile-badge badge-gold">Gold</span>
-                <span class="profile-badge badge-vip" style="margin-left:6px;">VIP</span>
-                <span class="profile-badge badge-donor" style="margin-left:6px;">Donor</span>
-              </div>
-              <div class="profile-row">
-                <span class="profile-label">Age:</span>
-                <span class="profile-value">01/01/1988 — 38 years</span>
-              </div>
-              <div class="profile-row">
-                <span class="profile-label">Country:</span>
-                <span class="profile-value">United States</span>
-              </div>
-              <div class="profile-row">
-                <span class="profile-label">Stay:</span>
-                <span class="profile-value">from 09/04/24 to 09/05/24</span>
-              </div>
-              <div class="profile-row">
-                <span class="profile-label">Membership:</span>
-                <span class="profile-value">123455456</span>
-              </div>
-              <div class="profile-row">
-                <span class="profile-label">File:</span>
-                <span class="profile-value">12526633521452</span>
-              </div>
+              <div class="profile-row"><span class="profile-label">Type:</span><span class="profile-badge badge-gold">Gold</span><span class="profile-badge badge-vip" style="margin-left:6px;">VIP</span><span class="profile-badge badge-donor" style="margin-left:6px;">Donor</span></div>
+              <div class="profile-row"><span class="profile-label">Age:</span><span class="profile-value">01/01/1988 — 38 years</span></div>
+              <div class="profile-row"><span class="profile-label">Country:</span><span class="profile-value">United States</span></div>
+              <div class="profile-row"><span class="profile-label">Stay:</span><span class="profile-value">from 09/04/24 to 09/05/24</span></div>
+              <div class="profile-row"><span class="profile-label">Membership:</span><span class="profile-value">123455456</span></div>
+              <div class="profile-row"><span class="profile-label">File:</span><span class="profile-value">12526633521452</span></div>
               <button class="btn-pass">Club Med Pass management</button>
             </div>
-
-            <!-- Card Arrival Information -->
             <div class="info-card">
-              <div class="arrival-title">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 2 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
-                Arrival Information
-              </div>
-              <div class="arrival-row">
-                <span class="arrival-label">Package:</span>
-                <div style="display:flex;flex-direction:column;gap:2px;">
-                  <span class="arrival-value">Transport included</span>
-                  <span class="arrival-value">Transfer included</span>
-                  <span class="arrival-link">See transfers</span>
-                </div>
-              </div>
-              <div class="arrival-row">
-                <span class="arrival-label">Departure location:</span>
-                <span class="arrival-value">CMF</span>
-              </div>
-              <div class="arrival-row">
-                <span class="arrival-label">Arrival location:</span>
-                <span class="arrival-value">Val Thorens Sensation</span>
-              </div>
-              <div class="arrival-row">
-                <span class="arrival-label">Date:</span>
-                <span class="arrival-value">08/03/2026</span>
-              </div>
-              <div class="arrival-row">
-                <span class="arrival-label">Arrival time:</span>
-                <span class="arrival-value">10:12</span>
-              </div>
+              <div class="card-section-title"><svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 2 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>Arrival Information</div>
+              <div class="info-row"><span class="info-lbl">Package</span><span class="info-val">Transport included</span><span class="info-val">Transfer included</span><span class="info-link">See transfers</span></div>
+              <div class="info-row"><span class="info-lbl">Departure location</span><span class="info-val">CMF</span></div>
+              <div class="info-row"><span class="info-lbl">Arrival location</span><span class="info-val">Val Thorens Sensation</span></div>
+              <div class="info-row"><span class="info-lbl">Date</span><span class="info-val">08/03/2026</span></div>
+              <div class="info-row"><span class="info-lbl">Arrival time</span><span class="info-val">10:12</span></div>
             </div>
-
-            <!-- Card Room + Expense -->
             <div class="info-card">
               <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:4px;">
-                <div>
-                  <div class="room-title">
-                    Room 301
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-                  </div>
-                  <div class="room-subtitle">Deluxe Junior Family Room</div>
-                </div>
-                <div class="room-alert">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D93025" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-                </div>
+                <div><div class="room-title">Room 301 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div><div class="room-subtitle">Deluxe Junior Family Room</div></div>
+                <div class="room-alert"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#D93025" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
               </div>
-              <div class="room-meta">
-                <div class="room-meta-item">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                  G
-                </div>
-                <div class="room-meta-item">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-                  C2
-                </div>
-                <div class="room-meta-item">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.62 3.39 2 2 0 0 1 3.6 1.22h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.96a16 16 0 0 0 6.13 6.13l.96-.96a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-                  202
-                </div>
-                <button class="btn-request">Make a request</button>
-              </div>
-              <div class="expense-box">
-                <div>
-                  <div class="expense-amount">70,00 €</div>
-                  <div class="expense-label">Expense Report</div>
-                  <div style="font-size:11px;color:var(--grey-txt);margin-top:4px;">Cash = 250,00 €</div>
-                </div>
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#088A20" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
-              </div>
-              <button class="btn-warranty">Modify warranty</button>
+              <div class="room-meta"><div class="room-meta-item"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>G</div><div class="room-meta-item"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>C2</div></div>
+              <div class="expense-box"><div><div class="expense-amount">70,00 €</div><div class="expense-label">Expense Report</div></div><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#088A20" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg></div>
             </div>
           </div>
-
-          <!-- ══ CARDEX BANNER (Prop B) ══ -->
-          <div class="cardex-banner" id="cardex-banner" onclick="alert('→ Ouverture fiche Cardex complète de John Mc Doe')">
-            <div class="cardex-banner-left">
-              <div class="cardex-banner-title">Cardex</div>
-              <div class="cardex-banner-sub">Profil client — séjour 2024</div>
-              <button class="cardex-banner-cta" onclick="event.stopPropagation();alert('→ Cardex complet')">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-                Voir le Cardex complet
-              </button>
-            </div>
+          <div class="cardex-banner" onclick="alert('→ Cardex complet')">
+            <div class="cardex-banner-left"><div class="cardex-banner-title">Cardex</div><div class="cardex-banner-sub">Profil client — séjour 2024</div><button class="cardex-banner-cta" onclick="event.stopPropagation()">Voir le Cardex complet</button></div>
             <div class="cardex-divider"></div>
-            <div class="cardex-banner-content">
-              <span class="cardex-tag">Vegan &amp; gluten-free, lactose allergy</span>
-              <span class="cardex-tag">Tennis, yoga, fitness, spa, evening excursions</span>
-              <span class="cardex-tag">Drinks: green tea, Jack Daniel's</span>
-              <span class="cardex-tag">French &amp; English speaker</span>
-              <span class="cardex-tag">Early riser, breakfast on the terrace</span>
-              <span class="cardex-tag">Calm atmospheres preferred</span>
-            </div>
-            <div class="cardex-more">
-              Voir plus
-              <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
-            </div>
+            <div class="cardex-banner-content"><span class="cardex-tag">Vegan &amp; gluten-free, lactose allergy</span><span class="cardex-tag">Tennis, yoga, fitness, spa</span><span class="cardex-tag">Drinks: green tea, Jack Daniel's</span><span class="cardex-tag">French &amp; English speaker</span><span class="cardex-tag">Early riser, breakfast on the terrace</span><span class="cardex-tag">Calm atmospheres preferred</span></div>
+            <div class="cardex-more">Voir plus <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
           </div>
         </div><!-- /prop-B -->
 
         <!-- ══ PROPOSITION A (4 colonnes) — défaut ══ -->
         <div id="prop-A">
           <div class="info-grid-4">
-            <!-- Profil -->
+
+            <!-- Card Profil -->
             <div class="info-card">
-              <div class="profile-row"><span class="profile-label">Type:</span><span class="profile-badge badge-gold">Gold</span><span class="profile-badge badge-vip" style="margin-left:4px;">VIP</span></div>
-              <div class="profile-row"><span class="profile-label">Age:</span><span class="profile-value">38 years</span></div>
-              <div class="profile-row"><span class="profile-label">Country:</span><span class="profile-value">United States</span></div>
-              <div class="profile-row"><span class="profile-label">Stay:</span><span class="profile-value">09/04 → 09/05/24</span></div>
-              <div class="profile-row"><span class="profile-label">Membership:</span><span class="profile-value">123455456</span></div>
-              <button class="btn-pass" style="margin-top:10px;">Club Med Pass</button>
+              <div class="profile-row" style="margin-bottom:10px;">
+                <span class="profile-badge badge-gold">Gold</span>
+                <span class="profile-badge badge-vip">VIP</span>
+              </div>
+              <div class="info-row"><span class="info-lbl">Age</span><span class="info-val">38 years</span></div>
+              <div class="info-row"><span class="info-lbl">Country</span><span class="info-val">United States</span></div>
+              <div class="info-row"><span class="info-lbl">Stay</span><span class="info-val">09/04 → 09/05/24</span></div>
+              <div class="info-row"><span class="info-lbl">Membership</span><span class="info-val">123455456</span></div>
+              <button class="btn-pass" style="margin-top:12px;">Club Med Pass</button>
             </div>
-            <!-- Arrival -->
+
+            <!-- Card Arrival -->
             <div class="info-card">
-              <div class="arrival-title" style="font-size:13px;">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 2 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+              <div class="card-section-title">
+                <svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 2 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
                 Arrival Information
               </div>
-              <div class="arrival-row" style="flex-direction:column;gap:1px;margin-bottom:6px;"><span class="arrival-label" style="font-size:11px;">Package</span><span class="arrival-value" style="font-size:12px;">Transport + Transfer</span><span class="arrival-link" style="font-size:12px;">See transfers</span></div>
-              <div class="arrival-row" style="flex-direction:column;gap:1px;margin-bottom:6px;"><span class="arrival-label" style="font-size:11px;">Departure</span><span class="arrival-value" style="font-size:12px;">CMF</span></div>
-              <div class="arrival-row" style="flex-direction:column;gap:1px;margin-bottom:6px;"><span class="arrival-label" style="font-size:11px;">Arrival</span><span class="arrival-value" style="font-size:12px;">Val Thorens Sensation</span></div>
-              <div class="arrival-row" style="flex-direction:column;gap:1px;"><span class="arrival-label" style="font-size:11px;">Date / Time</span><span class="arrival-value" style="font-size:12px;">08/03/2026 — 10:12</span></div>
+              <div class="info-row"><span class="info-lbl">Package</span><span class="info-val">Transport + Transfer</span><span class="info-link">See transfers</span></div>
+              <div class="info-row"><span class="info-lbl">Departure</span><span class="info-val">CMF</span></div>
+              <div class="info-row"><span class="info-lbl">Arrival</span><span class="info-val">Val Thorens Sensation</span></div>
+              <div class="info-row"><span class="info-lbl">Date / Time</span><span class="info-val">08/03/2026 — 10:12</span></div>
             </div>
-            <!-- Room -->
+
+            <!-- Card Room -->
             <div class="info-card">
-              <div class="room-title" style="font-size:16px;">Room 301 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
-              <div class="room-subtitle" style="font-size:12px;">Deluxe Junior Family Room</div>
-              <div class="room-meta" style="gap:10px;margin-bottom:10px;"><div class="room-meta-item" style="font-size:12px;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> G</div><div class="room-meta-item" style="font-size:12px;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> C2</div></div>
-              <div class="expense-box" style="padding:10px 12px;"><div><div class="expense-amount" style="font-size:16px;">70,00 €</div><div class="expense-label">Expense Report</div></div><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#088A20" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg></div>
+              <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:4px;">
+                <div>
+                  <div class="room-title">Room 301
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                  </div>
+                  <div class="room-subtitle">Deluxe Junior Family Room</div>
+                </div>
+                <div class="room-alert">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#D93025" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                </div>
+              </div>
+              <div class="room-meta">
+                <div class="room-meta-item"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>G</div>
+                <div class="room-meta-item"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>C2</div>
+              </div>
+              <div class="expense-box">
+                <div>
+                  <div class="expense-amount">70,00 €</div>
+                  <div class="expense-label">Expense Report</div>
+                </div>
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#088A20" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+              </div>
             </div>
-            <!-- Cardex A -->
+
+            <!-- Card Cardex -->
             <div class="cardex-card-A" onclick="alert('→ Cardex complet')">
               <div class="cardex-card-title">Cardex</div>
               <ul class="cardex-card-list">
@@ -923,63 +791,48 @@
                 <li>Early riser, terrace breakfast</li>
                 <li>Calm atmospheres preferred</li>
               </ul>
-              <div class="cardex-card-footer">
-                <span class="cardex-see-more">Voir le Cardex complet <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></span>
+              <div class="cardex-see-more">
+                Voir le Cardex complet
+                <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
               </div>
             </div>
+
           </div>
         </div><!-- /prop-A -->
 
-        <!-- ══ PROPOSITION C (col milieu empilée) — masquée par défaut ══ -->
+        <!-- ══ PROPOSITION C — masquée ══ -->
         <div id="prop-C" style="display:none;">
           <div class="info-grid-C">
-            <!-- Col 1 : Profil -->
             <div class="info-card">
-              <div class="profile-row"><span class="profile-label">Type:</span><span class="profile-badge badge-gold">Gold</span><span class="profile-badge badge-vip" style="margin-left:6px;">VIP</span><span class="profile-badge badge-donor" style="margin-left:6px;">Donor</span></div>
-              <div class="profile-row"><span class="profile-label">Age:</span><span class="profile-value">01/01/1988 — 38 years</span></div>
-              <div class="profile-row"><span class="profile-label">Country:</span><span class="profile-value">United States</span></div>
-              <div class="profile-row"><span class="profile-label">Stay:</span><span class="profile-value">from 09/04/24 to 09/05/24</span></div>
-              <div class="profile-row"><span class="profile-label">Membership:</span><span class="profile-value">123455456</span></div>
-              <div class="profile-row"><span class="profile-label">File:</span><span class="profile-value">12526633521452</span></div>
-              <button class="btn-pass">Club Med Pass management</button>
+              <div class="profile-row" style="margin-bottom:10px;"><span class="profile-badge badge-gold">Gold</span><span class="profile-badge badge-vip">VIP</span><span class="profile-badge badge-donor" style="margin-left:4px;">Donor</span></div>
+              <div class="info-row"><span class="info-lbl">Age</span><span class="info-val">01/01/1988 — 38 years</span></div>
+              <div class="info-row"><span class="info-lbl">Country</span><span class="info-val">United States</span></div>
+              <div class="info-row"><span class="info-lbl">Stay</span><span class="info-val">from 09/04/24 to 09/05/24</span></div>
+              <div class="info-row"><span class="info-lbl">Membership</span><span class="info-val">123455456</span></div>
+              <button class="btn-pass" style="margin-top:10px;">Club Med Pass management</button>
             </div>
-            <!-- Col 2 : Arrival + Cardex empilés -->
             <div class="col-middle">
-              <div class="info-card" style="flex:0 0 auto;">
-                <div class="arrival-title"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 2 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg> Arrival Information</div>
-                <div class="arrival-row"><span class="arrival-label">Package:</span><div style="display:flex;flex-direction:column;gap:2px;"><span class="arrival-value">Transport included</span><span class="arrival-value">Transfer included</span><span class="arrival-link">See transfers</span></div></div>
-                <div class="arrival-row"><span class="arrival-label">Departure:</span><span class="arrival-value">CMF</span></div>
-                <div class="arrival-row"><span class="arrival-label">Arrival:</span><span class="arrival-value">Val Thorens Sensation</span></div>
-                <div class="arrival-row"><span class="arrival-label">Date / Time:</span><span class="arrival-value">08/03/2026 — 10:12</span></div>
+              <div class="info-card">
+                <div class="card-section-title"><svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 2 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>Arrival Information</div>
+                <div class="info-row"><span class="info-lbl">Package</span><span class="info-val">Transport included</span><span class="info-val">Transfer included</span><span class="info-link">See transfers</span></div>
+                <div class="info-row"><span class="info-lbl">Departure</span><span class="info-val">CMF</span></div>
+                <div class="info-row"><span class="info-lbl">Arrival</span><span class="info-val">Val Thorens Sensation</span></div>
+                <div class="info-row"><span class="info-lbl">Date / Time</span><span class="info-val">08/03/2026 — 10:12</span></div>
               </div>
-              <!-- Cardex C — card compacte, cliquable -->
               <div class="cardex-card-C" onclick="alert('→ Cardex complet')">
-                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
-                  <div class="cardex-card-title" style="margin-bottom:0;">Cardex</div>
-                  <span class="cardex-see-more" style="font-size:11px;">Voir plus <svg viewBox="0 0 24 24" style="width:12px;height:12px;stroke:var(--grey-txt);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;"><polyline points="9 18 15 12 9 6"/></svg></span>
-                </div>
-                <ul class="cardex-card-list">
-                  <li>Vegan &amp; gluten-free, lactose allergy</li>
-                  <li>Tennis, yoga, fitness, spa</li>
-                  <li>Drinks: green tea, Jack Daniel's</li>
-                  <li>French &amp; English, calm preferred</li>
-                </ul>
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;"><div class="cardex-card-title" style="margin-bottom:0;">Cardex</div><span class="cardex-see-more" style="margin-top:0;">Voir plus <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></span></div>
+                <ul class="cardex-card-list"><li>Vegan &amp; gluten-free, lactose allergy</li><li>Tennis, yoga, fitness, spa</li><li>Drinks: green tea, Jack Daniel's</li><li>French &amp; English, calm preferred</li></ul>
               </div>
             </div>
-            <!-- Col 3 : Room + Expense -->
             <div class="info-card">
-              <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:4px;">
-                <div><div class="room-title">Room 301 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div><div class="room-subtitle">Deluxe Junior Family Room</div></div>
-                <div class="room-alert"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D93025" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
-              </div>
-              <div class="room-meta"><div class="room-meta-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> G</div><div class="room-meta-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> C2</div><div class="room-meta-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.62 3.39 2 2 0 0 1 3.6 1.22h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.96a16 16 0 0 0 6.13 6.13l.96-.96a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg> 202</div><button class="btn-request">Make a request</button></div>
-              <div class="expense-box"><div><div class="expense-amount">70,00 €</div><div class="expense-label">Expense Report</div><div style="font-size:11px;color:var(--grey-txt);margin-top:4px;">Cash = 250,00 €</div></div><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#088A20" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg></div>
-              <button class="btn-warranty">Modify warranty</button>
+              <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:4px;"><div><div class="room-title">Room 301 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div><div class="room-subtitle">Deluxe Junior Family Room</div></div><div class="room-alert"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#D93025" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div></div>
+              <div class="room-meta"><div class="room-meta-item"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>G</div><div class="room-meta-item"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>C2</div></div>
+              <div class="expense-box"><div><div class="expense-amount">70,00 €</div><div class="expense-label">Expense Report</div></div><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#088A20" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg></div>
             </div>
           </div>
         </div><!-- /prop-C -->
 
-        <!-- ══ TABLEAU GM ══ -->
+        <!-- ══ TABLEAU GM — DS2 ══ -->
         <div class="gm-table-wrap">
           <div class="gm-head">
             <span></span>
@@ -993,51 +846,55 @@
             <span>Code</span>
             <span style="text-align:center;">Status</span>
           </div>
-          <!-- GM 1 — Master -->
-          <div class="gm-row master-row">
-            <input type="checkbox" style="width:16px;height:16px;cursor:pointer;">
-            <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
-              <div class="state-icon status-warn"><svg viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="8" y1="12" x2="16" y2="12"/></svg></div>
-              <span style="font-size:10px;color:var(--grey-txt);">Not check-in</span>
+          <div class="gm-table-rows">
+            <!-- GM 1 — Master -->
+            <div class="gm-row master-row">
+              <input type="checkbox" style="width:16px;height:16px;cursor:pointer;accent-color:var(--navy);">
+              <div class="state-col">
+                <div class="state-icon status-warn">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+                </div>
+                <span class="state-lbl">Not check-in</span>
+              </div>
+              <div class="date-col"><span class="date-from">From 03/03/2024</span><span class="date-to">To 13/03/2024</span></div>
+              <span style="font-weight:700;">John</span>
+              <span style="font-weight:700;">Mc Doe</span>
+              <div class="star-icon"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
+              <span>42</span>
+              <span class="badge-platinum">Platinum</span>
+              <span>C2</span>
+              <div style="display:flex;justify-content:center;"><div class="status-check ok"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#088A20" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div></div>
             </div>
-            <div style="display:flex;flex-direction:column;gap:2px;"><span style="font-size:12px;font-weight:600;">From 03/03/2024</span><span style="font-size:12px;color:var(--grey-txt);">To 13/03/2024</span></div>
-            <span style="font-weight:700;">John</span>
-            <span style="font-weight:700;">Mc Doe</span>
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-            <span>42</span>
-            <span class="profile-badge badge-platinum" style="font-size:11px;">Platinum</span>
-            <span>C2</span>
-            <div style="display:flex;justify-content:center;"><div class="status-check ok"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#088A20" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div></div>
-          </div>
-          <!-- GM 2 -->
-          <div class="gm-row">
-            <input type="checkbox" style="width:16px;height:16px;cursor:pointer;">
-            <div style="display:flex;flex-direction:column;align-items:center;gap:2px;"><div class="state-icon status-err"><svg viewBox="0 0 24 24" fill="none" stroke="#D93025" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div><span style="font-size:10px;color:var(--grey-txt);">Not check-in</span></div>
-            <div style="display:flex;flex-direction:column;gap:2px;"><span style="font-size:12px;font-weight:600;">From 03/03/2024</span><span style="font-size:12px;color:var(--grey-txt);">To 13/03/2024</span></div>
-            <span>Pierre</span><span>Mc Doe</span><span></span><span>42</span>
-            <span class="profile-badge badge-platinum" style="font-size:11px;">Platinum</span>
-            <span>C2</span>
-            <div style="display:flex;justify-content:center;"><div class="status-check ok"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#088A20" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div></div>
-          </div>
-          <!-- GM 3 -->
-          <div class="gm-row">
-            <input type="checkbox" style="width:16px;height:16px;cursor:pointer;">
-            <div style="display:flex;flex-direction:column;align-items:center;gap:2px;"><div class="state-icon status-err"><svg viewBox="0 0 24 24" fill="none" stroke="#D93025" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div><span style="font-size:10px;color:var(--grey-txt);">Not check-in</span></div>
-            <div style="display:flex;flex-direction:column;gap:2px;"><span style="font-size:12px;font-weight:600;">From 03/03/2024</span><span style="font-size:12px;color:var(--grey-txt);">To 13/03/2024</span></div>
-            <span>Jeanne</span><span>Mc Doe</span><span></span><span>42</span>
-            <span class="profile-badge badge-platinum" style="font-size:11px;">Platinum</span>
-            <span>C4</span>
-            <div style="display:flex;justify-content:center;"><div class="status-check ok"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#088A20" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div></div>
-          </div>
-          <!-- GM 4 -->
-          <div class="gm-row">
-            <input type="checkbox" style="width:16px;height:16px;cursor:pointer;">
-            <div style="display:flex;flex-direction:column;align-items:center;gap:2px;"><div class="state-icon status-ok"><svg viewBox="0 0 24 24" fill="none" stroke="#088A20" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="9 12 11 14 15 10"/></svg></div><span style="font-size:10px;color:var(--green);">Check-in</span></div>
-            <div style="display:flex;flex-direction:column;gap:2px;"><span style="font-size:12px;font-weight:600;">From 03/03/2024</span><span style="font-size:12px;color:var(--grey-txt);">To 13/03/2024</span></div>
-            <span>Sonia</span><span>Mc Doe</span><span></span><span>42</span>
-            <span class="profile-badge badge-platinum" style="font-size:11px;">Platinum</span>
-            <span>C4</span>
-            <div style="display:flex;justify-content:center;"><div class="status-check err"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#D93025" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div></div>
+            <!-- GM 2 -->
+            <div class="gm-row">
+              <input type="checkbox" style="width:16px;height:16px;cursor:pointer;accent-color:var(--navy);">
+              <div class="state-col"><div class="state-icon status-err"><svg viewBox="0 0 24 24" fill="none" stroke="#D93025" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div><span class="state-lbl">Not check-in</span></div>
+              <div class="date-col"><span class="date-from">From 03/03/2024</span><span class="date-to">To 13/03/2024</span></div>
+              <span>Pierre</span><span>Mc Doe</span><span></span><span>42</span>
+              <span class="badge-platinum">Platinum</span>
+              <span>C2</span>
+              <div style="display:flex;justify-content:center;"><div class="status-check ok"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#088A20" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div></div>
+            </div>
+            <!-- GM 3 -->
+            <div class="gm-row">
+              <input type="checkbox" style="width:16px;height:16px;cursor:pointer;accent-color:var(--navy);">
+              <div class="state-col"><div class="state-icon status-err"><svg viewBox="0 0 24 24" fill="none" stroke="#D93025" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div><span class="state-lbl">Not check-in</span></div>
+              <div class="date-col"><span class="date-from">From 03/03/2024</span><span class="date-to">To 13/03/2024</span></div>
+              <span>Jeanne</span><span>Mc Doe</span><span></span><span>42</span>
+              <span class="badge-platinum">Platinum</span>
+              <span>C4</span>
+              <div style="display:flex;justify-content:center;"><div class="status-check ok"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#088A20" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div></div>
+            </div>
+            <!-- GM 4 -->
+            <div class="gm-row">
+              <input type="checkbox" style="width:16px;height:16px;cursor:pointer;accent-color:var(--navy);">
+              <div class="state-col"><div class="state-icon status-ok"><svg viewBox="0 0 24 24" fill="none" stroke="#088A20" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="9 12 11 14 15 10"/></svg></div><span class="state-lbl ok">Check-in</span></div>
+              <div class="date-col"><span class="date-from">From 03/03/2024</span><span class="date-to">To 13/03/2024</span></div>
+              <span>Sonia</span><span>Mc Doe</span><span></span><span>42</span>
+              <span class="badge-platinum">Platinum</span>
+              <span>C4</span>
+              <div style="display:flex;justify-content:center;"><div class="status-check err"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#D93025" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div></div>
+            </div>
           </div>
         </div>
 
@@ -1058,7 +915,7 @@
 <!-- Panel wireframe -->
 <div class="wf-panel" id="wf-panel">
   <div class="panel-title" style="display:flex;align-items:center;justify-content:space-between;">
-    Options
+    OPTIONS
     <button onclick="togglePanel()" style="background:none;border:none;cursor:pointer;font-size:16px;color:var(--grey-txt);line-height:1;">−</button>
   </div>
   <div class="panel-body">
@@ -1087,28 +944,17 @@
 </div>
 
 <script>
-  // ══════════════════════════════════════
-  // UTILS
-  // ══════════════════════════════════════
   const isLocal = ['localhost','127.0.0.1'].includes(location.hostname);
-
   if (isLocal) {
     document.getElementById('back-dashboard-btn').style.display = 'flex';
     document.getElementById('briefs-nav-btn').style.display = 'flex';
-
   }
 
-  // ══════════════════════════════════════
-  // TABS
-  // ══════════════════════════════════════
   function setTab(el) {
     document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
     el.classList.add('active');
   }
 
-  // ══════════════════════════════════════
-  // PROPOSITIONS A/B/C
-  // ══════════════════════════════════════
   function setProp(p, btn) {
     ['A','B','C'].forEach(id => {
       const el = document.getElementById('prop-'+id);
@@ -1130,52 +976,19 @@
     });
   }
 
-  // ══════════════════════════════════════
-  // PANEL WIREFRAME
-  // ══════════════════════════════════════
   function togglePanel() {
     const p = document.getElementById('wf-panel');
     p.classList.toggle('collapsed');
     p.querySelector('[onclick="togglePanel()"]').textContent = p.classList.contains('collapsed') ? '+' : '−';
   }
 
-  // ══════════════════════════════════════
-  // RETOURS PO (simplifié)
-  // ══════════════════════════════════════
   const BRIEFS_KEY = 'wf_briefs_cardex';
   let briefs = JSON.parse(localStorage.getItem(BRIEFS_KEY) || '[]');
+  function openBriefs() { document.getElementById('briefs-panel').style.display='flex'; document.getElementById('briefs-overlay').style.display='block'; renderBriefs(); }
+  function closeBriefs() { document.getElementById('briefs-panel').style.display='none'; document.getElementById('briefs-overlay').style.display='none'; }
+  function addBrief() { const txt=document.getElementById('brief-input').value.trim(); if(!txt)return; briefs.push({id:Date.now(),text:txt,done:false}); localStorage.setItem(BRIEFS_KEY,JSON.stringify(briefs)); document.getElementById('brief-input').value=''; renderBriefs(); }
+  function renderBriefs() { const list=document.getElementById('briefs-list'); if(!briefs.length){list.innerHTML='<div style="color:var(--grey-txt);font-size:13px;font-style:italic;text-align:center;padding:20px;">Aucun retour pour l\'instant</div>';return;} list.innerHTML=briefs.map((b,i)=>`<div style="background:var(--grey-bg);border-radius:8px;padding:10px 14px;display:flex;align-items:flex-start;gap:10px;"><input type="checkbox" ${b.done?'checked':''} onchange="briefs[${i}].done=this.checked;localStorage.setItem('${BRIEFS_KEY}',JSON.stringify(briefs));renderBriefs();" style="margin-top:2px;cursor:pointer;"><span style="flex:1;font-size:13px;color:var(--navy);${b.done?'text-decoration:line-through;opacity:.5':''}">${b.text}</span><button onclick="briefs.splice(${i},1);localStorage.setItem('${BRIEFS_KEY}',JSON.stringify(briefs));renderBriefs();" style="background:none;border:none;cursor:pointer;color:var(--grey-txt);font-size:16px;line-height:1;">×</button></div>`).join(''); }
 
-  function openBriefs() {
-    document.getElementById('briefs-panel').style.display = 'flex';
-    document.getElementById('briefs-overlay').style.display = 'block';
-    renderBriefs();
-  }
-  function closeBriefs() {
-    document.getElementById('briefs-panel').style.display = 'none';
-    document.getElementById('briefs-overlay').style.display = 'none';
-  }
-  function addBrief() {
-    const txt = document.getElementById('brief-input').value.trim();
-    if (!txt) return;
-    briefs.push({ id: Date.now(), text: txt, done: false });
-    localStorage.setItem(BRIEFS_KEY, JSON.stringify(briefs));
-    document.getElementById('brief-input').value = '';
-    renderBriefs();
-  }
-  function renderBriefs() {
-    const list = document.getElementById('briefs-list');
-    if (!briefs.length) { list.innerHTML = '<div style="color:var(--grey-txt);font-size:13px;font-style:italic;text-align:center;padding:20px;">Aucun retour pour l\'instant</div>'; return; }
-    list.innerHTML = briefs.map((b,i) => `
-      <div style="background:var(--grey-bg);border-radius:8px;padding:10px 14px;display:flex;align-items:flex-start;gap:10px;">
-        <input type="checkbox" ${b.done?'checked':''} onchange="briefs[${i}].done=this.checked;localStorage.setItem('${BRIEFS_KEY}',JSON.stringify(briefs));renderBriefs();" style="margin-top:2px;cursor:pointer;">
-        <span style="flex:1;font-size:13px;color:var(--navy);${b.done?'text-decoration:line-through;opacity:.5':''}">${b.text}</span>
-        <button onclick="briefs.splice(${i},1);localStorage.setItem('${BRIEFS_KEY}',JSON.stringify(briefs));renderBriefs();" style="background:none;border:none;cursor:pointer;color:var(--grey-txt);font-size:16px;line-height:1;">×</button>
-      </div>`).join('');
-  }
-
-  // ══════════════════════════════════════
-  // COMMENTAIRES PINS
-  // ══════════════════════════════════════
   const STORAGE_KEY = 'wf_comments_cardex';
   const FB_URL = 'https://studio-jailoop-default-rtdb.firebaseio.com/comments_cardex';
   let comments = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
@@ -1184,131 +997,24 @@
   let currentThreadId = null;
   let dragPin = null, dragOX = 0, dragOY = 0;
 
-  async function fbSave() {
-    try {
-      await fetch(FB_URL + '.json', { method: 'PUT', body: JSON.stringify(comments) });
-    } catch(e) {}
-  }
-  async function fbLoad() {
-    try {
-      const res = await fetch(FB_URL + '.json');
-      const data = await res.json();
-      if (data && Array.isArray(data)) {
-        comments = data;
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(comments));
-        refreshPins();
-      }
-    } catch(e) {}
-  }
+  async function fbSave() { try { await fetch(FB_URL+'.json',{method:'PUT',body:JSON.stringify(comments)}); } catch(e){} }
+  async function fbLoad() { try { const res=await fetch(FB_URL+'.json'); const data=await res.json(); if(data&&Array.isArray(data)){comments=data;localStorage.setItem(STORAGE_KEY,JSON.stringify(comments));refreshPins();} } catch(e){} }
 
-  function setCmtMode(on) {
-    commentMode = on;
-    const content = document.getElementById('main-content');
-    content.style.cursor = on ? 'crosshair' : '';
-    refreshPins();
-  }
-
-  function refreshPins() {
-    document.querySelectorAll('.comment-pin').forEach(p => p.remove());
-    if (!commentMode) return;
-    const filter = document.getElementById('author-filter')?.value || '';
-    const content = document.getElementById('main-content');
-    comments.filter(c => !filter || c.author === filter).forEach(c => renderPin(c, content));
-  }
-
-  const PIN_COLORS = { retour:'#1E2643', idee:'#D97706', rg:'#7C3AED', question:'#0891B2', default:'#1E2643' };
-
-  function renderPin(c, container) {
-    const pin = document.createElement('div');
-    pin.className = 'comment-pin';
-    pin.dataset.id = c.id;
-    pin.style.left = c.x + 'px';
-    pin.style.top  = c.y + 'px';
-    pin.style.background = PIN_COLORS[c.type] || PIN_COLORS.default;
-    pin.innerHTML = `<span style="color:white">${c.label||'?'}</span>`;
-    pin.addEventListener('click', e => { e.stopPropagation(); openThread(c.id); });
-    pin.addEventListener('mousedown', e => { dragPin=pin; dragOX=e.clientX-pin.offsetLeft; dragOY=e.clientY-pin.offsetTop; e.stopPropagation(); });
-    container.appendChild(pin);
-  }
-
-  document.addEventListener('mousemove', e => {
-    if (!dragPin) return;
-    dragPin.style.left = (e.clientX - dragOX) + 'px';
-    dragPin.style.top  = (e.clientY - dragOY) + 'px';
-  });
-  document.addEventListener('mouseup', e => {
-    if (!dragPin) return;
-    const c = comments.find(c => String(c.id) === dragPin.dataset.id);
-    if (c) { c.x = parseInt(dragPin.style.left); c.y = parseInt(dragPin.style.top); localStorage.setItem(STORAGE_KEY, JSON.stringify(comments)); fbSave(); }
-    dragPin = null;
-  });
-
-  document.getElementById('main-content').addEventListener('click', e => {
-    if (!commentMode) return;
-    if (e.target.closest('.comment-pin')) return;
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = e.clientX - rect.left + e.currentTarget.scrollLeft;
-    const y = e.clientY - rect.top  + e.currentTarget.scrollTop;
-    const pop = document.getElementById('comment-popover');
-    pop.style.left = (e.clientX + 12) + 'px';
-    pop.style.top  = (e.clientY - 40) + 'px';
-    pop.classList.add('visible');
-    pop._x = x; pop._y = y;
-    document.getElementById('cp-text').focus();
-  });
-
-  function closePopover() { document.getElementById('comment-popover').classList.remove('visible'); }
-
-  function saveComment() {
-    const txt = document.getElementById('cp-text').value.trim();
-    if (!txt) return;
-    const pop = document.getElementById('comment-popover');
-    const idx = comments.length + 1;
-    const initial = CURRENT_USER.charAt(0).toUpperCase();
-    const c = { id: Date.now(), x: pop._x, y: pop._y, text: txt, author: CURRENT_USER, label: idx + initial, type: 'retour', replies: [] };
-    comments.push(c);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(comments)); fbSave();
-    document.getElementById('cp-text').value = '';
-    closePopover();
-    refreshPins();
-  }
-
-  function openThread(id) {
-    currentThreadId = id;
-    const c = comments.find(cc => cc.id === id);
-    if (!c) return;
-    const msgs = document.getElementById('thread-messages');
-    msgs.innerHTML = [c, ...(c.replies||[])].map(m => `
-      <div style="background:var(--grey-bg);border-radius:8px;padding:8px 10px;">
-        <div style="font-size:11px;font-weight:700;margin-bottom:3px;">${m.author||'?'}</div>
-        <div style="font-size:13px;color:var(--navy);">${m.text}</div>
-      </div>`).join('');
-    const pop = document.getElementById('thread-popover');
-    const pin = document.querySelector(`.comment-pin[data-id="${id}"]`);
-    if (pin) { pop.style.left=(parseInt(pin.style.left)+40)+'px'; pop.style.top=pin.style.top; }
-    pop.classList.add('visible');
-  }
-
-  function closeThread() { document.getElementById('thread-popover').classList.remove('visible'); currentThreadId = null; }
-
-  function saveReply() {
-    const txt = document.getElementById('reply-text').value.trim();
-    if (!txt || !currentThreadId) return;
-    const c = comments.find(cc => cc.id === currentThreadId);
-    if (!c) return;
-    if (!c.replies) c.replies = [];
-    c.replies.push({ author: CURRENT_USER, text: txt });
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(comments)); fbSave();
-    document.getElementById('reply-text').value = '';
-    openThread(currentThreadId);
-  }
-
-  const cpUser = document.getElementById('cp-username');
-  if (cpUser) cpUser.textContent = CURRENT_USER;
-
-  // Poll Firebase toutes les 5s
+  function setCmtMode(on) { commentMode=on; const content=document.getElementById('main-content'); content.style.cursor=on?'crosshair':''; refreshPins(); }
+  function refreshPins() { document.querySelectorAll('.comment-pin').forEach(p=>p.remove()); if(!commentMode)return; const filter=document.getElementById('author-filter')?.value||''; const content=document.getElementById('main-content'); comments.filter(c=>!filter||c.author===filter).forEach(c=>renderPin(c,content)); }
+  const PIN_COLORS = {retour:'#1E2643',idee:'#D97706',rg:'#7C3AED',question:'#0891B2',default:'#1E2643'};
+  function renderPin(c,container) { const pin=document.createElement('div'); pin.className='comment-pin'; pin.dataset.id=c.id; pin.style.left=c.x+'px'; pin.style.top=c.y+'px'; pin.style.background=PIN_COLORS[c.type]||PIN_COLORS.default; pin.innerHTML=`<span style="color:white">${c.label||'?'}</span>`; pin.addEventListener('click',e=>{e.stopPropagation();openThread(c.id);}); pin.addEventListener('mousedown',e=>{dragPin=pin;dragOX=e.clientX-pin.offsetLeft;dragOY=e.clientY-pin.offsetTop;e.stopPropagation();}); container.appendChild(pin); }
+  document.addEventListener('mousemove',e=>{if(!dragPin)return;dragPin.style.left=(e.clientX-dragOX)+'px';dragPin.style.top=(e.clientY-dragOY)+'px';});
+  document.addEventListener('mouseup',e=>{if(!dragPin)return;const c=comments.find(c=>String(c.id)===dragPin.dataset.id);if(c){c.x=parseInt(dragPin.style.left);c.y=parseInt(dragPin.style.top);localStorage.setItem(STORAGE_KEY,JSON.stringify(comments));fbSave();}dragPin=null;});
+  document.getElementById('main-content').addEventListener('click',e=>{if(!commentMode)return;if(e.target.closest('.comment-pin'))return;const rect=e.currentTarget.getBoundingClientRect();const x=e.clientX-rect.left+e.currentTarget.scrollLeft;const y=e.clientY-rect.top+e.currentTarget.scrollTop;const pop=document.getElementById('comment-popover');pop.style.left=(e.clientX+12)+'px';pop.style.top=(e.clientY-40)+'px';pop.classList.add('visible');pop._x=x;pop._y=y;document.getElementById('cp-text').focus();});
+  function closePopover(){document.getElementById('comment-popover').classList.remove('visible');}
+  function saveComment(){const txt=document.getElementById('cp-text').value.trim();if(!txt)return;const pop=document.getElementById('comment-popover');const idx=comments.length+1;const initial=CURRENT_USER.charAt(0).toUpperCase();const c={id:Date.now(),x:pop._x,y:pop._y,text:txt,author:CURRENT_USER,label:idx+initial,type:'retour',replies:[]};comments.push(c);localStorage.setItem(STORAGE_KEY,JSON.stringify(comments));fbSave();document.getElementById('cp-text').value='';closePopover();refreshPins();}
+  function openThread(id){currentThreadId=id;const c=comments.find(cc=>cc.id===id);if(!c)return;const msgs=document.getElementById('thread-messages');msgs.innerHTML=[c,...(c.replies||[])].map(m=>`<div style="background:var(--grey-bg);border-radius:8px;padding:8px 10px;"><div style="font-size:11px;font-weight:700;margin-bottom:3px;">${m.author||'?'}</div><div style="font-size:13px;color:var(--navy);">${m.text}</div></div>`).join('');const pop=document.getElementById('thread-popover');const pin=document.querySelector(`.comment-pin[data-id="${id}"]`);if(pin){pop.style.left=(parseInt(pin.style.left)+40)+'px';pop.style.top=pin.style.top;}pop.classList.add('visible');}
+  function closeThread(){document.getElementById('thread-popover').classList.remove('visible');currentThreadId=null;}
+  function saveReply(){const txt=document.getElementById('reply-text').value.trim();if(!txt||!currentThreadId)return;const c=comments.find(cc=>cc.id===currentThreadId);if(!c)return;if(!c.replies)c.replies=[];c.replies.push({author:CURRENT_USER,text:txt});localStorage.setItem(STORAGE_KEY,JSON.stringify(comments));fbSave();document.getElementById('reply-text').value='';openThread(currentThreadId);}
+  const cpUser=document.getElementById('cp-username');if(cpUser)cpUser.textContent=CURRENT_USER;
   fbLoad();
-  setInterval(fbLoad, 5000);
+  setInterval(fbLoad,5000);
 </script>
 </body>
 </html>
