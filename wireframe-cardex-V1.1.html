@@ -747,9 +747,18 @@
     <div class="content" id="main-content">
       <div class="content-inner">
 
+        <!-- Sélecteur de proposition — visible uniquement en local -->
+        <div id="prop-switcher-bar" style="display:none;margin-bottom:16px;">
+          <div class="prop-switcher">
+            <span class="prop-switcher-label">Proposition :</span>
+            <button class="prop-btn active" onclick="setProp('B', this)">B — Bande</button>
+            <button class="prop-btn" onclick="setProp('A', this)">A — 4 colonnes</button>
+            <button class="prop-btn" onclick="setProp('C', this)">C — Empilé</button>
+          </div>
+        </div>
 
-        <!-- ══ PROPOSITION B ══ -->
-        <div id="prop-B" style="display:none;">
+        <!-- ══ PROPOSITION B (défaut) ══ -->
+        <div id="prop-B">
           <!-- 3 cards info -->
           <div class="info-grid">
             <!-- Card Profil -->
@@ -882,8 +891,8 @@
           </div>
         </div><!-- /prop-B -->
 
-        <!-- ══ PROPOSITION A (4 colonnes) — défaut ══ -->
-        <div id="prop-A">
+        <!-- ══ PROPOSITION A (4 colonnes) — masquée par défaut ══ -->
+        <div id="prop-A" style="display:none;">
           <div class="info-grid-4">
             <!-- Profil -->
             <div class="info-card">
@@ -1064,8 +1073,8 @@
   <div class="panel-body">
     <div class="panel-title">Proposition Cardex</div>
     <div style="display:flex;flex-direction:column;gap:6px;">
-      <button class="prop-btn" id="pnl-B" onclick="setProp('B',this);syncPropBtns('B')">B — Bande</button>
-      <button class="prop-btn active" id="pnl-A" onclick="setProp('A',this);syncPropBtns('A')">A — 4 colonnes (défaut)</button>
+      <button class="prop-btn active" id="pnl-B" onclick="setProp('B',this);syncPropBtns('B')">B — Bande (défaut)</button>
+      <button class="prop-btn" id="pnl-A" onclick="setProp('A',this);syncPropBtns('A')">A — 4 colonnes</button>
       <button class="prop-btn" id="pnl-C" onclick="setProp('C',this);syncPropBtns('C')">C — Empilé milieu</button>
     </div>
     <hr>
@@ -1095,7 +1104,7 @@
   if (isLocal) {
     document.getElementById('back-dashboard-btn').style.display = 'flex';
     document.getElementById('briefs-nav-btn').style.display = 'flex';
-
+    document.getElementById('prop-switcher-bar').style.display = 'flex';
   }
 
   // ══════════════════════════════════════
