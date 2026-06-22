@@ -1,0 +1,1380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Wireframe — Cardex V1 : Fiche Client</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --navy:     #1E2643;
+      --yellow:   #FFC107;
+      --white:    #FFFFFF;
+      --lavender: #9EAEF4;
+      --beige:    #F3EFE8;
+      --grey-bg:  #F7F8FA;
+      --grey-bd:  #E0E0E0;
+      --grey-txt: #6B7280;
+      --red:      #D93025;
+      --green:    #088A20;
+    }
+
+    html, body {
+      width: 1440px;
+      height: 1024px;
+      overflow: hidden;
+      background: var(--navy);
+      font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+      font-size: 14px;
+      color: var(--navy);
+    }
+
+    /* ══════════════════════════════════════
+       HEADER DS2 — 72px (Figma exact)
+    ══════════════════════════════════════ */
+    .header {
+      background: var(--navy);
+      height: 72px;
+      display: flex;
+      align-items: center;
+      padding: 0 24px;
+      gap: 16px;
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+    }
+    .logo { height: 32px; display:flex; align-items:center; flex-shrink:0; }
+    .logo img { height: 32px; }
+    .search {
+      flex: 1; max-width: 560px;
+      background: var(--white);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 32px;
+      height: 40px;
+      display: flex; align-items: center;
+      padding: 0 8px 0 14px; gap: 8px;
+    }
+    .search svg { width:16px;height:16px;stroke:#999;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0; }
+    .search input { flex:1;border:none;outline:none;font-size:14px;color:#999;background:transparent;font-family:inherit; }
+    .search .s-btn { background:var(--yellow);border:none;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0; }
+    .search .s-btn svg { width:13px;height:13px;stroke:#000;transform:scaleX(-1); }
+    .h-btn { height:36px;border:none;border-radius:22px;padding:0 20px;font-size:14px;font-weight:600;cursor:pointer;white-space:nowrap;font-family:inherit; }
+    .h-btn.yellow { background:var(--yellow);color:#000; }
+    .h-btn.white  { background:var(--white);color:#000; }
+    .avatar { margin-left:auto;width:36px;height:36px;background:var(--lavender);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;color:#000;flex-shrink:0; }
+
+    /* ══════════════════════════════════════
+       LAYOUT
+    ══════════════════════════════════════ */
+    .layout {
+      position: fixed;
+      top: 72px; left: 0;
+      width: 1440px;
+      height: calc(1024px - 72px);
+      display: flex;
+    }
+
+    /* ══════════════════════════════════════
+       SIDEBAR DS2 — 94px (Figma exact)
+    ══════════════════════════════════════ */
+    .sidebar {
+      background: var(--navy);
+      width: 94px;
+      flex-shrink: 0;
+      padding: 24px 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0;
+      overflow: hidden;
+    }
+    .nav-icon {
+      width: 94px; height: 48px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      opacity: 0.45;
+      transition: opacity .15s;
+      position: relative;
+    }
+    .nav-icon:hover { opacity: 0.75; }
+    .nav-icon.active { opacity: 1; }
+    .nav-icon.active::before {
+      content: '';
+      position: absolute;
+      left: 8px; top: 50%;
+      transform: translateY(-50%);
+      width: 48px; height: 36px;
+      background: rgba(255,255,255,0.12);
+      border-radius: 10px;
+    }
+    .nav-icon svg { width: 20px; height: 20px; stroke: white; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; position:relative; z-index:1; }
+    .nav-icon.bottom { margin-top: auto; }
+    .nav-sep { height: 32px; }
+
+    /* ══════════════════════════════════════
+       MAIN — width 1180px + gap 36px depuis sidebar
+    ══════════════════════════════════════ */
+    .main {
+      width: 1180px;
+      margin-left: 36px;
+      background: var(--white);
+      border-top-left-radius: 16px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* ══════════════════════════════════════
+       CONTENT CUSTOMER FILE — flex col, gap 20px, pt 24px
+    ══════════════════════════════════════ */
+    .content-customer-file {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      padding-top: 24px;
+      flex: 1;
+      overflow: hidden;
+      min-height: 0;
+    }
+
+    /* ══════════════════════════════════════
+       BREADCRUMB
+    ══════════════════════════════════════ */
+    .page-header {
+      padding: 0;
+      flex-shrink: 0;
+    }
+    .breadcrumb {
+      font-size: 12px;
+      color: var(--grey-txt);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .breadcrumb span { color: var(--navy); font-weight: 600; }
+    .page-title { display: none; }
+
+    /* ══════════════════════════════════════
+       BARRE IDENTITÉ CLIENT — valeurs Figma exactes
+    ══════════════════════════════════════ */
+    .identity-bar {
+      display: flex;
+      gap: 12px;
+      padding: 0;
+      flex-shrink: 0;
+      align-items: center;
+    }
+    .id-cells {
+      display: flex;
+      gap: 4px;
+      align-items: center;
+      flex-shrink: 0;
+    }
+    .id-cell {
+      background: #F6EFE7;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      border-radius: 16px;
+      height: 80px;
+      justify-content: flex-start;
+      flex-shrink: 0;
+    }
+    .id-cell.civility   { width: 78px; }
+    .id-cell.name       { width: 240px; }
+    .id-cell.firstname  { width: 202px; }
+    .id-cell.phone      { width: 231px; }
+    .id-cell.email      { width: 285px; }
+    .id-label { font-size: 16px; color: #000000; font-weight: 400; line-height: 24px; }
+    .id-value { font-size: 20px; font-weight: 600; color: #000000; line-height: 28px; }
+    .id-top   { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .id-edit  {
+      font-size: 16px; font-weight: 600; color: #000000; cursor: pointer;
+      white-space: nowrap; line-height: 24px;
+      border-bottom: 1px solid #000000;
+      text-decoration: none;
+    }
+    /* Boutons action (Demande particulière + Carnet de liaison) */
+    .id-actions { display: flex; gap: 8px; margin-left: 4px; flex-shrink: 0; }
+    .id-action-btn {
+      width: 48px; height: 48px; border-radius: 50%; border: none; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0; position: relative;
+    }
+    .id-action-btn.green { background: #088A20; }
+    .id-action-btn.yellow { background: #FDBE00; }
+    .id-action-btn svg { width: 22px; height: 22px; }
+    .notif-badge {
+      position: absolute; top: -2px; right: -2px;
+      width: 20px; height: 20px; border-radius: 100px;
+      background: #BF2F17; display: flex; align-items: center; justify-content: center;
+      font-size: 10px; font-weight: 700; color: white;
+    }
+
+    /* ══════════════════════════════════════
+       TABS DS2 — Figma exact
+    ══════════════════════════════════════ */
+    .tabs-bar {
+      padding: 0;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      flex-shrink: 0;
+    }
+    .tab {
+      height: 48px;
+      padding: 4px 20px;
+      font-size: 16px;
+      font-weight: 600;
+      border-radius: 100px;
+      cursor: pointer;
+      color: #000000;
+      border: none;
+      background: transparent;
+      font-family: inherit;
+      transition: background .15s;
+      white-space: nowrap;
+      display: flex; align-items: center;
+    }
+    .tab:hover { background: #F3F3F3; }
+    .tab.active { background: #000000; color: #FFFFFF; }
+
+    /* ══════════════════════════════════════
+       CONTENU SCROLLABLE
+    ══════════════════════════════════════ */
+    .content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 0 0 80px;
+      background: var(--grey-bg);
+      position: relative;
+    }
+    .content-inner { padding-bottom: 16px; }
+
+    /* ══════════════════════════════════════
+       GRID 4 CARDS INFO — DS2 Figma
+    ══════════════════════════════════════ */
+    .info-grid-4 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr;
+      gap: 16px;
+    }
+
+    /* Card Profil — DS2 Figma */
+    .info-card {
+      background: var(--white);
+      border: 1px solid #CCCCCC;
+      border-radius: 16px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .profile-row { display:flex; align-items:center; gap:16px; }
+    .profile-label { font-size:16px; color:var(--navy); font-weight:600; white-space:nowrap; line-height:24px; }
+    .profile-value { font-size:14px; font-weight:400; color:var(--navy); line-height:20px; }
+    .profile-badge {
+      display: inline-flex; align-items: center;
+      padding: 4px 16px;
+      border-radius: 100px;
+      font-size: 14px; font-weight: 600; line-height: 20px;
+    }
+    .badge-gold     { background: #C8914F; color: black; }
+    .badge-vip      { background: transparent; color: black; border: 1px solid black; }
+    .badge-donor    { background: transparent; color: black; border: 1px solid black; }
+    .badge-platinum { background: var(--navy); color: white; }
+    .badge-honeymoon { background: #F6EFE7; color: #924833; font-size:14px; font-weight:600; padding: 4px 16px; border-radius: 100px; }
+    .btn-pass {
+      margin-top: 12px;
+      align-self: flex-start;
+      padding: 0 13px;
+      height: 32px;
+      border: 1px solid var(--navy);
+      border-radius: 32px;
+      background: transparent;
+      font-size: 12px; font-weight: 600; color: var(--navy);
+      cursor: pointer; font-family: inherit; white-space: nowrap;
+    }
+
+    /* Card Arrival */
+    .card-section-title {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 13px; font-weight: 700; color: var(--navy);
+      margin-bottom: 12px;
+    }
+    .card-section-title svg { width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round; }
+    .info-row { display:flex; flex-direction:column; gap:1px; margin-bottom:8px; }
+    .info-row:last-child { margin-bottom: 0; }
+    .info-lbl { font-size:11px; color:var(--grey-txt); font-weight:500; }
+    .info-val { font-size:13px; font-weight:600; color:var(--navy); }
+    .info-link { font-size:13px; font-weight:600; color:var(--navy); text-decoration:underline; cursor:pointer; }
+
+    /* Card Room */
+    .room-title {
+      font-size: 16px; font-weight: 700; color: var(--navy);
+      text-decoration: underline; cursor: pointer;
+      display: flex; align-items: center; gap: 6px;
+      margin-bottom: 2px;
+    }
+    .room-subtitle { font-size: 12px; color: var(--grey-txt); margin-bottom: 10px; }
+    .room-meta { display:flex; align-items:center; gap:12px; margin-bottom:12px; flex-wrap:wrap; }
+    .room-meta-item { display:flex; align-items:center; gap:5px; font-size:12px; color:var(--navy); }
+    .room-meta-item svg { width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round; }
+    .room-alert {
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      border: 2px solid var(--red);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .expense-box {
+      background: rgba(255,255,255,0.6);
+      border-radius: 8px;
+      padding: 10px 12px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .expense-amount { font-size: 20px; font-weight: 700; color: var(--green); }
+    .expense-label  { font-size: 11px; color: var(--grey-txt); margin-top: 1px; }
+
+    /* Card Cardex in a nutshell — DS2 Figma */
+    .cardex-card-title {
+      font-size: 16px; font-weight: 600; color: var(--navy);
+      line-height: 24px;
+    }
+    .cardex-nutshell-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 12px;
+    }
+    .cardex-nutshell-arrow {
+      width: 48px; height: 48px; display: flex; align-items: center; justify-content: center;
+      cursor: pointer; flex-shrink: 0;
+    }
+    .cardex-nutshell-arrow svg { width: 20px; height: 20px; stroke: var(--navy); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; transform: scaleX(-1); }
+    .cardex-nutshell-list { list-style: disc; padding-left: 20px; display: flex; flex-direction: column; gap: 2px; margin-bottom: 12px; }
+    .cardex-nutshell-list li { font-size: 14px; font-weight: 400; color: var(--navy); line-height: 20px; }
+    .cardex-nutshell-list li strong { font-weight: 600; }
+    .cardex-nutshell-badges { display: flex; gap: 8px; flex-wrap: wrap; }
+    /* Ancienne card Cardex (prop A beige) — gardée pour rétrocompat */
+    .cardex-card-list { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+    .cardex-card-list li { font-size: 12px; color: var(--navy); display: flex; align-items: flex-start; gap: 7px; line-height: 1.4; }
+    .cardex-card-list li::before { content: '·'; color: var(--grey-txt); flex-shrink: 0; font-size:16px; line-height:1.1; }
+    .cardex-see-more {
+      display: flex; align-items: center; gap: 4px;
+      font-size: 12px; font-weight: 600; color: var(--grey-txt);
+      margin-top: 12px; cursor: pointer;
+    }
+    .cardex-see-more svg { width:13px;height:13px;stroke:var(--grey-txt);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round; }
+
+    /* ══════════════════════════════════════
+       PROPOSITIONS B & C — gardées masquées
+    ══════════════════════════════════════ */
+    .info-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; margin-bottom:16px; }
+    .info-grid-C { display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; margin-bottom:16px; }
+    .col-middle { display:flex; flex-direction:column; gap:16px; }
+    .prop-switcher { display:flex; align-items:center; gap:8px; margin-bottom:16px; }
+    .prop-switcher-label { font-size:12px; color:var(--grey-txt); font-weight:600; }
+    .prop-btn {
+      padding: 5px 14px; border-radius: 20px; border: 1.5px solid var(--grey-bd);
+      background: transparent; font-size: 12px; font-weight: 600; color: var(--grey-txt);
+      cursor: pointer; font-family: inherit; transition: all .15s;
+    }
+    .prop-btn.active { background: var(--navy); color: var(--white); border-color: var(--navy); }
+    .cardex-banner {
+      background: var(--beige); border-radius: 12px; padding: 16px 24px;
+      margin-bottom: 16px; display:flex; align-items:flex-start; gap:20px;
+      cursor:pointer; transition:box-shadow .15s; position:relative;
+    }
+    .cardex-banner:hover { box-shadow: 0 2px 12px rgba(30,38,67,0.12); }
+    .cardex-banner-left { flex-shrink:0; display:flex; flex-direction:column; gap:4px; min-width:160px; }
+    .cardex-banner-title { font-size:12px; font-weight:700; color:var(--navy); text-transform:uppercase; letter-spacing:.5px; }
+    .cardex-banner-sub { font-size:11px; color:var(--grey-txt); }
+    .cardex-banner-cta {
+      display:inline-flex; align-items:center; gap:6px; margin-top:10px;
+      padding:6px 14px; border:1.5px solid var(--navy); border-radius:20px;
+      font-size:11px; font-weight:700; color:var(--navy); background:transparent;
+      cursor:pointer; font-family:inherit; white-space:nowrap;
+    }
+    .cardex-divider { width:1px; background:var(--grey-bd); align-self:stretch; flex-shrink:0; }
+    .cardex-banner-content { flex:1; display:flex; flex-wrap:wrap; gap:6px 24px; align-content:flex-start; }
+    .cardex-tag { display:flex; align-items:center; gap:6px; font-size:13px; color:var(--navy); }
+    .cardex-tag::before { content:''; width:6px; height:6px; border-radius:50%; background:var(--navy); flex-shrink:0; opacity:0.4; }
+    .cardex-more {
+      position:absolute; right:20px; top:50%; transform:translateY(-50%);
+      display:flex; align-items:center; gap:4px;
+      font-size:12px; font-weight:600; color:var(--grey-txt);
+    }
+    .cardex-more svg { width:16px;height:16px;stroke:var(--grey-txt);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round; }
+    .cardex-card-A {
+      background: var(--beige); border-radius: 12px; padding: 16px;
+      cursor:pointer; transition:box-shadow .15s;
+    }
+    .cardex-card-A:hover { box-shadow: 0 2px 12px rgba(30,38,67,0.1); }
+    .cardex-card-C {
+      background: var(--beige); border-radius: 12px; padding: 16px;
+      cursor:pointer; transition:box-shadow .15s; flex:1;
+    }
+    .cardex-card-C:hover { box-shadow: 0 2px 12px rgba(30,38,67,0.1); }
+
+    /* ══════════════════════════════════════
+       TABLEAU GM — Figma exact
+       Header : h-56px, radius 16px top
+       Lignes : min-h-80px, bg #F6EFE7, border #CCC, radius 16px, gap 12px
+       Colonnes (widths Figma) :
+         checkbox: flex px-24 | state: 70px | stay: 130px | civility: 50px
+         firstname: 132px | lastname: 220px | qu: 60px | master: 60px
+         age: 60px | type: 100px | code: 60px | room: 70px | status: 96px
+    ══════════════════════════════════════ */
+    .gm-table-wrap { overflow: visible; }
+    .gm-head {
+      background: #1E2643; color: #FFFFFF;
+      display: flex;
+      height: 56px;
+      align-items: center;
+      font-size: 16px; font-weight: 600;
+      border-radius: 16px 16px 0 0;
+      overflow: hidden;
+    }
+    .gm-head-cell {
+      display: flex; align-items: center; justify-content: center;
+      padding: 10px 24px; height: 56px; flex-shrink: 0; white-space: nowrap;
+    }
+    .gm-head-cell.start { justify-content: flex-start; border-radius: 16px 0 0 0; }
+    .gm-head-cell.end   { border-radius: 0 16px 0 0; }
+    .gm-table-rows {
+      display: flex; flex-direction: column; gap: 12px;
+      padding: 12px 0 0;
+    }
+    .gm-row {
+      display: flex;
+      align-items: center;
+      min-height: 80px;
+      border-radius: 16px;
+      overflow: hidden;
+    }
+    .gm-cell {
+      display: flex; align-items: center; justify-content: center;
+      min-height: 80px; padding: 10px 24px; flex-shrink: 0;
+      background: #F6EFE7;
+      border-top: 1px solid #CCCCCC;
+      border-bottom: 1px solid #CCCCCC;
+      font-size: 16px; color: #000; white-space: nowrap;
+    }
+    .gm-cell.start {
+      border-left: 1px solid #CCCCCC;
+      border-radius: 16px 0 0 16px;
+      justify-content: flex-start;
+    }
+    .gm-cell.end {
+      border-right: 1px solid #CCCCCC;
+      border-radius: 0 16px 16px 0;
+    }
+    /* Widths colonnes Figma */
+    .gm-col-state    { width: 70px; }
+    .gm-col-stay     { width: 130px; }
+    .gm-col-civ      { width: 50px; }
+    .gm-col-fname    { width: 132px; justify-content: flex-start; }
+    .gm-col-lname    { width: 220px; justify-content: flex-start; }
+    .gm-col-qu       { width: 60px; }
+    .gm-col-master   { width: 60px; }
+    .gm-col-age      { width: 60px; }
+    .gm-col-type     { width: 100px; }
+    .gm-col-code     { width: 60px; }
+    .gm-col-room     { width: 70px; }
+    .gm-col-status   { width: 96px; }
+    /* State icons */
+    .state-col { display:flex; flex-direction:column; align-items:center; gap:4px; }
+    .state-icon { width:24px; height:24px; display:flex; align-items:center; justify-content:center; }
+    .state-lbl { font-size:10px; font-weight:400; color:#000; white-space:nowrap; }
+    /* Date col */
+    .date-col { display:flex; flex-direction:column; gap:0; }
+    .date-from { font-size:14px; font-weight:400; color:#000; line-height:20px; }
+    .date-to   { font-size:14px; font-weight:400; color:#000; line-height:20px; }
+    /* Badge platinum */
+    .badge-platinum { background:#1E2643; color:white; font-size:14px; font-weight:600; padding:4px 16px; border-radius:100px; white-space:nowrap; }
+    /* Status check */
+    .status-ok-icon  { width:48px; height:48px; display:flex; align-items:center; justify-content:center; }
+    .status-ok-icon svg { width:48px; height:48px; }
+
+    /* ══════════════════════════════════════
+       FOOTER ACTIONS DS2 — Figma exact
+       h-64px, boutons 44px pill, Add a GM = #000
+    ══════════════════════════════════════ */
+    .footer-actions {
+      position: fixed;
+      bottom: 0; left: 130px; right: 0;
+      background: var(--white);
+      border-top: 1px solid #CCCCCC;
+      padding: 0 12px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      z-index: 50;
+    }
+    .btn-footer {
+      height: 44px;
+      border-radius: 22px;
+      padding: 0 24px;
+      font-size: 16px; font-weight: 600;
+      cursor: pointer; font-family: inherit;
+      border: 1.5px solid #000000;
+      background: transparent;
+      color: #000000;
+      white-space: nowrap;
+    }
+    .btn-footer.primary { background: #000000; color: #FFFFFF; border-color: #000000; }
+    .btn-footer.yellow  { background: #FDBE00; color: #000; border-color: #FDBE00; }
+
+    /* Switch row */
+    .switch-row { display:flex;align-items:center;justify-content:space-between;gap:12px; }
+    .switch-row span { font-size:13px;color:var(--navy);font-weight:500; }
+    .switch { position:relative;width:44px;height:24px;flex-shrink:0; }
+    .switch input { opacity:0;width:0;height:0; }
+    .switch .track { position:absolute;inset:0;background:var(--grey-bd);border-radius:24px;cursor:pointer;transition:background .2s; }
+    .switch .track::after { content:'';position:absolute;width:18px;height:18px;border-radius:50%;background:var(--white);top:3px;left:3px;transition:transform .2s;box-shadow:0 1px 3px rgba(0,0,0,.2); }
+    .switch input:checked + .track { background:var(--navy); }
+    .switch input:checked + .track::after { transform:translateX(20px); }
+
+    /* Panel wireframe — système Loopcraft complet */
+    .wf-panel.collapsed > .panel-body { display: none; }
+    .wf-panel.collapsed > .panel-header { display: none !important; }
+    .wf-panel.collapsed > #panel-doc-section { display: none; }
+    .wf-panel.collapsed { min-width: 0; padding: 6px; border: none; background: none; box-shadow: none; }
+    .wf-panel.collapsed > #btn-panel-open { display: flex !important; }
+    #btn-panel-open { display: none; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 50%; background: var(--white); border: 2px solid var(--navy); cursor: pointer; font-size: 18px; font-weight: 700; color: var(--navy); box-shadow: 0 2px 8px rgba(0,0,0,.15); }
+    .wf-panel { position:fixed;bottom:80px;right:20px;background:var(--white);border:2px solid var(--navy);border-radius:12px;padding:16px 18px;z-index:999;font-size:13px;box-shadow:0 4px 20px rgba(0,0,0,.15);min-width:240px;display:flex;flex-direction:column;gap:12px; }
+    .panel-body { display:flex;flex-direction:column;gap:12px; }
+    .wf-panel .panel-title { font-size:11px;font-weight:700;color:var(--grey-txt);text-transform:uppercase;letter-spacing:.5px; }
+    .wf-panel hr { border:none;border-top:1px solid var(--grey-bd); }
+    .author-filter { width:100%;font-size:12px;font-family:inherit;border:1px solid var(--grey-bd);border-radius:6px;padding:5px 8px;outline:none;color:var(--navy); }
+
+    /* Commentaires pins */
+    .comment-pin { position:absolute;width:28px;height:28px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);display:flex;align-items:center;justify-content:center;cursor:grab;z-index:500;box-shadow:0 2px 6px rgba(0,0,0,0.25);transition:transform 0.15s; }
+    .comment-pin:active { cursor:grabbing; }
+    .comment-pin:hover { transform:rotate(-45deg) scale(1.15); }
+    .comment-pin span { transform:rotate(45deg);font-size:11px;font-weight:700; }
+    .comment-popover { position:fixed;background:var(--white);border:1px solid var(--grey-bd);border-radius:12px;padding:14px;width:280px;box-shadow:0 8px 24px rgba(0,0,0,0.15);z-index:1000;display:none; }
+    .comment-popover.visible { display:block; }
+    .comment-popover .cp-header { font-size:12px;font-weight:700;color:var(--navy);margin-bottom:8px;display:flex;align-items:center;gap:8px; }
+    .comment-popover textarea { width:100%;height:80px;border:1px solid var(--grey-bd);border-radius:8px;padding:8px;font-size:13px;font-family:inherit;resize:none;outline:none;color:var(--navy); }
+    .comment-popover .cp-actions { display:flex;gap:8px;margin-top:8px;justify-content:flex-end; }
+    .comment-popover .cp-cancel { background:none;border:1px solid var(--grey-bd);border-radius:6px;padding:5px 14px;font-size:12px;cursor:pointer;font-family:inherit;color:var(--grey-txt); }
+    .comment-popover .cp-save { background:var(--navy);color:var(--white);border:none;border-radius:6px;padding:5px 14px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit; }
+  </style>
+</head>
+<body>
+
+<!-- ══════════ HEADER ══════════ -->
+<header class="header">
+  <div class="logo">
+    <img src="https://www.figma.com/api/mcp/asset/bd084c92-7e54-4ab0-9f9b-8070e351c39a" alt="odyssey" onerror="this.parentNode.innerHTML='<span style=\'color:white;font-weight:700;font-size:16px;letter-spacing:-0.5px;\'>⊙ odyssey</span>'" />
+  </div>
+  <div class="search">
+    <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    <input type="text" placeholder="Search anything" />
+    <button class="s-btn">
+      <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+    </button>
+  </div>
+  <button class="h-btn yellow">Scan Bracelet</button>
+  <button class="h-btn white">What's new</button>
+  <div class="avatar">JD</div>
+</header>
+
+<!-- Bouton Retour dashboard — local only -->
+<a id="back-dashboard-btn" href="Loopcraft/studio.html?go=dashboard" title="Retour au dashboard"
+  style="display:none;position:fixed;bottom:80px;left:24px;width:44px;height:44px;border-radius:50%;background:var(--white);cursor:pointer;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,0.15);z-index:300;border:1.5px solid var(--grey-bd);text-decoration:none;"
+  onmouseover="this.style.borderColor='#C8D0E0'" onmouseout="this.style.borderColor='var(--grey-bd)'">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1E2643" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+    <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
+  </svg>
+</a>
+
+<!-- Bouton Retours PO — local only -->
+<div id="briefs-nav-btn" onclick="openBriefs()" title="Retours PO"
+  style="display:none;position:fixed;bottom:24px;left:24px;width:44px;height:44px;border-radius:50%;background:var(--yellow);cursor:pointer;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(0,0,0,0.4);z-index:300;">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1E2643" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+  </svg>
+</div>
+
+<!-- ══ PANNEAU RETOURS PO ══ -->
+<div id="briefs-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:2000;" onclick="closeBriefs()"></div>
+<div id="briefs-panel" style="display:none;position:fixed;top:0;right:0;width:560px;height:100vh;background:var(--white);z-index:2001;flex-direction:column;box-shadow:-8px 0 32px rgba(0,0,0,0.2);">
+  <div style="background:var(--navy);padding:20px 24px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;">
+    <div>
+      <div style="color:var(--yellow);font-size:18px;font-weight:700;">Retours PO</div>
+      <div style="color:rgba(255,255,255,0.5);font-size:12px;margin-top:2px;">Cardex V1 — Fiche Client</div>
+    </div>
+    <button onclick="closeBriefs()" style="background:none;border:none;color:rgba(255,255,255,0.6);font-size:22px;cursor:pointer;line-height:1;">×</button>
+  </div>
+  <div id="briefs-list" style="flex:1;overflow-y:auto;padding:16px 24px;display:flex;flex-direction:column;gap:10px;"></div>
+  <div style="padding:16px 24px;border-top:1px solid var(--grey-bd);flex-shrink:0;display:flex;gap:8px;">
+    <textarea id="brief-input" placeholder="Ajouter un retour PO..." style="flex:1;height:64px;border:1px solid var(--grey-bd);border-radius:8px;padding:8px;font-size:13px;font-family:inherit;resize:none;outline:none;"></textarea>
+    <button onclick="addBrief()" style="height:64px;padding:0 20px;background:var(--navy);color:white;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;">Ajouter</button>
+  </div>
+</div>
+
+<!-- Popover commentaire -->
+<div class="comment-popover" id="comment-popover">
+  <div class="cp-header" style="justify-content:space-between;">
+    <span>Nouveau commentaire</span>
+    <span id="cp-username" style="font-size:11px;color:var(--grey-txt);font-weight:400;"></span>
+  </div>
+  <textarea id="cp-text" placeholder="Écrire un commentaire..."></textarea>
+  <div class="cp-actions">
+    <button class="cp-cancel" onclick="closePopover()">Annuler</button>
+    <button class="cp-save" onclick="saveComment()">Enregistrer</button>
+  </div>
+</div>
+
+<!-- Thread popover -->
+<div class="comment-popover" id="thread-popover" style="width:300px;">
+  <div class="cp-header" style="justify-content:space-between;">
+    <span>Commentaire</span>
+    <button onclick="closeThread()" style="background:none;border:none;cursor:pointer;font-size:18px;color:var(--grey-txt);line-height:1;">×</button>
+  </div>
+  <div id="thread-messages" style="display:flex;flex-direction:column;gap:8px;max-height:160px;overflow-y:auto;margin-bottom:10px;"></div>
+  <div style="border-top:1px solid var(--grey-bd);padding-top:10px;">
+    <textarea id="reply-text" placeholder="Répondre..." style="width:100%;height:56px;border:1px solid var(--grey-bd);border-radius:8px;padding:8px;font-size:13px;font-family:inherit;resize:none;outline:none;"></textarea>
+    <div class="cp-actions">
+      <button class="cp-cancel" onclick="closeThread()">Fermer</button>
+      <button class="cp-save" onclick="saveReply()">Répondre</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ LAYOUT ══════════ -->
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <nav class="sidebar">
+    <div class="nav-icon">
+      <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    </div>
+    <div class="nav-sep"></div>
+    <div class="nav-icon active">
+      <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    </div>
+    <div class="nav-sep"></div>
+    <div class="nav-icon">
+      <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+    </div>
+    <div class="nav-sep"></div>
+    <div class="nav-icon">
+      <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+    </div>
+    <div class="nav-sep"></div>
+    <div class="nav-icon">
+      <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+    </div>
+    <div class="nav-sep"></div>
+    <div class="nav-icon">
+      <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+    </div>
+    <div class="nav-icon bottom">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
+    </div>
+    <div class="nav-icon" style="margin-top:0;">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+    </div>
+  </nav>
+
+  <!-- MAIN -->
+  <main class="main">
+  <div class="content-customer-file">
+
+    <!-- Breadcrumb -->
+    <div class="page-header">
+      <div class="breadcrumb">
+        Home <span style="opacity:.4">›</span> Pages <span style="opacity:.4">›</span> ... <span>• Final page</span>
+      </div>
+    </div>
+
+    <!-- Barre identité — valeurs Figma exactes -->
+    <div class="identity-bar">
+      <div class="id-cells">
+        <div class="id-cell civility">
+          <span class="id-label">Civility</span>
+          <span class="id-value">Mr</span>
+        </div>
+        <div class="id-cell name">
+          <span class="id-label">Last Name</span>
+          <span class="id-value">Mc Doe</span>
+        </div>
+        <div class="id-cell firstname">
+          <span class="id-label">First name</span>
+          <span class="id-value">John</span>
+        </div>
+        <div class="id-cell phone">
+          <div class="id-top">
+            <span class="id-label">Phone number</span>
+            <span class="id-edit">Edit</span>
+          </div>
+          <span class="id-value">+33 6 20 00 76 00</span>
+        </div>
+        <div class="id-cell email">
+          <div class="id-top">
+            <span class="id-label">Email</span>
+            <span class="id-edit">Edit</span>
+          </div>
+          <span class="id-value">johnmcdoe.gmail.com</span>
+        </div>
+      </div>
+      <!-- Boutons action — gap 8px, 48×48px chacun -->
+      <div class="id-actions">
+        <button class="id-action-btn green" title="Demande particulière">
+          <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+        </button>
+        <button class="id-action-btn yellow" title="Carnet de liaison" style="position:relative;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#1E2643" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          <span class="notif-badge">2</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs-bar">
+      <button class="tab active" onclick="setTab(this)">Check-in</button>
+      <button class="tab" onclick="setTab(this)">Prepaids</button>
+      <button class="tab" onclick="setTab(this)">Sell services</button>
+      <button class="tab" onclick="setTab(this)">Sale history</button>
+      <button class="tab" onclick="setTab(this)">Deposit / Withdrawal</button>
+      <button class="tab" onclick="setTab(this)">Account balance</button>
+      <button class="tab" onclick="setTab(this)">Change</button>
+      <button class="tab" onclick="setTab(this)">Invoice</button>
+    </div>
+
+    <!-- CONTENU -->
+    <div class="content" id="main-content">
+      <div class="content-inner">
+
+        <!-- ══ PROPOSITION B — masquée ══ -->
+        <div id="prop-B" style="display:none;">
+          <div class="info-grid">
+            <div class="info-card">
+              <div class="profile-row"><span class="profile-label">Type:</span><span class="profile-badge badge-gold">Gold</span><span class="profile-badge badge-vip" style="margin-left:6px;">VIP</span><span class="profile-badge badge-donor" style="margin-left:6px;">Donor</span></div>
+              <div class="profile-row"><span class="profile-label">Age:</span><span class="profile-value">01/01/1988 — 38 years</span></div>
+              <div class="profile-row"><span class="profile-label">Country:</span><span class="profile-value">United States</span></div>
+              <div class="profile-row"><span class="profile-label">Stay:</span><span class="profile-value">from 09/04/24 to 09/05/24</span></div>
+              <div class="profile-row"><span class="profile-label">Membership:</span><span class="profile-value">123455456</span></div>
+              <div class="profile-row"><span class="profile-label">File:</span><span class="profile-value">12526633521452</span></div>
+              <button class="btn-pass">Club Med Pass management</button>
+            </div>
+            <div class="info-card">
+              <div class="card-section-title"><svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 2 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>Arrival Information</div>
+              <div class="info-row"><span class="info-lbl">Package</span><span class="info-val">Transport included</span><span class="info-val">Transfer included</span><span class="info-link">See transfers</span></div>
+              <div class="info-row"><span class="info-lbl">Departure location</span><span class="info-val">CMF</span></div>
+              <div class="info-row"><span class="info-lbl">Arrival location</span><span class="info-val">Val Thorens Sensation</span></div>
+              <div class="info-row"><span class="info-lbl">Date</span><span class="info-val">08/03/2026</span></div>
+              <div class="info-row"><span class="info-lbl">Arrival time</span><span class="info-val">10:12</span></div>
+            </div>
+            <div class="info-card">
+              <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:4px;">
+                <div><div class="room-title">Room 301 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div><div class="room-subtitle">Deluxe Junior Family Room</div></div>
+                <div class="room-alert"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#D93025" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+              </div>
+              <div class="room-meta"><div class="room-meta-item"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>G</div><div class="room-meta-item"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>C2</div></div>
+              <div class="expense-box"><div><div class="expense-amount">70,00 €</div><div class="expense-label">Expense Report</div></div><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#088A20" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg></div>
+            </div>
+          </div>
+          <div class="cardex-banner" onclick="alert('→ Cardex complet')">
+            <div class="cardex-banner-left"><div class="cardex-banner-title">Cardex</div><div class="cardex-banner-sub">Profil client — séjour 2024</div><button class="cardex-banner-cta" onclick="event.stopPropagation()">Voir le Cardex complet</button></div>
+            <div class="cardex-divider"></div>
+            <div class="cardex-banner-content"><span class="cardex-tag">Vegan &amp; gluten-free, lactose allergy</span><span class="cardex-tag">Tennis, yoga, fitness, spa</span><span class="cardex-tag">Drinks: green tea, Jack Daniel's</span><span class="cardex-tag">French &amp; English speaker</span><span class="cardex-tag">Early riser, breakfast on the terrace</span><span class="cardex-tag">Calm atmospheres preferred</span></div>
+            <div class="cardex-more">Voir plus <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
+          </div>
+        </div><!-- /prop-B -->
+
+        <!-- ══ PROPOSITION A (4 colonnes) — défaut ══ -->
+        <div id="prop-A">
+          <div class="info-grid-4">
+
+            <!-- Card Info client — conforme Figma -->
+            <div class="info-card">
+              <div style="display:flex;gap:8px;margin-bottom:8px;">
+                <span class="profile-badge badge-vip">VIP</span>
+                <span class="profile-badge badge-donor">Donor</span>
+              </div>
+              <div class="profile-row"><span class="profile-label">Age:</span><span class="profile-value">01/01/1988 — 38 years</span></div>
+              <div class="profile-row"><span class="profile-label">Country:</span><span class="profile-value">United States</span></div>
+              <div class="profile-row"><span class="profile-label">Stay:</span><span class="profile-value">from 09/04/24 to 09/05/24</span></div>
+              <div style="margin:4px 0;">
+                <span style="font-size:14px;font-weight:600;color:#BF2F17;text-decoration:underline;cursor:pointer;">See more absence (3)</span>
+              </div>
+              <div class="profile-row"><span class="profile-label">Membership:</span><span class="profile-value">123455456</span></div>
+              <div class="profile-row"><span class="profile-label">File:</span><span class="profile-value">12526633521452</span></div>
+              <button class="btn-pass">Club Med Pass management</button>
+            </div>
+
+            <!-- Card Arrival — conforme Figma -->
+            <div class="info-card">
+              <div class="card-section-title">
+                <svg viewBox="0 0 24 24"><path d="M5 17H3a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11a2 2 0 0 1 2 2v3m-4 13a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2h-8a2 2 0 0 0-2 2v8z"/></svg>
+                Arrival Information
+              </div>
+              <div class="info-row">
+                <span class="profile-label" style="font-size:14px;">Transp:</span>
+                <span class="profile-value">Transport included<br>Transfer included<br><span style="color:#D97706;font-weight:600;">VV arrival at 18:00</span></span>
+                <span class="info-link">See transfers</span>
+              </div>
+              <div class="profile-row" style="margin-top:6px;"><span class="profile-label" style="font-size:14px;">Departure loc:</span><span class="profile-value">CMF</span></div>
+              <div class="profile-row"><span class="profile-label" style="font-size:14px;">Arrival loc:</span><span class="profile-value">Val Thorens Sensation</span></div>
+              <div class="profile-row"><span class="profile-label" style="font-size:14px;">Date:</span><span class="profile-value">08/03/2026</span></div>
+              <div class="profile-row"><span class="profile-label" style="font-size:14px;">Arrival time:</span><span class="profile-value">10:12</span></div>
+            </div>
+
+            <!-- Card Room — conforme Figma -->
+            <div class="info-card" style="gap:8px;">
+              <!-- Room header -->
+              <div style="display:flex;align-items:flex-start;justify-content:space-between;">
+                <div>
+                  <div class="room-title">Room 301
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                  </div>
+                  <div class="room-subtitle">Deluxe Junior Family Room</div>
+                </div>
+                <div class="room-alert">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#D93025" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                </div>
+              </div>
+              <!-- Meta -->
+              <div class="room-meta" style="margin-bottom:0;">
+                <div class="room-meta-item"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Fado coimbra</div>
+                <div class="room-meta-item"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.64 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.55 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.09 6.09l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>202</div>
+              </div>
+              <!-- Make a request -->
+              <button style="align-self:center;height:32px;padding:0 16px;border:1px solid var(--navy);border-radius:32px;background:transparent;font-size:13px;font-weight:600;color:var(--navy);cursor:pointer;font-family:inherit;">Make a request</button>
+              <!-- Expense -->
+              <div style="display:flex;align-items:center;gap:8px;margin-top:4px;">
+                <span style="font-size:20px;font-weight:700;color:#BF2F17;">- 23,00 €</span>
+                <span style="font-size:13px;color:var(--grey-txt);">Expense Report</span>
+              </div>
+              <!-- Visa row -->
+              <div style="display:flex;align-items:center;justify-content:space-between;">
+                <div style="display:flex;align-items:center;gap:6px;">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#088A20" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+                  <span style="font-size:13px;color:var(--navy);font-weight:500;">Visa = 250,00 €</span>
+                </div>
+                <button style="height:32px;padding:0 14px;border:1px solid var(--navy);border-radius:32px;background:transparent;font-size:12px;font-weight:600;color:var(--navy);cursor:pointer;font-family:inherit;">Modify</button>
+              </div>
+              <!-- Easy checkout switch -->
+              <div style="display:flex;align-items:center;gap:10px;background:#F6EFE7;border-radius:32px;padding:6px 12px;">
+                <label class="switch" style="flex-shrink:0;"><input type="checkbox" checked><span class="track"></span></label>
+                <span style="font-size:13px;font-weight:600;color:var(--navy);">Easy checkout</span>
+              </div>
+            </div>
+
+            <!-- Card Cardex in a nutshell — DS2 Figma -->
+            <div class="info-card" style="justify-content:space-between;gap:12px;">
+              <div class="cardex-nutshell-header">
+                <span class="cardex-card-title">Cardex in a nutshell</span>
+                <div class="cardex-nutshell-arrow" onclick="alert('→ Cardex complet')">
+                  <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                </div>
+              </div>
+              <ul class="cardex-nutshell-list">
+                <li>9 past stays</li>
+                <li>Last visit to <strong>Cefalu</strong></li>
+              </ul>
+              <div class="cardex-nutshell-badges">
+                <span class="profile-badge badge-gold">Gold</span>
+                <span class="profile-badge badge-honeymoon">Honeymoon</span>
+              </div>
+            </div>
+
+          </div>
+        </div><!-- /prop-A -->
+
+        <!-- ══ PROPOSITION C — masquée ══ -->
+        <div id="prop-C" style="display:none;">
+          <div class="info-grid-C">
+            <div class="info-card">
+              <div class="profile-row" style="margin-bottom:10px;"><span class="profile-badge badge-gold">Gold</span><span class="profile-badge badge-vip">VIP</span><span class="profile-badge badge-donor" style="margin-left:4px;">Donor</span></div>
+              <div class="info-row"><span class="info-lbl">Age</span><span class="info-val">01/01/1988 — 38 years</span></div>
+              <div class="info-row"><span class="info-lbl">Country</span><span class="info-val">United States</span></div>
+              <div class="info-row"><span class="info-lbl">Stay</span><span class="info-val">from 09/04/24 to 09/05/24</span></div>
+              <div class="info-row"><span class="info-lbl">Membership</span><span class="info-val">123455456</span></div>
+              <button class="btn-pass" style="margin-top:10px;">Club Med Pass management</button>
+            </div>
+            <div class="col-middle">
+              <div class="info-card">
+                <div class="card-section-title"><svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 2 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>Arrival Information</div>
+                <div class="info-row"><span class="info-lbl">Package</span><span class="info-val">Transport included</span><span class="info-val">Transfer included</span><span class="info-link">See transfers</span></div>
+                <div class="info-row"><span class="info-lbl">Departure</span><span class="info-val">CMF</span></div>
+                <div class="info-row"><span class="info-lbl">Arrival</span><span class="info-val">Val Thorens Sensation</span></div>
+                <div class="info-row"><span class="info-lbl">Date / Time</span><span class="info-val">08/03/2026 — 10:12</span></div>
+              </div>
+              <div class="cardex-card-C" onclick="alert('→ Cardex complet')">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;"><div class="cardex-card-title" style="margin-bottom:0;">Cardex</div><span class="cardex-see-more" style="margin-top:0;">Voir plus <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></span></div>
+                <ul class="cardex-card-list"><li>Vegan &amp; gluten-free, lactose allergy</li><li>Tennis, yoga, fitness, spa</li><li>Drinks: green tea, Jack Daniel's</li><li>French &amp; English, calm preferred</li></ul>
+              </div>
+            </div>
+            <div class="info-card">
+              <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:4px;"><div><div class="room-title">Room 301 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div><div class="room-subtitle">Deluxe Junior Family Room</div></div><div class="room-alert"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#D93025" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div></div>
+              <div class="room-meta"><div class="room-meta-item"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>G</div><div class="room-meta-item"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>C2</div></div>
+              <div class="expense-box"><div><div class="expense-amount">70,00 €</div><div class="expense-label">Expense Report</div></div><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#088A20" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg></div>
+            </div>
+          </div>
+        </div><!-- /prop-C -->
+
+        <!-- ══ TABLEAU GM — Figma exact ══ -->
+        <div class="gm-table-wrap">
+          <!-- Header -->
+          <div class="gm-head">
+            <div class="gm-head-cell start" style="padding:10px 24px;width:auto;border-radius:16px 0 0 0;">
+              <button style="width:24px;height:24px;border:1px solid #666;border-radius:8px;background:white;cursor:pointer;flex-shrink:0;"></button>
+            </div>
+            <div class="gm-head-cell gm-col-state">State</div>
+            <div class="gm-head-cell gm-col-stay">Stay date</div>
+            <div class="gm-head-cell gm-col-civ" style="justify-content:flex-start;"></div>
+            <div class="gm-head-cell gm-col-fname" style="justify-content:flex-start;">First name</div>
+            <div class="gm-head-cell gm-col-lname" style="justify-content:flex-start;">Last name</div>
+            <div class="gm-head-cell gm-col-qu">Qu.</div>
+            <div class="gm-head-cell gm-col-master">Master</div>
+            <div class="gm-head-cell gm-col-age">Age</div>
+            <div class="gm-head-cell gm-col-type">Type</div>
+            <div class="gm-head-cell gm-col-code">Code</div>
+            <div class="gm-head-cell gm-col-room">Room</div>
+            <div class="gm-head-cell gm-col-status end">Status</div>
+          </div>
+          <!-- Lignes -->
+          <div class="gm-table-rows">
+            <!-- GM 1 — Mr John Mc Doe (Not check-in, master) -->
+            <div class="gm-row">
+              <div class="gm-cell start" style="padding:10px 24px;width:auto;">
+                <button style="width:24px;height:24px;border:1px solid #666;border-radius:8px;background:rgba(255,255,255,0);cursor:pointer;"></button>
+              </div>
+              <div class="gm-cell gm-col-state">
+                <div class="state-col">
+                  <div class="state-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="8" y1="12" x2="16" y2="12"/></svg></div>
+                  <span class="state-lbl">Not check-in</span>
+                </div>
+              </div>
+              <div class="gm-cell gm-col-stay"><div class="date-col"><span class="date-from">From 03/03/2024</span><span class="date-to">To 13/03/2024</span></div></div>
+              <div class="gm-cell gm-col-civ">Mr</div>
+              <div class="gm-cell gm-col-fname">John</div>
+              <div class="gm-cell gm-col-lname">Mc Doe</div>
+              <div class="gm-cell gm-col-qu">GM ordi</div>
+              <div class="gm-cell gm-col-master">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+              </div>
+              <div class="gm-cell gm-col-age">42</div>
+              <div class="gm-cell gm-col-type"><span class="badge-platinum">Platinum</span></div>
+              <div class="gm-cell gm-col-code">C2</div>
+              <div class="gm-cell gm-col-room">301</div>
+              <div class="gm-cell gm-col-status end">
+                <svg width="48" height="48" viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="20" stroke="#088A20" stroke-width="2.5"/><polyline points="16,24 22,30 32,18" stroke="#088A20" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+            </div>
+            <!-- GM 2 — Pierre John Mc Doe (Not check-in, erreur) -->
+            <div class="gm-row">
+              <div class="gm-cell start" style="padding:10px 24px;width:auto;">
+                <button style="width:24px;height:24px;border:1px solid #666;border-radius:8px;background:rgba(255,255,255,0);cursor:pointer;"></button>
+              </div>
+              <div class="gm-cell gm-col-state">
+                <div class="state-col">
+                  <div class="state-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#BF2F17" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><circle cx="12" cy="16" r="1" fill="#BF2F17"/></svg></div>
+                  <span class="state-lbl" style="color:#BF2F17;">Not check-in</span>
+                </div>
+              </div>
+              <div class="gm-cell gm-col-stay"><div class="date-col"><span class="date-from">From 03/03/2024</span><span class="date-to">To 13/03/2024</span></div></div>
+              <div class="gm-cell gm-col-civ">Pierre</div>
+              <div class="gm-cell gm-col-fname">John</div>
+              <div class="gm-cell gm-col-lname">Mc Doe</div>
+              <div class="gm-cell gm-col-qu">GM ordi</div>
+              <div class="gm-cell gm-col-master"></div>
+              <div class="gm-cell gm-col-age">42</div>
+              <div class="gm-cell gm-col-type"><span class="badge-platinum">Platinum</span></div>
+              <div class="gm-cell gm-col-code">C2</div>
+              <div class="gm-cell gm-col-room">301</div>
+              <div class="gm-cell gm-col-status end">
+                <svg width="48" height="48" viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="20" stroke="#088A20" stroke-width="2.5"/><polyline points="16,24 22,30 32,18" stroke="#088A20" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+            </div>
+            <!-- GM 3 — Jeanne John Mc Doe -->
+            <div class="gm-row">
+              <div class="gm-cell start" style="padding:10px 24px;width:auto;">
+                <button style="width:24px;height:24px;border:1px solid #666;border-radius:8px;background:rgba(255,255,255,0);cursor:pointer;"></button>
+              </div>
+              <div class="gm-cell gm-col-state">
+                <div class="state-col">
+                  <div class="state-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#BF2F17" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><circle cx="12" cy="16" r="1" fill="#BF2F17"/></svg></div>
+                  <span class="state-lbl" style="color:#BF2F17;">Not check-in</span>
+                </div>
+              </div>
+              <div class="gm-cell gm-col-stay"><div class="date-col"><span class="date-from">From 03/03/2024</span><span class="date-to">To 13/03/2024</span></div></div>
+              <div class="gm-cell gm-col-civ">Jeanne</div>
+              <div class="gm-cell gm-col-fname">John</div>
+              <div class="gm-cell gm-col-lname">Mc Doe</div>
+              <div class="gm-cell gm-col-qu">GM ordi</div>
+              <div class="gm-cell gm-col-master"></div>
+              <div class="gm-cell gm-col-age">42</div>
+              <div class="gm-cell gm-col-type"><span class="badge-platinum">Platinum</span></div>
+              <div class="gm-cell gm-col-code">C4</div>
+              <div class="gm-cell gm-col-room">302</div>
+              <div class="gm-cell gm-col-status end">
+                <svg width="48" height="48" viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="20" stroke="#088A20" stroke-width="2.5"/><polyline points="16,24 22,30 32,18" stroke="#088A20" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+            </div>
+            <!-- GM 4 — Sonia John Mc Doe (Check-in) -->
+            <div class="gm-row">
+              <div class="gm-cell start" style="padding:10px 24px;width:auto;">
+                <button style="width:24px;height:24px;border:1px solid #666;border-radius:8px;background:rgba(255,255,255,0);cursor:pointer;"></button>
+              </div>
+              <div class="gm-cell gm-col-state">
+                <div class="state-col">
+                  <div class="state-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#088A20" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="8,12 11,15 16,9" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+                  <span class="state-lbl" style="color:#088A20;">Check-in</span>
+                </div>
+              </div>
+              <div class="gm-cell gm-col-stay"><div class="date-col"><span class="date-from">From 03/03/2024</span><span class="date-to">To 13/03/2024</span></div></div>
+              <div class="gm-cell gm-col-civ">Sonia</div>
+              <div class="gm-cell gm-col-fname">John</div>
+              <div class="gm-cell gm-col-lname">Mc Doe</div>
+              <div class="gm-cell gm-col-qu">GM ordi</div>
+              <div class="gm-cell gm-col-master"></div>
+              <div class="gm-cell gm-col-age">42</div>
+              <div class="gm-cell gm-col-type"><span class="badge-platinum">Platinum</span></div>
+              <div class="gm-cell gm-col-code">C4</div>
+              <div class="gm-cell gm-col-room">302</div>
+              <div class="gm-cell gm-col-status end">
+                <svg width="48" height="48" viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="20" stroke="#088A20" stroke-width="2.5"/><polyline points="16,24 22,30 32,18" stroke="#088A20" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div><!-- /content-customer-file -->
+  </main>
+</div>
+
+<!-- Footer actions -->
+<div class="footer-actions">
+  <button class="btn-footer">Separate GMs</button>
+  <button class="btn-footer">Presence</button>
+  <button class="btn-footer primary">Add a GM</button>
+  <button class="btn-footer yellow">Check in</button>
+</div>
+
+<!-- Panel wireframe — système Loopcraft complet -->
+<div class="wf-panel collapsed" id="wf-panel">
+
+  <button id="btn-panel-open" onclick="togglePanel()" title="Ouvrir">+</button>
+
+  <div class="panel-header" style="display:flex;align-items:center;justify-content:space-between;">
+    <span class="panel-title">Règles de gestion</span>
+    <button onclick="togglePanel()" style="background:none;border:none;cursor:pointer;font-size:16px;color:var(--grey-txt);line-height:1;" title="Réduire">−</button>
+  </div>
+
+  <div class="panel-body">
+
+    <hr>
+
+    <!-- Propositions -->
+    <div class="panel-title">Propositions</div>
+    <div style="display:flex;flex-direction:column;gap:6px;">
+      <button class="prop-btn active" id="pnl-A" onclick="setProp('A',this)">A — 4 colonnes (défaut)</button>
+      <button class="prop-btn" id="pnl-B" onclick="setProp('B',this)">B — Bande</button>
+      <button class="prop-btn" id="pnl-C" onclick="setProp('C',this)">C — Empilé milieu</button>
+    </div>
+
+    <hr>
+
+    <!-- Commentaires -->
+    <div class="panel-title">Commentaires</div>
+    <div class="switch-row">
+      <span>Afficher les pins</span>
+      <label class="switch"><input type="checkbox" id="sw-comments" onchange="setCmtMode(this.checked)"><span class="track"></span></label>
+    </div>
+    <select class="author-filter" id="author-filter" onchange="refreshPins()" style="display:none;">
+      <option value="">Tous les auteurs</option>
+    </select>
+
+  </div><!-- /panel-body -->
+
+  <!-- Documentation -->
+  <div id="panel-doc-section" style="padding:12px 16px;border-top:1px solid var(--grey-bd);">
+    <div class="panel-title" style="margin-bottom:10px;">Documentation</div>
+    <div style="display:flex;flex-direction:column;gap:2px;">
+      <button onclick="openDocDrawer()"
+        style="display:flex;align-items:center;justify-content:space-between;background:none;border:none;border-radius:8px;padding:8px 10px;cursor:pointer;font-family:inherit;width:100%;text-align:left;transition:background .12s;"
+        onmouseover="this.style.background='#F3F4F6'" onmouseout="this.style.background='none'">
+        <span style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:500;color:var(--navy);">
+          <span style="font-size:15px;">📘</span> Règles de gestion
+        </span>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--grey-txt)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+      </button>
+    </div>
+  </div>
+
+</div>
+
+<!-- ══ DRAWER DOCUMENTATION (full-screen) ══ -->
+<div id="doc-drawer" style="display:none;position:fixed;inset:0;background:var(--white);z-index:2200;flex-direction:column;">
+  <div style="background:#0F1629;padding:14px 28px;display:flex;align-items:center;gap:16px;flex-shrink:0;">
+    <button onclick="closeDocDrawer()"
+      style="display:flex;align-items:center;gap:6px;background:none;border:1px solid rgba(255,255,255,0.2);border-radius:8px;padding:6px 14px;font-size:13px;font-weight:600;color:rgba(255,255,255,0.7);cursor:pointer;font-family:inherit;"
+      onmouseover="this.style.borderColor='rgba(255,255,255,0.5)';this.style.color='white'" onmouseout="this.style.borderColor='rgba(255,255,255,0.2)';this.style.color='rgba(255,255,255,0.7)'">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+      Retour
+    </button>
+    <div style="color:#C4B5FD;font-size:15px;font-weight:700;">📘 Règles de gestion — Fiche Client Cardex</div>
+  </div>
+  <div style="flex:1;display:flex;overflow:hidden;">
+    <div id="doc-drawer-toc" style="width:260px;flex-shrink:0;border-right:1px solid var(--grey-bd);overflow-y:auto;padding:28px 20px;background:#FAFAFA;"></div>
+    <div id="doc-drawer-content" style="flex:1;overflow-y:auto;padding:32px 48px;"></div>
+  </div>
+</div>
+
+<script>
+  const isLocal = ['localhost','127.0.0.1'].includes(location.hostname);
+  if (isLocal) {
+    document.getElementById('back-dashboard-btn').style.display = 'flex';
+    document.getElementById('briefs-nav-btn').style.display = 'flex';
+  }
+
+  function setTab(el) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+  }
+
+  function togglePanel() {
+    const p = document.getElementById('wf-panel');
+    p.classList.toggle('collapsed');
+  }
+
+  function setProp(p, btn) {
+    ['A','B','C'].forEach(id => {
+      const el = document.getElementById('prop-'+id);
+      if (el) el.style.display = id === p ? 'block' : 'none';
+    });
+    document.querySelectorAll('.prop-btn').forEach(b => b.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+  }
+
+  // ── RG Cardex ──────────────────────────────────────────
+  const RG_CARDEX = [
+    {
+      id: 'RG-01', titre: 'Affichage des informations identité client',
+      regle: 'La barre d\'identité affiche : Civilité, Nom, Prénom, Téléphone (modifiable), Email (modifiable).',
+      comportement: 'Les champs Téléphone et Email disposent d\'un lien "Edit" permettant la modification en ligne.\nLes 5 champs sont toujours visibles, quelle que soit la résolution (1440px minimum).',
+      critere: 'Les 5 cellules sont affichées avec les valeurs du dossier client. Le lien Edit est cliquable.',
+      question: ''
+    },
+    {
+      id: 'RG-02', titre: 'Boutons action identité — Demande particulière et Carnet de liaison',
+      regle: 'Deux boutons sont affichés à droite de la barre identité : Demande particulière (vert) et Carnet de liaison (jaune).\nLe bouton Carnet de liaison affiche un badge rouge si des messages non lus existent.',
+      comportement: 'Badge rouge = nombre de messages non lus dans le carnet de liaison.\nSans messages non lus, le badge est masqué.',
+      critere: 'Les deux boutons sont affichés. Le badge s\'affiche uniquement si count > 0.',
+      question: 'Quelle est la source des données du carnet de liaison ? API dédiée ou module existant ?'
+    },
+    {
+      id: 'RG-03', titre: 'Navigation par onglets — Fiche client',
+      regle: 'Les onglets disponibles sont : Check-in, Prepaids, Sell services, Sale history, Deposit / Withdrawal, Account balance, Change, Invoice.\nL\'onglet actif est mis en évidence par un fond noir et texte blanc (pill DS2).',
+      comportement: 'Un seul onglet actif à la fois. Le clic sur un onglet charge le contenu correspondant.\nL\'onglet Check-in est actif par défaut à l\'ouverture de la fiche.',
+      critere: 'Le bon onglet est actif. Le contenu se met à jour au clic.',
+      question: ''
+    },
+    {
+      id: 'RG-04', titre: 'Card Info client — Badges et données',
+      regle: 'La card Info client affiche : badges (VIP, Donor, etc.), Age, Country, Stay, See more absence, Membership, File, et le bouton Club Med Pass management.',
+      comportement: '"See more absence (N)" s\'affiche en rouge si N > 0, et est cliquable pour voir le détail des absences.\nLe bouton "Club Med Pass management" ouvre le module de gestion du pass.',
+      critere: 'Tous les champs sont affichés. Le lien absence est rouge et cliquable si count > 0.',
+      question: 'Quelle est la règle d\'affichage des badges (VIP, Donor) ? Basé sur un statut dans le dossier client ?'
+    },
+    {
+      id: 'RG-05', titre: 'Card Arrival Information',
+      regle: 'La card Arrival affiche : Transport (inclus/non), Transfer (inclus/non), heure VV d\'arrivée, lien See transfers, Departure loc, Arrival loc, Date, Arrival time.',
+      comportement: 'L\'heure "VV arrival at HH:MM" est mise en évidence en orange si elle diffère de l\'heure standard.\n"See transfers" est un lien cliquable vers le détail des transferts.',
+      critere: 'Tous les champs sont affichés. L\'heure VV est en orange.',
+      question: 'L\'heure VV est-elle toujours en orange ou seulement quand elle est hors norme ?'
+    },
+    {
+      id: 'RG-06', titre: 'Card Room — Numéro, localisation et compte',
+      regle: 'La card Room affiche : numéro de chambre cliquable, type de chambre, localisation, téléphone, bouton "Make a request", montant Expense Report, ligne Visa avec montant et bouton Modify, switch Easy checkout.',
+      comportement: 'Le montant Expense Report est affiché en rouge si négatif (écart à régulariser).\nLe switch "Easy checkout" permet d\'activer/désactiver le checkout simplifié.\n"Make a request" ouvre le module de demande particulière pour cette chambre.',
+      critere: 'Le montant négatif est en rouge. Le switch est interactif. Le bouton Make a request est fonctionnel.',
+      question: 'Le bouton Modify sur la ligne Visa — que modifie-t-il exactement ? Le moyen de paiement ou le montant ?'
+    },
+    {
+      id: 'RG-07', titre: 'Card Cardex in a nutshell',
+      regle: 'La card Cardex affiche : titre "Cardex in a nutshell", flèche de navigation vers le Cardex complet, nombre de séjours passés, dernier village visité, badges programme de fidélité (Gold, Honeymoon, etc.).',
+      comportement: 'La flèche → ouvre la fiche Cardex complète du client.\nLes badges reflètent le statut fidélité actuel du client.',
+      critere: 'La flèche est cliquable. Les données sont issues du dossier client.',
+      question: 'Les badges (Gold, Honeymoon) — quels sont tous les statuts possibles ? Y a-t-il une liste exhaustive dans le référentiel ?'
+    },
+    {
+      id: 'RG-08', titre: 'Tableau GM — Colonnes et données',
+      regle: 'Le tableau affiche les GMs du dossier avec les colonnes : Checkbox, State, Stay date, Civility, First name, Last name, Qu., Master, Age, Type, Code, Room, Status.',
+      comportement: 'La colonne State affiche l\'état de check-in : "Not check-in" (cercle gris), "Not check-in" (cercle rouge = erreur), "Check-in" (cercle vert).\nLa colonne Master affiche un picto ⊕ pour le GM principal du dossier.\nLa colonne Type affiche le badge Platinum (DS2).\nLa colonne Status affiche un cercle vert ✓ (OK) ou rouge ⓘ (anomalie).',
+      critere: 'Toutes les colonnes sont affichées. Les icônes State sont correctes selon l\'état.',
+      question: 'Colonne "Qu." — quelle est la valeur exacte ? "GM ordi", "GM mineur", autre ?'
+    },
+    {
+      id: 'RG-09', titre: 'Footer actions — Boutons de la fiche',
+      regle: 'Le footer affiche 4 boutons : Separate GMs, Presence, Add a GM (noir), Check in (jaune).\nLe footer est sticky en bas de l\'écran, centré horizontalement.',
+      comportement: '"Separate GMs" — sépare les GMs sélectionnés en dossiers distincts.\n"Presence" — marque la présence physique d\'un GM.\n"Add a GM" — ajoute un GM au dossier.\n"Check in" — déclenche le check-in pour les GMs sélectionnés.',
+      critere: 'Les 4 boutons sont visibles et cliquables. Check in est désactivé si aucun GM n\'est sélectionné.',
+      question: 'Règle d\'activation du bouton "Check in" : basé sur la sélection des checkboxes ou autre condition ?'
+    },
+  ];
+
+  const RG_KEY = 'wf_rg_blocks_cardex';
+
+  function initRgCardex() {
+    const stored = localStorage.getItem(RG_KEY);
+    if (!stored) {
+      const blocks = RG_CARDEX.map(rg => ({
+        id: Date.now() + Math.random(),
+        tab: 'Fiche Client',
+        titre: rg.titre,
+        regle: rg.regle,
+        comportement: rg.comportement,
+        critere: rg.critere,
+        question: rg.question,
+        mode: 'Tous modes'
+      }));
+      localStorage.setItem(RG_KEY, JSON.stringify(blocks));
+    }
+  }
+
+  function openDocDrawer() {
+    const drawer = document.getElementById('doc-drawer');
+    const content = document.getElementById('doc-drawer-content');
+    if (!drawer || !content) return;
+
+    initRgCardex();
+    const rgBlocks = JSON.parse(localStorage.getItem(RG_KEY) || '[]');
+    const today = new Date().toLocaleDateString('fr-FR', { day:'numeric', month:'long', year:'numeric' });
+
+    if (rgBlocks.length === 0) {
+      content.innerHTML = `<div style="text-align:center;padding:60px 0;color:var(--grey-txt);">
+        <div style="font-size:32px;margin-bottom:16px;">📘</div>
+        <div style="font-size:16px;font-weight:600;color:var(--navy);margin-bottom:8px;">Aucune règle documentée</div>
+      </div>`;
+    } else {
+      const grouped = {};
+      rgBlocks.forEach((b, i) => {
+        const t = b.tab || 'Fiche Client';
+        if (!grouped[t]) grouped[t] = [];
+        grouped[t].push({ ...b, _globalIdx: i });
+      });
+      content.innerHTML = `
+        <div style="margin-bottom:40px;padding-bottom:28px;border-bottom:2px solid var(--grey-bd);">
+          <div style="font-size:12px;font-weight:700;color:var(--grey-txt);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;">Documentation fonctionnelle · ${today}</div>
+          <h1 style="font-size:26px;font-weight:800;color:var(--navy);margin:0 0 14px;line-height:1.2;">Fiche Client — Règles de gestion</h1>
+          <p style="font-size:15px;color:#374151;line-height:1.7;margin:0 0 10px;">Ce document recense les règles de gestion de la fiche client (écran Cardex) de l'outil Odyssey (Club Med). Il est destiné aux Product Owners, développeurs, QA et équipes métier.</p>
+          <div style="margin-top:16px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+            <span style="background:#F0FDF4;color:#1A6B31;border-radius:20px;padding:4px 12px;font-size:12px;font-weight:600;">● ${rgBlocks.length} règle${rgBlocks.length > 1 ? 's' : ''} documentée${rgBlocks.length > 1 ? 's' : ''}</span>
+          </div>
+        </div>
+        ${Object.entries(grouped).map(([tab, rgs]) => `
+          <div style="margin-bottom:48px;">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px;">
+              <span style="background:#EDE9FE;color:#5B21B6;border-radius:8px;padding:4px 14px;font-size:12px;font-weight:700;">${tab}</span>
+              <div style="flex:1;height:1px;background:var(--grey-bd);"></div>
+              <span style="font-size:11px;color:var(--grey-txt);">${rgs.length} règle${rgs.length > 1 ? 's' : ''}</span>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:20px;">
+              ${rgs.map(b => {
+                const id = String(b._globalIdx + 1).padStart(2, '0');
+                return `<div id="rg-block-${b._globalIdx}" style="border:1px solid var(--grey-bd);border-radius:14px;overflow:hidden;scroll-margin-top:24px;">
+                  <div style="padding:16px 24px;border-bottom:1px solid var(--grey-bd);display:flex;align-items:flex-start;justify-content:space-between;gap:12px;background:#FAFAFA;">
+                    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+                      <span style="background:#7C3AED;color:white;border-radius:8px;padding:3px 10px;font-size:12px;font-weight:800;letter-spacing:.04em;">RG-${id}</span>
+                      <h3 style="font-size:15px;font-weight:700;color:var(--navy);margin:0;">${b.titre}</h3>
+                    </div>
+                  </div>
+                  <div style="padding:20px 24px;display:flex;flex-direction:column;gap:16px;">
+                    ${b.regle ? `<div><div style="font-size:10px;font-weight:700;color:var(--grey-txt);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;">Règle</div><div style="font-size:14px;color:var(--navy);line-height:1.7;white-space:pre-wrap;">${b.regle}</div></div>` : ''}
+                    ${b.comportement ? `<div style="background:#F8F9FB;border-radius:10px;padding:16px;"><div style="font-size:10px;font-weight:700;color:var(--grey-txt);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;">Comportement attendu</div><div style="font-size:14px;color:var(--navy);line-height:1.8;white-space:pre-wrap;">${b.comportement}</div></div>` : ''}
+                    ${b.critere ? `<div style="border-left:3px solid #088A20;padding-left:14px;"><div style="font-size:10px;font-weight:700;color:#088A20;text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;">✓ Critère de validation</div><div style="font-size:14px;color:var(--navy);line-height:1.7;white-space:pre-wrap;">${b.critere}</div></div>` : ''}
+                    ${b.question ? `<div style="border-left:3px solid #D97706;background:#FFFBEB;border-radius:0 8px 8px 0;padding:12px 14px;"><div style="font-size:10px;font-weight:700;color:#D97706;text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;">⚠ Question métier à valider</div><div style="font-size:14px;color:var(--navy);line-height:1.7;white-space:pre-wrap;">${b.question}</div></div>` : ''}
+                  </div>
+                </div>`;
+              }).join('')}
+            </div>
+          </div>`).join('')}`;
+    }
+
+    // Sommaire
+    const toc = document.getElementById('doc-drawer-toc');
+    if (toc && rgBlocks.length > 0) {
+      const grouped2 = {};
+      rgBlocks.forEach((b, i) => {
+        const t = b.tab || 'Fiche Client';
+        if (!grouped2[t]) grouped2[t] = [];
+        grouped2[t].push({ ...b, _idx: i });
+      });
+      toc.innerHTML = `
+        <div style="font-size:11px;font-weight:700;color:var(--grey-txt);text-transform:uppercase;letter-spacing:.08em;margin-bottom:16px;">Sommaire</div>
+        ${Object.entries(grouped2).map(([tab, rgs]) => `
+          <div style="margin-bottom:20px;">
+            <div style="font-size:11px;font-weight:700;color:#5B21B6;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--grey-bd);">${tab}</div>
+            <div style="display:flex;flex-direction:column;gap:4px;">
+              ${rgs.map(b => {
+                const id = String(b._idx + 1).padStart(2, '0');
+                return `<button onclick="document.getElementById('rg-block-${b._idx}').scrollIntoView({behavior:'smooth',block:'start'})"
+                  style="display:flex;align-items:baseline;gap:8px;background:none;border:none;border-radius:6px;padding:6px 8px;cursor:pointer;font-family:inherit;text-align:left;width:100%;transition:background .12s;"
+                  onmouseover="this.style.background='#EDE9FE'" onmouseout="this.style.background='none'">
+                  <span style="background:#7C3AED;color:white;border-radius:5px;padding:1px 7px;font-size:10px;font-weight:800;flex-shrink:0;">RG-${id}</span>
+                  <span style="font-size:12px;color:var(--navy);font-weight:500;line-height:1.4;">${b.titre}</span>
+                </button>`;
+              }).join('')}
+            </div>
+          </div>`).join('')}`;
+    }
+
+    drawer.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeDocDrawer() {
+    const drawer = document.getElementById('doc-drawer');
+    if (drawer) drawer.style.display = 'none';
+    document.body.style.overflow = '';
+  }
+
+  initRgCardex();
+
+  const BRIEFS_KEY = 'wf_briefs_cardex';
+  let briefs = JSON.parse(localStorage.getItem(BRIEFS_KEY) || '[]');
+  function openBriefs() { document.getElementById('briefs-panel').style.display='flex'; document.getElementById('briefs-overlay').style.display='block'; renderBriefs(); }
+  function closeBriefs() { document.getElementById('briefs-panel').style.display='none'; document.getElementById('briefs-overlay').style.display='none'; }
+  function addBrief() { const txt=document.getElementById('brief-input').value.trim(); if(!txt)return; briefs.push({id:Date.now(),text:txt,done:false}); localStorage.setItem(BRIEFS_KEY,JSON.stringify(briefs)); document.getElementById('brief-input').value=''; renderBriefs(); }
+  function renderBriefs() { const list=document.getElementById('briefs-list'); if(!briefs.length){list.innerHTML='<div style="color:var(--grey-txt);font-size:13px;font-style:italic;text-align:center;padding:20px;">Aucun retour pour l\'instant</div>';return;} list.innerHTML=briefs.map((b,i)=>`<div style="background:var(--grey-bg);border-radius:8px;padding:10px 14px;display:flex;align-items:flex-start;gap:10px;"><input type="checkbox" ${b.done?'checked':''} onchange="briefs[${i}].done=this.checked;localStorage.setItem('${BRIEFS_KEY}',JSON.stringify(briefs));renderBriefs();" style="margin-top:2px;cursor:pointer;"><span style="flex:1;font-size:13px;color:var(--navy);${b.done?'text-decoration:line-through;opacity:.5':''}">${b.text}</span><button onclick="briefs.splice(${i},1);localStorage.setItem('${BRIEFS_KEY}',JSON.stringify(briefs));renderBriefs();" style="background:none;border:none;cursor:pointer;color:var(--grey-txt);font-size:16px;line-height:1;">×</button></div>`).join(''); }
+
+  const STORAGE_KEY = 'wf_comments_cardex';
+  const FB_URL = 'https://studio-jailoop-default-rtdb.firebaseio.com/comments_cardex';
+  let comments = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+  const CURRENT_USER = decodeURIComponent(new URLSearchParams(window.location.search).get('user') || 'Sébastien');
+  let commentMode = false;
+  let currentThreadId = null;
+  let dragPin = null, dragOX = 0, dragOY = 0;
+
+  async function fbSave() { try { await fetch(FB_URL+'.json',{method:'PUT',body:JSON.stringify(comments)}); } catch(e){} }
+  async function fbLoad() { try { const res=await fetch(FB_URL+'.json'); const data=await res.json(); if(data&&Array.isArray(data)){comments=data;localStorage.setItem(STORAGE_KEY,JSON.stringify(comments));refreshPins();} } catch(e){} }
+
+  function setCmtMode(on) { commentMode=on; const content=document.getElementById('main-content'); content.style.cursor=on?'crosshair':''; refreshPins(); }
+  function refreshPins() { document.querySelectorAll('.comment-pin').forEach(p=>p.remove()); if(!commentMode)return; const filter=document.getElementById('author-filter')?.value||''; const content=document.getElementById('main-content'); comments.filter(c=>!filter||c.author===filter).forEach(c=>renderPin(c,content)); }
+  const PIN_COLORS = {retour:'#1E2643',idee:'#D97706',rg:'#7C3AED',question:'#0891B2',default:'#1E2643'};
+  function renderPin(c,container) { const pin=document.createElement('div'); pin.className='comment-pin'; pin.dataset.id=c.id; pin.style.left=c.x+'px'; pin.style.top=c.y+'px'; pin.style.background=PIN_COLORS[c.type]||PIN_COLORS.default; pin.innerHTML=`<span style="color:white">${c.label||'?'}</span>`; pin.addEventListener('click',e=>{e.stopPropagation();openThread(c.id);}); pin.addEventListener('mousedown',e=>{dragPin=pin;dragOX=e.clientX-pin.offsetLeft;dragOY=e.clientY-pin.offsetTop;e.stopPropagation();}); container.appendChild(pin); }
+  document.addEventListener('mousemove',e=>{if(!dragPin)return;dragPin.style.left=(e.clientX-dragOX)+'px';dragPin.style.top=(e.clientY-dragOY)+'px';});
+  document.addEventListener('mouseup',e=>{if(!dragPin)return;const c=comments.find(c=>String(c.id)===dragPin.dataset.id);if(c){c.x=parseInt(dragPin.style.left);c.y=parseInt(dragPin.style.top);localStorage.setItem(STORAGE_KEY,JSON.stringify(comments));fbSave();}dragPin=null;});
+  document.getElementById('main-content').addEventListener('click',e=>{if(!commentMode)return;if(e.target.closest('.comment-pin'))return;const rect=e.currentTarget.getBoundingClientRect();const x=e.clientX-rect.left+e.currentTarget.scrollLeft;const y=e.clientY-rect.top+e.currentTarget.scrollTop;const pop=document.getElementById('comment-popover');pop.style.left=(e.clientX+12)+'px';pop.style.top=(e.clientY-40)+'px';pop.classList.add('visible');pop._x=x;pop._y=y;document.getElementById('cp-text').focus();});
+  function closePopover(){document.getElementById('comment-popover').classList.remove('visible');}
+  function saveComment(){const txt=document.getElementById('cp-text').value.trim();if(!txt)return;const pop=document.getElementById('comment-popover');const idx=comments.length+1;const initial=CURRENT_USER.charAt(0).toUpperCase();const c={id:Date.now(),x:pop._x,y:pop._y,text:txt,author:CURRENT_USER,label:idx+initial,type:'retour',replies:[]};comments.push(c);localStorage.setItem(STORAGE_KEY,JSON.stringify(comments));fbSave();document.getElementById('cp-text').value='';closePopover();refreshPins();}
+  function openThread(id){currentThreadId=id;const c=comments.find(cc=>cc.id===id);if(!c)return;const msgs=document.getElementById('thread-messages');msgs.innerHTML=[c,...(c.replies||[])].map(m=>`<div style="background:var(--grey-bg);border-radius:8px;padding:8px 10px;"><div style="font-size:11px;font-weight:700;margin-bottom:3px;">${m.author||'?'}</div><div style="font-size:13px;color:var(--navy);">${m.text}</div></div>`).join('');const pop=document.getElementById('thread-popover');const pin=document.querySelector(`.comment-pin[data-id="${id}"]`);if(pin){pop.style.left=(parseInt(pin.style.left)+40)+'px';pop.style.top=pin.style.top;}pop.classList.add('visible');}
+  function closeThread(){document.getElementById('thread-popover').classList.remove('visible');currentThreadId=null;}
+  function saveReply(){const txt=document.getElementById('reply-text').value.trim();if(!txt||!currentThreadId)return;const c=comments.find(cc=>cc.id===currentThreadId);if(!c)return;if(!c.replies)c.replies=[];c.replies.push({author:CURRENT_USER,text:txt});localStorage.setItem(STORAGE_KEY,JSON.stringify(comments));fbSave();document.getElementById('reply-text').value='';openThread(currentThreadId);}
+  const cpUser=document.getElementById('cp-username');if(cpUser)cpUser.textContent=CURRENT_USER;
+  fbLoad();
+  setInterval(fbLoad,5000);
+</script>
+</body>
+</html>
