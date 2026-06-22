@@ -1515,7 +1515,7 @@ function openSubproject(pid, spid) {
 
   const url = new URL(sp.wireframe, location.href);
   url.searchParams.set('designer', '1');
-  window.open(url.toString(), '_blank');
+  window.location.href = url.toString();
 }
 
 // ═══════════════════════════════════════════════════════
