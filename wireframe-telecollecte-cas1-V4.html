@@ -4078,24 +4078,31 @@
   async function fbLoad() {
     try {
       const res = await fetch(FB_URL + '.json');
+      // Si Firebase renvoie une erreur HTTP (401, 403, 500...), ne pas toucher au local
+      if (!res.ok) return;
       const data = await res.json();
       if (data) {
-        comments = Array.isArray(data) ? data : Object.values(data);
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(comments));
-        refreshPins();
-        updateAuthorFilter();
+        const fb = Array.isArray(data) ? data : Object.values(data);
+        // Ne remplacer le local que si Firebase a plus de données ou des données plus récentes
+        const local = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+        if (fb.length >= local.length) {
+          comments = fb;
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(comments));
+          refreshPins();
+          updateAuthorFilter();
+        }
       }
-    } catch(e) { /* offline fallback */ }
+    } catch(e) { /* offline — localStorage reste prioritaire */ }
   }
 
   // Poll toutes les 5s pour voir les nouveaux commentaires
   setInterval(fbLoad, 5000);
   // Chargement initial depuis Firebase
   fbLoad();
-  // Designer : pings activés par défaut sauf si explicitement désactivé
-  let commentMode = isDesigner
-    ? localStorage.getItem('wf_pins_visible') !== '0'
-    : localStorage.getItem('wf_pins_visible') === '1';
+  // Designer : pings activés par défaut
+  // PO : pings toujours activés pour pouvoir commenter
+  let commentMode = isPO ? true
+    : localStorage.getItem('wf_pins_visible') !== '0';
   let pendingPin = null;
   let currentTab = 'tpe'; // tab active au moment du commentaire
   const AUTHOR_COLORS = {
@@ -4638,6 +4645,7 @@
 
   function updateAuthorFilter() {
     const sel = document.getElementById('author-filter');
+    if (!sel) return; // panel PO : pas de filtre auteur
     const current = sel.value;
     const authors = [...new Set(comments.map(c => c.author))];
     sel.innerHTML = '<option value="">Tous les auteurs</option>' +
