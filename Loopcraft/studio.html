@@ -1514,7 +1514,7 @@ function openSubproject(pid, spid) {
   });
 
   const url = new URL(sp.wireframe, location.href);
-  url.searchParams.set('designer', '1');
+  url.searchParams.set('role', 'designer');
   window.location.href = url.toString();
 }
 
