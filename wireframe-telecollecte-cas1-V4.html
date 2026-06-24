@@ -4912,12 +4912,14 @@
       const el = document.getElementById(id);
       if (el) el.style.display = 'none';
     });
-    // KPI Écart : remplace son contenu par le bloc MDP si écart, sinon restaure le label normal
+    // KPI Écart : bloc toujours visible en mode interfacé
     const kpiEcart = document.getElementById('kpi-ecart');
     const kpiSep2  = document.getElementById('kpi-sep2');
+    const ifaceOn  = document.getElementById('sw-iface')?.checked;
     if (kpiEcart) {
       kpiEcart.style.display = 'flex';
-      if (hasEcart) {
+      if (ifaceOn) {
+        // Mode interfacé — toujours afficher le bloc écart
         const parseV = s => parseFloat((s||'').replace(/\s/g,'').replace('€','').replace(',','.')) || 0;
         const byMdp = { Visa: 0, Amex: 0, WeChat: 0 };
         document.querySelectorAll('[id^="ri"] .t-row, .rows-iface .t-row').forEach(row => {
@@ -4925,26 +4927,38 @@
           const inp = row.querySelector('.inp:not(.remise-inp):not(.plain)');
           if (mdp && byMdp.hasOwnProperty(mdp) && inp) byMdp[mdp] += parseV(inp.value);
         });
-        if (kpiSep2) kpiSep2.style.display = 'none';
-        const totalSign = ecart < -0.005 ? '–' : '+';
-        const mdpRows = ['Visa','Amex','WeChat'].map(mdp => {
-          const v = byMdp[mdp];
-          const color = v !== 0 ? '#BF2F17' : '#088A20';
-          const weight = v !== 0 ? '600' : '500';
-          return `<div style="display:flex;align-items:center;justify-content:space-between;gap:14px;">
-            <span style="font-size:12px;color:${color};font-weight:${weight};">${mdp}</span>
-            <span style="font-size:12px;color:${color};font-weight:${weight};">${fmt(Math.abs(v))} €</span>
-          </div>`;
-        }).join('');
-        kpiEcart.innerHTML = `
-          <div style="border:1px solid #FECACA;border-radius:8px;overflow:hidden;min-width:140px;">
-            <div style="padding:4px 10px;background:#FEF2F2;border-bottom:1px solid #FECACA;display:flex;align-items:baseline;justify-content:space-between;gap:8px;">
-              <span style="font-size:10px;font-weight:700;color:#BF2F17;text-transform:uppercase;letter-spacing:.05em;">Écart</span>
-              <span style="font-size:13px;font-weight:700;color:#BF2F17;">${totalSign}${fmt(Math.abs(ecart))} €</span>
-            </div>
-            <div style="padding:4px 10px;background:#fff;display:flex;flex-direction:column;gap:2px;">${mdpRows}</div>
-          </div>`;
+        if (hasEcart) {
+          // Écart détecté — bloc rouge avec détail MDP
+          if (kpiSep2) kpiSep2.style.display = 'none';
+          const totalSign = ecart < -0.005 ? '–' : '+';
+          const mdpRows = ['Visa','Amex','WeChat'].map(mdp => {
+            const v = byMdp[mdp];
+            const color = v !== 0 ? '#BF2F17' : '#088A20';
+            const weight = v !== 0 ? '600' : '500';
+            return `<div style="display:flex;align-items:center;justify-content:space-between;gap:14px;">
+              <span style="font-size:12px;color:${color};font-weight:${weight};">${mdp}</span>
+              <span style="font-size:12px;color:${color};font-weight:${weight};">${fmt(Math.abs(v))} €</span>
+            </div>`;
+          }).join('');
+          kpiEcart.innerHTML = `
+            <div style="border:1px solid #FECACA;border-radius:8px;overflow:hidden;min-width:140px;">
+              <div style="padding:4px 10px;background:#FEF2F2;border-bottom:1px solid #FECACA;display:flex;align-items:baseline;justify-content:space-between;gap:8px;">
+                <span style="font-size:10px;font-weight:700;color:#BF2F17;text-transform:uppercase;letter-spacing:.05em;">Écart</span>
+                <span style="font-size:13px;font-weight:700;color:#BF2F17;">${totalSign}${fmt(Math.abs(ecart))} €</span>
+              </div>
+              <div style="padding:4px 10px;background:#fff;display:flex;flex-direction:column;gap:2px;">${mdpRows}</div>
+            </div>`;
+        } else {
+          // Pas d'écart — petit label vert compact
+          if (kpiSep2) kpiSep2.style.display = 'none';
+          kpiEcart.innerHTML = `
+            <div style="border:1px solid #D1FAE5;border-radius:8px;padding:4px 10px;background:#ECFDF5;display:flex;align-items:baseline;gap:8px;">
+              <span style="font-size:10px;font-weight:700;color:#088A20;text-transform:uppercase;letter-spacing:.05em;">Écart</span>
+              <span style="font-size:13px;font-weight:700;color:#088A20;">0,00 €</span>
+            </div>`;
+        }
       } else {
+        // Mode non-interfacé — KPI classique
         if (kpiSep2) kpiSep2.style.display = '';
         kpiEcart.innerHTML = `
           <span style="font-size:11px;font-weight:700;color:var(--grey-txt);text-transform:uppercase;letter-spacing:.05em;display:block;">Écart</span>
