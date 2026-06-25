@@ -137,6 +137,23 @@ PO commente (pin sur wireframe)
 
 Ce workflow est l'essence du produit. Il ne doit jamais être cassé.
 
+### Règle d'archivage après traitement Claude
+
+Quand un commentaire PO présent dans `Commentaires équipe` est utilisé par le Designer pour générer, copier ou envoyer un prompt Claude, il est considéré comme **traité**.
+
+Il doit alors :
+- disparaître de `Commentaires équipe` (actifs)
+- perdre son ping actif (badge / compteur)
+- passer dans les archives (`done: true`)
+- rester consultable dans l'historique archives
+- ne pas impacter les commentaires non sélectionnés
+
+**L'archivage est déclenché uniquement par une action explicite du Designer** :
+- envoi réussi à Claude via le serveur local
+- copie du prompt via fallback clipboard
+
+Il ne doit **jamais** être déclenché sur simple sélection ou recalcul UI automatique.
+
 ---
 
 ## 7. LES RÔLES — LOGIQUE EXPLICITE
