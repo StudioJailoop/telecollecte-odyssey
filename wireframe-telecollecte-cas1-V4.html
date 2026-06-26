@@ -1345,6 +1345,17 @@
       <!-- Vue Régularisation -->
       <div id="view-reg" style="display:none;">
 
+        <!-- Barre sticky Régularisation — même pattern que Date antérieure -->
+        <div class="tpe-tabs-bar" id="tpe-tabs-bar-reg" style="display:none;">
+          <div style="margin-left:auto; display:flex; align-items:center; gap:48px;">
+            <div id="reg-pill" style="display:none; align-items:center; gap:6px; font-size:12px; font-weight:600; padding:4px 12px; border-radius:20px; background:#FEF2F2; color:#BF2F17;">
+              <span style="width:7px;height:7px;border-radius:50%;background:#BF2F17;flex-shrink:0;"></span>
+              <span id="reg-pill-txt">Écart : -1 000,00 €</span>
+            </div>
+            <button class="btn-date-cta off" id="btnv-reg-sticky" style="display:none; margin-left:0;">Submit regularisation</button>
+          </div>
+        </div>
+
         <!-- Bloc date — même pattern que Télécollecte et Date antérieure -->
         <div class="bloc-date" style="display:block; padding:20px 24px;">
 
@@ -1353,12 +1364,13 @@
             <span class="date-label">Outstanding discrepancy to regularize as of <strong>2026 / 05 / 04</strong></span>
           </div>
 
-          <!-- Ligne 2 : KPI + badge + bouton (même pattern que Télécollecte Prop_A) -->
+          <!-- Ligne 2 : KPI + bloc écart détaillé + bouton -->
           <div style="margin-top:20px; padding-top:16px; border-top:1px solid var(--grey-bd); display:flex; align-items:center; gap:20px; flex-wrap:wrap;">
-            <div style="display:flex;flex-direction:column;gap:4px;flex-shrink:0;">
-              <span style="font-size:11px;font-weight:700;color:var(--grey-txt);text-transform:uppercase;letter-spacing:.05em;display:block;">Écart à régulariser</span>
-              <span id="reg-ecart-wrap" style="font-size:20px;font-weight:700;color:#BF2F17;display:block;">€ <span id="reg-ecart">1 000,00</span></span>
-            </div>
+            <!-- Bloc écart détaillé par MDP — piloté par _updateBadgesReg() via checkReg() -->
+            <!-- #reg-ecart et #reg-ecart-wrap conservés (lus par checkReg pour dataset.initial + couleur) -->
+            <span id="reg-ecart" style="display:none;">1 000,00</span>
+            <span id="reg-ecart-wrap" style="display:none;"></span>
+            <div id="reg-kpi-ecart-bloc"></div>
             <div style="width:1px;height:36px;background:var(--grey-bd);flex-shrink:0;align-self:center;"></div>
             <div style="display:flex;flex-direction:column;gap:4px;flex-shrink:0;">
               <span style="font-size:11px;font-weight:700;color:var(--grey-txt);text-transform:uppercase;letter-spacing:.05em;display:block;">Total régularisé</span>
@@ -3859,6 +3871,8 @@
     document.getElementById('view-reg').style.display = id === 'reg' ? 'block' : 'none';
     const antBar = document.getElementById('tpe-tabs-bar-ant');
     if (antBar) antBar.style.display = id === 'ant' ? 'flex' : 'none';
+    const regBar = document.getElementById('tpe-tabs-bar-reg');
+    if (regBar) regBar.style.display = id === 'reg' ? 'flex' : 'none';
     // Masquer les éléments sticky qui appartiennent à un autre onglet
     if (id !== 'tpe') {
       const pill = document.getElementById('proposal-a-pill');
@@ -3872,7 +3886,14 @@
       const antPill = document.getElementById('ant-pill');
       if (antPill) antPill.style.display = 'none';
     }
+    if (id !== 'reg') {
+      const btnvRS = document.getElementById('btnv-reg-sticky');
+      if (btnvRS) btnvRS.style.display = 'none';
+      const regPill = document.getElementById('reg-pill');
+      if (regPill) regPill.style.display = 'none';
+    }
     if (id === 'ant') _updateBadgesAnt();
+    if (id === 'reg') checkReg();
     closeThread();
     refreshPins();
   }
@@ -3919,6 +3940,25 @@
         if (pill) {
           pill.style.display = hidden ? 'flex' : 'none';
         }
+      }
+    }
+
+    // ── Régularisation ──
+    if (currentTab === 'reg') {
+      const blocDateReg = document.querySelector('#view-reg .bloc-date');
+      const regBar      = document.getElementById('tpe-tabs-bar-reg');
+      const btnvReg     = document.getElementById('btnv-reg');
+      const btnvRegS    = document.getElementById('btnv-reg-sticky');
+      if (blocDateReg && regBar) {
+        const r = blocDateReg.getBoundingClientRect();
+        const hidden = r.bottom < rootRect.top;
+        regBar.classList.toggle('is-stuck', hidden);
+        if (btnvRegS) {
+          btnvRegS.style.display = hidden ? 'flex' : 'none';
+          if (hidden && btnvReg) btnvRegS.className = btnvReg.className;
+        }
+        const pill = document.getElementById('reg-pill');
+        if (pill) pill.style.display = hidden ? 'flex' : 'none';
       }
     }
   }
@@ -5225,6 +5265,62 @@
     }
   }
 
+  // ── KPI + Badges Régularisation — calculés depuis checkReg() ────────────────
+  function _updateBadgesReg(ecartBase, ecartRestant, byMdp) {
+    const fmt = n => n.toLocaleString('fr-FR', { minimumFractionDigits:2, maximumFractionDigits:2 });
+    const hasEcart = ecartRestant >= 0.005;
+
+    // Bloc principal — #reg-kpi-ecart-bloc
+    const bloc = document.getElementById('reg-kpi-ecart-bloc');
+    if (bloc) {
+      const totalSign = ecartBase < 0 ? '–' : '+';
+      const mdpRows = ['Visa','Amex','WeChat'].map(mdp => {
+        const v = byMdp[mdp] || 0;
+        const color  = v >= 0.005 ? '#BF2F17' : '#088A20';
+        const weight = v >= 0.005 ? '600' : '500';
+        return `<div style="display:flex;align-items:center;justify-content:space-between;gap:14px;">
+          <span style="font-size:12px;color:${color};font-weight:${weight};">${mdp}</span>
+          <span style="font-size:12px;color:${color};font-weight:${weight};">${fmt(v)} €</span>
+        </div>`;
+      }).join('');
+      const headerBg   = hasEcart ? '#FEF2F2' : '#ECFDF5';
+      const headerBd   = hasEcart ? '#FECACA' : '#D1FAE5';
+      const headerCol  = hasEcart ? '#BF2F17' : '#088A20';
+      const totalTxt   = hasEcart
+        ? `${totalSign}${fmt(ecartBase)} €`
+        : `0,00 €`;
+      bloc.innerHTML = `
+        <div style="border:1px solid ${headerBd};border-radius:8px;overflow:hidden;min-width:160px;">
+          <div style="padding:4px 10px;background:${headerBg};border-bottom:1px solid ${headerBd};display:flex;align-items:baseline;justify-content:space-between;gap:8px;">
+            <span style="font-size:10px;font-weight:700;color:${headerCol};text-transform:uppercase;letter-spacing:.05em;">Écart à régulariser</span>
+            <span style="font-size:13px;font-weight:700;color:${headerCol};">${totalTxt}</span>
+          </div>
+          <div style="padding:4px 10px;background:#fff;display:flex;flex-direction:column;gap:2px;">${mdpRows}</div>
+        </div>`;
+    }
+
+    // Pill sticky — contenu préparé, display géré par updateStickyState
+    const pill = document.getElementById('reg-pill');
+    if (pill) {
+      if (hasEcart) {
+        const totalSign = ecartBase < 0 ? '–' : '+';
+        const mdpConcernes = ['Visa','Amex','WeChat'].filter(mdp => (byMdp[mdp] || 0) >= 0.005);
+        const mdpLabel = mdpConcernes.join(' · ');
+        pill.style.background = '#FEF2F2';
+        pill.style.color = '#BF2F17';
+        pill.style.border = 'none';
+        pill.innerHTML = `<span style="width:7px;height:7px;border-radius:50%;background:#BF2F17;flex-shrink:0;"></span>
+          Écart : ${totalSign}${fmt(ecartBase)} €
+          ${mdpLabel ? `<span style="color:var(--navy);margin-left:4px;">${mdpLabel}</span>` : ''}`;
+      } else {
+        pill.style.background = '#E6F4EA';
+        pill.style.color = '#1A6B31';
+        pill.style.border = '1px solid #22863A';
+        pill.innerHTML = `<span style="width:7px;height:7px;border-radius:50%;background:#1A6B31;flex-shrink:0;"></span> Regularised`;
+      }
+    }
+  }
+
   function checkAll() {
     // ── Télécollecte — uniquement les rows visibles ──
     let tpeOk = true;
@@ -5362,6 +5458,15 @@
       const allEmpty = [...document.querySelectorAll('.reg-mdp-inp')].every(i => i.value.trim() === '');
       btn.className = (allEmpty || overEcart) ? 'btn-date-cta off' : 'btn-date-cta';
     }
+
+    // Sync bouton sticky Régularisation
+    const btnSticky = document.getElementById('btnv-reg-sticky');
+    if (btnSticky) btnSticky.className = btn.className;
+
+    // Simulation wireframe Régularisation : répartition MDP de l'écart initial.
+    // À remplacer par une vraie donnée métier/API si disponible.
+    const simByMdpReg = { Visa: 400, Amex: 600, WeChat: 0 };
+    _updateBadgesReg(ecartBase, ecartRestant, simByMdpReg);
   }
 
   // ── Init versions ─────────────────────────────────────────────────────
